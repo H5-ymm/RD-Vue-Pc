@@ -1,0 +1,10 @@
+import { $post, post } from '../axios'
+
+export const goLogin = data => $post('/login/login', data);
+
+export const getCode = data => $post('/login/sendVerification',data)
+
+export const userRegister = data => $post('/login/userRegister',data)
+
+
+export const getProvincesList = () => post('/company/getProvincesList')
