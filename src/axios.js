@@ -14,19 +14,13 @@ $axios.interceptors.request.use(
 		const token = localStorage.getItem('token');
     // const token = 'ca8165aa88d74bf48164177fb';
     if (localStorage.getItem('token')) {
-      config.headers['HTTP_TOKEN'] = token || 'ca8165aa88d74bf48164177fb';
-      config.headers['HTTP-USERID'] = JSON.parse(localStorage.getItem('userInfo')).id
+      // config.headers['HTTP_TOKEN'] = token || 'ca8165aa88d74bf48164177fb';
+      // config.headers['HTTP-USERID'] = JSON.parse(localStorage.getItem('userInfo')).id
     }
-		// config.headers['HTTP_TOKEN'] = token || 'ca8165aa88d74bf48164177fb';
-		// config.headers['HTTP-USERID'] = JSON.parse(localStorage.getItem('userInfo')).id
-		// config.header('Access-Control-Allow-Origin', '*')
 		config.headers = {'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8'}
-		// config.headers['Content-Type'] = 'application/x-www-form-urlencoded'
-		// config.headers['Content-Type'] = 'x-www-form-urlencoded'
 		return config;
 	},
 	function(error) {
-		console.log(error)
 		// 对请求错误做些什么
 		// this.$message.error(error);
 		return Promise.reject(error);
@@ -40,12 +34,12 @@ $axios.interceptors.response.use(
       return Promise.resolve(response);  
      } else {   
       return Promise.reject(response);  
-     } 
+     }
+    // return Promise.resolve(response); 
 	},
 	 // 服务器状态码不是200的情况 
    error => {  
     if (error.response.status) {   
-    console.log(error.response.status)
      switch (error.response.status) {    
       // 401: 未登录    
       // 未登录则跳转登录页面，并携带当前页面的路径    
@@ -79,11 +73,10 @@ $axios.interceptors.response.use(
  * @param {String} url [请求的url地址] 
  * @param {Object} params [请求时携带的参数] 
  */
-export function post(url, params) { 
-  console.log(QS.stringify(params))
+export function post(url) {
 	return new Promise((resolve, reject) => {   
-		$axios.post(`${baseURL}${url}`, QS.stringify(params))  
-      .then(res => {   
+		$axios.post(`${baseURL}${url}`,{})  
+      .then(res => {
         resolve(res.data) 
       })  
       .catch(err => {   
@@ -92,7 +85,6 @@ export function post(url, params) {
 	});
 }
 export function $post(url, params) { 
-  console.log(QS.stringify(params))
 	return new Promise((resolve, reject) => {   
 		$axios.post(`${baseURL}${url}${'?'+ QS.stringify(params)}`)  
       .then(res => {   

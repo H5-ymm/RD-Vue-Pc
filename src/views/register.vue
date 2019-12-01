@@ -1,5 +1,5 @@
 <template>
-    <el-container class="loads">
+    <el-container class="loads register-view">
           <el-header class="header x-flex-around">
             <div class="bg-purple">
               <span class="header-left">人事达</span>
@@ -11,7 +11,7 @@
             </div>
         </el-header>
         <el-main>   
-         <div class="content">
+         <div class="register-content">
               <div class="register-box">
                 <el-form ref="TabForm" :model="formTab" label-width="20" :rules="formTabs" class="form-box">
                     <div class="x-flex-around register-btn">
@@ -39,8 +39,7 @@
                         <el-checkbox v-model="checked">记住密码</el-checkbox>
                         <span class="code-btn password">忘记密码</span>
                     </el-form-item>
-                  
-                    <el-form-item>
+                    <el-form-item class="submit-btn">
                         <el-button type="primary" @click="onSubmit('TabForm')" class="login">注册</el-button>
                     </el-form-item>
                    <p class="text">还没有账户，<a href="/load">免费注册</a></p>
@@ -133,7 +132,7 @@ export default {
           this.formTab.type = index
           this.formTab.name = ''
         },
-        onSubmit:function(formName){
+        onSubmit(formName){
           this.$refs[formName].validate((valid) => {
               if (valid) {
                   console.log(this.formTab)
@@ -212,7 +211,7 @@ export default {
   height:49px;
   background:rgba(50,55,62,1);
 }
-.loads{
+.register-view{
   width: 100vw;
   height: 100vh;
   overflow: hidden; 
@@ -222,7 +221,7 @@ export default {
   overflow:hidden;
 }
 .loads .el-form-item {
-  margin-bottom:15px;
+  margin-bottom:6px;
 }
 .x-flex-center {
   display: flex;
@@ -249,19 +248,20 @@ export default {
   color:#1890FF;
   border-radius:0;
 }
-.content {
+.register-content {
   display: flex;
   justify-content: center;
   align-items: center;
   height:100%;
   width:110%;
-  overflow:hidden;
+  /* overflow:hidden; */
   background: url('../assets/img/re-bg.png') no-repeat left center;
   background-size:cover;
 }
 .form-box {
   width:90%;
   margin:0 auto;
+  overflow: hidden;
 }
 .register-box{
   width: 536px;
@@ -283,7 +283,7 @@ export default {
 }
 .register-box .error {
     position:absolute;
-    top:18%;
+    top:16%;
     right:0;
     color:#FE2A00;
     font-size:12px;
@@ -323,16 +323,6 @@ export default {
   color:#6A6A6A;
   font-size:14px;
 }
-.grid-content {
-  background:rgba(248,248,248,1);
-  border-radius:0px 5px 5px 0px;
-  width:100%;
-  height:100%;
-}
-.grid-content img {
-  max-width: 302px;
-  margin: 0 auto;
-}
 .register-box .el-button--primary{
   width: 100%;
 }
@@ -342,17 +332,20 @@ export default {
 .passwords{
   text-align: right;
 }
+.submit-btn{
+  margin-top: -10px;
+}
 .login{
   background:linear-gradient(180deg,rgba(24,144,255,1),rgba(89,175,255,1));
   border-radius:20px;
   border:none;
 }
-.text {
-    text-align:right;
-    font-size:14px;
-    margin-right:30px;
-    color:#333333;
-    margin-top:20px;
+.register-box .text {
+  text-align:right;
+  font-size:14px;
+  margin-right:30px;
+  color:#333333;
+  margin-top: 20px;
 }
 .text  a {
   color:#1890FF;
