@@ -1,6 +1,6 @@
 <template>
     <el-container>
-        <el-header class="header x-flex-around home" height="50px">
+        <el-header class="header x-flex-around home" height="50px" id="header">
             <div class="bg-purple">
                <span class="header-left">人事达</span>
                <span class="home-purple-left">
@@ -8,7 +8,7 @@
                  <a class="welcome">全国站</a>
                </span>
                <ul class="nav">
-                  <li v-for="(item, index) in menus" class="nav-item" @click="switchNav(item, index)" :class="{'active': activeIndex==index}">
+                  <li v-for="(item, index) in menus" class="nav-item" :key="index" @click="switchNav(item, index)" :class="{'active': activeIndex==index}">
                    {{item.title}}
                    <span class="line" v-if="activeIndex==index"></span>
                   </li>
@@ -56,21 +56,25 @@
                   <el-card class="box-card" shadow="hover">
                     <div slot="header" class="clearfix">
                       <p class="home-main-list-title" :class="{'home-list-title-active':index==0}">全职拉新</p>
-                      <el-row type="flex" justify="around" class="home-list-clearfix home-list-clearfix-active">
-                        <el-col :span="12"><div class="bg-purple">日薪:{{item.money}}</div></el-col>
-                        <el-col :span="12"><div class="bg-purple-light">需求人数:</div></el-col>
+                      <el-row type="flex" justify="space-between" class="home-list-clearfix home-list-clearfix-active">
+                        <el-col :span="14"><div class="bg-purple">{{getmoneyType(item.money_type)}}薪: {{item.money}}/人/{{getmoneyType(item.money_type)}}</div></el-col>
+                        <el-col :span="10"><div class="bg-purple-light">需求人数: {{item.required_number}}人</div></el-col>
                       </el-row>
-                      <el-row type="flex" justify="around" class="home-list-clearfix">
-                        <el-col :span="12"><div class="bg-purple">返利:</div></el-col>
-                        <el-col :span="12"><div class="bg-purple-light">返利方式:</div></el-col>
+                      <el-row type="flex" justify="space-between" class="home-list-clearfix">
+                        <el-col :span="14"><div class="bg-purple">返利: </div></el-col>
+                        <el-col :span="10"><div class="bg-purple-light">返利方式: {{getRewardType(item.reward_type)}}</div></el-col>
                       </el-row>
                     </div>
                      {{item.com_name}}
-
                     <el-button type="primary" size="medium" plain class="handle-btn">接单</el-button>
                   </el-card>
                 </el-col>
               </el-row>
+              <el-button class="home-main-more">查看更多</el-button>
+              <div class="home-main-more-right">
+                <el-link type="primary">查看更多</el-link>
+                <img src="../assets/img/more.png" alt="">
+              </div>
             </section>
             <section class="home-main-section">
               <p class="home-main-title"> <img src="../assets/img/icon.png">资讯</p>
@@ -85,8 +89,7 @@
                   </div>
                 </el-col>
               </el-row>
-            </section>
-            
+            </section>        
           </div>
         </el-main>
         <el-footer height="150px">
@@ -120,9 +123,27 @@
               </el-row>
             </section>
         </el-footer>
+        <ul class="fixed">
+          <li>
+            <a href="#header">
+              <el-tooltip class="item" effect="dark" content="一键置顶" placement="left">
+                <img src="../assets/img/top.png" alt="">
+              </el-tooltip>
+            </a>
+          </li>
+          <li>
+            <el-tooltip class="item" effect="dark" content="联系客服" placement="left">
+              <img src="../assets/img/kefu.png" alt="">
+            </el-tooltip>
+          </li> 
+          <li class="help">
+            <el-tooltip class="item" effect="dark" content="帮助反馈" placement="left">
+              <img src="../assets/img/help.png" alt="">
+            </el-tooltip>
+          </li>
+        </ul>
     </el-container>
 </template>
-
 <script>
 // @ is an alias to /src
 import homeAside from '@/components/Aside' //侧边栏
@@ -186,6 +207,25 @@ export default {
         this.list = res.data.data.data
         console.log(this.list )
       })
+    },
+    getmoneyType(type) {
+      return type === 1 ? '日' :type === 2 ? '月': '时'
+    },
+    getRewardType(type) {
+      let text = ''
+      if (type==1) {
+        text = '按月结算'
+      }
+      else if (type==2) {
+        text = '按日结算'
+      }
+      else if (type==3) {
+        text = '按周结算'
+      }
+      else {
+        text = '一次性返利'
+      }
+      return text
     }
   },
   created() {  
@@ -315,6 +355,25 @@ export default {
   border-radius:0px 5px 5px 0px;
   padding: 0 40px;
 }
+.home-main-more {
+  width:391px;
+  height:38px;
+  border:1px solid rgba(24,144,255,1);
+  border-radius:5px;
+  margin: 0 auto 10px;
+  color: #1890FF;
+  margin-left: 35%;
+}
+.home-main-more-right {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+.home-main-more-right img {
+  width: 10px;
+  height: 10px;
+}
 .home-box{
   background: #ffffff;
   height: calc(100% - 20px);
@@ -351,7 +410,7 @@ export default {
 .home-main-title {
   padding-bottom: 10px;
   font-size: 16px;
-  margin-bottom: 20px;
+  /* margin-bottom: 20px; */
   border-bottom: 1px solid #EEEEEE;
 }
 .home-main-title img {
@@ -359,17 +418,14 @@ export default {
   padding-right:5px;
 }
 .home-main-list {
-  background: #fff;
   padding:20px 0;
-  margin-bottom:20px;
-  margin-left:0!important;
-  margin-right:0!important;
+  /* margin-bottom:20px; */
   font-size:16px;
 }
 .home-main-list  .home-main-list-title {
   padding-bottom:5px;
 }
-.home-main-list  .home-main-list-title-active {
+.home-main-list  .home-list-title-active {
   color:#FE2A00;
 }
 .home-main-list .el-card__header {
@@ -450,4 +506,28 @@ export default {
 .home-footer-img {
   width:142px;
 }
+.fixed {
+  position: fixed;
+  right: 50px;
+  bottom: 36%;
+}
+.fixed li {
+  width:50px;
+  height:50px;
+  background:rgba(255,255,255,1);
+  border:1px solid rgba(238,238,238,1);
+  box-shadow:0px 2px 10px 0px rgba(70,70,70,0.1);
+  border-radius:5px;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.fixed .help {
+  background: #1890FF;
+}
+/* .el-tooltip__popper.is-dark {
+  color: #333;
+  background: #fff;
+} */
 </style>

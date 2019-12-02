@@ -11,7 +11,7 @@
             </div>
         </el-header>
         <el-main>   
-         <div class="content" :class="{'timerContent':registerType==2}">
+         <div class="content register-form" :class="{'timerContent':registerType==2}">
               <el-row class="loads-box">
                 <el-col :span="12" >
                   <el-form :model="formTab" label-width="20" ref="TabForm" :rules="formTabs" class="form-box">
@@ -268,7 +268,7 @@ export default {
 }
 .loads{
   width: 100vw;
-  height: 100vh;
+  height: 100%;
   /* height: 100vh; */
   /* overflow: hidden;  */
 }
@@ -334,6 +334,9 @@ export default {
   padding: 40px 0;*/
   background: url('../assets/img/bg.png') no-repeat left center;
   background-size:cover;
+}
+.rregister-form {
+  padding: 40px 0;
 }
 .timerContent {
   background: url('../assets/img/comBg.jpg') no-repeat left center;
