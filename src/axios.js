@@ -73,9 +73,9 @@ $axios.interceptors.response.use(
  * @param {String} url [请求的url地址] 
  * @param {Object} params [请求时携带的参数] 
  */
-export function post(url) {
+export function post(url, data) {
 	return new Promise((resolve, reject) => {   
-		$axios.post(`${baseURL}${url}`,{})  
+		$axios.post(`${baseURL}${url}`,data)  
       .then(res => {
         resolve(res.data) 
       })  

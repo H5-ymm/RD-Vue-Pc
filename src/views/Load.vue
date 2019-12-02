@@ -268,6 +268,7 @@ export default {
 }
 .loads{
   width: 100vw;
+  height: 100vh;
   /* height: 100vh; */
   /* overflow: hidden;  */
 }
@@ -329,10 +330,10 @@ export default {
   align-items: center;
   height:100%;
   width:110%;
-  /* overflow:hidden; */
+  /* overflow:hidden; 
+  padding: 40px 0;*/
   background: url('../assets/img/bg.png') no-repeat left center;
   background-size:cover;
-  padding: 40px 0;
 }
 .timerContent {
   background: url('../assets/img/comBg.jpg') no-repeat left center;

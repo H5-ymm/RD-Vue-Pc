@@ -323,6 +323,11 @@ let routers=new Router({
       component: () => import(/* webpackChunkName: "about" */ './views/About.vue')
     },
     {
+      path:'/home',
+      name:'Home',
+      component:Home
+    },
+    {
       path:'/load',
       name:'Load',
       component:Load
@@ -335,24 +340,24 @@ let routers=new Router({
   ]
 })
 // 全部钩子
-routers.beforeEach((to,from,next)=>{
-  let path=from.path
-      if (to.path === '/load'|| to.path === '/about' || to.path==='/register') {
-            next();
-          } else {
-            let desc= store.state.user.desc;
-            if(!desc) {
-              next('/load')
-            }else{
-                if(desc<=to.meta.requiresAuth){
-                  next()
-                }else{
-                  next(path)
-                }
-            }
+// routers.beforeEach((to,from,next)=>{
+//   let path=from.path
+//       if (to.path === '/load'|| to.path === '/about' || to.path==='/register') {
+//             next();
+//           } else {
+//             let desc= store.state.user.desc;
+//             if(!desc) {
+//               next('/load')
+//             }else{
+//                 if(desc<=to.meta.requiresAuth){
+//                   next()
+//                 }else{
+//                   next(path)
+//                 }
+//             }
               
-          }
+//           }
     
-})
+// })
 // 公出路由
 export default routers
