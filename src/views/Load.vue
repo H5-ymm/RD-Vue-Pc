@@ -1,78 +1,120 @@
 <template>
-    <el-container class="loads">
-        <el-header class="header x-flex-around">
-            <div class="bg-purple">
-              <span class="header-left">人事达</span>
-              <a class="welcome">欢迎注册</a>
+  <el-container class="loads">
+    <el-header class="header x-flex-around">
+      <div class="bg-purple">
+        <span class="header-left">人事达</span>
+        <a class="welcome">欢迎注册</a>
+      </div>
+      <div class="bg-purple-light">
+        <span>浏览首页</span>
+        <a>021-51991869</a>
+      </div>
+    </el-header>
+    <el-main>
+      <div class="content register-form" :class="{'timerContent':registerType==2}">
+        <el-row class="loads-box">
+          <el-col :span="12">
+            <el-form
+              :model="formTab"
+              label-width="20"
+              ref="TabForm"
+              :rules="formTabs"
+              class="register-form-box"
+            >
+              <div class="x-flex login-btn">
+                <el-button
+                  class="button"
+                  :class="registerType==1?'comRight':'timm-right'"
+                  @click="goRegister(1)"
+                >注册企业</el-button>
+                <el-button
+                  class="button"
+                  :class="registerType==2?'comRight':'timm-right'"
+                  @click="goRegister(2)"
+                >注册团队</el-button>
+              </div>
+              <el-form-item prop="mobile" label="手机号">
+                <el-input v-model="formTab.mobile" placeholder="请输入手机号"></el-input>
+                <span class="error el-icon-warning" v-if="isShowPhone">请输入手机号</span>
+              </el-form-item>
+              <el-form-item prop="password" label="密码">
+                <span class="error el-icon-warning passwordSave" v-if="isShowPasword">请输入密码</span>
+                <el-progress
+                  :percentage="40"
+                  :format="format"
+                  class="error progress"
+                  color="#FE2A00"
+                  v-if="formTab.password.length&&formTab.password.length<=6"
+                ></el-progress>
+                <el-progress
+                  :percentage="70"
+                  :format="format"
+                  class="error progress"
+                  color="#FF9938"
+                  v-if="formTab.password.length>6&&formTab.password.length<=10"
+                ></el-progress>
+                <el-progress
+                  :percentage="100"
+                  :format="format"
+                  class="error progress"
+                  color="#58B44E"
+                  v-if="formTab.password.length>10"
+                ></el-progress>
+                <el-input v-model="formTab.password" placeholder="请输入密码" show-word-limit></el-input>
+              </el-form-item>
+              <el-form-item prop="passworded" label="确认密码">
+                <span class="error el-icon-warning" v-if="isShowPas">两次输入的密码不一致</span>
+                <el-input v-model="formTab.passworded" placeholder="请输入密码" show-word-limit></el-input>
+              </el-form-item>
+              <el-form-item label="发送验证码">
+                <el-input
+                  v-model="formTab.code"
+                  placeholder="请输入密码"
+                  class="inputCode"
+                  show-word-limit
+                ></el-input>
+                <el-button type="primary" class="code-btn" @click="sendCode" plain>{{content}}</el-button>
+              </el-form-item>
+              <el-form-item prop="name" :label="registerType==1?'公司名称':'团队名称'">
+                <span
+                  class="error el-icon-warning"
+                  v-if="isShowName"
+                >请输入{{registerType==1?'公司名称':'团队名称'}}</span>
+                <span
+                  class="error error1 el-icon-warning"
+                  v-if="isShowRe"
+                >该{{registerType==1?'公司名称':'团队名称'}}已被注册，请使用其他{{registerType==1?'公司名称':'团队名称'}}注册</span>
+                <el-input v-model="formTab.name" placeholder="请输入您要创建的团队名称" show-word-limit></el-input>
+              </el-form-item>
+              <el-form-item :label="registerType==1?'公司地址':'团队地址'">
+                <districtSelet @change="districtChange"></districtSelet>
+                <span
+                  class="error el-icon-warning"
+                  v-if="isShowCom"
+                >请选择{{registerType==1?'公司地址':'团队地址'}}</span>
+              </el-form-item>
+              <el-form-item>
+                <el-button type="primary" @click="onSubmit('TabForm')" class="register">注册</el-button>
+              </el-form-item>
+              <p class="text">
+                点击注册即表示同意
+                <a>用户协议及隐私保护规则</a>
+              </p>
+            </el-form>
+          </el-col>
+          <el-col :span="12">
+            <div class="grid-content x-flex register-grid-content" ref="bg">
+              <img src="../assets/img/rightBg.png" v-if="registerType==1" />
+              <img src="../assets/img/timerBg.png" v-if="registerType==2" />
+              <p class="text">
+                已有账户，
+                <a>直接登录</a>
+                <img src="../assets/img/loginRight.png" alt class="loginRight" />
+              </p>
             </div>
-            <div class="bg-purple-light">
-              <span>浏览首页</span>
-              <a>021-51991869</a>
-            </div>
-        </el-header>
-        <el-main>   
-         <div class="content register-form" :class="{'timerContent':registerType==2}">
-              <el-row class="loads-box">
-                <el-col :span="12" >
-                  <el-form :model="formTab" label-width="20" ref="TabForm" :rules="formTabs" class="form-box">
-                    <div class="x-flex login-btn">
-                        <el-button class="button" :class="registerType==1?'comRight':'timm-right'" @click="goRegister(1)">注册企业</el-button>
-                        <el-button class="button" :class="registerType==2?'comRight':'timm-right'" @click="goRegister(2)">注册团队</el-button>
-                    </div>
-                    <el-form-item prop="mobile" label="手机号">
-                        <el-input v-model="formTab.mobile" placeholder="请输入手机号"></el-input>
-                        <span class="error el-icon-warning" v-if="isShowPhone">请输入手机号</span>
-                    </el-form-item>
-                    <el-form-item prop="password" label="密码">
-                        <span class="error  el-icon-warning passwordSave" v-if="isShowPasword">请输入密码</span>
-                        <el-progress :percentage="40" :format="format" class="error progress" color="#FE2A00" v-if="formTab.password.length&&formTab.password.length<=6"></el-progress>
-                        <el-progress :percentage="70" :format="format" class="error progress" color="#FF9938" v-if="formTab.password.length>6&&formTab.password.length<=10"></el-progress>
-                        <el-progress :percentage="100" :format="format" class="error progress" color="#58B44E" v-if="formTab.password.length>10"></el-progress>
-                        <el-input  v-model="formTab.password" placeholder="请输入密码"  show-word-limit></el-input>
-                    </el-form-item>
-                    <el-form-item prop="passworded" label="确认密码">
-                        <span class="error el-icon-warning" v-if="isShowPas">两次输入的密码不一致</span>
-                        <el-input  v-model="formTab.passworded" placeholder="请输入密码"  show-word-limit></el-input>
-                    </el-form-item>
-                     <el-form-item label="发送验证码">
-                        <el-input  v-model="formTab.code" placeholder="请输入密码" class="inputCode" show-word-limit></el-input>
-                        <el-button type="primary" class="code-btn" @click="sendCode" plain>{{content}}</el-button>
-                    </el-form-item>
-                    <el-form-item prop="name" :label="registerType==1?'公司名称':'团队名称'">
-                        <span class="error el-icon-warning" v-if="isShowName">请输入{{registerType==1?'公司名称':'团队名称'}}</span>
-                        <span class="error error1 el-icon-warning" v-if="isShowRe">该{{registerType==1?'公司名称':'团队名称'}}已被注册，请使用其他{{registerType==1?'公司名称':'团队名称'}}注册</span>
-                        <el-input  v-model="formTab.name" placeholder="请输入您要创建的团队名称"  show-word-limit></el-input>
-                    </el-form-item>
-                    <el-form-item :label="registerType==1?'公司地址':'团队地址'">
-                        <!-- <el-cascader
-                          v-model="selectedOptions"
-                          placeholder="请选择省市区"
-                          :options="cascaderData"
-                          @active-item-change="handleItemChange"
-                          :props="{
-                            value: 'code',
-                            label: 'name',
-                            children: 'cities'
-                          }" >
-                        </el-cascader> -->
-                        <districtSelet @change="districtChange"></districtSelet>
-                        <span class="error el-icon-warning" v-if="isShowCom">请选择{{registerType==1?'公司地址':'团队地址'}}</span>
-                    </el-form-item>
-                    <el-form-item>
-                        <el-button type="primary" @click="onSubmit('TabForm')" class="register">注册</el-button>
-                    </el-form-item>
-                    <p class="text">点击注册即表示同意 <a>用户协议及隐私保护规则</a></p>
-                </el-form>    
-                </el-col>
-                <el-col :span="12">
-                    <div class="grid-content x-flex" ref="bg">
-                      <img src="../assets/img/rightBg.png" v-if="registerType==1">
-                      <img src="../assets/img/timerBg.png" v-if="registerType==2">
-                      <p class="text">已有账户，<a>直接登录</a></p>
-                    </div>
-               </el-col>
-            </el-row>
-        </div>
+          </el-col>
+        </el-row>
+      </div>
     </el-main>
   </el-container>
 </template>
@@ -81,168 +123,168 @@
 import { userRegister, getCode } from '../api/login'
 import districtSelet from '../components/districtSelet'
 export default {
-    components:{
-      districtSelet
-    },
-    data(){
-        let validatereg = (rule, value, callback) => {   //验证用户名是否合法
-          let reg = /^1[3456789]\d{9}$/; 
-          if (value === '') {
-            this.isShowPhone = true
-            callback();   
-          }
-          else if(!(reg.test(value))){ 
-            this.isShowPhone = false
-            callback(new Error('手机号格式不正确'));
-          } else{
-            this.isShowPhone = false
-            callback();   
-          }               
-        };
-        let validatePass = (rule, value, callback) => {
-            if (value === '') {
-              this.isShowPasword = true
-              callback();
-            } else {
-              if (this.formTab.password !== '') {
-                this.$refs.TabForm.validateField('passworded')
-              }
-              let reg=/^[a-zA-Z][a-zA-Z0-9]{6,16}$/;  
-                if(!reg.test(value)){
-                  callback();      
-                } else{
-                  callback(new Error('密码不合法(请输入数字或字母)'));
-                }
-              this.isShowPasword = false
-              callback();
-            }
-          };
-        let validatePassReg= (rule, value, callback) => {   //验证密码是否合法
-          if (value == this.formTab.password){
-            this.isShowPas = false
-            callback();                 
-          } else{
-            this.isShowPas = true
-            callback();
-          }
-        }
-        return {
-            formTab:{
-              mobile:'',
-              password:'',
-              passworded: '',
-              name: '',
-              code: '',
-              type: 1,
-              province: '',
-              city: '',
-              area: ''
-            },
-            isShowPhone: false,
-            isShowPasword: false,
-            isShowPas: false,
-            isShowName:false,
-            isShowRe: false,
-            isShowCom: false,
-            formTabTsxt:{
-              name:'test',
-              passwords:'test1234',
-              checked:false
-            },
-            formTabs:{  //验证规则
-                mobile:[
-                  { validator: validatereg, trigger: 'blur' }
-                ],
-                password:[
-                  // { message: '请输入密码', trigger: 'blur' },
-                  { validator: validatePass, trigger: 'blur' }
-                ],
-                passworded: [
-                  { message: '请再次输入密码', trigger: 'blur' },
-                  { validator: validatePassReg, trigger: 'blur' }
-                ]
-            },
-            registerType:1,
-            value: [],
-            options: [],
-            proviceList: [],
-            props: {},
-            departmentOptions: [],
-            cascaderData: [],
-            selectedOptions: [],
-            content: '发送验证码',  // 按钮里显示的内容
-            totalTime: 60,
-            timer: null,
-            canClick: true
-      }    
-    },
-    methods:{
-      districtChange(val) {
-        console.log(val)
-        this.formTab.province = val[0]
-        this.formTab.city = val[1]
-        this.formTab.area = val[2]
-      },
-      handleChange(value) {
-        console.log(value);
-      },
-      handleExpand(value){
-        console.log(value)
-      },
-      format(percentage) {
-        return percentage === 100 ? '强度：高' :  percentage === 70 ? '强度：中' : '强度：低';
-      },
-      goRegister(index) {
-        this.registerType = index
-      },
-      sendCode() {
-        if (!this.formTab.mobile) {
-          return  this.$message.warning('手机号不能为空')
-        }
-        this.countDown()
-        getCode({mobile: this.formTab.mobile}).then(res=>{
-          console.log(res)
-        })
-      },
-      countDown () {
-        if (!this.canClick) return  //改动的是这两行代码
-          this.canClick = false
-          this.content = this.totalTime + 's后重发'
-          let clock = window.setInterval(() => {
-            this.totalTime--
-            this.content = this.totalTime + 's后重发'
-            if (this.totalTime < 0) {
-            window.clearInterval(clock)
-            this.content = '重新发送验证码'
-            this.totalTime = 10
-            this.canClick = true  //这里重新开启
-            }
-          },1000)
-      },
-      onSubmit:function(formName){
-          this.$refs[formName].validate((valid) => {
-            if (valid) {
-              if (this.formTab.province=='') {
-                this.isShowCom = true
-                return
-              }
-              userRegister(this.formTab).then(res => {
-              }).catch(error =>{
-                this.$message.error(error.status.remind)
-              })
-            } else {
-              this.isShowCom = false
-              return false;
-            }
-          })
-      },
-      onForget(){
-        this.$router.push('/register')
+  components: {
+    districtSelet
+  },
+  data () {
+    let validatereg = (rule, value, callback) => {   //验证用户名是否合法
+      let reg = /^1[3456789]\d{9}$/;
+      if (value === '') {
+        this.isShowPhone = true
+        callback();
       }
-    },
-    created(){  //验证Token   
-      // this.getPro()
+      else if (!(reg.test(value))) {
+        this.isShowPhone = false
+        callback(new Error('手机号格式不正确'));
+      } else {
+        this.isShowPhone = false
+        callback();
+      }
+    };
+    let validatePass = (rule, value, callback) => {
+      if (value === '') {
+        this.isShowPasword = true
+        callback();
+      } else {
+        if (this.formTab.password !== '') {
+          this.$refs.TabForm.validateField('passworded')
+        }
+        let reg = /^[a-zA-Z][a-zA-Z0-9]{6,16}$/;
+        if (!reg.test(value)) {
+          callback();
+        } else {
+          callback(new Error('密码不合法(请输入数字或字母)'));
+        }
+        this.isShowPasword = false
+        callback();
+      }
+    };
+    let validatePassReg = (rule, value, callback) => {   //验证密码是否合法
+      if (value == this.formTab.password) {
+        this.isShowPas = false
+        callback();
+      } else {
+        this.isShowPas = true
+        callback();
+      }
     }
+    return {
+      formTab: {
+        mobile: '',
+        password: '',
+        passworded: '',
+        name: '',
+        code: '',
+        type: 1,
+        province: '',
+        city: '',
+        area: ''
+      },
+      isShowPhone: false,
+      isShowPasword: false,
+      isShowPas: false,
+      isShowName: false,
+      isShowRe: false,
+      isShowCom: false,
+      formTabTsxt: {
+        name: 'test',
+        passwords: 'test1234',
+        checked: false
+      },
+      formTabs: {  //验证规则
+        mobile: [
+          { validator: validatereg, trigger: 'blur' }
+        ],
+        password: [
+          // { message: '请输入密码', trigger: 'blur' },
+          { validator: validatePass, trigger: 'blur' }
+        ],
+        passworded: [
+          { message: '请再次输入密码', trigger: 'blur' },
+          { validator: validatePassReg, trigger: 'blur' }
+        ]
+      },
+      registerType: 1,
+      value: [],
+      options: [],
+      proviceList: [],
+      props: {},
+      departmentOptions: [],
+      cascaderData: [],
+      selectedOptions: [],
+      content: '发送验证码',  // 按钮里显示的内容
+      totalTime: 60,
+      timer: null,
+      canClick: true
+    }
+  },
+  methods: {
+    districtChange (val) {
+      console.log(val)
+      this.formTab.province = val[0]
+      this.formTab.city = val[1]
+      this.formTab.area = val[2]
+    },
+    handleChange (value) {
+      console.log(value);
+    },
+    handleExpand (value) {
+      console.log(value)
+    },
+    format (percentage) {
+      return percentage === 100 ? '强度：高' : percentage === 70 ? '强度：中' : '强度：低';
+    },
+    goRegister (index) {
+      this.registerType = index
+    },
+    sendCode () {
+      if (!this.formTab.mobile) {
+        return this.$message.warning('手机号不能为空')
+      }
+      this.countDown()
+      getCode({ mobile: this.formTab.mobile }).then(res => {
+        console.log(res)
+      })
+    },
+    countDown () {
+      if (!this.canClick) return  //改动的是这两行代码
+      this.canClick = false
+      this.content = this.totalTime + 's后重发'
+      let clock = window.setInterval(() => {
+        this.totalTime--
+        this.content = this.totalTime + 's后重发'
+        if (this.totalTime < 0) {
+          window.clearInterval(clock)
+          this.content = '重新发送验证码'
+          this.totalTime = 10
+          this.canClick = true  //这里重新开启
+        }
+      }, 1000)
+    },
+    onSubmit: function (formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          if (this.formTab.province == '') {
+            this.isShowCom = true
+            return
+          }
+          userRegister(this.formTab).then(res => {
+          }).catch(error => {
+            this.$message.error(error.status.remind)
+          })
+        } else {
+          this.isShowCom = false
+          return false;
+        }
+      })
+    },
+    onForget () {
+      this.$router.push('/register')
+    }
+  },
+  created () {  //验证Token   
+    // this.getPro()
+  }
 }
 </script>
 
@@ -274,6 +316,7 @@ export default {
 }
 .loads .el-main {
   padding:0;
+  height: 100vh;
   /* overflow:hidden; */
   overflow-x: hidden;
   overflow-y: auto;
@@ -342,7 +385,7 @@ export default {
   background: url('../assets/img/comBg.jpg') no-repeat left center;
   background-size:cover;
 }
-.form-box {
+.register-form-box {
   width:90%;
   padding: 40px 0;
   height: 630px;
@@ -386,10 +429,12 @@ export default {
   background:rgba(248,248,248,1);
   border-radius:0px 5px 5px 0px;
   width:100%;
-  height:720px;
   flex-wrap:wrap;
 }
-.form-box .text {
+.register-grid-content {
+  height:720px;
+}
+.register-form-box .text {
   text-align:left;
   font-size:12px;
   margin-top: 16px;
@@ -404,7 +449,7 @@ export default {
   right: 30px
 }
 .grid-content img {
-  max-width: 80%;
+  max-width: 1200px;
   margin: 0 auto ;
 }
 .loads-box .el-button--primary{

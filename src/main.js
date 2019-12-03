@@ -4,6 +4,7 @@ import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 import router from './router'
 import store from './store'
+import moment from 'moment'
 
 // 引入阿里普惠体
 import './assets/fontsize/fontsizea.css'
@@ -13,7 +14,7 @@ import './assets/css/f1/iconfont.css'
 import './assets/css/f2/iconfont.css'
 // vue-quill-editor富文本编辑器
 import VueQuillEditor from 'vue-quill-editor'
- 
+
 // require styles
 import 'quill/dist/quill.core.css'
 import 'quill/dist/quill.snow.css'
@@ -22,13 +23,14 @@ import './assets/css/init.css'
 
 // 引入axios
 import axios from './axios'
-Vue.prototype.$http= axios
+Vue.prototype.$http = axios
+Vue.prototype.$moment = moment
 
 //引入markdown编辑器
 import mavonEditor from 'mavon-editor'
 import 'mavon-editor/dist/css/index.css'
-    // use
-    Vue.use(mavonEditor)
+// use
+Vue.use(mavonEditor)
 
 Vue.config.productionTip = false
 

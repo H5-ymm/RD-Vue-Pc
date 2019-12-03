@@ -1,76 +1,48 @@
 <template>
-  <el-container class="loads register-view">
-    <el-header class="header x-flex-around">
-      <div class="bg-purple">
-        <span class="header-left">人事达</span>
-        <a class="welcome">欢迎登录</a>
+  <div class="login-view">
+    <el-form ref="TabForm" :model="formTab" label-width="20" :rules="formTabs" class="form-box">
+      <div class="x-flex-between login-view-btn">
+        <el-button type="text" :class="loginWay==1?'':'active'" @click="switchLogin(1)">账号登录</el-button>
+        <el-button type="text" :class="loginWay==2?'':'active'" @click="switchLogin(2)">短信登录</el-button>
       </div>
-      <div class="bg-purple-light">
-        <span>浏览首页</span>
-        <a>021-51991869</a>
-      </div>
-    </el-header>
-    <el-main>
-      <div class="register-content">
-        <div class="register-box">
-          <el-form
-            ref="TabForm"
-            :model="formTab"
-            label-width="20"
-            :rules="formTabs"
-            class="form-box"
-          >
-            <div class="x-flex-around register-btn">
-              <el-button type="text" :class="loginWay==1?'':'active'" @click="switchLogin(1)">账号登录</el-button>|
-              <el-button type="text" :class="loginWay==2?'':'active'" @click="switchLogin(2)">短信登录</el-button>
-            </div>
-            <el-form-item prop="name" label="手机号">
-              <span class="error errorInfo el-icon-warning">账号或者密码错误，如遇到问题联系客服，021-51991869</span>
-              <el-input placeholder="请输入11位手机号" v-model="formTab.name">
-                <template slot="prepend">
-                  <span>+86</span>
-                  <i class="el-icon-arrow-down"></i> |
-                </template>
-              </el-input>
-            </el-form-item>
-            <el-form-item prop="passwords" label="密码" v-if="loginWay==1">
-              <el-input v-model="formTab.password" placeholder="请输入密码" show-word-limit></el-input>
-            </el-form-item>
-            <el-form-item prop="passwords" label="发送验证码" v-if="loginWay==2">
-              <span class="error el-icon-warning">验证码错误或者已过期</span>
-              <el-input
-                v-model="formTab.code"
-                placeholder="请输入密码"
-                class="inputCode"
-                show-word-limit
-              ></el-input>
-              <el-button
-                type="primary"
-                class="code-btn"
-                plain
-                :class="{disabled: !this.canClick}"
-                @click="sendCode"
-              >{{content}}</el-button>
-            </el-form-item>
-            <el-form-item>
-              <el-checkbox v-model="checked">记住密码</el-checkbox>
-              <span class="code-btn password">忘记密码</span>
-            </el-form-item>
-            <el-form-item class="submit-btn">
-              <el-button type="primary" @click="onSubmit('TabForm')" class="login">注册</el-button>
-            </el-form-item>
-            <p class="text">
-              还没有账户，
-              <a href="/load">免费注册</a>
-              <img src="../assets/img/loginRight.png" alt class="loginRight" />
-            </p>
-          </el-form>
-        </div>
-      </div>
-    </el-main>
-  </el-container>
+      <el-form-item prop="name" label="手机号">
+        <span class="error errorInfo el-icon-warning">账号或者密码错误</span>
+        <el-input placeholder="请输入11位手机号" v-model="formTab.name">
+          <template slot="prepend">
+            <span>+86</span>
+            <i class="el-icon-arrow-down"></i> |
+          </template>
+        </el-input>
+      </el-form-item>
+      <el-form-item prop="passwords" label="密码" v-if="loginWay==1">
+        <el-input v-model="formTab.password" placeholder="请输入密码" show-word-limit></el-input>
+      </el-form-item>
+      <el-form-item prop="passwords" label="发送验证码" v-if="loginWay==2">
+        <span class="error el-icon-warning">验证码错误或者已过期</span>
+        <el-input v-model="formTab.code" placeholder="请输入密码" class="inputCode" show-word-limit></el-input>
+        <el-button
+          type="primary"
+          class="code-btn"
+          plain
+          :class="{disabled: !this.canClick}"
+          @click="sendCode"
+        >{{content}}</el-button>
+      </el-form-item>
+      <el-form-item>
+        <el-checkbox v-model="checked">记住密码</el-checkbox>
+        <span class="code-btn password">忘记密码</span>
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" @click="onSubmit('TabForm')" class="login">注册</el-button>
+      </el-form-item>
+      <p class="text">
+        还没有账户，
+        <a href="/load">免费注册</a>
+        <img src="../assets/img/loginRight.png" alt class="loginRight" />
+      </p>
+    </el-form>
+  </div>
 </template>
-
 <script>
 import { goLogin, getCode } from '../api/login'
 export default {
@@ -226,124 +198,87 @@ export default {
 </script>
 
 <style >
-.header {
-  width:100%;
-  height:49px;
-  background:rgba(50,55,62,1);
-}
-.register-view{
-  width: 100vw;
-  height: 100vh;
-  overflow: hidden; 
-}
-.loads .el-main {
-  padding:0;
-  overflow:hidden;
-}
-.loads .el-form-item {
-  margin-bottom:6px;
-}
-.x-flex-center {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-.x-flex-around {
-  display: flex;
-  justify-content:space-around;
-  align-items: center;
-}
-.register-btn {
-  margin:20px 70px;
-  color:rgba(153,153,153,1);
-}
-.register-btn  .button{
-   margin-right:10px;
-}
-.register-btn .active {
-  color:#6A6A6A;
-}
-.x-flex  .com-right {
-  border:1px solid #1890FF;
-  color:#1890FF;
-  border-radius:0;
-}
-.register-content {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height:100%;
-  width:110%;
-  /* overflow:hidden; */
-  background: url('../assets/img/re-bg.png') no-repeat left center;
-  background-size:cover;
-}
 .form-box {
   width:90%;
   margin:0 auto;
   overflow: hidden;
 }
-.register-box{
-  width: 536px;
-  height:420px;
+.login-view {
+  width:100%;
+  height: 100%;
   background:rgba(255,255,255,1);
-  box-shadow:0px 5px 18px 0px rgba(0, 0, 0, 0.15);
-  border-radius:5px;
-  margin-left:-5%;
 }
-.register-box .el-input__inner {
+.x-flex-between {
+  display: flex;
+  justify-content:space-between;
+  align-items: center;
+}
+.login-view-btn {
+  margin:20px 0;
+  color:rgba(153,153,153,1);
+}
+.login-view-btn  .button{
+   margin-right:10px;
+}
+.login-view-btn .active {
+  color:#6A6A6A;
+}
+.login-view .el-form-item {
+  margin-bottom: 0;
+}
+.login-view .el-input__inner {
   border-radius:3px;
   background:#eee;
   border:none;
 }
-.register-box .el-input-group__prepend {
+.login-view .el-input-group__prepend {
   border:none;
   background:#eee;
   padding: 0 0 0 20px ;
 }
-.register-box .error {
-    position:absolute;
-    top:16%;
-    right:0;
-    color:#FE2A00;
-    font-size:12px;
+.login-view .error {
+  position:absolute;
+  top:16%;
+  right:0;
+  color:#FE2A00;
+  font-size:12px;
 }
-.register-box .errorInfo {
-    right:0;
-    width:100%;
-    height:20px;
-    top:-16px;
-    text-align:center;
-    line-height:20px;
-    background:rgba(254,42,0,0.1);
-    border-radius:3px;
+.login-view .errorInfo {
+  right:0;
+  width:100%;
+  height:20px;
+  top:-16px;
+  text-align:center;
+  line-height:20px;
+  background:rgba(254,42,0,0.1);
+  border-radius:3px;
  }
-.register-box .el-input-group__prepend span {
-   opacity:1;
-   display:inline-block;
+.login-view .el-input-group__prepend span {
+  opacity:1;
+  display:inline-block;
 }
-.register-box .inputCode {
+.login-view .inputCode {
   width: 70%!important;
   margin-right:10px;
   display:block;
 }
-.register-box .code-btn {
+.login-view .code-btn {
   width: 130px!important;
   position:absolute;
   bottom:0;
   right:0;
   border-radius:0;
 }
-.register-box .disabled {
+.login-view .disabled {
   background:rgba(204,204,204,1);
   border:none;
 }
-.register-box .password {
+.login-view .password {
   text-align:right;
   color:#6A6A6A;
   font-size:14px;
 }
-.register-box .el-button--primary{
+.login-view .el-button--primary{
   width: 100%;
 }
 .texts{
@@ -352,15 +287,15 @@ export default {
 .passwords{
   text-align: right;
 }
-.submit-btn{
+/* .submit-btn{
   margin-top: -10px;
-}
+} */
 .login{
   background:linear-gradient(180deg,rgba(24,144,255,1),rgba(89,175,255,1));
   border-radius:20px;
   border:none;
 }
-.register-box .text {
+.login-view .text {
   text-align:right;
   font-size:14px;
   margin-right:30px;
@@ -369,5 +304,9 @@ export default {
 }
 .text  a {
   color:#1890FF;
+}
+.loginRight {
+  margin-top: 8px;
+  margin-left: 5px;
 }
 </style>
