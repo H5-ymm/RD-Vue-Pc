@@ -1,32 +1,7 @@
 <template>
-  <el-container class="orderTaking">
-    <el-header class="header x-flex-around home" height="50px" id="header">
-      <div class="orderTaking-header">
-        <div class="bg-purple">
-          <span class="header-left">人事达</span>
-          <ul class="nav">
-            <li
-              v-for="(item, index) in menus"
-              class="nav-item"
-              :key="index"
-              @click="switchNav(item, index)"
-              :class="{'active': activeIndex==index}"
-            >
-              {{item.title}}
-              <span class="line" v-if="activeIndex==index"></span>
-            </li>
-          </ul>
-        </div>
-        <div class="bg-purple-light bg-purple">
-          <span class="home-purple-left">
-            <i class="el-icon-user-solid"></i>
-            <a class="welcome">登录</a>
-            <a class="divider">|</a>
-            <a class="welcome">注册</a>
-          </span>
-          <a class="el-icon-phone-outline">021-51991869</a>
-        </div>
-      </div>
+  <el-container class="orderTaking" id="header">
+    <el-header class="header x-flex-around home" height="50px" >
+      <headerView></headerView>
     </el-header>
     <el-main class="orderTaking-main-content">
       <div class="orderTaking-search">
@@ -63,7 +38,7 @@
           </div>
           <div class="orderTaking-search-select">
             <div class="orderTaking-search-value">
-              <el-select v-model="money_type" placeholder="薪资方式">
+              <el-select v-model="params.money_type" placeholder="薪资方式">
                 <el-option
                   v-for="(item,index) in moneyTypeList"
                   :key="index"
@@ -71,25 +46,33 @@
                   :value="item.value"
                 ></el-option>
               </el-select>
-              <el-select v-model="money_type" placeholder="返利方式">
+              <el-select v-model="params.reward_type" placeholder="返利方式">
                 <el-option
-                  v-for="(item,index) in moneyTypeList"
+                  v-for="(item,index) in rewardList"
                   :key="index"
                   :label="item.label"
                   :value="item.value"
                 ></el-option>
               </el-select>
-              <el-select v-model="money_type" placeholder="需求人数">
+              <el-select v-model="params.require_number" placeholder="需求人数">
                 <el-option
-                  v-for="(item,index) in moneyTypeList"
+                  v-for="(item,index) in requirePersonList"
                   :key="index"
                   :label="item.label"
                   :value="item.value"
                 ></el-option>
               </el-select>
-              <el-select v-model="money_type" placeholder="缴纳五金">
+              <el-select v-model="params.is_five_risks" placeholder="缴纳五金">
                 <el-option
-                  v-for="(item,index) in moneyTypeList"
+                  v-for="(item,index) in paymentTaxType"
+                  :key="index"
+                  :label="item.label"
+                  :value="item.value"
+                ></el-option>
+              </el-select>
+               <el-select v-model="params.is_fund" placeholder="缴纳公积金">
+                <el-option
+                  v-for="(item,index) in paymentTaxType"
                   :key="index"
                   :label="item.label"
                   :value="item.value"
@@ -197,56 +180,8 @@
         </div>
       </div>
     </el-main>
-    <el-footer height="320px" class="footer">
-      <section class="home-main-section home-main-section-footer">
-        <el-row :gutter="20" class="footer-main" type="flex" justify="start">
-          <el-col :span="4">
-            <ul class="home-footer-box">
-              <li class="home-footer-title">企业服务</li>
-              <li>公司搜索</li>
-              <li>职位搜索</li>
-              <li>新闻咨讯</li>
-            </ul>
-          </el-col>
-          <el-col :span="10">
-            <ul class="home-footer-box">
-              <li class="home-footer-title">联系方式</li>
-              <li>仁达网络科技(上海)有限公司</li>
-              <li>公司地址：上海市浦东新区金海路2588号1幢A区310室</li>
-              <li>服务热线：021-51991869（9:00-18:00)</li>
-              <li>违法和不良信息举报邮箱：</li>
-            </ul>
-          </el-col>
-          <el-col :span="8" :offset="8">
-            <ul class="home-footer-box home-footer-box1">
-              <li class="home-footer-title">微信公众号</li>
-              <li>
-                <img src="../assets/img/qrcode.png" class="home-footer-img" />
-              </li>
-            </ul>
-          </el-col>
-        </el-row>
-      </section>
-    </el-footer>
-    <ul class="fixed">
-      <li>
-        <a href="#header">
-          <el-tooltip class="item" effect="dark" content="一键置顶" placement="left">
-            <img src="../assets/img/top.png" alt />
-          </el-tooltip>
-        </a>
-      </li>
-      <li>
-        <el-tooltip class="item" effect="dark" content="联系客服" placement="left">
-          <img src="../assets/img/kefu.png" alt />
-        </el-tooltip>
-      </li>
-      <li class="help">
-        <el-tooltip class="item" effect="dark" content="帮助反馈" placement="left">
-          <img src="../assets/img/help.png" alt />
-        </el-tooltip>
-      </li>
-    </ul>
+    <FooterView></FooterView>
+    <AsideBox :isShow="isShow"></AsideBox>
     <ModalCity :dialogVisible="dialogVisible" @getCityCode="getCityCode" @handleClose="handleClose"></ModalCity>
   </el-container>
 </template>
@@ -255,25 +190,41 @@
 import homeAside from '@/components/Aside' //侧边栏
 import ModalCity from '@/components/ModalCity'
 import LoginBox from '@/components/LoginBox'
-import { getList } from '../api/home'
+import HeaderView  from '@/components/HeaderView'
+import FooterView  from '@/components/FooterView'
+import AsideBox  from '@/components/AsideBox'
+
+import { getList } from '../api/orderTarking'
 import { getProvincesList, getCitysList, getAreasList } from '../api/login'
-import { cityList, moneyTypeList } from '../base/base'
+import { cityList, moneyTypeList,rewardList,requirePersonList, paymentTaxType} from '../base/base'
 export default {
-  name: 'home',
+  name: 'OrderTaking',
+  components: {
+    homeAside,
+    ModalCity,
+    LoginBox,
+    AsideBox,
+    HeaderView,
+    FooterView
+  },
   data () {
     return {
+      isShow:false,
       dialogVisible: false,
       total: 0,
-      activeIndex: 0,
+      activeIndex: 1,
       keywords: '',
+      rewardList,
+      requirePersonList,
+      paymentTaxType,
       menus: [
         {
           title: '首页',
-          url: ''
+          url: 'home'
         },
         {
           title: '接单',
-          url: ''
+          url: 'orderTaking'
         },
         {
           title: '拼团',
@@ -290,16 +241,6 @@ export default {
         limit: 20,
         page: 1
       },
-      informationList: [{
-        imgUrl: require('../assets/img/img1.png'),
-        title: '当代职场人：7成人入职不满3年就跳槽',
-        content: '近日，前程无忧最新发布的“2019年第四季度求职者跳槽意愿度调查”结果显示：2019年第四季度有明确跳槽意愿的受访者占35.2%，和上个季度比没有太大变化。进入2019年的尾声，大部分职场人本着“拿完年'
-      },
-      {
-        imgUrl: require('../assets/img/img2.png'),
-        title: '大多数90后离职和薪资有关，面试能说吗？',
-        content: '你是不是也听到过这样的言论，比如“90后太难管了，说两句就要离职”、“现在的90后离职率比80后高多了”……所以，这些宁愿折损“名声”也要离职的90后到底都经历了什么？'
-      }],
       list: [],
       cityList,
       areaList: [],
@@ -309,17 +250,26 @@ export default {
       browsingList: []
     }
   },
-  components: {
-    homeAside,
-    ModalCity,
-    LoginBox
-  },
   computed: {
 
   },
+  mounted(){
+    window.addEventListener('scroll', this.windowScroll)
+  },
   methods: {
+    windowScroll () {
+      let scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop 
+      console.log(scrollTop - document.documentElement.clientHeight)
+      if (scrollTop - document.documentElement.clientHeight + 100 >=0) {
+        this.isShow = true
+      }
+      else {
+        this.isShow = false
+      }
+    },
     switchNav (item, index) {
       this.activeIndex = index
+      this.$router.push(item.url)
     },
     handleClose () {
       this.dialogVisible = false
@@ -486,6 +436,7 @@ export default {
 }
 .orderTaking-main-content .orderTaking-grid-content {
   background: #fff;
+  height: 576px;
 }
 .orderTaking-main-box {
   margin: 0 auto;

@@ -6,11 +6,11 @@
         <a class="welcome">欢迎登录</a>
       </div>
       <div class="bg-purple-light">
-        <span>浏览首页</span>
+        <span @click="$router.push('home')">浏览首页</span>
         <a>021-51991869</a>
       </div>
     </el-header>
-    <el-main>
+    <el-main class="login-main">
       <div class="register-content">
         <div class="register-box">
           <el-form
@@ -240,6 +240,9 @@ export default {
   padding:0;
   overflow:hidden;
 }
+.loads .login-main {
+  height: 100vh;
+}
 .loads .el-form-item {
   margin-bottom:6px;
 }
@@ -369,5 +372,8 @@ export default {
 }
 .text  a {
   color:#1890FF;
+}
+.register-box .loginRight {
+  margin-top: 4px;
 }
 </style>

@@ -40,7 +40,7 @@ $axios.interceptors.response.use(
   // 服务器状态码不是200的情况 
   error => {
     console.log(error.response)
-    if (error.response.status) {
+    if (error.response&&error.response.status) {
       switch (error.response.status) {
         // 401: 未登录    
         // 未登录则跳转登录页面，并携带当前页面的路径    
@@ -77,7 +77,7 @@ $axios.interceptors.response.use(
 export function post (url, data) {
   return new Promise((resolve, reject) => {
     console.log(data)
-    $axios.post(`${baseURL}${url}`, data)
+    $axios.post(`${baseURL}${url}`, QS.stringify(data))
       .then(res => {
         resolve(res.data)
       })

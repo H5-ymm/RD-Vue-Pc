@@ -6,8 +6,8 @@
         <a class="welcome">欢迎注册</a>
       </div>
       <div class="bg-purple-light">
-        <span>浏览首页</span>
-        <a>021-51991869</a>
+        <span @click="$router.push('home')">浏览首页</span>
+        <a> 021-51991869</a>
       </div>
     </el-header>
     <el-main>
@@ -296,7 +296,6 @@ export default {
   color:#fff;
   font-size:14px;
 }
-
 .header span{
   font-weight:bold;
   color:#1890FF;
@@ -316,11 +315,11 @@ export default {
 }
 .loads .el-main {
   padding:0;
-  height: 100vh;
   /* overflow:hidden; */
   overflow-x: hidden;
   overflow-y: auto;
 }
+
 .loads .el-form-item {
   margin-bottom:6px;
 }
@@ -378,7 +377,7 @@ export default {
   background: url('../assets/img/bg.png') no-repeat left center;
   background-size:cover;
 }
-.rregister-form {
+.register-form {
   padding: 40px 0;
 }
 .timerContent {
@@ -443,10 +442,13 @@ export default {
   text-align:right;
   width:100%;
   font-size:12px;
-  /* margin-right: 30px; */
   position: absolute;
   bottom: 55px;
   right: 30px
+}
+.text .loginRight {
+  margin-top: 2px;
+  margin-left: 5px;
 }
 .grid-content img {
   max-width: 1200px;
@@ -459,7 +461,7 @@ export default {
   text-align: center;
 }
 .passwords{
-    text-align: right;
+  text-align: right;
 }
 .register{
   background:linear-gradient(180deg,rgba(24,144,255,1),rgba(89,175,255,1));

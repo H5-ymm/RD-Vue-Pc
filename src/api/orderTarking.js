@@ -1,4 +1,5 @@
 import { post, $post } from '../axios'
 
-export const getDetail = data => post('/enterpriseinvoice/selectInvoiceInfo', data);
+export const getList = data => post('/receipt/receiptList', data);
+export const getOrderDetail = data => post('/enterpriseinvoice/selectInvoiceInfo', data);
 

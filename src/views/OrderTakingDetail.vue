@@ -1,32 +1,7 @@
 <template>
   <el-container class="orderTaking">
     <el-header class="header x-flex-around home" height="50px" id="header">
-      <div class="orderTaking-header">
-        <div class="bg-purple">
-          <span class="header-left">人事达</span>
-          <ul class="nav">
-            <li
-              v-for="(item, index) in menus"
-              class="nav-item"
-              :key="index"
-              @click="switchNav(item, index)"
-              :class="{'active': activeIndex==index}"
-            >
-              {{item.title}}
-              <span class="line" v-if="activeIndex==index"></span>
-            </li>
-          </ul>
-        </div>
-        <div class="bg-purple-light bg-purple">
-          <span class="home-purple-left">
-            <i class="el-icon-user-solid"></i>
-            <a class="welcome">登录</a>
-            <a class="divider">|</a>
-            <a class="welcome">注册</a>
-          </span>
-          <a class="el-icon-phone-outline">021-51991869</a>
-        </div>
-      </div>
+      <headerView></headerView>
     </el-header>
     <el-main class="orderTaking-main-content">
       <div class="orderTaking-detail"></div>
@@ -41,15 +16,15 @@
             <p>发布时间：2019-12-01 15:32</p>
           </div>
           <div class="orderTaking-jobDeail-right">
-            <el-button type="primary" size="medium" class="orderTarking-btn" plain>申请接单</el-button>
+            <el-button type="primary" size="medium" class="orderTarking-btn" @click="centerDialogVisible=true" plain>申请接单</el-button>
             <div class="x-flex-around">
               <p class="x-flex-around">
                 <img src="../assets/img/collect.png" alt />
-                <el-link :underline="false" class="orderTarking-link">收藏</el-link>
+                <el-link :underline="false" class="orderTarking-link" @click="centerDialogVisible=true">收藏</el-link>
               </p>
               <p class="x-flex-around">
                 <img src="../assets/img/tip.png" alt />
-                <el-link :underline="false" class="orderTarking-link">举报</el-link>
+                <el-link :underline="false" class="orderTarking-link" @click="tipDialogVisible = true">举报</el-link>
               </p>
             </div>
           </div>
@@ -63,37 +38,37 @@
                     <div class="orderTaking-info">
                       <p>
                         <span>需求人数：</span>
-                        <span>100人</span>
+                        <span>{{orderTakingDetail.required_number}}</span>
                       </p>
                       <p>
                         <span>年龄：</span>
-                        <span>100人</span>
+                        <span>{{orderTakingDetail.min_age}}-{{orderTakingDetail.max_age}}周岁</span>
                       </p>
                       <p>
                         <span>性别：</span>
-                        <span>100人</span>
+                        <span>{{orderTakingDetail.sex==1?'男':'女'}}</span>
                       </p>
                       <p>
                         <span>工作地址：</span>
-                        <span>100人</span>
+                        <span>{{orderTakingDetail.address}}</span>
                       </p>
                     </div>
                     <div class="orderTaking-info">
                       <p>
                         <span>月薪：</span>
-                        <span>100人</span>
+                        <span>{{orderTakingDetail.money}}</span>
                       </p>
                       <p>
                         <span>缴纳五险：</span>
-                        <span>fff100人</span>
+                        <span>{{orderTakingDetail.is_five_risks==1?'是':'否'}}</span>
                       </p>
                       <p>
                         <span>缴纳公积金：</span>
-                        <span>100人</span>
+                        <span>{{orderTakingDetail.is_fund==1?'是':'否'}}</span>
                       </p>
                       <p>
                         <span>要求学历：</span>
-                        <span>100人</span>
+                        <span>{{orderTakingDetail.education}}</span>
                       </p>
                     </div>
                   </div>
@@ -101,7 +76,7 @@
               </section>
               <section class="orderTaking-card">
                 <Panel title="职位描述">
-                  <div slot="content" class="panel-content">lll</div>
+                  <div slot="content" class="panel-content" v-html="orderTakingDetail.job_content"></div>
                 </Panel>
               </section>
               <section class="orderTaking-card">
@@ -109,26 +84,30 @@
                   <div slot="content" class="panel-content bg-purple-align-start">
                     <div class="orderTaking-info">
                       <p>
-                        <span>需求人数：</span>
-                        <span>100人</span>
-                      </p>
+                        <span>返利方式：</span>
+                        <span>{{orderTakingDetail.reward_type==1?'月返':orderTakingDetail.reward_type==2?'日返':'周返'}}</span>
+                      </p>     
                       <p>
-                        <span>年龄：</span>
-                        <span>100人</span>
+                        <span>结算时间：</span>
+                        <span>{{orderTakingDetail.settlement_time}}</span>
                       </p>
-                      <p>
-                        <span>年龄：</span>
-                        <span>100人</span>
+                       <p v-if="orderTakingDetail.reward_type==2">
+                        <span>持续时长：</span>
+                        <span>{{orderTakingDetail.reward_money}}/人/{{getmoneyType(orderTakingDetail.money_type)}}</span>
                       </p>
                     </div>
                     <div class="orderTaking-info">
                       <p>
-                        <span>月薪：</span>
-                        <span>100人</span>
+                        <span>返利金额：</span>
+                        <span>{{orderTakingDetail.reward_money}}</span>
                       </p>
-                      <p>
-                        <span>缴纳五险：</span>
+                      <p v-if="orderTakingDetail.reward_money_type==1">
+                        <span>返利时长：</span>
                         <span>fff100人</span>
+                      </p>
+                      <p v-else>
+                        <span>需入职满：</span>
+                        <span>3天</span>
                       </p>
                     </div>
                   </div>
@@ -152,7 +131,7 @@
                           <li class="require-number">
                             <span>需求人数：{{item.required_number}}人</span>
                           </li>
-                          <li>返利方式：长期返利</li>
+                          <li>返利方式：{{item.reward_money_type==1?'月返':item.reward_money_type==2?'日返':'周返'}}</li>
                         </ul>
                         <ul class="orderTaking-main-item">
                           <li>{{getmoneyType(item.money_type)}}薪: {{item.money}}/人/{{getmoneyType(item.money_type)}}</li>
@@ -196,6 +175,34 @@
             </div>
           </div>
           <div class="orderTaking-main-col2">
+            <div class="company-detail">
+                <img :src="logoUrl" alt="" class="company-logo">
+                <p class="company-name">{{companyInfo.com_name}}</p>
+                <div class="bg-purple">
+                  <p class="x-flex-around">
+                    <img src="../assets/img/hy.png" alt />
+                    <span :underline="false" class="orderTarking-link">{{companyInfo.com_sort}}</span>
+                  </p>
+                  <p class="x-flex-around">
+                    <img src="../assets/img/my.png" alt />
+                    <span :underline="false" class="orderTarking-link">{{companyInfo.com_scale}}</span>
+                  </p>
+                </div>
+                <div class="bg-purple">
+                  <p class="x-flex-around">
+                    <img src="../assets/img/address.png" alt />
+                    <span :underline="false" class="orderTarking-link">{{companyInfo.address}}</span>
+                  </p>
+                </div>
+                <div class="company-profile">
+                  <span>公司简介</span>
+                  <p class="company-profile-content" ref="content" v-html="companyInfo.content+'哈哈哈哈哈哈哈哈哈哈哈剋坎坎坷坷坎坎坷坷'"></p>
+                  <p class="bg-purple-center" @click="showMore()">
+                    <img src="../assets/img/moreDown.png" alt="">
+                    <span class="profile-more">查看更多</span>
+                  </p>
+                </div>
+              </div>
             <div class="bg-purple-light">
               <p class="job-title">看过的接单职位</p>
               <div>
@@ -223,57 +230,10 @@
         </div>
       </div>
     </el-main>
-    <el-footer height="320px" class="footer">
-      <section class="home-main-section home-main-section-footer">
-        <el-row :gutter="20" class="footer-main" type="flex" justify="start">
-          <el-col :span="4">
-            <ul class="home-footer-box">
-              <li class="home-footer-title">企业服务</li>
-              <li>公司搜索</li>
-              <li>职位搜索</li>
-              <li>新闻咨讯</li>
-            </ul>
-          </el-col>
-          <el-col :span="10">
-            <ul class="home-footer-box">
-              <li class="home-footer-title">联系方式</li>
-              <li>仁达网络科技(上海)有限公司</li>
-              <li>公司地址：上海市浦东新区金海路2588号1幢A区310室</li>
-              <li>服务热线：021-51991869（9:00-18:00)</li>
-              <li>违法和不良信息举报邮箱：</li>
-            </ul>
-          </el-col>
-          <el-col :span="8" :offset="8">
-            <ul class="home-footer-box home-footer-box1">
-              <li class="home-footer-title">微信公众号</li>
-              <li>
-                <img src="../assets/img/qrcode.png" class="home-footer-img" />
-              </li>
-            </ul>
-          </el-col>
-        </el-row>
-      </section>
-    </el-footer>
-    <ul class="fixed">
-      <li>
-        <a href="#header">
-          <el-tooltip class="item" effect="dark" content="一键置顶" placement="left">
-            <img src="../assets/img/top.png" alt />
-          </el-tooltip>
-        </a>
-      </li>
-      <li>
-        <el-tooltip class="item" effect="dark" content="联系客服" placement="left">
-          <img src="../assets/img/kefu.png" alt />
-        </el-tooltip>
-      </li>
-      <li class="help">
-        <el-tooltip class="item" effect="dark" content="帮助反馈" placement="left">
-          <img src="../assets/img/help.png" alt />
-        </el-tooltip>
-      </li>
-    </ul>
-    <ModalCity :dialogVisible="dialogVisible" @getCityCode="getCityCode" @handleClose="handleClose"></ModalCity>
+    <FooterView></FooterView>
+    <AsideBox :isShow="isShow"></AsideBox>
+    <Dialog :centerDialogVisible="centerDialogVisible"></Dialog>
+    <TipDialog :tipDialogVisible="tipDialogVisible"></TipDialog>
   </el-container>
 </template>
 <script>
@@ -282,10 +242,13 @@ import homeAside from '@/components/Aside' //侧边栏
 import ModalCity from '@/components/ModalCity'
 import LoginBox from '@/components/LoginBox'
 import Panel from '@/components/Panel'
-import { getList } from '../api/home'
-import { getDetail } from '../api/orderTarking'
+import Dialog from '@/components/Dialog'
+import TipDialog from '@/components/TipDialog'
+import AsideBox  from '@/components/AsideBox'
+import HeaderView  from '@/components/HeaderView'
+import FooterView  from '@/components/FooterView'
+import { getOrderDetail, getList } from '../api/orderTarking'
 import { getCompanyDetail } from '../api/company'
-
 import { moneyTypeList } from '../base/base'
 export default {
   name: 'home',
@@ -293,11 +256,18 @@ export default {
     homeAside,
     ModalCity,
     LoginBox,
-    Panel
+    Panel,
+    Dialog,
+    TipDialog,
+    FooterView,
+    HeaderView,
+    AsideBox
   },
   data () {
     return {
+      tipDialogVisible:false,
       dialogVisible: false,
+      centerDialogVisible: false,
       total: 0,
       activeIndex: 0,
       keywords: '',
@@ -325,58 +295,107 @@ export default {
         limit: 20,
         page: 1
       },
-      informationList: [{
-        imgUrl: require('../assets/img/img1.png'),
-        title: '当代职场人：7成人入职不满3年就跳槽',
-        content: '近日，前程无忧最新发布的“2019年第四季度求职者跳槽意愿度调查”结果显示：2019年第四季度有明确跳槽意愿的受访者占35.2%，和上个季度比没有太大变化。进入2019年的尾声，大部分职场人本着“拿完年'
-      },
-      {
-        imgUrl: require('../assets/img/img2.png'),
-        title: '大多数90后离职和薪资有关，面试能说吗？',
-        content: '你是不是也听到过这样的言论，比如“90后太难管了，说两句就要离职”、“现在的90后离职率比80后高多了”……所以，这些宁愿折损“名声”也要离职的90后到底都经历了什么？'
-      }],
       list: [],
       areaList: [],
       moneyTypeList,
       money_type: '',
       browsingList: [],
-      orderTakingDetail: {},
+      orderTakingDetail: {
+        address: "梵蒂冈地方时感受到法国的双方各发过火",
+        cityid: "北京市",
+        com_name: "三个放大",
+        ctime: 1575013178,
+        duration_time: 6,
+        education: "中专",
+        email: "",
+        id: 2,
+        is_five_risks: 1,
+        is_fund: 1,
+        job_content: "是成功施工方的故事的分公司答复",
+        job_status: 1,
+        job_type: "贸易/百货",
+        max_age: 36,
+        min_age: 18,
+        money: 3,
+        money_type: 3,
+        name: "测试001",
+        provinceid: "北京市",
+        reason: "11111",
+        required_number: 2,
+        reward_money: 17.5,
+        reward_money_type: 3,
+        reward_needtime: 3,
+        reward_type: 2,
+        settlement_time: 0,
+        sex: 2,
+        status: 2,
+        tel: "15998789688",
+        three_cityid: "东城区",
+        uid: 4,
+        utime: 1575253152
+      },
       companyInfo: {},
       id: '',
-      uid: ''
+      uid: '',
+      isShow: false,
+      textShow: true
     }
   },
   computed: {
-
+    logoUrl(){
+      return `http://tiantianxsg.com:39888/` + this.companyInfo.logo_url
+    }
   },
   created () {
     this.getData(this.params)
     this.id = this.$route.query.id
     this.uid = this.$route.query.uid
-    this.getOrderTakingData(this.id)
+    // this.getOrderTakingData()
     this.getCompanyData(this.uid)
+    // this.$http.post('http://tiantianxsg.com:39888/index.php/enterpriseinvoice/selectInvoiceInfo',{id:this.id}).then(res=>{
+    //   console.log(res)
+    // })
+  },
+  mounted(){
+    window.addEventListener('scroll', this.windowScroll)
+    console.log(this.$refs.content.clientHeight)
+    if (this.$refs.content.clientHeight>30) {
+      this.textShow = true
+      this.$refs.content.style.display = '-webkit-box'
+    }
+    else {
+      this.textShow = false
+    }
   },
   methods: {
-    getOrderTakingData (id) {
-      console.log({ id })
-      getDetail({ id }).then(res => {
+    showMore(){
+      this.$refs.content.style.display = ''
+    },
+    windowScroll () {
+      let scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop 
+      if (scrollTop - document.documentElement.clientHeight - 200 >=0) {
+        this.isShow = true
+      }
+      else {
+        this.isShow =false
+      }
+    },
+    getOrderTakingData () {
+      let params = {
+        id: this.id
+      }
+      getOrderDetail(params).then(res => {
         console.log(res)
       })
     },
     getCompanyData (uid) {
       getCompanyDetail({ uid }).then(res => {
         console.log(res)
+        this.companyInfo = res.data
       })
     },
     switchNav (item, index) {
       this.activeIndex = index
-    },
-    handleClose () {
-      this.dialogVisible = false
-    },
-    getCityCode (value) {
-      this.params.three_cityid = value[0]
-      this.dialogVisible = false
     },
     getData (params) {
       getList(params).then(res => {
@@ -405,10 +424,6 @@ export default {
         text = '一次性返利'
       }
       return text
-    },
-    currentChange (page) {
-      this.params.page = page
-      this.getData(this.params)
     }
   }
 }
@@ -447,6 +462,11 @@ export default {
   display: flex;
   align-items:center;
   justify-content: flex-start;
+}
+.bg-purple-center {
+  display: flex;
+  align-items:center;
+  justify-content: center;
 }
 .bg-purple-align-start {
   display: flex;
@@ -499,9 +519,6 @@ export default {
   width: 100%;
   background: url('../assets/img/detailsBg.jpg') no-repeat top center;
   background-size: contain；
-}
-.orderTaking-main-content .grid-content {
-  /* background: #fff; */
 }
 .orderTaking-main-box {
   margin: 0 auto;
@@ -576,7 +593,7 @@ export default {
   margin: 30px auto;
 }
 .orderTaking-detail-content {
-   margin: -140px auto 120px;
+   margin: -140px auto 40px;
    position: relative;
    z-index: 9;
 }
@@ -659,8 +676,8 @@ export default {
 }
 .orderTaking-info {
   color: #6A6A6A;
-  margin-right: 30px;
-  width: 30%;
+  margin-right: 20px;
+  width: 50%;
 }
 .orderTaking-info span{
   font-size:16px;
@@ -678,7 +695,7 @@ export default {
   width: 298px;
   padding: 6px 20px;
 }
-.orderTaking-jobDeail .orderTarking-link {
+.orderTarking-link {
   margin-left: 5px;
 }
 .orderTaking-main-row .orderTaking-main-col1{
@@ -705,6 +722,48 @@ export default {
   text-align: center;
   color: #1890FF;
   padding: 10px 0;
+}
+.company-detail {
+  /* width:100%; */
+  background:#fff;
+  min-height:321px;
+  margin: 0 auto 20px;
+  text-align: center;
+  font-size: 14px;
+  color: #6A6A6A;
+  padding: 0 28px 0;
+}
+.company-detail .company-logo {
+  width:82px;
+  height:82px;
+  margin: 20px auto 10px;
+}
+.company-detail .company-name {
+  font-size:16px;
+  text-align: center;
+  font-weight:bold;
+}
+.company-detail .company-profile {
+  text-align: left;
+  line-height: 23px;
+  margin-top: 10px;
+  padding-bottom: 10px;
+  /* width: 302px; */
+}
+.company-detail .company-profile-content {
+  overflow : hidden;
+  text-overflow: ellipsis;
+  /* display: -webkit-box; */
+  -webkit-line-clamp: 2;
+  /* font-size: 14px; */
+  -webkit-box-orient: vertical;
+}
+.company-detail .company-profile>span {
+  color: #999999;
+  font-size: 14px;
+}
+.company-detail .profile-more {
+  margin: 0 5px;
 }
 .orderTaking-main-content .home-search {
   display:flex;
@@ -897,27 +956,7 @@ export default {
 .home-footer-img {
   width:142px;
 }
-.fixed {
-  position: fixed;
-  right: 50px;
-  bottom: 36%;
-  z-index: 333;
-}
-.fixed li {
-  width:50px;
-  height:50px;
-  background:rgba(255,255,255,1);
-  border:1px solid rgba(238,238,238,1);
-  box-shadow:0px 2px 10px 0px rgba(70,70,70,0.1);
-  border-radius:5px;
-  margin-bottom: 10px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-.fixed .help {
-  background: #1890FF;
-}
+
 .pagination {
   text-align: center;
   padding: 20px;

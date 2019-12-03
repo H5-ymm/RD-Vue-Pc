@@ -28,7 +28,7 @@
             <a class="divider">|</a>
             <a class="welcome">注册</a>
           </span>
-          <a class="el-icon-phone-outline">021-51991869</a>
+          <a class="el-icon-phone-outline"> 021-51991869</a>
         </div>
       </div>
     </el-header>
@@ -181,11 +181,11 @@ export default {
       menus: [
         {
           title: '首页',
-          url: ''
+          url: 'home'
         },
         {
           title: '接单',
-          url: ''
+          url: 'orderTaking'
         },
         {
           title: '拼团',
@@ -224,6 +224,7 @@ export default {
   methods: {
     switchNav (item, index) {
       this.activeIndex = index
+      this.$router.push(item.url)
     },
     getList (params) {
       homeList(params).then(res => {
