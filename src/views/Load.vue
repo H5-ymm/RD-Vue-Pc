@@ -1,5 +1,5 @@
 <template>
-  <el-container class="loads">
+  <el-container class="loads login-page">
     <el-header class="header x-flex-around">
       <div class="bg-purple">
         <span class="header-left">人事达</span>
@@ -7,7 +7,7 @@
       </div>
       <div class="bg-purple-light">
         <span @click="$router.push('home')">浏览首页</span>
-        <a> 021-51991869</a>
+        <a>021-51991869</a>
       </div>
     </el-header>
     <el-main>
@@ -309,9 +309,12 @@ export default {
 }
 .loads{
   width: 100vw;
-  height: 100%;
+  
   /* height: 100vh; */
   /* overflow: hidden;  */
+}
+.login-page {
+  height: 100vh;
 }
 .loads .el-main {
   padding:0;
@@ -378,7 +381,7 @@ export default {
   background-size:cover;
 }
 .register-form {
-  padding: 40px 0;
+  padding: 0 0 40px;
 }
 .timerContent {
   background: url('../assets/img/comBg.jpg') no-repeat left center;

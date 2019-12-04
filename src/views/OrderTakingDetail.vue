@@ -9,22 +9,36 @@
         <div class="bg-purple orderTaking-jobDeail">
           <div class="orderTaking-jobDeail-left">
             <p class="job-name-top bg-purple">
-              高级网页前端工程师
+              {{orderTakingDetail.name}}
               <span class="job-status">招聘中</span>
             </p>
             <p>职位类别</p>
             <p>发布时间：2019-12-01 15:32</p>
           </div>
           <div class="orderTaking-jobDeail-right">
-            <el-button type="primary" size="medium" class="orderTarking-btn" @click="centerDialogVisible=true" plain>申请接单</el-button>
+            <el-button
+              type="primary"
+              size="medium"
+              class="orderTarking-btn"
+              @click="centerDialogVisible=true"
+              plain
+            >申请接单</el-button>
             <div class="x-flex-around">
               <p class="x-flex-around">
                 <img src="../assets/img/collect.png" alt />
-                <el-link :underline="false" class="orderTarking-link" @click="centerDialogVisible=true">收藏</el-link>
+                <el-link
+                  :underline="false"
+                  class="orderTarking-link"
+                  @click="centerDialogVisible=true"
+                >收藏</el-link>
               </p>
               <p class="x-flex-around">
                 <img src="../assets/img/tip.png" alt />
-                <el-link :underline="false" class="orderTarking-link" @click="tipDialogVisible = true">举报</el-link>
+                <el-link
+                  :underline="false"
+                  class="orderTarking-link"
+                  @click="tipDialogVisible = true"
+                >举报</el-link>
               </p>
             </div>
           </div>
@@ -85,13 +99,13 @@
                     <div class="orderTaking-info">
                       <p>
                         <span>返利方式：</span>
-                        <span>{{orderTakingDetail.reward_type==1?'月返':orderTakingDetail.reward_type==2?'日返':'周返'}}</span>
-                      </p>     
-                      <p>
-                        <span>结算时间：</span>
-                        <span>{{orderTakingDetail.settlement_time}}</span>
+                        <span>{{getRewardType(orderTakingDetail.reward_type)}}</span>
                       </p>
-                       <p v-if="orderTakingDetail.reward_type==2">
+                      <p v-if="orderTakingDetail.reward_type==1">
+                        <span>结算时间：</span>
+                        <span>次月第{{orderTakingDetail.settlement_time}}天</span>
+                      </p>
+                      <p v-if="orderTakingDetail.reward_type==2">
                         <span>持续时长：</span>
                         <span>{{orderTakingDetail.reward_money}}/人/{{getmoneyType(orderTakingDetail.money_type)}}</span>
                       </p>
@@ -131,7 +145,7 @@
                           <li class="require-number">
                             <span>需求人数：{{item.required_number}}人</span>
                           </li>
-                          <li>返利方式：{{item.reward_money_type==1?'月返':item.reward_money_type==2?'日返':'周返'}}</li>
+                          <li>返利方式：{{getRewardType(item.reward_type)}}</li>
                         </ul>
                         <ul class="orderTaking-main-item">
                           <li>{{getmoneyType(item.money_type)}}薪: {{item.money}}/人/{{getmoneyType(item.money_type)}}</li>
@@ -176,35 +190,39 @@
           </div>
           <div class="orderTaking-main-col2">
             <div class="company-detail">
-                <img :src="logoUrl" alt="" class="company-logo">
-                <p class="company-name">{{companyInfo.com_name}}</p>
-                <div class="bg-purple">
-                  <p class="x-flex-around">
-                    <img src="../assets/img/hy.png" alt />
-                    <span :underline="false" class="orderTarking-link">{{companyInfo.com_sort}}</span>
-                  </p>
-                  <p class="x-flex-around">
-                    <img src="../assets/img/my.png" alt />
-                    <span :underline="false" class="orderTarking-link">{{companyInfo.com_scale}}</span>
-                  </p>
-                </div>
-                <div class="bg-purple">
-                  <p class="x-flex-around">
-                    <img src="../assets/img/address.png" alt />
-                    <span :underline="false" class="orderTarking-link">{{companyInfo.address}}</span>
-                  </p>
-                </div>
-                <div class="company-profile">
-                  <span>公司简介</span>
-                  <p class="company-profile-content" ref="content" v-html="companyInfo.content+'哈哈哈哈哈哈哈哈哈哈哈剋坎坎坷坷坎坎坷坷'"></p>
-                  <p class="bg-purple-center" @click="showMore()">
-                    <img src="../assets/img/moreDown.png" alt="">
-                    <span class="profile-more">查看更多</span>
-                  </p>
-                </div>
+              <img :src="logoUrl" alt class="company-logo" />
+              <p class="company-name">{{companyInfo.com_name}}</p>
+              <div class="bg-purple">
+                <p class="x-flex-around">
+                  <img src="../assets/img/hy.png" alt />
+                  <span :underline="false" class="orderTarking-link">{{companyInfo.com_sort}}</span>
+                </p>
+                <p class="x-flex-around">
+                  <img src="../assets/img/my.png" alt />
+                  <span :underline="false" class="orderTarking-link">{{companyInfo.com_scale}}</span>
+                </p>
               </div>
+              <div class="bg-purple">
+                <p class="x-flex-around">
+                  <img src="../assets/img/address.png" alt />
+                  <span :underline="false" class="orderTarking-link">{{companyInfo.address}}</span>
+                </p>
+              </div>
+              <div class="company-profile">
+                <span>公司简介</span>
+                <p
+                  class="company-profile-content"
+                  ref="content"
+                  v-html="companyInfo.content+'哈哈哈哈哈哈哈哈哈哈哈剋坎坎坷坷坎坎坷坷'"
+                ></p>
+                <p class="bg-purple-center" @click="showMore()">
+                  <img src="../assets/img/moreDown.png" alt />
+                  <span class="profile-more">查看更多</span>
+                </p>
+              </div>
+            </div>
             <div class="bg-purple-light">
-              <p class="job-title">看过的接单职位</p>
+              <p class="job-title">该公司的接单职位</p>
               <div>
                 <ul
                   class="orderTaking-main-item orderTaking-main-history"
@@ -244,11 +262,11 @@ import LoginBox from '@/components/LoginBox'
 import Panel from '@/components/Panel'
 import Dialog from '@/components/Dialog'
 import TipDialog from '@/components/TipDialog'
-import AsideBox  from '@/components/AsideBox'
-import HeaderView  from '@/components/HeaderView'
-import FooterView  from '@/components/FooterView'
+import AsideBox from '@/components/AsideBox'
+import HeaderView from '@/components/HeaderView'
+import FooterView from '@/components/FooterView'
 import { getOrderDetail, getList } from '../api/orderTarking'
-import { getCompanyDetail } from '../api/company'
+import { getCompanyDetail, getCompanyInfo } from '../api/company'
 import { moneyTypeList } from '../base/base'
 export default {
   name: 'home',
@@ -265,7 +283,7 @@ export default {
   },
   data () {
     return {
-      tipDialogVisible:false,
+      tipDialogVisible: false,
       dialogVisible: false,
       centerDialogVisible: false,
       total: 0,
@@ -300,40 +318,7 @@ export default {
       moneyTypeList,
       money_type: '',
       browsingList: [],
-      orderTakingDetail: {
-        address: "梵蒂冈地方时感受到法国的双方各发过火",
-        cityid: "北京市",
-        com_name: "三个放大",
-        ctime: 1575013178,
-        duration_time: 6,
-        education: "中专",
-        email: "",
-        id: 2,
-        is_five_risks: 1,
-        is_fund: 1,
-        job_content: "是成功施工方的故事的分公司答复",
-        job_status: 1,
-        job_type: "贸易/百货",
-        max_age: 36,
-        min_age: 18,
-        money: 3,
-        money_type: 3,
-        name: "测试001",
-        provinceid: "北京市",
-        reason: "11111",
-        required_number: 2,
-        reward_money: 17.5,
-        reward_money_type: 3,
-        reward_needtime: 3,
-        reward_type: 2,
-        settlement_time: 0,
-        sex: 2,
-        status: 2,
-        tel: "15998789688",
-        three_cityid: "东城区",
-        uid: 4,
-        utime: 1575253152
-      },
+      orderTakingDetail: {},
       companyInfo: {},
       id: '',
       uid: '',
@@ -342,7 +327,7 @@ export default {
     }
   },
   computed: {
-    logoUrl(){
+    logoUrl () {
       return `http://tiantianxsg.com:39888/` + this.companyInfo.logo_url
     }
   },
@@ -350,16 +335,13 @@ export default {
     this.getData(this.params)
     this.id = this.$route.query.id
     this.uid = this.$route.query.uid
-    // this.getOrderTakingData()
+    this.getOrderTakingData()
     this.getCompanyData(this.uid)
-    // this.$http.post('http://tiantianxsg.com:39888/index.php/enterpriseinvoice/selectInvoiceInfo',{id:this.id}).then(res=>{
-    //   console.log(res)
-    // })
   },
-  mounted(){
+  mounted () {
     window.addEventListener('scroll', this.windowScroll)
     console.log(this.$refs.content.clientHeight)
-    if (this.$refs.content.clientHeight>30) {
+    if (this.$refs.content.clientHeight > 30) {
       this.textShow = true
       this.$refs.content.style.display = '-webkit-box'
     }
@@ -368,16 +350,16 @@ export default {
     }
   },
   methods: {
-    showMore(){
+    showMore () {
       this.$refs.content.style.display = ''
     },
     windowScroll () {
-      let scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop 
-      if (scrollTop - document.documentElement.clientHeight - 200 >=0) {
+      let scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
+      if (scrollTop - document.documentElement.clientHeight - 200 >= 0) {
         this.isShow = true
       }
       else {
-        this.isShow =false
+        this.isShow = false
       }
     },
     getOrderTakingData () {
@@ -385,7 +367,7 @@ export default {
         id: this.id
       }
       getOrderDetail(params).then(res => {
-        console.log(res)
+        this.orderTakingDetail = res.data
       })
     },
     getCompanyData (uid) {
@@ -412,13 +394,13 @@ export default {
     getRewardType (type) {
       let text = ''
       if (type == 1) {
-        text = '按月结算'
+        text = '月返'
       }
       else if (type == 2) {
-        text = '按日结算'
+        text = '日返'
       }
       else if (type == 3) {
-        text = '按周结算'
+        text = '周返'
       }
       else {
         text = '一次性返利'

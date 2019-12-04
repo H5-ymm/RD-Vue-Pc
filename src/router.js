@@ -7,6 +7,8 @@ import store from './store.js'
 import Load from './views/Load.vue'  //登录页
 import Register from './views/register.vue'  //登录页
 
+import Team from './views/Team.vue'  //登录页
+
 import OrderTaking from './views/OrderTaking.vue'   //接单
 import OrderTakingDetail from './views/OrderTakingDetail.vue'  //接单详情
 import Write from './components/Write.vue' //新增文章页
@@ -51,19 +53,17 @@ let routers = new Router({
   routes: [
     {
       path: '/',
-      component: Home,
-      redirect: 'write',
+      name: 'Load',
+      component: Load,
+      redirect: 'Load',
+    },
+    {
+      path: '/team',
+      name: 'Team',
+      component: Team,
       children: [
-        {  //MarkDown编辑器
-          path: 'markdowns',
-          name: 'markdowns',
-          component: markdowns,
-          meta: {
-            requiresAuth: 2
-          }
-        },
         {  //MarkDown编辑器commonts
-          path: 'commonts',
+          path: '/commonts',
           name: 'commonts',
           component: commonts,
           meta: {
@@ -71,7 +71,7 @@ let routers = new Router({
           }
         },
         { //新增文章
-          path: 'write',
+          path: '/write',
           name: 'write',
           component: Write,
           meta: {
@@ -179,6 +179,39 @@ let routers = new Router({
               path: 'tableTextlist/:userid', //包含某一标签
               name: 'TableTextlist',
               component: TableTextlist,
+              meta: {
+                requiresAuth: 2
+              }
+            },
+            {
+              path: 'edit',  //修改文章
+              name: 'Drafttxts',
+              component: Drafttxts,
+              meta: {
+                requiresAuth: 2
+              }
+            },
+            {
+              path: 'undatemark/:userid',  //MarkDown修改文章
+              name: 'UndateMark',
+              component: UndateMark,
+              meta: {
+                requiresAuth: 2
+              }
+            }
+          ]
+        },
+        {
+          path: 'team',  //全部标签页
+          component: Team,
+          meta: {
+            requiresAuth: 2
+          },
+          children: [
+            {  //MarkDown编辑器commonts
+              path: 'commonts',
+              name: 'commonts',
+              component: commonts,
               meta: {
                 requiresAuth: 2
               }
@@ -320,9 +353,6 @@ let routers = new Router({
     {
       path: '/about',
       name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (about.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
       component: () => import(/* webpackChunkName: "about" */ './views/About.vue')
     },
     {

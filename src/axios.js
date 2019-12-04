@@ -40,7 +40,7 @@ $axios.interceptors.response.use(
   // 服务器状态码不是200的情况 
   error => {
     console.log(error.response)
-    if (error.response&&error.response.status) {
+    if (error.response && error.response.status) {
       switch (error.response.status) {
         // 401: 未登录    
         // 未登录则跳转登录页面，并携带当前页面的路径    
@@ -109,4 +109,4 @@ export function upload (params) {
       })
   });
 }
-export default $axios;
+// export default $axios;
