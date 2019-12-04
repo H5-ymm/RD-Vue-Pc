@@ -69,26 +69,14 @@ export default {
       }
     }
   },
-  created: function () {
-    // 初始化查询标签数据
-    //  this.reverseUser()
-    //     this.$http({
-    //             url:'searchCommontsAllNumber',
-    //             method:'POST'
-    //         })
-    //         .then(res=>{
-
-    //             this.AllNum=res.data.data
-    //         }).catch(()=>{
-    //             console.log('错了')
-    //         })
+  created() {
   },
   methods: {
     handle (index) {
       this.type = index
       console.log(index)
     },
-    handleCurrentChange: function (val) {
+    handleCurrentChange(val) {
       this.num = val
       this.reverseUser()
     },
@@ -225,7 +213,7 @@ export default {
 <style>
 .team-box {
   height: 100%;
-  margin-bottom: 100px;
+  /* margin-bottom: -200px; */
 }
 .team-box .team-box-left {
   width:540px;

@@ -5,8 +5,15 @@
         <home-aside></home-aside>
       </el-aside>
       <el-container>
-        <el-header height="90px">
-          <div style="height:37px;">header</div>
+        <el-header height="75px">
+          <div style="height:37px;" class="x-flex-between team-header">
+             <i class="el-icon-refresh-right"></i>
+             <div>
+               <el-link :underline="false">首页</el-link>
+               <i class="el-icon-bell"></i>
+               <span>天天向上团队</span>
+             </div>
+          </div>
           <breadcrumb :breadcrumbs="breadcrumb"></breadcrumb>
         </el-header>
         <el-main class="about-main">
@@ -25,7 +32,7 @@ export default {
   name: 'team',
   data () {
     return {
-      breadcrumb: ['评论管理', '文章评论'],
+      breadcrumb: [],
     }
   },
   components: {
@@ -35,37 +42,8 @@ export default {
   computed: {
 
   },
-  created: function () {  //验证Token
-    //         let token=null
-    //         if(window.localStorage.getItem('token')){
-    //           token=window.localStorage.getItem('token')
-    //         }else if(window.sessionStorage.getItem('token')){
-    //           token=window.sessionStorage.getItem('token')
-    //         }else{
-    //           token=null
-    //         }
-    //      // console.log(token)
-
-    // if(token){
-    //      this.$http({
-    //           url:'rulesToken',
-    //           methos: 'POST',
-    //           headers:{
-    //             'Authorization':token
-    //           }
-    //         }).then(res=>{
-
-    //           if(res.data.code==0){
-
-    //               this.$store.commit('adduser',res.data.msg)
-    //           }else{
-    //              //console.log(res.data.msg)
-    //           }
-    //         }).catch(error=>{
-    //           console.log('error')
-    //         })
-    // }
-
+  created() { 
+    this.breadcrumb = JSON.parse(sessionStorage.getItem('menus'))
   }
 }
 </script>
@@ -74,11 +52,18 @@ export default {
 .about{
   width: 100vw;
   height: 100vh;
-  overflow: hidden;
+  /* overflow-y: hidden; */
+  /* overflow: hidden; */
   position: relative;
 }
+.about .el-header {
+  padding: 0;
+}
+.about .team-header {
+  padding: 0 38px;
+}
 .about-aside{
-  height: 100vh;
+  /* height: 100vh; */
   overflow: hidden;
 }
 .about-main{
@@ -90,7 +75,7 @@ export default {
 }
 .about-box{
   /* background: #ffffff; */
-  height: calc(100% - 20px);
+  /* height: calc(100% - 20px); */
   /* padding: 10px; */
 }
 </style>

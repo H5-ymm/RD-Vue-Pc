@@ -1,6 +1,6 @@
 <template>
     <div class="tables">
-        <breadcrumb :breadcrumbs='breadcrumb'></breadcrumb>
+        <!-- <breadcrumb :breadcrumbs='breadcrumb'></breadcrumb> -->
         <el-form ref="TabForm" :model="formTab" label-width="100px" :rules="formTabs">
             <el-form-item label="分类名称" prop="name">
                 <el-input v-model="formTab.name" placeholder="请输入分类名称"></el-input>

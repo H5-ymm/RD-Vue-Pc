@@ -160,11 +160,10 @@ export default {
     color: #333;
     font-weight:400;
   }
-  .edit-card-textarea {
+  /* .edit-card-textarea {
     background: #fff;
     padding: 5px 10px 10px;
-   
-  }
+  } */
   .edit-card-emoji {
    position: relative;
   }

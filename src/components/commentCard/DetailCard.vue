@@ -80,10 +80,10 @@
               </div>
             </div>
             <div class="edit-card-textarea border-bottom">
-              <el-input type="textarea" class="textarea" :autosize="autoSize" placeholder="请输入内容"></el-input>
+              <div contenteditable class="textarea" v-html="emoji" ref="replyContent"></div>
               <div class="bg-purple edit-card-emoji">
-                <img src="../../assets/img/emjo.png" alt />
-                <VEmojiPicker :pack="pack.data" @select="selectEmoji" class="emoji-item" />
+                <img src="../../assets/img/emjo.png" alt @click="showEmoji=!showEmoji"/>
+                <VEmojiPicker :pack="pack.data" v-show="showEmoji"  @select="selectEmoji" class="emoji-item" />
                 <div>
                   <el-button size="mini">取消</el-button>
                   <el-button size="mini" type="primary">回复</el-button>
@@ -97,7 +97,6 @@
   </div>
 </template>
 <script>
-// import VueEmoji from 'emoji-vue'
 import VEmojiPicker from 'v-emoji-picker';
 import packData from 'v-emoji-picker/data/emojis.json';
 export default {
@@ -110,7 +109,9 @@ export default {
       autoSize: { minRows: 1, maxRows: 4 },
       pack: packData,
       type: 0,  // 0新建 1 编辑 2查看
-      contenteditable: false
+      contenteditable: false,
+      emoji: '请输入内容',
+      showEmoji:false
     }
   },
   computed: {
@@ -119,7 +120,6 @@ export default {
     }
   },
   created () {
-    console.log(this.cardType)
     if (this.cardType != 2) {
       this.contenteditable = true
     }
@@ -127,12 +127,20 @@ export default {
       this.contenteditable = false
     }
   },
+  watch:{
+    showEmoji(val){
+      if (val) {
+        document.getElementById('InputSearch').style.display="none"
+      }
+    }
+  },
   mounted () {
-    console.log(packData)
   },
   methods: {
-    selectEmoji (emoji) {
-      console.log(emoji)
+    selectEmoji (info) {
+      console.log(info)
+      this.emoji = info.emoji
+      this.showEmoji = false
     }
   }
 }
@@ -239,20 +247,30 @@ export default {
   .edit-card-textarea {
     background: #fff;
     padding: 5px 10px 10px;
-   
+    /* margin-bottom: 5px; */
   }
-  .edit-card-emoji {
+  /* .edit-card-emoji {
    position: relative;
-  }
+  } */
   .edit-card-emoji .emoji-item {
     position: absolute;
     top:30px;
-    left: 10px;
+    left: 0;
     z-index: 222;
-    height: 180px;
+    height: 256px;
   }
   .edit-card-textarea .textarea {
     margin: 10px 0;
+    /* width: 100%; */
+    height: 44px;
+    font-size: 14px;
+    border:1px solid #eee;
+    padding: 0 12px;
+    line-height: 44px;
+  }
+  .edit-card-textarea .textarea {
+    border:1px solid #1890FF;
+    outline: none;
   }
   textarea{
     resize:none!important;

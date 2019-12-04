@@ -70,10 +70,10 @@ let routers = new Router({
             requiresAuth: 2
           }
         },
-        { //新增文章
-          path: '/write',
-          name: 'write',
-          component: Write,
+        { //成员管理
+          path: '/userlist',
+          name: 'Userlist',
+          component: Userlist,
           meta: {
             requiresAuth: 2
           }

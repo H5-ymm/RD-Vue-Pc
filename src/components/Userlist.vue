@@ -1,31 +1,40 @@
 <template>
-    <div class="tables-box">
-        <breadcrumb :breadcrumbs='breadcrumb'></breadcrumb>
-        <!-- 全部标签 -->
-        <el-table
-            :data="tableData"
-            border
-            style="width: 100%">
-            <el-table-column
-            label="序号"
-            type="index"
-            width="60">
-            </el-table-column>
-            <el-table-column
-            prop="users"
-            label="昵称"
-            >
-            </el-table-column>
-            <el-table-column
-            fixed="right"
-            label="操作"
-            >
-            <template slot-scope="scope">
-                <el-button @click="handleClickB(scope.row)" type="text" size="small">删除</el-button>
-            </template>
-            </el-table-column>
-        </el-table>
-    </div>
+  <div class="tables-box">
+    <!-- <div> -->
+      <el-table
+      class="table"
+      border
+      :data="tableData"
+      style="width: 100%">
+      <el-table-column label="序号" type="selection" align="center" width="60"></el-table-column>
+      <el-table-column label="姓名" prop="name"  align="center" width="100"></el-table-column>
+      <el-table-column label="联系电话" prop="mobile"  align="center"  width="160"></el-table-column>
+      <el-table-column label="所属部门" prop="name"  align="center" width="100"></el-table-column>
+      <el-table-column label="等级" prop="mobile" sortable align="center"  width="160"></el-table-column>
+      <el-table-column label="直属上级" prop="name"  align="center" width="100"></el-table-column>
+      <el-table-column label="简历数量" prop="number"  align="center"  width="80"></el-table-column>
+      <el-table-column label="入职人数" prop="number"  align="center" width="80"></el-table-column>
+      <el-table-column label="最近登录时间" prop="loginTime"  align="center"  width="260"></el-table-column>
+      <el-table-column label="状态" prop="status"  align="center"  width="80"></el-table-column>
+      <el-table-column label="操作" fixed="right" align="center" width="150">
+        <template slot-scope="scope">
+          <el-button @click="handleClickB(scope.row)" type="text" size="small">编辑</el-button>
+          <el-button @click="handleClickB(scope.row)" type="text" size="small">删除</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+    <el-pagination
+      class="team-pagination"
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+      :current-page="currentPage"
+      :page-sizes="[100, 200, 300, 400]"
+      :page-size="100"
+      layout="total, sizes, prev, pager, next, jumper"
+      :total="400">
+    </el-pagination>
+   <!-- </div> -->
+  </div>
 </template>
 
 <script>
@@ -34,16 +43,29 @@ export default {
     data() {
       return {
         breadcrumb:['设置','管理控制','全部管理员'],
-        tableData: [],  //初始化数据
+        tableData: [{
+          name:'杨萌萌',
+          mobile:'18337806536',
+          number:23,
+          status: '锁定',
+          loginTime:'2019-11-30 18:35:50'
+        }],
+        currentPage:1
       }
     },
-    created:function(){
+    created(){
         // 初始化查询标签数据
-        this.reverseUser()
+        // this.reverseUser()
        
     },
     methods:{
-        handleClickB:function(row){  //删除按钮
+      handleSizeChange(val) {
+        console.log(`每页 ${val} 条`);
+      },
+      handleCurrentChange(val) {
+        console.log(`当前页: ${val}`);
+      },
+      handleClickB:function(row){  //删除按钮
         if(this.$store.state.user.desc>1){
                  this.$alert('此账号为测试账号,无法进行此操作', '温馨提示', {
                     confirmButtonText: '确定',
@@ -111,12 +133,25 @@ export default {
 }
 </script>
 
-<style scoped>
-.foots{
-    margin-top: 30px;
+<style>
+.table {
+  height: calc(100% - 600px);
+  /* padding: 10px; */
+}
+.table .el-table__body-wrapper {
+  min-height: calc(100% - 700px);
+}
+.table .el-table--scrollable-x .el-table__body-wrapper {
+  /* height: calc(100% - 90px); */
+}
+.team-pagination {
+  padding: 20px 0;
 }
 .tables-box{
-    height: 100%;
-    overflow-y: scroll;
+  height: calc(100% - 500px);
+  background: #fff;
+  /* margin: 20px; */
+  overflow: hidden;
+  border-radius:10px;
 }
 </style>

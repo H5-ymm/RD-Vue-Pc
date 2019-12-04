@@ -9,7 +9,6 @@
           <!-- <div class="names-A">{{names}}</div>
           <div class="names-B" @click="escUser">退出</div>-->
         </div>
-
         <el-menu
           class="el-menu-vertical-demo"
           background-color="#000"
@@ -17,35 +16,18 @@
           text-color="#fff"
           @open="handleOpen"
           @close="handleClose"
+          @select="selectMenus"
           router
           :default-active="routerli"
         >
-          <el-submenu index="1" class="acts">
+          <el-submenu :index="item.title" class="acts" v-for="(item,index) in menus" :key="index">
             <template slot="title">
               <i class="el-icon-collection"></i>
-              <span>团队论坛</span>
+              <span>{{item.title}}</span>
             </template>
-            <el-menu-item index="/commonts">论坛列表</el-menu-item>
+            <el-menu-item :index="val.title" :class="{'is-active':title==val.title}" v-for="(val,ind) in item.submenu" :key="ind" :route="val.url">{{val.title}}</el-menu-item>
           </el-submenu>
-          <el-submenu index="2">
-            <template slot="title">
-              <i class="el-icon-collection-tag"></i>
-              <span>团队管理</span>
-            </template>
-
-            <el-menu-item index="/addcls">成员管理</el-menu-item>
-            <!-- <el-submenu index="2-1" class="acts">
-              <template slot="title">标签管理</template>
-              <el-menu-item index="/tablebox">全部标签</el-menu-item>
-              <el-menu-item index="/addtable">添加标签</el-menu-item>
-            </el-submenu>
-            <el-submenu index="2-2" class="acts">
-              <template slot="title">分类管理</template>
-              <el-menu-item index="/cls">全部分类</el-menu-item>
-              <el-menu-item index="/addcls">添加分类</el-menu-item>
-            </el-submenu>-->
-          </el-submenu>
-          <el-submenu index="4" class="acts">
+          <!-- <el-submenu index="4" class="acts">
             <template slot="title">
               <i class="el-icon-edit"></i>
               <span>评论管理</span>
@@ -81,7 +63,7 @@
               <span>关于本站</span>
             </template>
             <el-menu-item index="/abouts">关于本站</el-menu-item>
-          </el-submenu>
+          </el-submenu> -->
         </el-menu>
       </el-col>
     </el-row>
@@ -94,28 +76,61 @@ export default {
   props: {
 
   },
+  data() {
+    return {
+      menus:[
+        {
+          title:'团队论坛',
+          icon:'el-icon-collection',
+          submenu:[
+            {
+              title:'论坛列表',
+              url: '/commonts'
+            }
+          ]
+        },
+        {
+          title:'团队管理',
+          icon:'el-icon-collection-tag',
+          submenu:[
+            {
+              title:'成员管理',
+              url: '/userlist'
+            }
+          ]
+        }
+      ],
+      title: ''
+    }
+  },
   methods: {
     handleOpen (key, keyPath) {
-      //console.log(key, keyPath);
+      console.log(key, keyPath);
     },
     handleClose (key, keyPath) {
       //console.log(key, keyPath);
     },
-    escUser: function () {
+    escUser() {
       window.localStorage.clear()
       window.sessionStorage.clear()
       this.$router.push('/load')
+    },
+    selectMenus(key, keyPath){
+      console.log(key, keyPath)
+      this.title = key
+      let arr = [key]
+      sessionStorage.setItem('menus',JSON.stringify(arr))
     }
   },
   computed: {
-    routerli: function () {
+    routerli() {
       // 对应路由
       let pathStr = this.$route.path.split('/')
-      //console.log(pathStr)
+      console.log(pathStr)
       return '/' + pathStr[1]
 
     },
-    names: function () {
+    names () {
       return this.$store.state.user.users
     }
   }
@@ -138,7 +153,7 @@ export default {
 .el-submenu .el-menu-item {
   min-width: 170px;
 }
-.tac .acts .is-active{
+.el-menu-item.is-active{
   background:#1890FF!important;
   border: none!important;
   box-sizing: border-box!important;
@@ -146,12 +161,15 @@ export default {
 }
 .el-menu-item {
   background-color: rgba(0, 0, 0, 0.1) !important;
+  padding-left: 50px!important;
 }
 .el-menu-item.is-active {
   background:#1890FF!important;
   border-right: 4px solid #06ADFB;
   box-sizing: border-box;
   color: #fff;
+  padding-left: 50px!important;
+  margin-right: 30px;
 }
 .names{
   width: 100%;

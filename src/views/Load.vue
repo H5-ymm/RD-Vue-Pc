@@ -309,12 +309,11 @@ export default {
 }
 .loads{
   width: 100vw;
-  
   /* height: 100vh; */
   /* overflow: hidden;  */
 }
 .login-page {
-  height: 100vh;
+  /* height: 100vh; */
 }
 .loads .el-main {
   padding:0;
@@ -381,7 +380,8 @@ export default {
   background-size:cover;
 }
 .register-form {
-  padding: 0 0 40px;
+  /* padding: 0 0 40px; */
+  /* padding: 40px 0; */
 }
 .timerContent {
   background: url('../assets/img/comBg.jpg') no-repeat left center;
@@ -398,7 +398,8 @@ export default {
   background:rgba(255,255,255,1);
   box-shadow:0px 5px 18px 0px rgba(0, 0, 0, 0.15);
   border-radius:5px;
-  margin-left:-5%;
+  /* margin-left:-5%; */
+  margin: 40px 0 40px -5%;
 }
 .loads-box .el-input__inner {
   border-radius:0;
