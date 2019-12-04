@@ -1,6 +1,34 @@
 <template>
   <div class="tables-box">
-    <!-- <div> -->
+    <div>
+      <el-row :gutter="20" class="team-info-row">
+        <el-col :span="6"> 
+          <el-card  class="box-card" >
+            <p>团队名称</p>
+            <p>天天向上</p>
+          </el-card>
+        </el-col>
+        <el-col :span="6"> 
+          <el-card  class="box-card" >
+            <p>团队成员</p>
+            <p>88</p>
+          </el-card>
+        </el-col>
+         <el-col :span="6"> 
+          <el-card  class="box-card" >
+            <p>简历总数</p>
+            <p>100份</p>
+          </el-card>
+        </el-col>
+        <el-col :span="6"> 
+          <el-card  class="box-card" >
+            <p>已入职</p>
+            <p>33人</p>
+          </el-card>
+        </el-col>
+      </el-row>
+    </div>
+    <div class="table-list">
       <el-table
       class="table"
       border
@@ -33,7 +61,7 @@
       layout="total, sizes, prev, pager, next, jumper"
       :total="400">
     </el-pagination>
-   <!-- </div> -->
+   </div>
   </div>
 </template>
 
@@ -135,11 +163,11 @@ export default {
 
 <style>
 .table {
-  height: calc(100% - 600px);
+  /* height: calc(100% - 600px); */
   /* padding: 10px; */
 }
 .table .el-table__body-wrapper {
-  min-height: calc(100% - 700px);
+  /* min-height: calc(100% - 700px); */
 }
 .table .el-table--scrollable-x .el-table__body-wrapper {
   /* height: calc(100% - 90px); */
@@ -147,11 +175,31 @@ export default {
 .team-pagination {
   padding: 20px 0;
 }
-.tables-box{
-  height: calc(100% - 500px);
+.table-list {
   background: #fff;
+  border-radius:10px;
+  height: calc(100% - 500px);
+}
+.tables-box{
   /* margin: 20px; */
   overflow: hidden;
-  border-radius:10px;
+}
+.team-info-row {
+  margin: 20px 0;
+}
+.box-card {
+  height: 126px;
+  background: #7F80FE;
+  color: #fff;
+  padding-left: 20px;
+  padding-top: 10px;
+  /* padding: 20px 10px; */
+}
+.box-card p {
+  font-size:16px;
+}
+.box-card p:nth-of-type(2) {
+  font-size:38px;
+  margin-top: 10px;
 }
 </style>
