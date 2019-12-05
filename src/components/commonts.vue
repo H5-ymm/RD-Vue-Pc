@@ -4,7 +4,7 @@
     <div class="team-box bg-purple-start">
       <div class="team-box-left">
         <div class="bg-purple-start">
-          <el-input placeholder="搜索" class="team-input">
+          <el-input placeholder="搜索" class="team-input" v-model="params.title" @input="getList(params)">
             <i slot="prefix" class="el-input__icon el-icon-search"></i>
           </el-input>
           <el-dropdown @command="handleCommand">
@@ -18,12 +18,12 @@
           </el-dropdown>
         </div>
         <!-- 列表 -->
-        <person-card :list="list"></person-card>
+        <person-card :list="list" @selectComment="selectComment"></person-card>
         <!-- 列表 -->
       </div>
       <div class="team-box-content team-box-right">
         <!-- <edit-card></edit-card> -->
-        <detail-card :cardType="type" :commentInfo="commentInfo"></detail-card>
+        <detail-card :cardType="type" @refurbish="refurbish" :commentInfo="commentInfo"></detail-card>
       </div>
     </div>
   </div>
@@ -31,13 +31,11 @@
 
 <script>
 import PersonCard from './commentCard/PersonCard'
-import EditCard from './commentCard/EditCard'
 import DetailCard from './commentCard/DetailCard'
 import { getDiscussList, getDiscussInfo } from '../api/comment'
 export default {
   components: {
     PersonCard,
-    EditCard,
     DetailCard
   },
   data () {
@@ -58,15 +56,19 @@ export default {
       commentId: ''
     }
   },
-  created () {
+  mounted () {
     this.getList()
+    localStorage.setItem('uid', 5)
+    localStorage.setItem('username','测试一号哦')
   },
   methods: {
     getList () {
       getDiscussList(this.params).then(res => {
-        this.list = res.data.data
-        this.commentId = this.list[0].id
-        this.getDetail(this.commentId)
+        if (res.data.data) {
+          this.list = res.data.data || []
+          this.commentId = this.list[0].id
+          this.getDetail(this.commentId)
+        }
       })
     },
     getDetail (id) {
@@ -74,8 +76,20 @@ export default {
         this.commentInfo = res.data
       })
     },
+    selectComment(id) {
+      this.getDetail(id)
+      this.type = 2
+    },
+    refurbish(){
+      this.getList()
+    },
     handleCommand (command) {
-      this.type = command
+      if (command == 3) {
+        this.getList()
+      } else {
+        this.type = command
+        this.commentInfo = {}
+      }
     },
     handleCurrentChange (val) {
       this.num = val
@@ -193,7 +207,6 @@ export default {
         }
       })
         .then(res => {
-
           this.tableData = res.data.data
           if (res.data.data.length > 0) {
 
@@ -247,8 +260,12 @@ export default {
   color: #999;
   margin-right: 0!important;
 }
- .el-dropdown-menu__item {
-  width: 60px!important;
+.el-dropdown-menu {
+  overflow: hidden;
+}
+.el-dropdown-menu__item {
+  width: 70px!important;
+  
 }
 .foots{
   margin-top: 30px;

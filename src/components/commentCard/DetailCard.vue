@@ -3,54 +3,61 @@
     <p class="edit-card-title border-bottom bg-purple">
       <!-- 2019年12月1日晨会-查看详情 -->
       {{title}}
-      <el-dropdown v-if="type==2">
+      <el-dropdown v-if="type==2" @command="handleCommand">
         <el-button class="dropdown-button">
           <i class="el-icon-more"></i>
         </el-button>
         <el-dropdown-menu slot="dropdown" class="dropdown-menu">
-          <el-dropdown-item class="el-icon-top">&nbsp;置顶</el-dropdown-item>
-          <el-dropdown-item class="el-icon-edit-outline">&nbsp;编辑</el-dropdown-item>
-          <el-dropdown-item class="el-icon-delete">&nbsp;删除</el-dropdown-item>
-          <el-dropdown-item class="el-icon-refresh-right">&nbsp;刷新</el-dropdown-item>
+          <el-dropdown-item class="el-icon-top" command="0" >&nbsp;{{commentInfo.is_top ? '置顶':'不置顶'}}</el-dropdown-item>
+          <el-dropdown-item class="el-icon-edit-outline" command="1" v-if="commentInfo.uid==uid">&nbsp;编辑</el-dropdown-item>
+          <el-dropdown-item class="el-icon-delete" command="2" v-if="commentInfo.uid==uid">&nbsp;删除</el-dropdown-item>
+          <el-dropdown-item class="el-icon-refresh-right" command="3">&nbsp;刷新</el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
     </p>
     <ul class="edit-card-content">
       <li class="edit-card-item x-flex-start border-bottom">
         <p>发布者：</p>
-        <p class="edit-input">{{commentInfo.user_name}}</p>
+        <p class="edit-input">{{type==0 ? username : commentInfo.user_name}}</p>
       </li>
       <li class="edit-card-item x-flex-start border-bottom">
         <p>标题：</p>
         <p
+          :class="{'add-title':type==0}"
           :contenteditable="contenteditable"
-          class="edit-input"
-        >{{ cardType?commentInfo.title:'请输入标题'}}</p>
+          @input="changeInput($event)"
+          class="edit-input" 
+        >{{type ? commentInfo.title: '请输入标题'}}</p>
       </li>
       <li class="edit-card-item x-flex-start border-bottom">
         <p>分类：</p>
-        <p>
-          <span class="tag" v-if="commentInfo">{{getSortType(commentInfo.type)}}</span>
+        <p class="sort">
+          <span v-for="(item,index) in commentSort" @click="selectSort(item.value)" :class="{'tag':item.value==sortType}" :key="index" v-show="type!=2">{{item.label}}</span>
+          <span class="tag" v-if="commentInfo&&type==2">{{getSortType(commentInfo.type)}}</span>
         </p>
       </li>
-      <li class="edit-card-item x-flex-start x-flex-wap border-bottom" v-if="type">
+      <li class="edit-card-item x-flex-start x-flex-wap border-bottom" v-if="type==2">
         <p>内容：</p>
         <p class="edit-card-item-content" v-html="commentInfo.content"></p>
         <p class="edit-card-comment bg-purple text-light">
           <span>{{commentInfo.addtime}}</span>
-          <span class="el-icon-chat-dot-square">&nbsp;评论</span>
+          <span class="el-icon-chat-dot-square" @click="isShow=!isShow">&nbsp;评论</span>
         </p>
       </li>
-      <li class="edit-card-item bg-purple-start x-flex-wap" v-else>
-        <p>内容：</p>
-        <Editor></Editor>
+      <li class="edit-card-item" v-else>
+        <div class=" bg-purple-start">
+          <p>内容：</p>
+          <Editor :content="commentInfo.content"></Editor>
+        </div>
         <div class="edit-btn-box">
           <el-button type="primary" size="mini">提交</el-button>
-          <el-button size="mini">取消</el-button>
+          <el-button size="mini" @click="handleCancle">取消</el-button>
         </div>
       </li>
       <!-- 评论 -->
-      <ReplyCard :commentList="commentList" @submitComment="submitComment"></ReplyCard>
+      <div v-if="type==2&&isShow">
+        <ReplyCard :commentList="commentList" :username="commentInfo.user_name" @submitComment="submitComment"></ReplyCard>
+      </div>    
     </ul>
   </div>
 </template>
@@ -58,7 +65,7 @@
 import { commentSort } from '../../base/base'
 import ReplyCard from './ReplyCard'
 import Editor from './Editor'
-import { getReply, delReplyfirst, delReply } from '../../api/comment'
+import { getReply, delReplyfirst, delReply, addReply, setTopComment, delDiscuss } from '../../api/comment'
 export default {
   components: {
     ReplyCard,
@@ -70,7 +77,17 @@ export default {
       commentSort,
       type: 2,  // 0新建 1 编辑 2查看
       contenteditable: false, // 可编辑
-      commentList: [] //评论列表
+      commentList: [], //评论列表
+      params: {
+        uid: '',
+        discuss_id: ''
+      },
+      sortType: 0,
+      isShow: false,
+      uid: localStorage.getItem('uid'),
+      username: localStorage.getItem('username'),
+      comTitle: '',
+      storeComment: {}
     }
   },
   computed: {
@@ -82,32 +99,96 @@ export default {
   },
   created () {
     this.type = this.cardType
-    if (this.type == 2) {
-      this.getCommentInfo()
-    }
   },
   watch: {
     cardType (val) {
       this.type = val
+      console.log(val)
       if (val != 2) {
         this.contenteditable = true
-      }
-      else {
+      } else {
         this.contenteditable = false
       }
+    },
+    commentInfo(val) {
+      if (val) {
+        this.storeComment = JSON.parse(JSON.stringify(val))
+        this.comTitle = val.title
+        this.sortType = val.type
+        this.params.uid = val.uid
+        this.params.discuss_id = val.id
+        if (this.type == 2) {
+          this.getCommentInfo(this.params)
+        }
+      } 
     }
   },
   methods: {
     // 获取文章详情
-    getCommentInfo () {
-      let params = {
-        uid: this.commentInfo.uid,
-        discuss_id: this.commentInfo.id
-      }
+    getCommentInfo (params) {
       getReply(params).then(res => {
         const { data } = res.data
         this.commentList = data
+        console.log(this.commentList)
       })
+    },
+    handleCommand(index){
+      let params = {
+        uid: this.commentInfo.uid
+      }
+      if (index==0) {
+        let obj = {
+          is_top : this.commentInfo.is_top  ? 0 : 1,
+          discuss_id: this.commentInfo.id
+        }
+        params = Object.assign(obj,params)
+        this.setTop(params)
+      } else if (index ==1) {
+        this.type = 1
+        this.contenteditable = true
+      }
+      else if (index ==2) {
+        params.id = this.commentInfo.id
+        this.delComment(params)
+      }
+      else {
+        params.discuss_id = this.commentInfo.id
+        this.getCommentInfo(params)
+      }
+    },
+    changeInput(e){
+      console.log(e)
+      this.comTitle = '请输入标题'
+    },
+    setTop(params){
+      setTopComment(params).then(res=>{
+        console.log(res)
+        this.commentInfo.is_top = this.commentInfo.is_top ? 0 : 1
+        this.$emit('refurbish')
+      })
+    },
+    delComment(params) {
+      delDiscuss(params).then(res=>{
+        const { status } = res
+        if (status.code == 200) {
+          this.$emit('refurbish')
+          this.$message.success('删除成功')
+        }
+        else {
+          this.$message.error(res.status.remind)
+        }
+      })
+    },
+    handleCancle(){
+      this.type = 2
+      console.log(this.type)    
+      if (this.type == 0 ) {
+        this.$emit('refurbish')
+      }
+      else {
+        this.getCommentInfo(this.params)
+        this.contenteditable = false
+      }
     },
     // 分类
     getSortType (val) {
@@ -118,14 +199,22 @@ export default {
         return obj.label
       }
     },
+    selectSort(value) {
+      this.sortType = value
+      this.commentInfo.sort = value
+    },
     // 提交评论
     submitComment (val) {
       console.log(val)
+      addReply().then(res =>{
+        console.log(res)
+        this.getCommentInfo(this.params)
+      })
     }
   }
 }
 </script>
-<style>
+<style lang="scss">
   .border-bottom {
     border-bottom: 1px solid#eee;
   }
@@ -145,18 +234,20 @@ export default {
     width: 100%
   }
   .edit-input {
-    /* height: 44px; */
     border: none;
     width: 70%;
     text-align: left;
     outline: none;
+    &.add-title {
+      color: #999;
+    }
   }
   .edit-card-title{
     font-weight:bold;
     padding-left:30px;
+    height: 44px;;
   }
   .edit-card-item {
-    /* border-bottom: 1px solid #eee; */
     padding: 12px 30px;
   }
   .edit-btn-box {
@@ -181,8 +272,10 @@ export default {
     text-align: right;
     width: 60px;
   }
-  .tag {
+  .sort span{
     padding:0 22px;
+  }
+  .sort .tag {
     height:26px;
     color: #1890FF;
     line-height: 26px;
@@ -205,70 +298,5 @@ export default {
     color: #999999;
     font-size: 12px;
     margin: 5px 0 10px;
-  }
-  .edit-card-comment-col1 {
-    margin: 0 10px;
-  }
-  .edit-card-comment-col1 >img {
- width:50px;
-    height:50px;
-    border-radius:50%;
-  }
-  .edit-card-comment-col2 {
-    /* margin-left: 10px; */
-    font-size:14px;
-    padding-top: 5px;
-  }
-  .edit-card-comment-section {
-    /* width:100%; */
-    height:274px;
-    background:#F4F4F4;
-    border-radius:5px;
-    padding: 5px 15px 5px 10px;
-  }
-  .reply-btn {
-    padding-right: 15px;
-  }
-  .reply-active {
-    color: #333;
-  }
-  .user-name {
-    color: #1890FF;
-  }
-  .reply {
-    margin: 0 4px;
-    color: #333;
-    font-weight:400;
-  }
-  .edit-card-textarea {
-    background: #fff;
-    padding: 5px 10px 10px;
-    /* margin-bottom: 5px; */
-  }
-  /* .edit-card-emoji {
-   position: relative;
-  } */
-  .edit-card-emoji .emoji-item {
-    position: absolute;
-    top:30px;
-    left: 0;
-    z-index: 222;
-    height: 256px;
-  }
-  .edit-card-textarea .textarea {
-    margin: 10px 0;
-    /* width: 100%; */
-    height: 44px;
-    font-size: 14px;
-    border:1px solid #eee;
-    padding: 0 12px;
-    line-height: 44px;
-  }
-  .edit-card-textarea .textarea {
-    border:1px solid #1890FF;
-    outline: none;
-  }
-  textarea{
-    resize:none!important;
   }
 </style>

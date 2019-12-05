@@ -7,3 +7,6 @@ export const delDiscuss = data => $post('/teambls/del_discuss', data)  // 删除
 export const getReply = data => $post('/teambls/getReply', data)  // 文章评论列表
 export const delReplyfirst = data => $post('/teambls/del_replyfirst', data)  // 删除一级评论
 export const delReply = data => $post('/teambls/del_reply', data)  // 删除二级评论
+export const addReply = data => $post('/teambls/add_reply', data)  // 新增评论
+export const setTopComment = data => $post('/teambls/set_top', data)  // 新增评论
+

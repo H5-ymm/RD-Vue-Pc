@@ -27,7 +27,7 @@ export default {
   data () {
     return {
       breadcrumb: ['设置', '管理控制', '全部管理员'],
-      dialogTableVisible: true,
+      dialogTableVisible: false,
       tableData: [{
         name: '杨萌萌',
         mobile: '18337806536',

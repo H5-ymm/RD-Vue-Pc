@@ -6,7 +6,8 @@
       v-for="(item,index) in list"
       :key="index"
     >
-      <section class="view-card-row bg-purple-start">
+      <section class="view-card-row bg-purple-start" @click="selectComment(index,item)">
+        <span class="top"><span>置顶</span></span>
         <div class="view-card-col1">
           <img src="../../assets/img/img1.png" alt />
         </div>
@@ -43,6 +44,12 @@ export default {
       activeIndex: 0,
       commentSort
     }
+  },
+  methods: {
+    selectComment(index,item) {
+      this.activeIndex = index
+      this.$emit('selectComment',item.id)
+    }
   }
 }
 </script>
@@ -64,6 +71,24 @@ export default {
     height: 130px;
     border-bottom: 1px solid #eee;
     box-sizing: border-box;
+    position: relative;
+    /* overflow: hidden; */
+  }
+  .top {
+    position: absolute;
+    top:-2px;
+    left: -58px;
+    border-bottom: 30px solid red; 
+    border-left: 30px solid transparent;            
+    border-right: 30px solid transparent;            
+    width: 30px;
+    transform: rotate(-45deg) scale(0.6);
+    color:#fff;
+    font-size: 14px;
+  }
+  .top span {
+    position: absolute;
+    top: 6px;
   }
   .view-card-col1 {
     width: 20%;

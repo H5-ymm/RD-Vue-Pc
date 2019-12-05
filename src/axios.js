@@ -100,7 +100,7 @@ export function $post (url, params) {
 }
 export function upload (params) {
   return new Promise((resolve, reject) => {
-    $axios.post(`http://tiantianxsg.com:39888/index.php/uploadimg/moreupload`, params)
+    $axios.post(`${baseURL}/uploadimg/moreupload`, params)
       .then(res => {
         resolve(res.data)
       })

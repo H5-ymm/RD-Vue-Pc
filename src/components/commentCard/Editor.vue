@@ -5,7 +5,9 @@
 import VEmojiPicker from 'v-emoji-picker';
 import packData from 'v-emoji-picker/data/emojis.json';
 import E from 'wangeditor'
+import { upload } from '../../axios'
 export default {
+  props:['content'],
   data () {
     return {
       menus: [
@@ -32,40 +34,38 @@ export default {
   },
   mounted () {
     var editor = new E('#editor')
-    console.log(packData.data)
     let arr = packData.data.map(item => { return item.emoji })
-    console.log(arr)
     editor.customConfig.menus = this.menus
     editor.customConfig.emotions = [
-      // {
-      //   // tab 的标题
-      //   title: '默认',
-      //   // type -> 'emoji' / 'image'
-      //   type: 'image',
-      //   // content -> 数组
-      //   content: [
-      //     {
-      //       alt: '[坏笑]',
-      //       src: 'http://img.t.sinajs.cn/t4/appstyle/expression/ext/normal/50/pcmoren_huaixiao_org.png'
-      //     },
-      //     {
-      //       alt: '[舔屏]',
-      //       src: 'http://img.t.sinajs.cn/t4/appstyle/expression/ext/normal/40/pcmoren_tian_org.png'
-      //     }
-      //   ]
-      // },
       {
-        // tab 的标题
         title: 'emoji',
         type: 'emoji',
         content: arr
       }]
+    editor.customConfig.customUploadImg = (files, insert) => {
+      console.log(files)
+      this.insert(files[0])
+    }
     editor.create()
-    editor.txt.html('请在此处开始您的创作')
+    if (this.content) {
+      editor.txt.html(this.content)
+    }
+    else {
+      editor.txt.html('请在此处开始您的创作')
+    }
   },
+  methods:{
+    insert(imgUrl){
+      upload(imgUrl).then(res=>{
+        console.log(res)
+      })
+    }
+  }
 }
 </script>
 
-<style>
-
+<style lang="scss">
+ .editor {
+   width:92%;
+ }
 </style>
