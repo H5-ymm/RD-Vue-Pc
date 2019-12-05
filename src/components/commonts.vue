@@ -7,13 +7,13 @@
           <el-input placeholder="搜索" class="team-input">
             <i slot="prefix" class="el-input__icon el-icon-search"></i>
           </el-input>
-          <el-dropdown>
+          <el-dropdown @command="handleCommand">
             <el-button class="dropdown-button">
               <i class="el-icon-more"></i>
             </el-button>
             <el-dropdown-menu slot="dropdown" class="dropdown-menu">
-              <el-dropdown-item class="el-icon-plus" @click="handle(0)">&nbsp;新增</el-dropdown-item>
-              <el-dropdown-item class="el-icon-refresh-right">&nbsp;刷新</el-dropdown-item>
+              <el-dropdown-item class="el-icon-plus" command="0">&nbsp;新增</el-dropdown-item>
+              <el-dropdown-item class="el-icon-refresh-right" command="3">&nbsp;刷新</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
         </div>
@@ -23,17 +23,17 @@
       </div>
       <div class="team-box-content team-box-right">
         <!-- <edit-card></edit-card> -->
-        <detail-card :cardType="type" :teamInfo="teamInfo"></detail-card>
+        <detail-card :cardType="type" :commentInfo="commentInfo"></detail-card>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-// import Breadcrumb from './breadcrumb/Breadcrumb'
 import PersonCard from './commentCard/PersonCard'
 import EditCard from './commentCard/EditCard'
 import DetailCard from './commentCard/DetailCard'
+import { getDiscussList, getDiscussInfo } from '../api/comment'
 export default {
   components: {
     PersonCard,
@@ -42,41 +42,42 @@ export default {
   },
   data () {
     return {
-      breadcrumb: ['评论管理', '文章评论'],
       tableData: [],  //初始化数据
       Number: 10,  //每页条数
       num: 1,  //页码
       numA: 10,  //页码
       AllNum: 0,  //全部条数
       type: 2,
-      list: [{
-        title: '2019年12月1日晨会',
-        time: '2019-12-20',
-        name: '杨萌萌'
-      },
-      {
-        title: '2019年12月10日晨会',
-        time: '2019-12-10',
-        name: '杨啦啦'
-      }],
+      list: [],
       activeIndex: 0,
-      teamInfo: {
-        title: '2019年12月1日晨会',
-        name: '杨萌萌',
-        sort: '晨会',
-        content: '2019年12月1日晨会 汇报各位上周的工作情况',
-        time: '2019-10-20'
-      }
+      commentInfo: {},
+      params: {
+        uid: 5,
+        title: ''
+      },
+      commentId: ''
     }
   },
-  created() {
+  created () {
+    this.getList()
   },
   methods: {
-    handle (index) {
-      this.type = index
-      console.log(index)
+    getList () {
+      getDiscussList(this.params).then(res => {
+        this.list = res.data.data
+        this.commentId = this.list[0].id
+        this.getDetail(this.commentId)
+      })
     },
-    handleCurrentChange(val) {
+    getDetail (id) {
+      getDiscussInfo({ id }).then(res => {
+        this.commentInfo = res.data
+      })
+    },
+    handleCommand (command) {
+      this.type = command
+    },
+    handleCurrentChange (val) {
       this.num = val
       this.reverseUser()
     },

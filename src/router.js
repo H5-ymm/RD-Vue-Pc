@@ -79,9 +79,9 @@ let routers = new Router({
           }
         },
         { //新增标签
-          path: 'addtable',
-          name: 'Addtable',
-          component: Addtable,
+          path: '/markdowns',
+          name: 'markdowns',
+          component: markdowns,
           meta: {
             requiresAuth: 2
           }

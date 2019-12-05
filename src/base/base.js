@@ -69,3 +69,11 @@ export const paymentTaxType = [
   { label: '缴纳', value: 2 },
   { label: '不缴纳', value: 3 }
 ]
+
+export const commentSort = [
+  { label: '晨会', value: 0 },
+  { label: '通知', value: 1 },
+  { label: '文章', value: 2 },
+  { label: '经验分享', value: 3 },
+  { label: '工作日志', value: 4 }
+]

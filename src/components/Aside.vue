@@ -25,7 +25,13 @@
               <i class="el-icon-collection"></i>
               <span>{{item.title}}</span>
             </template>
-            <el-menu-item :index="val.title" :class="{'is-active':title==val.title}" v-for="(val,ind) in item.submenu" :key="ind" :route="val.url">{{val.title}}</el-menu-item>
+            <el-menu-item
+              :index="val.title"
+              :class="{'is-active':title==val.title}"
+              v-for="(val,ind) in item.submenu"
+              :key="ind"
+              :route="val.url"
+            >{{val.title}}</el-menu-item>
           </el-submenu>
           <!-- <el-submenu index="4" class="acts">
             <template slot="title">
@@ -63,7 +69,7 @@
               <span>关于本站</span>
             </template>
             <el-menu-item index="/abouts">关于本站</el-menu-item>
-          </el-submenu> -->
+          </el-submenu>-->
         </el-menu>
       </el-col>
     </el-row>
@@ -76,26 +82,30 @@ export default {
   props: {
 
   },
-  data() {
+  data () {
     return {
-      menus:[
+      menus: [
         {
-          title:'团队论坛',
-          icon:'el-icon-collection',
-          submenu:[
+          title: '团队论坛',
+          icon: 'el-icon-collection',
+          submenu: [
             {
-              title:'论坛列表',
+              title: '论坛列表',
               url: '/commonts'
             }
           ]
         },
         {
-          title:'团队管理',
-          icon:'el-icon-collection-tag',
-          submenu:[
+          title: '团队管理',
+          icon: 'el-icon-collection-tag',
+          submenu: [
             {
-              title:'成员管理',
+              title: '成员管理',
               url: '/userlist'
+            },
+            {
+              title: '管理',
+              url: '/markdowns'
             }
           ]
         }
@@ -110,20 +120,20 @@ export default {
     handleClose (key, keyPath) {
       //console.log(key, keyPath);
     },
-    escUser() {
+    escUser () {
       window.localStorage.clear()
       window.sessionStorage.clear()
       this.$router.push('/load')
     },
-    selectMenus(key, keyPath){
+    selectMenus (key, keyPath) {
       console.log(key, keyPath)
       this.title = key
       let arr = [key]
-      sessionStorage.setItem('menus',JSON.stringify(arr))
+      sessionStorage.setItem('menus', JSON.stringify(arr))
     }
   },
   computed: {
-    routerli() {
+    routerli () {
       // 对应路由
       let pathStr = this.$route.path.split('/')
       console.log(pathStr)

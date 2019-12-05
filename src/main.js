@@ -20,7 +20,7 @@ import 'quill/dist/quill.core.css'
 import 'quill/dist/quill.snow.css'
 import 'quill/dist/quill.bubble.css'
 import './assets/css/init.css'
-
+import './assets/css/element-variables.scss'
 // 引入axios
 import axios from './axios'
 Vue.prototype.$http = axios

@@ -16,7 +16,7 @@
           :key="index"
         >{{item.name}}</li>
       </ul>
-      <div class="x-flex-start list box">
+      <div class="x-flex-start list city-box">
         <span
           v-for="(item,index) in cityList"
           @click="getCityCode(item)"
@@ -89,6 +89,12 @@ export default {
   .dialog-city {
     overflow: hidden;
   }
+  .v-note-wrapper .v-note-op .v-left-item .op-icon-divider {
+    border-right: none;
+  }
+  .v-note-wrapper .v-note-op {
+    height: 30px;
+  }
   .dialog-city .el-dialog__body {
     padding: 0;
   }
@@ -110,7 +116,7 @@ export default {
   .city-content {
     height:400px;
   }
-  .box {
+  .city-box {
     flex-wrap: wrap;
   }
   .provice-hover:hover{
@@ -130,7 +136,7 @@ export default {
     left: 0;
     top:0;
   }
-  .box span {
+  .city-box span {
     display: inline-block;
     width: 25%;
     height: 40px;

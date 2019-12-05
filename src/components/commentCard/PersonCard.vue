@@ -14,24 +14,34 @@
           <p>{{item.title}}</p>
           <p>
             发布者：
-            <span class="nick-name">{{item.name}}</span>
+            <span class="nick-name">{{item.username}}</span>
           </p>
-          <p class="time">更新时间：{{item.time}}</p>
+          <p class="time">更新时间：{{item.addtime}}</p>
         </div>
         <div class="view-card-col3">
-          <el-button round size="mini">通知</el-button>
+          <el-button round size="mini">{{item.type | sortType(item.type)}}</el-button>
         </div>
       </section>
     </div>
   </div>
 </template>
 <script>
+import { commentSort } from '../../base/base'
 export default {
+  filters: {
+    sortType (val) {
+      let obj = commentSort.find(item => {
+        return val == item.value
+      })
+      return obj.label
+    }
+  },
   name: 'card',
   props: ['list'],
   data () {
     return {
-      activeIndex: 0
+      activeIndex: 0,
+      commentSort
     }
   }
 }

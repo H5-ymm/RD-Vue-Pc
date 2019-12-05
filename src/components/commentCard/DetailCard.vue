@@ -1,9 +1,9 @@
 <template>
-  <div class="edit-card">
+  <div class="edit-card" v-if="commentInfo">
     <p class="edit-card-title border-bottom bg-purple">
       <!-- 2019年12月1日晨会-查看详情 -->
       {{title}}
-      <el-dropdown v-if="cardType==2">
+      <el-dropdown v-if="type==2">
         <el-button class="dropdown-button">
           <i class="el-icon-more"></i>
         </el-button>
@@ -18,129 +18,109 @@
     <ul class="edit-card-content">
       <li class="edit-card-item x-flex-start border-bottom">
         <p>发布者：</p>
-        <p class="edit-input">{{teamInfo.name}}</p>
+        <p class="edit-input">{{commentInfo.user_name}}</p>
       </li>
       <li class="edit-card-item x-flex-start border-bottom">
         <p>标题：</p>
         <p
           :contenteditable="contenteditable"
           class="edit-input"
-        >{{ cardType?teamInfo.title:'请输入标题'}}</p>
+        >{{ cardType?commentInfo.title:'请输入标题'}}</p>
       </li>
       <li class="edit-card-item x-flex-start border-bottom">
         <p>分类：</p>
         <p>
-          <span class="tag">{{teamInfo.sort}}</span>
+          <span class="tag" v-if="commentInfo">{{getSortType(commentInfo.type)}}</span>
         </p>
       </li>
-      <li class="edit-card-item x-flex-start x-flex-wap border-bottom">
+      <li class="edit-card-item x-flex-start x-flex-wap border-bottom" v-if="type">
         <p>内容：</p>
-        <p class="edit-card-item-content" v-html="teamInfo.content"></p>
+        <p class="edit-card-item-content" v-html="commentInfo.content"></p>
         <p class="edit-card-comment bg-purple text-light">
-          <span>{{teamInfo.time}}</span>
+          <span>{{commentInfo.addtime}}</span>
           <span class="el-icon-chat-dot-square">&nbsp;评论</span>
         </p>
       </li>
-      <li class="edit-card-item x-flex-start">
-        <img src="../../assets/img/img1.png" alt class="edit-card-comment-col1" />
-        <div class="edit-card-comment-col2">
-          <p>
-            <span class="user-name">喜马拉雅</span>
-            <span>：上周工作总体已完成，有两个项目已收尾，有三个项目已经做好准备工作，下周开始</span>
-          </p>
-          <p class="bg-purple text-light reply-btn">
-            <span>2019-12-01</span>
-            <span>回复</span>
-          </p>
-          <section class="edit-card-comment-section">
-            <div class="x-flex-start border-bottom">
-              <div class="edit-card-comment-col2">
-                <p>
-                  <span class="user-name">喜马拉雅</span>
-                  <span>：上周工作总体已完成，有两个项目已收尾，有三个项目已经做好准备工作，下周开始</span>
-                </p>
-                <p class="bg-purple text-light">
-                  <span>2019-12-01</span>
-                  <span>回复</span>
-                </p>
-              </div>
-            </div>
-            <div class="x-flex-start">
-              <div class="edit-card-comment-col2">
-                <p>
-                  <span class="user-name">喜马拉雅</span>
-                  <span class="reply">回复</span>
-                  <span class="user-name">喜马拉雅</span>
-                  <span>：上周工作总体已完成，有两个项目已收尾，有三个项目已经做好准备工作，下周开始</span>
-                </p>
-                <p class="bg-purple text-light">
-                  <span>2019-12-01</span>
-                  <span class="reply-active">回复</span>
-                </p>
-              </div>
-            </div>
-            <div class="edit-card-textarea border-bottom">
-              <div contenteditable class="textarea" v-html="emoji" ref="replyContent"></div>
-              <div class="bg-purple edit-card-emoji">
-                <img src="../../assets/img/emjo.png" alt @click="showEmoji=!showEmoji"/>
-                <VEmojiPicker :pack="pack.data" v-show="showEmoji"  @select="selectEmoji" class="emoji-item" />
-                <div>
-                  <el-button size="mini">取消</el-button>
-                  <el-button size="mini" type="primary">回复</el-button>
-                </div>
-              </div>
-            </div>
-          </section>
+      <li class="edit-card-item bg-purple-start x-flex-wap" v-else>
+        <p>内容：</p>
+        <Editor></Editor>
+        <div class="edit-btn-box">
+          <el-button type="primary" size="mini">提交</el-button>
+          <el-button size="mini">取消</el-button>
         </div>
       </li>
+      <!-- 评论 -->
+      <ReplyCard :commentList="commentList" @submitComment="submitComment"></ReplyCard>
     </ul>
   </div>
 </template>
 <script>
-import VEmojiPicker from 'v-emoji-picker';
-import packData from 'v-emoji-picker/data/emojis.json';
+import { commentSort } from '../../base/base'
+import ReplyCard from './ReplyCard'
+import Editor from './Editor'
+import { getReply, delReplyfirst, delReply } from '../../api/comment'
 export default {
   components: {
-    VEmojiPicker
+    ReplyCard,
+    Editor
   },
-  props: ['cardType', 'teamInfo'],
+  props: ['cardType', 'commentInfo'],
   data () {
     return {
-      autoSize: { minRows: 1, maxRows: 4 },
-      pack: packData,
-      type: 0,  // 0新建 1 编辑 2查看
-      contenteditable: false,
-      emoji: '请输入内容',
-      showEmoji:false
+      commentSort,
+      type: 2,  // 0新建 1 编辑 2查看
+      contenteditable: false, // 可编辑
+      commentList: [] //评论列表
     }
   },
   computed: {
     title () {
-      return this.cardType == 0 ? '新增' : this.cardType == 0 ? `${this.teamInfo.title}-编辑` : `${this.teamInfo.title}-查看详情`
-    }
-  },
-  created () {
-    if (this.cardType != 2) {
-      this.contenteditable = true
-    }
-    else {
-      this.contenteditable = false
-    }
-  },
-  watch:{
-    showEmoji(val){
-      if (val) {
-        document.getElementById('InputSearch').style.display="none"
+      if (this.commentInfo) {
+        return this.cardType == 0 ? '新增' : this.cardType == 0 ? `${this.commentInfo.title}-编辑` : `${this.commentInfo.title}-查看详情`
       }
     }
   },
-  mounted () {
+  created () {
+    this.type = this.cardType
+    if (this.type == 2) {
+      this.getCommentInfo()
+    }
+  },
+  watch: {
+    cardType (val) {
+      this.type = val
+      if (val != 2) {
+        this.contenteditable = true
+      }
+      else {
+        this.contenteditable = false
+      }
+    }
   },
   methods: {
-    selectEmoji (info) {
-      console.log(info)
-      this.emoji = info.emoji
-      this.showEmoji = false
+    // 获取文章详情
+    getCommentInfo () {
+      let params = {
+        uid: this.commentInfo.uid,
+        discuss_id: this.commentInfo.id
+      }
+      getReply(params).then(res => {
+        const { data } = res.data
+        this.commentList = data
+      })
+    },
+    // 分类
+    getSortType (val) {
+      let obj = this.commentSort.find(item => {
+        return val == item.value
+      })
+      if (obj) {
+        return obj.label
+      }
+    },
+    // 提交评论
+    submitComment (val) {
+      console.log(val)
     }
   }
 }
@@ -148,6 +128,13 @@ export default {
 <style>
   .border-bottom {
     border-bottom: 1px solid#eee;
+  }
+  .w-e-text-container,.w-e-toolbar {
+    border: 1px solid #eee!important;
+  }
+  .w-e-text {
+    overflow-y: auto;
+    padding: 10px;
   }
   .edit-card {
     font-size: 14px;
@@ -171,6 +158,13 @@ export default {
   .edit-card-item {
     /* border-bottom: 1px solid #eee; */
     padding: 12px 30px;
+  }
+  .edit-btn-box {
+    margin: 40px 70px;
+  }
+  .edit-btn-box .el-buton {
+    border-radius: 0;
+    margin-right: 30px;
   }
   .el-dropdown .dropdown-button {
     background:rgba(255,255,255,1);
@@ -213,10 +207,12 @@ export default {
     margin: 5px 0 10px;
   }
   .edit-card-comment-col1 {
-    width:50px;
+    margin: 0 10px;
+  }
+  .edit-card-comment-col1 >img {
+ width:50px;
     height:50px;
     border-radius:50%;
-    margin: 0 10px;
   }
   .edit-card-comment-col2 {
     /* margin-left: 10px; */

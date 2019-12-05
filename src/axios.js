@@ -13,10 +13,10 @@ $axios.interceptors.request.use(
     // 此处应根据具体业务写token
     const token = localStorage.getItem('token');
     // const token = 'ca8165aa88d74bf48164177fb';
-    if (localStorage.getItem('token')) {
-      // config.headers['HTTP_TOKEN'] = token || 'ca8165aa88d74bf48164177fb';
-      // config.headers['HTTP-USERID'] = JSON.parse(localStorage.getItem('userInfo')).id
-    }
+    // if (localStorage.getItem('token')) {
+    // config.headers['HTTP_TOKEN'] = token || 'ca8165aa88d74bf48164177fb';
+    config.headers['HTTP-USERID'] = 5
+    // }
     config.headers = { 'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8' }
     return config;
   },
