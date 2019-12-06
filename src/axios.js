@@ -15,7 +15,7 @@ $axios.interceptors.request.use(
     // const token = 'ca8165aa88d74bf48164177fb';
     // if (localStorage.getItem('token')) {
     // config.headers['HTTP_TOKEN'] = token || 'ca8165aa88d74bf48164177fb';
-    config.headers['HTTP-USERID'] = 5
+    // config.headers['HTTP-USERID'] = 6
     // }
     config.headers = { 'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8' }
     return config;
@@ -99,6 +99,7 @@ export function $post (url, params) {
   });
 }
 export function upload (params) {
+  console.log(params)
   return new Promise((resolve, reject) => {
     $axios.post(`${baseURL}/uploadimg/moreupload`, params)
       .then(res => {

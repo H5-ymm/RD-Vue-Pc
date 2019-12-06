@@ -8,8 +8,15 @@
           <i class="el-icon-more"></i>
         </el-button>
         <el-dropdown-menu slot="dropdown" class="dropdown-menu">
-          <el-dropdown-item class="el-icon-top" command="0" >&nbsp;{{commentInfo.is_top ? '置顶':'不置顶'}}</el-dropdown-item>
-          <el-dropdown-item class="el-icon-edit-outline" command="1" v-if="commentInfo.uid==uid">&nbsp;编辑</el-dropdown-item>
+          <el-dropdown-item
+            class="el-icon-top"
+            command="0"
+          >&nbsp;{{commentInfo.is_top ? '置顶':'不置顶'}}</el-dropdown-item>
+          <el-dropdown-item
+            class="el-icon-edit-outline"
+            command="1"
+            v-if="commentInfo.uid==uid"
+          >&nbsp;编辑</el-dropdown-item>
           <el-dropdown-item class="el-icon-delete" command="2" v-if="commentInfo.uid==uid">&nbsp;删除</el-dropdown-item>
           <el-dropdown-item class="el-icon-refresh-right" command="3">&nbsp;刷新</el-dropdown-item>
         </el-dropdown-menu>
@@ -26,13 +33,19 @@
           :class="{'add-title':type==0}"
           :contenteditable="contenteditable"
           @input="changeInput($event)"
-          class="edit-input" 
+          class="edit-input"
         >{{type ? commentInfo.title: '请输入标题'}}</p>
       </li>
       <li class="edit-card-item x-flex-start border-bottom">
         <p>分类：</p>
         <p class="sort">
-          <span v-for="(item,index) in commentSort" @click="selectSort(item.value)" :class="{'tag':item.value==sortType}" :key="index" v-show="type!=2">{{item.label}}</span>
+          <span
+            v-for="(item,index) in commentSort"
+            @click="selectSort(item.value)"
+            :class="{'tag':item.value==sortType}"
+            :key="index"
+            v-show="type!=2"
+          >{{item.label}}</span>
           <span class="tag" v-if="commentInfo&&type==2">{{getSortType(commentInfo.type)}}</span>
         </p>
       </li>
@@ -41,35 +54,51 @@
         <p class="edit-card-item-content" v-html="commentInfo.content"></p>
         <p class="edit-card-comment bg-purple text-light">
           <span>{{commentInfo.addtime}}</span>
-          <span class="el-icon-chat-dot-square" @click="isShow=!isShow">&nbsp;评论</span>
+          <span class="el-icon-chat-dot-square" @click="reply">&nbsp;评论</span>
         </p>
+        <commentInput
+          :createdName="commentInfo.user_name"
+          @submitComment="submitComment"
+          :isShow="isShow"
+          @cancleComment="cancleComment"
+        ></commentInput>
       </li>
       <li class="edit-card-item" v-else>
-        <div class=" bg-purple-start">
+        <div class="bg-purple-start">
           <p>内容：</p>
           <Editor :content="commentInfo.content"></Editor>
         </div>
         <div class="edit-btn-box">
-          <el-button type="primary" size="mini">提交</el-button>
+          <el-button type="primary" size="mini" @click="submit(type)">提交</el-button>
           <el-button size="mini" @click="handleCancle">取消</el-button>
         </div>
       </li>
       <!-- 评论 -->
-      <div v-if="type==2&&isShow">
-        <ReplyCard :commentList="commentList" :username="commentInfo.user_name" @submitComment="submitComment"></ReplyCard>
-      </div>    
+      <div class="reply-card">
+        <ReplyCard
+          :showComment="type==2&&showComment"
+          :commentList="commentList"
+          :username="commentInfo.user_name"
+          @submit="submitChildComment"
+          @delelteReply="delelteReply"
+          @deleteComment="deleteReplyfirst"
+          @cancelComment="isShow=false"
+        ></ReplyCard>
+      </div>
     </ul>
   </div>
 </template>
 <script>
 import { commentSort } from '../../base/base'
 import ReplyCard from './ReplyCard'
+import commentInput from './commentInput'
 import Editor from './Editor'
 import { getReply, delReplyfirst, delReply, addReply, setTopComment, delDiscuss } from '../../api/comment'
 export default {
   components: {
     ReplyCard,
-    Editor
+    Editor,
+    commentInput
   },
   props: ['cardType', 'commentInfo'],
   data () {
@@ -87,7 +116,9 @@ export default {
       uid: localStorage.getItem('uid'),
       username: localStorage.getItem('username'),
       comTitle: '',
-      storeComment: {}
+      storeComment: {},
+      content: '',
+      showComment: false
     }
   },
   computed: {
@@ -103,90 +134,126 @@ export default {
   watch: {
     cardType (val) {
       this.type = val
-      console.log(val)
       if (val != 2) {
         this.contenteditable = true
       } else {
         this.contenteditable = false
       }
     },
-    commentInfo(val) {
+    commentInfo (val) {
       if (val) {
+        this.showComment = false
+        this.isShow = false
         this.storeComment = JSON.parse(JSON.stringify(val))
         this.comTitle = val.title
         this.sortType = val.type
         this.params.uid = val.uid
         this.params.discuss_id = val.id
         if (this.type == 2) {
-          this.getCommentInfo(this.params)
+          this.commentList = []
+          this.getCommentList(this.params)
         }
-      } 
+      }
     }
   },
   methods: {
-    // 获取文章详情
-    getCommentInfo (params) {
+    // 获取文章评论列表
+    getCommentList (params) {
       getReply(params).then(res => {
         const { data } = res.data
-        this.commentList = data
-        console.log(this.commentList)
+        this.$nextTick(() => {
+          this.commentList = data
+        })
       })
     },
-    handleCommand(index){
+    handleCommand (index) {
       let params = {
         uid: this.commentInfo.uid
       }
-      if (index==0) {
+      if (index == 0) {
         let obj = {
-          is_top : this.commentInfo.is_top  ? 0 : 1,
+          is_top: this.commentInfo.is_top ? 0 : 1,
           discuss_id: this.commentInfo.id
         }
-        params = Object.assign(obj,params)
+        params = Object.assign(obj, params)
         this.setTop(params)
-      } else if (index ==1) {
+      } else if (index == 1) {
         this.type = 1
         this.contenteditable = true
       }
-      else if (index ==2) {
+      else if (index == 2) {
         params.id = this.commentInfo.id
-        this.delComment(params)
+        this.deleteDiscuss(params)
       }
       else {
         params.discuss_id = this.commentInfo.id
-        this.getCommentInfo(params)
+        this.getCommentList(params)
       }
     },
-    changeInput(e){
-      console.log(e)
+    reply () {
+      this.isShow = !this.isShow
+      this.showComment = !this.showComment
+    },
+    changeInput (e) {
       this.comTitle = '请输入标题'
     },
-    setTop(params){
-      setTopComment(params).then(res=>{
-        console.log(res)
+    setTop (params) {
+      setTopComment(params).then(res => {
         this.commentInfo.is_top = this.commentInfo.is_top ? 0 : 1
         this.$emit('refurbish')
       })
     },
-    delComment(params) {
-      delDiscuss(params).then(res=>{
+    // 删除文章
+    deleteDiscuss (params) {
+      delDiscuss(params).then(res => {
         const { status } = res
-        if (status.code == 200) {
-          this.$emit('refurbish')
-          this.$message.success('删除成功')
-        }
-        else {
-          this.$message.error(res.status.remind)
-        }
+        this.$emit('refurbish')
+        this.delTip(status.code, res.status.remind)
+      }).catch(error => {
+        this.delTip(error.status.code, error.status.remind)
       })
     },
-    handleCancle(){
+    // 删除一级评论
+    deleteReplyfirst (id) {
+      let params = {
+        id,
+        uid: this.uid
+      }
+      delReplyfirst(params).then(res => {
+        this.getCommentList(this.params)
+        this.delTip(res.status.code, res.status.remind)
+      }).catch(error => {
+        this.delTip(error.status.code, error.status.remind)
+      })
+    },
+    delTip (code, message) {
+      if (code == 200) {
+        this.$message.success('删除成功')
+      }
+      else {
+        this.$message.error(message)
+      }
+    },
+    // 删除二级评论
+    delelteReply (id) {
+      let params = {
+        id,
+        uid: this.uid
+      }
+      delReply(params).then(res => {
+        this.getCommentList(this.params)
+        this.delTip(res.status.code, res.status.remind)
+      }).catch(error => {
+        this.delTip(error.status.code, error.status.remind)
+      })
+    },
+    handleCancle () {
       this.type = 2
-      console.log(this.type)    
-      if (this.type == 0 ) {
+      if (this.type == 0) {
         this.$emit('refurbish')
       }
       else {
-        this.getCommentInfo(this.params)
+        this.getCommentList(this.params)
         this.contenteditable = false
       }
     },
@@ -199,17 +266,39 @@ export default {
         return obj.label
       }
     },
-    selectSort(value) {
+    selectSort (value) {
       this.sortType = value
       this.commentInfo.sort = value
     },
     // 提交评论
     submitComment (val) {
-      console.log(val)
-      addReply().then(res =>{
-        console.log(res)
-        this.getCommentInfo(this.params)
+      let params = {
+        uid: localStorage.getItem('uid'),
+        type: 1,
+        content: val,
+        p_id: 0,
+        discuss_id: this.commentInfo.id,
+        comment_id: 0
+      }
+      this.saveComment(params)
+    },
+    saveComment (params) {
+      addReply(params).then(res => {
+        this.getCommentList(this.params)
+        this.isShow = false
+        this.showComment = true
       })
+    },
+    // 修改、编辑
+    submit (type) {
+      console.log(type)
+    },
+    submitChildComment (val) {
+      this.saveComment(val)
+    },
+    cancleComment () {
+      this.showComment = false
+      this.isShow = false
     }
   }
 }
@@ -298,5 +387,8 @@ export default {
     color: #999999;
     font-size: 12px;
     margin: 5px 0 10px;
+  }
+  .reply-card {
+    margin-right: 32px;
   }
 </style>

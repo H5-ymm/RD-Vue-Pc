@@ -313,7 +313,7 @@ export default {
   /* overflow: hidden;  */
 }
 .login-page {
-  /* height: 100vh; */
+  height: 100%;
 }
 .loads .el-main {
   padding:0;

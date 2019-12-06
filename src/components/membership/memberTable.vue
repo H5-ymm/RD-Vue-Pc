@@ -2,7 +2,7 @@
   <div class="member-table">
     <div class="action-btn x-flex-between">
       <div>
-        <el-button type="primary" icon="el-icon-plus">添加</el-button>
+        <el-button type="primary" icon="el-icon-plus" @click="visible=true">添加</el-button>
         <el-button>删除</el-button>
         <el-button>锁定</el-button>
         <span class="select-text">
@@ -12,7 +12,7 @@
         <el-button type="text">清空</el-button>
       </div>
       <div>
-        <el-button>解散团队</el-button>
+        <el-button @click="dismissTeam()">解散团队</el-button>
       </div>
     </div>
     <div class="table">
@@ -24,75 +24,73 @@
         @selection-change="handleSelectionChange"
       >
         <el-table-column label="序号" type="selection" align="center" width="60"></el-table-column>
-        <el-table-column label="姓名" prop="name" align="center" width="100"></el-table-column>
-        <el-table-column label="联系电话" prop="mobile" align="center" width="160"></el-table-column>
-        <el-table-column label="所属部门" prop="name" align="center" width="100"></el-table-column>
-        <el-table-column label="等级" prop="mobile" sortable align="center" width="160"></el-table-column>
-        <el-table-column label="直属上级" prop="name" align="center" width="100"></el-table-column>
-        <el-table-column label="简历数量" prop="number" align="center" width="80"></el-table-column>
-        <el-table-column label="入职人数" prop="number" align="center" width="80"></el-table-column>
-        <el-table-column label="最近登录时间" prop="loginTime" align="center" width="260"></el-table-column>
-        <el-table-column label="状态" prop="status" align="center" width="80"></el-table-column>
+        <el-table-column label="姓名" align="center" width="150">
+          <template slot-scope="props">
+            <el-button type="text" @click="handleEdit(props.row)">{{props.row.user_name}}</el-button>
+          </template>
+        </el-table-column>
+        <el-table-column label="联系电话" prop="mobile" align="center" width="150"></el-table-column>
+        <el-table-column label="所属部门" prop="depart_name" align="center" width="150"></el-table-column>
+        <el-table-column label="等级" prop="grade_name" sortable align="center" width="150"></el-table-column>
+        <el-table-column label="直属上级" prop="grade_name" align="center" width="150"></el-table-column>
+        <el-table-column label="简历数量" prop="entry_num" align="center" width="150"></el-table-column>
+        <el-table-column label="入职人数" prop="entry_num" align="center" width="150"></el-table-column>
+        <el-table-column label="最近登录时间" prop="logout_time" align="center" width="260"></el-table-column>
+        <el-table-column label="状态" align="center" width="150">
+          <template slot-scope="props">
+            <span class="status">{{props.row.status==1?"正常":'锁定'}}</span>
+          </template>
+        </el-table-column>
         <el-table-column label="操作" fixed="right" align="center" width="150">
           <template slot-scope="scope">
-            <el-button @click="handleClickB(scope.row)" type="text" size="small">编辑</el-button>
+            <el-button @click="handleEdit(scope.row)" type="text" size="small">编辑</el-button>
             <el-button @click="handleClickB(scope.row)" type="text" size="small">删除</el-button>
-            <el-button @click="handleClickB(scope.row)" type="text" size="small">查看</el-button>
           </template>
         </el-table-column>
       </el-table>
     </div>
-    <el-pagination
-      class="team-pagination"
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-      :current-page="currentPage"
-      :page-sizes="[100, 200, 300, 400]"
-      :page-size="100"
-      layout="total, sizes, prev, pager, next, jumper"
-      :total="400"
-    ></el-pagination>
+    <memberAdd :dialogTableVisible="visible"></memberAdd>
+    <memberInfo :dialogTableVisible="dialogTableVisible" :memberInfo="memberInfo" :teamId="teamId"></memberInfo>
   </div>
 </template>
 <script>
+import memberInfo from './memberInfo'
+import memberAdd from './memberAdd'
+
 export default {
+  components: {
+    memberInfo,
+    memberAdd
+  },
+  props: {
+    tableData: {
+      type: []
+    }
+  },
+  props: ['tableData'],
   data () {
     return {
-      tableData: [{
-        name: '杨萌萌',
-        mobile: '18337806536',
-        number: 23,
-        status: '锁定',
-        loginTime: '2019-11-30 18:35:50'
-      }, {
-        name: '杨萌萌',
-        mobile: '18337806536',
-        number: 23,
-        status: '锁定',
-        loginTime: '2019-11-30 18:35:50'
-      }, {
-        name: '杨萌萌',
-        mobile: '18337806536',
-        number: 23,
-        status: '锁定',
-        loginTime: '2019-11-30 18:35:50'
-      }],
       currentPage: 1,
-      multipleSelection: []
+      multipleSelection: [],
+      dialogTableVisible: false,
+      visible: false,
+      memberInfo: {},
+      teamId: ''
     }
   },
   methods: {
-    handleSizeChange (val) {
-      console.log(`每页 ${val} 条`);
-    },
-    handleCurrentChange (val) {
-      console.log(`当前页: ${val}`);
+    handleEdit (row) {
+      this.dialogTableVisible = true
+      this.memberInfo = row
+      this.teamId = row.uid
     },
     handleSelectionChange (val) {
-      console.log(val)
       this.multipleSelection = val;
+    },
+    dismissTeam () {
+      this.$emit('dismissTeam')
     }
-  },
+  }
 }
 </script>
 <style lang="scss">
@@ -115,8 +113,19 @@ export default {
       border-bottom: 1px solid #eee;
       padding: 10px 0;
     }
-  .team-pagination {
-      margin: 20px 0;
+    .status {
+      position: relative;
+      margin-left: 10px;
+      &::before{
+        position: absolute;
+        content: "";
+        width:6px;
+        height: 6px;
+        border-radius: 50%;
+        top: 7px;
+        left: -20px;
+        background: #FF0000;
+      }
     }
 }
 </style>

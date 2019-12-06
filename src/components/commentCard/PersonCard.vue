@@ -7,7 +7,9 @@
       :key="index"
     >
       <section class="view-card-row bg-purple-start" @click="selectComment(index,item)">
-        <span class="top"><span>置顶</span></span>
+        <span class="top" v-if="!item.is_top">
+          <span>置顶</span>
+        </span>
         <div class="view-card-col1">
           <img src="../../assets/img/img1.png" alt />
         </div>
@@ -46,9 +48,9 @@ export default {
     }
   },
   methods: {
-    selectComment(index,item) {
+    selectComment (index, item) {
       this.activeIndex = index
-      this.$emit('selectComment',item.id)
+      this.$emit('selectComment', item.id)
     }
   }
 }

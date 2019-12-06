@@ -1,10 +1,15 @@
 <template>
   <div class="team-view">
     <!-- <breadcrumb :breadcrumbs="breadcrumb"></breadcrumb> -->
-    <div class="team-box bg-purple-start">
+    <div class="team-box x-flex-start">
       <div class="team-box-left">
         <div class="bg-purple-start">
-          <el-input placeholder="搜索" class="team-input" v-model="params.title" @input="getList(params)">
+          <el-input
+            placeholder="搜索"
+            class="team-input"
+            v-model="params.title"
+            @input="getList(params)"
+          >
             <i slot="prefix" class="el-input__icon el-icon-search"></i>
           </el-input>
           <el-dropdown @command="handleCommand">
@@ -50,7 +55,7 @@ export default {
       activeIndex: 0,
       commentInfo: {},
       params: {
-        uid: 5,
+        uid: 6,
         title: ''
       },
       commentId: ''
@@ -58,8 +63,8 @@ export default {
   },
   mounted () {
     this.getList()
-    localStorage.setItem('uid', 5)
-    localStorage.setItem('username','测试一号哦')
+    localStorage.setItem('uid', 6)
+    localStorage.setItem('username', '测试一号哦')
   },
   methods: {
     getList () {
@@ -76,11 +81,11 @@ export default {
         this.commentInfo = res.data
       })
     },
-    selectComment(id) {
+    selectComment (id) {
       this.getDetail(id)
       this.type = 2
     },
-    refurbish(){
+    refurbish () {
       this.getList()
     },
     handleCommand (command) {
@@ -94,131 +99,6 @@ export default {
     handleCurrentChange (val) {
       this.num = val
       this.reverseUser()
-    },
-    handleClickB: function (row) {  //删除按钮
-      if (this.$store.state.user.desc > 1) {
-        this.$alert('此账号为测试账号,无法进行此操作', '温馨提示', {
-          confirmButtonText: '确定',
-          callback: () => {
-            this.$message({
-              type: 'info',
-              message: '取消操作'
-            });
-          }
-        });
-        return false;
-      }
-      this.$confirm('此操作将永久删除该评论, 是否继续?', '温馨提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-
-        this.$http({
-          url: 'removesCommonts',
-          method: "POST",
-          data: {
-            userid: row._id
-          }
-        }).then(res => {
-          if (res.data.code == 0) {
-            this.$message({
-              type: 'success',
-              message: '删除成功'
-            });
-            for (let i = 0; i < this.tableData.length; i++) {
-              if (this.tableData[i]['_id'] == row._id) {
-                this.tableData.splice(i, 1)
-              }
-            }
-          }
-
-        }).catch(() => {
-          this.$message({
-            type: 'warning',
-            message: '未知错误'
-          });
-        })
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消删除'
-        });
-      });
-    },
-    handleClickAX: function (row) {  //删除按钮
-      if (this.$store.state.user.desc > 1) {
-        this.$alert('此账号为测试账号,无法进行此操作', '温馨提示', {
-          confirmButtonText: '确定',
-          callback: () => {
-            this.$message({
-              type: 'info',
-              message: '取消操作'
-            });
-          }
-        });
-        return false;
-      }
-      this.$confirm('此操作将永久同意该评论展示, 是否继续?', '温馨提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-
-        this.$http({
-          url: 'updataCommonts',
-          method: "POST",
-          data: {
-            userid: row._id
-          }
-        }).then(res => {
-          if (res.data.code == 0) {
-            this.$message({
-              type: 'success',
-              message: '修改成功'
-            });
-            for (let i = 0; i < this.tableData.length; i++) {
-              if (this.tableData[i]['_id'] == row._id) {
-                this.tableData[i].strs = '已同意'
-              }
-            }
-          }
-
-        }).catch(() => {
-          this.$message({
-            type: 'warning',
-            message: '未知错误'
-          });
-        })
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消删除'
-        });
-      });
-    },
-    reverseUser: function () {
-      this.$http({
-        url: 'searchCommonts',
-        method: 'POST',
-        data: {
-          num: this.num,
-          Number: this.Number
-        }
-      })
-        .then(res => {
-          this.tableData = res.data.data
-          if (res.data.data.length > 0) {
-
-            for (let i = 0; i < res.data.data.length; i++) {
-
-              this.tableData[i].strs = res.data.data[i].types == '1' ? '未同意' : '已同意'
-            }
-
-          }
-        }).catch(() => {
-          console.log('错了')
-        })
     }
   }
 }
@@ -251,7 +131,7 @@ export default {
 .team-box-content {
   width: 80%;
   background: #fff;
-  height: 818px;
+  /* height: 818px; */
   margin-left: 44px;
   border-radius: 10px;
 }

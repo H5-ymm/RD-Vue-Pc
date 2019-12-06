@@ -1,23 +1,23 @@
 <template>
-  <div class="about">
+  <div class="team-main-view">
     <el-container>
-      <el-aside width="210px" class="about-aside">
+      <el-aside width="210px" class="team-aside">
         <home-aside></home-aside>
       </el-aside>
       <el-container>
         <el-header height="75px">
           <div style="height:37px;" class="x-flex-between team-header">
-             <i class="el-icon-refresh-right"></i>
-             <div>
-               <el-link :underline="false">首页</el-link>
-               <i class="el-icon-bell"></i>
-               <span>天天向上团队</span>
-             </div>
+            <i class="el-icon-refresh-right"></i>
+            <div>
+              <el-link :underline="false">首页</el-link>
+              <i class="el-icon-bell"></i>
+              <span>天天向上团队</span>
+            </div>
           </div>
           <breadcrumb :breadcrumbs="breadcrumb"></breadcrumb>
         </el-header>
-        <el-main class="about-main">
-          <router-view class="about-box"></router-view>
+        <el-main class="team-main">
+          <router-view class="team-box"></router-view>
         </el-main>
       </el-container>
     </el-container>
@@ -42,38 +42,39 @@ export default {
   computed: {
 
   },
-  created() { 
+  created () {
     this.breadcrumb = JSON.parse(sessionStorage.getItem('menus'))
   }
 }
 </script>
 
 <style scoped>
-.about{
+.team-main-view{
   width: 100vw;
   height: 100vh;
   /* overflow-y: hidden; */
-  /* overflow: hidden; */
+  /* overflow: auto; */
+  overflow: hidden;
   position: relative;
 }
-.about .el-header {
+.team .el-header {
   padding: 0;
 }
-.about .team-header {
+.team .team-header {
   padding: 0 38px;
 }
-.about-aside{
+.team-aside{
   /* height: 100vh; */
   overflow: hidden;
 }
-.about-main{
+.team-main{
   height: 100vh;
-  overflow: hidden;
+  /* overflow: hidden; */
   background: #F0F2F5;
   padding: 10px 30px;
   box-sizing: border-box;
 }
-.about-box{
+.team-box{
   /* background: #ffffff; */
   /* height: calc(100% - 20px); */
   /* padding: 10px; */

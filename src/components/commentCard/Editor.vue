@@ -7,7 +7,7 @@ import packData from 'v-emoji-picker/data/emojis.json';
 import E from 'wangeditor'
 import { upload } from '../../axios'
 export default {
-  props:['content'],
+  props: ['content'],
   data () {
     return {
       menus: [
@@ -54,9 +54,12 @@ export default {
       editor.txt.html('请在此处开始您的创作')
     }
   },
-  methods:{
-    insert(imgUrl){
-      upload(imgUrl).then(res=>{
+  methods: {
+    insert (imgUrl) {
+      console.log(imgUrl)
+      let formFile = new FormData()
+      formFile.append('image', imgUrl); //加入文件对象
+      upload(formFile).then(res => {
         console.log(res)
       })
     }

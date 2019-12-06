@@ -1,61 +1,32 @@
 <template>
   <el-dialog width="500px" :visible="dialogTableVisible" class="member-dialog" :show-close="false">
-    <div class="member-row" v-if="formMember">
+    <div class="member-row">
       <img src="../../assets/img/member/cancel.png" alt class="cancel-icon" @click="handleClose" />
       <section class="member-col1">
-        <div class="head-box">
-          <img src="../../assets/img/img1.png" class="head" alt />
-        </div>
-        <p>{{formMember.user_name|| '斤斤计较'}}</p>
-      </section>
-      <section class="member-col2">
-        <div class="x-flex-center">
-          <p>联系电话</p>
-          <p>{{formMember.mobile}}</p>
-        </div>
-        <div class="x-flex-center">
-          <p>户籍所在地</p>
-          <p>河南省</p>
-        </div>
-        <div class="x-flex-center">
-          <p>学历</p>
-          <p>高中及以下</p>
-        </div>
-        <div class="x-flex-center">
-          <p>当前职称</p>
-          <p>组员</p>
-        </div>
-        <div class="x-flex-center">
-          <p>部门</p>
-          <p>销售部</p>
-        </div>
-        <div class="x-flex-center">
-          <p>拥有简历</p>
-          <p>15</p>
-        </div>
-        <div class="x-flex-center">
-          <p>入职人数</p>
-          <p>15</p>
-        </div>
-        <div class="x-flex-center">
-          <p>最后登录时间</p>
-          <p>2019-09-21 08:51:02</p>
-        </div>
-        <div class="x-flex-center">
-          <p>当前状态</p>
-          <p>正常</p>
-        </div>
+        <p>添加组员</p>
       </section>
       <section class="member-col3">
-        <el-form :model="formMember" class="demo-form-inline" label-width="90px">
-          <el-form-item label="当前职称">
+        <el-form :model="formMember" class="demo-form-inline" label-width="100px">
+          <el-form-item label="姓名" required>
+            <el-input v-model="formMember.user_name"></el-input>
+          </el-form-item>
+          <el-form-item label="身份证号" required>
+            <el-input v-model="formMember.id_card"></el-input>
+          </el-form-item>
+          <el-form-item label="联系电话" required>
+            <el-input v-model="formMember.mobile"></el-input>
+          </el-form-item>
+          <el-form-item label="户籍所在地" required>
+            <el-input v-model="formMember.mobile"></el-input>
+          </el-form-item>
+          <el-form-item label="学历">
             <el-select v-model="formMember.region" placeholder="请选择">
               <el-option label="姓名" value="shanghai"></el-option>
               <el-option label="联系电话" value="beijing"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="部门">
-            <el-select v-model="formMember.region" placeholder="请选择">
+            <el-select v-model="formMember.grade_id" placeholder="请选择">
               <el-option label="姓名" value="shanghai"></el-option>
               <el-option label="联系电话" value="beijing"></el-option>
             </el-select>
@@ -65,14 +36,6 @@
               <el-radio label="1" border>正常</el-radio>
               <el-radio label="2" border>锁定</el-radio>
             </el-radio-group>
-          </el-form-item>
-          <el-form-item label="活动形式" v-if="formMember.status==2">
-            <el-input type="textarea" placeholder="请输入锁定说明（必填）"></el-input>
-          </el-form-item>
-          <el-form-item label="认证信息">
-            <div class="x-flex-start member-status">
-              <img src="../../assets/img/member/phone.png" alt />
-            </div>
           </el-form-item>
         </el-form>
       </section>
@@ -89,13 +52,22 @@
 // 总经理可以编辑部门 职称 状态
 import { getTeamInfo } from '../../api/team'
 export default {
-  props: ['dialogTableVisible', 'memberInfo', 'memberType', 'teamId'],
+  props: ['dialogTableVisible'],
   data () {
     return {
       formMember: {
         user: '',
         region: '',
-        status: 1
+        status: 1,
+        user_name: '',
+        id_card: '',
+        mobile: '',
+        education: '',
+        grade_id: '',
+        provinceid: '',
+        cityid: '',
+        three_cityid: '',
+        uid: localStorage.getItem('uid')
       },
     }
   },
@@ -137,18 +109,6 @@ export default {
       position: absolute;
       top: 5px;
       right: 0;
-    }
-    .member-col1 {
-      background:#EBF4FB;
-      padding: 21px 0 20px;
-      .head-box {
-        padding: 10px 0 20px;
-      }
-      .head {  
-        width: 88px;
-        height: 88px;
-        border-radius: 50%;
-      }
     }
     .member-col2 {
       line-height: 30px;

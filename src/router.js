@@ -11,6 +11,10 @@ import Team from './views/Team.vue'  //登录页
 
 import OrderTaking from './views/OrderTaking.vue'   //接单
 import OrderTakingDetail from './views/OrderTakingDetail.vue'  //接单详情
+
+import TeamSetting from './components/TeamSetting.vue'
+
+
 import Write from './components/Write.vue' //新增文章页
 import Addtable from './components/addtable.vue'  //新增标签页
 import Addcls from './components/Addcls.vue'  //新增分类
@@ -79,9 +83,9 @@ let routers = new Router({
           }
         },
         { //新增标签
-          path: '/markdowns',
-          name: 'markdowns',
-          component: markdowns,
+          path: '/teamSetting',
+          name: 'TeamSetting',
+          component: TeamSetting,
           meta: {
             requiresAuth: 2
           }

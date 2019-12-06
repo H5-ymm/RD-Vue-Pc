@@ -2,8 +2,18 @@
   <div class="tables-box">
     <memberCard :userType="userType"></memberCard>
     <div class="table-list">
-      <memberQuery></memberQuery>
-      <memberTable></memberTable>
+      <memberQuery @onSubmit="onSubmit"></memberQuery>
+      <memberTable :total="total" :tableData="tableData"></memberTable>
+      <el-pagination
+        class="team-pagination"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="formMember.page"
+        :page-sizes="[10, 20, 30, 40]"
+        :page-size="formMember.limit"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total"
+      ></el-pagination>
     </div>
     <memberInfo :dialogTableVisible="dialogTableVisible"></memberInfo>
   </div>
@@ -15,7 +25,7 @@ import memberCard from './membership/memberCard'
 import memberQuery from './membership/memberQuery'
 import memberTable from './membership/memberTable'
 import memberInfo from './membership/memberInfo'
-
+import { getTeamList, loginOutTeam } from '../api/team'
 export default {
   components: {
     Breadcrumb,
@@ -28,100 +38,55 @@ export default {
     return {
       breadcrumb: ['设置', '管理控制', '全部管理员'],
       dialogTableVisible: false,
-      tableData: [{
-        name: '杨萌萌',
-        mobile: '18337806536',
-        number: 23,
-        status: '锁定',
-        loginTime: '2019-11-30 18:35:50'
-      }],
+      tableData: [],
       currentPage: 1,
-      userType: 1
+      userType: 1,
+      formMember: {
+        uid: localStorage.getItem('uid'),
+        limit: 10,
+        page: 1
+      },
+      total: 0
     }
   },
   created () {
     // 初始化查询标签数据
     // this.reverseUser()
-
+    this.getList(this.formMember)
   },
   methods: {
     handleSizeChange (val) {
-      console.log(`每页 ${val} 条`);
+      this.formMember.limit = val
+      this.getList(this.formMember)
     },
     handleCurrentChange (val) {
-      console.log(`当前页: ${val}`);
+      this.formMember.page = val
+      this.getList(this.formMember)
     },
-    handleClickB: function (row) {  //删除按钮
-      if (this.$store.state.user.desc > 1) {
-        this.$alert('此账号为测试账号,无法进行此操作', '温馨提示', {
-          confirmButtonText: '确定',
-          callback: () => {
-            this.$message({
-              type: 'info',
-              message: '取消操作'
-            });
-          }
-        });
-        return false;
-      }
-      this.$confirm('此操作将永久删除该用户, 是否继续?', '温馨提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-
-        this.$http({
-          url: 'removeNames',
-          method: "POST",
-          data: {
-            userid: row._id
-          }
-        }).then(res => {
-          if (res.data.code == 0) {
-            this.$message({
-              type: 'success',
-              message: '删除成功'
-            });
-            for (let i = 0; i < this.tableData.length; i++) {
-              if (this.tableData[i]['_id'] == row._id) {
-                this.tableData.splice(i, 1)
-              }
-            }
-          }
-
-        }).catch(() => {
-          this.$message({
-            type: 'warning',
-            message: '未知错误'
-          });
-        })
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消删除'
-        });
-      });
-    },
-    reverseUser: function () {
-      this.$http({
-        url: 'allNames',
-        method: 'POST',
+    getList (params) {
+      getTeamList(params).then(res => {
+        const { data } = res
+        this.tableData = data.data
+        this.total = data.count
       })
-        .then(res => {
-          //  console.log(res)
-          this.tableData = res.data.data
-        })
+    },
+    onSubmit (value) {
+      let params = Object.assign(this.formMember, value)
+      this.getList(params)
     }
-  },
+  }
 }
 </script>
 
-<style>
+<style lang="scss">
 .table-list {
   background: #fff;
   border-radius:10px;
   height: calc(100% - 460px);
   padding: 15px;
+  .team-pagination {
+    margin: 20px 0;
+  }
 }
 .tables-box{
   overflow: hidden;
@@ -133,7 +98,7 @@ export default {
   font-size:16px;
 }
 .box-card p:nth-of-type(2) {
-  font-size:38px;
+  font-size:34px;
   margin-top: 10px;
 }
 </style>

@@ -102,10 +102,16 @@ export default {
             {
               title: '成员管理',
               url: '/userlist'
-            },
+            }
+          ]
+        },
+        {
+          title: '团队设置',
+          icon: 'el-icon-collection-tag',
+          submenu: [
             {
-              title: '管理',
-              url: '/markdowns'
+              title: '团队信息',
+              url: '/teamSetting'
             }
           ]
         }

@@ -6,7 +6,6 @@ export const getTeamList = data => $post('/team/teamUserList', data) // 成员�
 export const loginOutTeam = data => $post('/team/loginOutTeam', data) // 退出团队
 export const getTeamInfo = data => $post('/team/getTeamInfo', data) // 获取团队信息
 export const updateTeamInfo = data => $post('/team/updateTeamInfo', data) // 修改团队信息
-export const addTeamUser = data => $post('/team/addTeamUser', data) // 添加团队成员
 export const addTeamDepartment = data => $post('/team/addTeamDepartment', data) // 团队部门的添加
 export const departmentList = data => $post('/team/departmentList', data) // 部门列表
 export const adjustmentList = data => $post('/team/adjustmentList', data) // 部门人员调整列表
