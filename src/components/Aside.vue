@@ -114,7 +114,18 @@ export default {
               url: '/teamSetting'
             }
           ]
-        }
+        },
+        {
+          title: '部门管理',
+          icon: 'el-icon-collection-tag',
+          submenu: [
+            {
+              title: '部门列表',
+              url: '/department'
+            }
+          ]
+        },
+        
       ],
       title: ''
     }

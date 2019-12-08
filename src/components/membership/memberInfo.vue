@@ -1,5 +1,5 @@
 <template>
-  <el-dialog width="500px" :visible="dialogTableVisible" class="member-dialog" :show-close="false">
+  <el-dialog width="500px" :visible.sync="dialogTableVisible" class="member-dialog" :show-close="false">
     <div class="member-row" v-if="formMember">
       <img src="../../assets/img/member/cancel.png" alt class="cancel-icon" @click="handleClose" />
       <section class="member-col1">
@@ -48,22 +48,21 @@
       </section>
       <section class="member-col3">
         <el-form :model="formMember" class="demo-form-inline" label-width="90px">
-          <el-form-item label="当前职称">
+          <!-- <el-form-item label="当前职称">
             <el-select v-model="formMember.region" placeholder="请选择">
               <el-option label="姓名" value="shanghai"></el-option>
               <el-option label="联系电话" value="beijing"></el-option>
             </el-select>
-          </el-form-item>
+          </el-form-item> -->
           <el-form-item label="部门">
-            <el-select v-model="formMember.region" placeholder="请选择">
-              <el-option label="姓名" value="shanghai"></el-option>
-              <el-option label="联系电话" value="beijing"></el-option>
+            <el-select v-model="formMember.grade_id" placeholder="请选择">
+              <el-option :label="item" :value="key" v-for="(item,key) in jobList" :key="key"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="当前状态">
             <el-radio-group v-model="formMember.status">
-              <el-radio label="1" border>正常</el-radio>
-              <el-radio label="2" border>锁定</el-radio>
+              <el-radio :label="1" border>正常</el-radio>
+              <el-radio :label="2" border>锁定</el-radio>
             </el-radio-group>
           </el-form-item>
           <el-form-item label="活动形式" v-if="formMember.status==2">
@@ -88,21 +87,38 @@
 // 成员只能查看
 // 总经理可以编辑部门 职称 状态
 import { getTeamInfo } from '../../api/team'
+import { getConstant } from '../../api/dictionary'
 export default {
   props: ['dialogTableVisible', 'memberInfo', 'memberType', 'teamId'],
   data () {
     return {
-      formMember: {
-        user: '',
-        region: '',
-        status: 1
-      },
+      formMember: {},
+      jobList: {
+        "1": "贸易/百货", 
+        "2": "机械/设备/技工", 
+        "3": "公务员/翻译", 
+        "4": "化工/能源", 
+        "5": "销售/客服/技术支持", 
+        "6": "会计/金融/银行/保险", 
+        "7": "生产/营运/采购/物流", 
+        "8": "生产/制药/医疗/护理", 
+        "9": "广告/时长/媒体/艺术", 
+        "10": "建筑/房地产", 
+        "11": "人事/行政/高级管理", 
+        "12": "咨询/法律/教育/科研", 
+        "13": "服务业", 
+        "14": "通信/电子"
+      }
     }
   },
   created () {
-    console.log(this.memberInfo)
-    if (this.teamId) {
-      this.getInfo(this.teamId)
+    console.log(this.teamId)
+  },
+  watch:{
+    teamId(val){
+      if (val) {
+        this.getInfo(val)
+      }
     }
   },
   methods: {
@@ -191,7 +207,7 @@ export default {
         .el-form-item__content {
           margin-left: 20px!important;
         }
-        .el-select,.el-radio-group{
+        .el-select,.el-radio-group,.el-textarea{
           margin-left: -30px;
         }
         .el-radio.is-bordered {

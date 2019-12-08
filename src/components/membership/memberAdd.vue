@@ -5,44 +5,45 @@
       <section class="member-col1">
         <p>添加组员</p>
       </section>
-      <section class="member-col3">
-        <el-form :model="formMember" class="demo-form-inline" label-width="100px">
-          <el-form-item label="姓名" required>
-            <el-input v-model="formMember.user_name"></el-input>
+      <section class="member-col3 member-add-col3">
+        <el-form :model="formMember" :rules="rules" ref="formMember" class="demo-form-inline" label-position="right" label-width="100px">
+          <el-form-item label="姓名" required prop="user_name">
+            <el-input v-model="formMember.user_name" placeholder="请输入组员姓名"></el-input>
           </el-form-item>
-          <el-form-item label="身份证号" required>
-            <el-input v-model="formMember.id_card"></el-input>
+          <el-form-item label="身份证号" required prop="id_card">
+            <el-input v-model="formMember.id_card" placeholder="请输入组员身份证号"></el-input>
           </el-form-item>
-          <el-form-item label="联系电话" required>
-            <el-input v-model="formMember.mobile"></el-input>
+          <el-form-item label="联系电话">
+            <el-input v-model="formMember.mobile" placeholder="请输入该组员联系电话"></el-input>
           </el-form-item>
-          <el-form-item label="户籍所在地" required>
-            <el-input v-model="formMember.mobile"></el-input>
+          <el-form-item label="户籍所在地">
+            <el-input v-model="formMember.mobile" placeholder="请输入户籍所在地"></el-input>
+          </el-form-item>
+          <el-form-item label="详细地址">
+            <districtSelet @change="change"> </districtSelet>
           </el-form-item>
           <el-form-item label="学历">
-            <el-select v-model="formMember.region" placeholder="请选择">
-              <el-option label="姓名" value="shanghai"></el-option>
-              <el-option label="联系电话" value="beijing"></el-option>
+            <el-select v-model="formMember.education" placeholder="请选择学历">
+              <el-option :label="item" :value="index" v-for="(item,index) in edu_type" :key="index"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="部门">
-            <el-select v-model="formMember.grade_id" placeholder="请选择">
-              <el-option label="姓名" value="shanghai"></el-option>
-              <el-option label="联系电话" value="beijing"></el-option>
+          <el-form-item label="部门" required prop="grade_id">
+            <el-select v-model="formMember.grade_id" placeholder="请选择该成员当前部门">
+              <el-option :label="item" :value="key" v-for="(item,key) in jobList" :key="key"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="当前状态">
             <el-radio-group v-model="formMember.status">
-              <el-radio label="1" border>正常</el-radio>
-              <el-radio label="2" border>锁定</el-radio>
+              <el-radio :label="1" border>正常</el-radio>
+              <el-radio :label="2" border>锁定</el-radio>
             </el-radio-group>
           </el-form-item>
         </el-form>
       </section>
     </div>
     <div slot="footer">
-      <el-button type="primary" @click="handleClose">确定</el-button>
-      <!-- <el-button type="primary" @click="handleClose">关闭</el-button> -->
+      <el-button @click="handleClose">关闭</el-button>
+      <el-button type="primary" @click="submitForm">确定</el-button>
     </div>
   </el-dialog>
 </template>
@@ -50,13 +51,27 @@
 // 部门经理只能编辑状态
 // 成员只能查看
 // 总经理可以编辑部门 职称 状态
-import { getTeamInfo } from '../../api/team'
+import { getConstant } from '../../api/dictionary'
+import districtSelet from '../districtSelet'
+import { validateIdCard } from '../../util/util'
 export default {
+  components:{
+    districtSelet
+  },
   props: ['dialogTableVisible'],
   data () {
+     var validate = (rule, value, callback) => {
+        if (value === '') {
+          callback(new Error('请输入身份证号码'));
+        } else {
+          if (!validateIdCard(value)) {
+            callback(new Error('请输入正确的身份证号码'));
+          }
+          callback()
+        }
+      };
     return {
       formMember: {
-        user: '',
         region: '',
         status: 1,
         user_name: '',
@@ -67,26 +82,72 @@ export default {
         provinceid: '',
         cityid: '',
         three_cityid: '',
-        uid: localStorage.getItem('uid')
+        uid: localStorage.getItem('uid'),
       },
+      rules: {
+        user_name: [
+          { required: true, message: '请输入组员姓名', trigger: 'blur' },
+        ],
+        id_card: [
+          { required: true, message: '请输入组员身份证', trigger: 'blur' },
+          { validator: validate, trigger: 'blur' }
+        ],
+        grade_id: [
+          { required: true, message: '请选择组员所在部门', trigger: 'blur' }
+        ]
+      },
+      edu_type: [
+        "高中以下", 
+        "高中", 
+        "中专", 
+        "大专", 
+        "本科", 
+        "硕士"
+      ],
+      jobList: {
+          "1": "贸易/百货", 
+          "2": "机械/设备/技工", 
+          "3": "公务员/翻译", 
+          "4": "化工/能源", 
+          "5": "销售/客服/技术支持", 
+          "6": "会计/金融/银行/保险", 
+          "7": "生产/营运/采购/物流", 
+          "8": "生产/制药/医疗/护理", 
+          "9": "广告/时长/媒体/艺术", 
+          "10": "建筑/房地产", 
+          "11": "人事/行政/高级管理", 
+          "12": "咨询/法律/教育/科研", 
+          "13": "服务业", 
+          "14": "通信/电子"
+        }
     }
   },
   created () {
-    console.log(this.memberInfo)
-    if (this.teamId) {
-      this.getInfo(this.teamId)
-    }
+    let params = 'edu_type,job_array'
+    this.getList(params)
   },
   methods: {
-    getInfo (uid) {
-      getTeamInfo({ uid }).then(res => {
+    getList (filed) {
+      getConstant({ filed }).then(res => {
         console.log(res)
-        this.formMember = res.data
-        console.log(this.formMember)
       })
     },
+    change(val) {
+      this.formMember.provinceid = val[0]
+      this.formMember.cityid = val[1]
+      this.formMember.three_cityid = val[2]
+    },
     handleClose () {
-      this.$parent.dialogTableVisible = false
+      this.$parent.visible = false
+    },
+    submitForm() {
+      this.$refs['formMember'].validate((valid) => {
+        if (valid) {
+          this.$emit('submitForm',this.formMember)
+        } else {
+          return false
+        }
+      })
     }
   }
 }
@@ -141,6 +202,7 @@ export default {
         .el-input__inner{
           width:300px!important;
           height:38px;
+          line-height:38px;
           border-radius: 0;
         }
         .el-textarea {
@@ -173,6 +235,17 @@ export default {
         .member-status {
           margin-top: 12px;
           padding-left:14px;
+        }
+      }
+       &.member-add-col3{
+        .el-select,.el-radio-group{
+          margin-left: 0;
+        }
+        .el-form-item__content {
+          margin-left: 0!important;
+        }
+        .el-input {
+          width: 300px;
         }
       }
     }

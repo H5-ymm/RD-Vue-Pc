@@ -19,7 +19,7 @@
         </div>
       </el-col>
     </el-row>
-    <el-button type="primary" class="next-btn">下一步</el-button>
+    <el-button type="primary" class="next-btn" @click="$router.push(url)">下一步</el-button>
   </div>
 </template>
 <script>
@@ -30,17 +30,19 @@ export default {
       menus: [{
         title: '个人团队',
         imgUrl: require('../assets/img/team/person.png'),
-        url: ''
+        url: 'personalForm'
       }, {
         title: '企业团队',
         imgUrl: require('../assets/img/team/team.png'),
-        url: ''
-      }]
+        url: 'teamForm'
+      }],
+      url: ''
     }
   },
   methods: {
     selectType (index, item) {
       this.activIndex = index
+      this.url = item.url
     }
   }
 }
@@ -53,16 +55,16 @@ export default {
     overflow: hidden;
     background: #fff;
     &.team-box{
-      height: calc(100% - 80px);
+      height: calc(100% - 70px);
     }
     .title {
       font-size:22px;
       color: #333333;
-      margin-top: 100px;
+      margin-top: 5%;
       text-align: center;
     }
     .team-setting-box {
-      margin: 100px auto;
+      margin: 5% auto;
     }
     .grid-content-select {
       width:236px;
@@ -89,7 +91,7 @@ export default {
       width:201px;
       height:38px;
       background:rgba(54,153,255,1);
-      border-radius:3px
+      border-radius:3px;
     }
   }
 </style>

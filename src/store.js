@@ -10,7 +10,8 @@ export default new Vuex.Store({
       token:'', //token
       txB:'',  //修改文章内容
       clsList:[],  //全部分类
-      tablesList:[] //全部标签
+      tablesList:[], //全部标签
+      uid: localStorage.getItem('uid')
   },
   mutations: {
     addtx(state,str){  //设置新增文章内容

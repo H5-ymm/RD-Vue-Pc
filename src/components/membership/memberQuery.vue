@@ -24,8 +24,6 @@ export default {
   data () {
     return {
       form: {
-        user: '',
-        region: ''
       }
     }
   },
@@ -39,14 +37,15 @@ export default {
 
 <style scoped lang="scss">
  .memberForm {
-   .width120 {
-     width: 120px;
-   }
+    .width120 {
+      width: 120px;
+    }
    .el-input {
-     border-radius:3px;
+      border-radius:3px;
+      width: 200px;
    }
    .select-btn {
-     border-radius:3px;
+    border-radius:3px;
    }
  }
 </style>

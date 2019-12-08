@@ -14,6 +14,9 @@ import OrderTakingDetail from './views/OrderTakingDetail.vue'  //接单详情
 
 import TeamSetting from './components/TeamSetting.vue'
 
+import Department from './components/Department.vue'
+import personalForm from './components/teamMessage/personalForm'  // 个人
+import teamForm from './components/teamMessage/teamForm'   // 企业
 
 import Write from './components/Write.vue' //新增文章页
 import Addtable from './components/addtable.vue'  //新增标签页
@@ -30,7 +33,6 @@ import userimg from './components/userimg.vue'  //个人中心
 import markdowns from './components/markdowns.vue' //MarkDown编辑器
 import commonts from './components/commonts.vue'  //评论
 
-import Textlist from './components/Textlist.vue'  //文章列表
 import Draft from './components/Draft.vue'  //草稿箱 容器
 
 import UndateMark from './components/mack/updatedowns.vue'  //MarkDown修改文件
@@ -82,7 +84,7 @@ let routers = new Router({
             requiresAuth: 2
           }
         },
-        { //新增标签
+        { // 团队设置
           path: '/teamSetting',
           name: 'TeamSetting',
           component: TeamSetting,
@@ -90,46 +92,29 @@ let routers = new Router({
             requiresAuth: 2
           }
         },
-        { //新增分类
-          path: 'addcls',
-          name: 'Addcls',
-          component: Addcls,
+        { // 团队企业设置
+          path: '/personalForm',
+          name: 'personalForm',
+          component: personalForm,
           meta: {
             requiresAuth: 2
           }
         },
-        { //文章列表
-          path: 'textlist',
-          component: Textlist,
+        { // 团队个人设置
+          path: '/teamForm',
+          name: 'teamForm',
+          component: teamForm,
           meta: {
             requiresAuth: 2
-          },
-          children: [
-            {
-              path: '',  //文章列表
-              name: Textlistbox,
-              component: Textlistbox,
-              meta: {
-                requiresAuth: 2
-              }
-            },
-            {
-              path: 'edit',  //富文本修改文章undate
-              name: 'Drafttxts',
-              component: Drafttxts,
-              meta: {
-                requiresAuth: 2
-              }
-            },
-            {
-              path: 'undatemark/:userid',  //MarkDown修改文章
-              name: 'UndateMark',
-              component: UndateMark,
-              meta: {
-                requiresAuth: 2
-              }
-            }
-          ]
+          }
+        },
+        { //新增分类
+          path: '/department',
+          name: 'Department',
+          component: Department,
+          meta: {
+            requiresAuth: 2
+          }
         },
         { //草稿箱
           path: 'draft',

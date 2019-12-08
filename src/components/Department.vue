@@ -1,0 +1,140 @@
+<template>
+  <div class="tables-box">
+    <div class="table-list">
+      <el-button type="primary" class="add-member" @click="visible=true">添加成员</el-button>
+      <tableList :tableData="tableData" @handleEdit="handleEdit" @handleDel="handleDel"></tableList>
+      <el-pagination
+        class="team-pagination"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="formMember.page"
+        :page-sizes="[10, 20, 30, 40]"
+        :page-size="formMember.limit"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total"
+      ></el-pagination>
+    </div>
+    <turnoverModal :dialogTableVisible="dialogTableVisible"></turnoverModal>
+    <addDepModal :dialogTableVisible="visible" @submitForm="submitForm"></addDepModal>
+    <successModal :dialogTableVisible="visible1"></successModal>
+    <outDep :dialogTableVisible="delVisible"></outDep>
+  </div>
+</template>
+
+<script>
+import tableList from './department/tableList'
+import addDepModal from './department/addDepModal'
+import successModal from './department/successModal'
+import outDep from './department/outDep'
+import turnoverModal from './department/turnoverModal'
+import { getDepartmentList, addTeamDepartment, delDepartment } from '../api/department'
+export default {
+  components: {
+    tableList,
+    addDepModal,
+    successModal,
+    outDep,
+    turnoverModal
+  },
+  data () {
+    return {
+      breadcrumb: ['设置', '管理控制', '全部管理员'],
+      dialogTableVisible: false,
+      visible:false,
+      visible1:false,
+      delVisible:false,
+      turnoverVisible:false,
+      tableData: [],
+      currentPage: 1,
+      userType: 1,
+      formMember: {
+        uid: localStorage.getItem('uid'),
+        limit: 10,
+        page: 1
+      },
+      total: 0,
+      teamId: '',
+      uid: localStorage.getItem('uid')
+    }
+  },
+  created () {
+    // 初始化查询标签数据
+    // this.reverseUser()
+    this.getList(this.formMember)
+  },
+  methods: {
+    handleSizeChange (val) {
+      this.formMember.limit = val
+      this.getList(this.formMember)
+    },
+    handleCurrentChange (val) {
+      this.formMember.page = val
+      this.getList(this.formMember)
+    },
+    getList (params) {
+      getDepartmentList(params).then(res => {
+        const { data } = res
+        this.tableData = data.data
+        this.total = data.count
+      }).catch(error => {
+        if (error.status) {
+          this.$message.error(error.status.remind)
+        }    
+      }) 
+    },
+    handleEdit(val) {
+      this.dialogTableVisible = true
+      this.teamId = val
+    },
+    handleDel(val) {
+      let params = {
+        departId: val,
+        uid: this.uid
+      }
+      delDepartment(params).then(res=>{
+        if (res.status.code ==200) {
+          this.delVisible = true
+        }
+      }).catch(error => {
+        this.$message.error(res.status.remind)
+      })
+    },
+    addMember(){
+      this.visible = true
+    },
+    onSubmit (value) {
+      let params = Object.assign(this.formMember, value)
+      this.getList(params)
+    },
+    submitForm(val) {
+      this.visible = false
+      addTeamDepartment(val).then(res => {
+        this.visible1 = true
+        this.getList(this.formMember)
+      }).catch(error => {
+        this.$message.error(error.status.remind)
+      })
+    }
+  }
+}
+</script>
+
+<style lang="scss">
+  .tables-box{
+    overflow: hidden;
+    .table-list {
+      background: #fff;
+      border-radius:10px;
+      // height: calc(100% - 100px);
+      padding: 15px;
+      .add-member {
+        border-radius: 0;
+        height: 38px;
+        margin-bottom: 15px;
+      }
+      .team-pagination {
+        margin-top: 20px;
+      }
+    }
+  }
+</style>

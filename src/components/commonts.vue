@@ -152,6 +152,7 @@ export default {
 }
 .tables-box{
   height: 100%;
+  margin-bottom: 50px;
 }
 .foots{
   margin-top: 30px;

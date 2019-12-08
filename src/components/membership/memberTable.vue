@@ -1,6 +1,6 @@
 <template>
-  <div class="member-table">
-    <div class="action-btn x-flex-between">
+  <!-- <div class="member-table"> -->
+    <!-- <div class="action-btn x-flex-between">
       <div>
         <el-button type="primary" icon="el-icon-plus" @click="visible=true">添加</el-button>
         <el-button>删除</el-button>
@@ -14,7 +14,7 @@
       <div>
         <el-button @click="dismissTeam()">解散团队</el-button>
       </div>
-    </div>
+    </div> -->
     <div class="table">
       <el-table
         border
@@ -35,7 +35,11 @@
         <el-table-column label="直属上级" prop="grade_name" align="center" width="150"></el-table-column>
         <el-table-column label="简历数量" prop="entry_num" align="center" width="150"></el-table-column>
         <el-table-column label="入职人数" prop="entry_num" align="center" width="150"></el-table-column>
-        <el-table-column label="最近登录时间" prop="logout_time" align="center" width="260"></el-table-column>
+        <el-table-column label="最近登录时间" align="center" width="260">
+           <template slot-scope="props">
+            <span>{{ props.row.logout_time ? $moment(props.row.logout_time).format('YYYY-MM-DD HH:mm'): '--'}}</span>
+          </template>
+        </el-table-column>
         <el-table-column label="状态" align="center" width="150">
           <template slot-scope="props">
             <span class="status">{{props.row.status==1?"正常":'锁定'}}</span>
@@ -49,19 +53,10 @@
         </el-table-column>
       </el-table>
     </div>
-    <memberAdd :dialogTableVisible="visible"></memberAdd>
-    <memberInfo :dialogTableVisible="dialogTableVisible" :memberInfo="memberInfo" :teamId="teamId"></memberInfo>
-  </div>
+  <!-- </div> -->
 </template>
 <script>
-import memberInfo from './memberInfo'
-import memberAdd from './memberAdd'
-
 export default {
-  components: {
-    memberInfo,
-    memberAdd
-  },
   props: {
     tableData: {
       type: []
@@ -70,22 +65,19 @@ export default {
   props: ['tableData'],
   data () {
     return {
-      currentPage: 1,
-      multipleSelection: [],
-      dialogTableVisible: false,
-      visible: false,
       memberInfo: {},
       teamId: ''
     }
   },
   methods: {
     handleEdit (row) {
-      this.dialogTableVisible = true
       this.memberInfo = row
       this.teamId = row.uid
+      this.$emit('handleEdit', row.uid)    
     },
     handleSelectionChange (val) {
       this.multipleSelection = val;
+      this.$emit('handleSelectionChange', this.multipleSelection.length)
     },
     dismissTeam () {
       this.$emit('dismissTeam')
@@ -94,38 +86,24 @@ export default {
 }
 </script>
 <style lang="scss">
-.member-table {
-  .action-btn {
-      color: #333333;
-      margin-bottom: 15px;
-      .el-button {
-        border-radius: 0;
-        height: 38px;
-      }
-      .select-text {
-        font-size: 14px;
-        margin: 0 5px;
-        color: #6A6A6A;
-      }
+  .table {
+    border-top: 1px solid #eee;
+    border-bottom: 1px solid #eee;
+    padding: 10px 0;
+    height: 76%;
+  }
+  .status {
+    position: relative;
+    margin-left: 10px;
+    &::before{
+      position: absolute;
+      content: "";
+      width:6px;
+      height: 6px;
+      border-radius: 50%;
+      top: 7px;
+      left: -20px;
+      background: #FF0000;
     }
-    .table {
-      border-top: 1px solid #eee;
-      border-bottom: 1px solid #eee;
-      padding: 10px 0;
-    }
-    .status {
-      position: relative;
-      margin-left: 10px;
-      &::before{
-        position: absolute;
-        content: "";
-        width:6px;
-        height: 6px;
-        border-radius: 50%;
-        top: 7px;
-        left: -20px;
-        background: #FF0000;
-      }
-    }
-}
+  }
 </style>

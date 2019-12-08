@@ -3,7 +3,10 @@
     <memberCard :userType="userType"></memberCard>
     <div class="table-list">
       <memberQuery @onSubmit="onSubmit"></memberQuery>
-      <memberTable :total="total" :tableData="tableData"></memberTable>
+      <div class="member-table">
+        <memberHandle :len="len" @addMember="addMember"> </memberHandle>
+        <memberTable :total="total" :tableData="tableData" @handleEdit="handleEdit" @handleSelectionChange="handleSelectionChange"></memberTable>
+      </div>
       <el-pagination
         class="team-pagination"
         @size-change="handleSizeChange"
@@ -15,7 +18,8 @@
         :total="total"
       ></el-pagination>
     </div>
-    <memberInfo :dialogTableVisible="dialogTableVisible"></memberInfo>
+    <memberAdd :dialogTableVisible="visible" @submitForm="submitForm"></memberAdd>
+    <memberInfo :dialogTableVisible="dialogTableVisible" :teamId="teamId"></memberInfo>
   </div>
 </template>
 
@@ -24,20 +28,26 @@ import Breadcrumb from './breadcrumb/Breadcrumb'
 import memberCard from './membership/memberCard'
 import memberQuery from './membership/memberQuery'
 import memberTable from './membership/memberTable'
+import memberHandle from './membership/memberHandle'
 import memberInfo from './membership/memberInfo'
-import { getTeamList, loginOutTeam } from '../api/team'
+import memberAdd from './membership/memberAdd'
+import { getTeamList, loginOutTeam, addTeamUser } from '../api/team'
+import memberInfoVue from './membership/memberInfo.vue';
 export default {
   components: {
     Breadcrumb,
     memberCard,
     memberQuery,
     memberTable,
-    memberInfo
+    memberInfo,
+    memberAdd,
+    memberHandle
   },
   data () {
     return {
       breadcrumb: ['设置', '管理控制', '全部管理员'],
       dialogTableVisible: false,
+      visible:false,
       tableData: [],
       currentPage: 1,
       userType: 1,
@@ -46,7 +56,9 @@ export default {
         limit: 10,
         page: 1
       },
-      total: 0
+      total: 0,
+      len: 0,
+      teamId: ''
     }
   },
   created () {
@@ -70,9 +82,28 @@ export default {
         this.total = data.count
       })
     },
+    handleEdit(val) {
+      this.dialogTableVisible = true
+      this.teamId = val
+      console.log( this.teamId)
+    },
+    handleSelectionChange(val) {
+      this.len = val
+    },
+    addMember(){
+      this.visible = true
+    },
     onSubmit (value) {
       let params = Object.assign(this.formMember, value)
       this.getList(params)
+    },
+    submitForm(val) {
+      this.visible = false
+      addTeamUser(val).then(res => {
+        this.getList(this.formMember)
+      }).catch(error => {
+        this.$message.error(error.status.remind)
+      })
     }
   }
 }
@@ -82,14 +113,30 @@ export default {
 .table-list {
   background: #fff;
   border-radius:10px;
-  height: calc(100% - 460px);
+  // height: calc(100% - 100px);
   padding: 15px;
   .team-pagination {
-    margin: 20px 0;
+    margin-top: 20px;
+  }
+ .member-table {
+    .action-btn {
+      color: #333333;
+      margin-bottom: 15px;
+      .el-button {
+        border-radius: 0;
+        height: 38px;
+      }
+      .select-text {
+        font-size: 14px;
+        margin: 0 5px;
+        color: #6A6A6A;
+      }
+    }
   }
 }
 .tables-box{
   overflow: hidden;
+  margin-bottom: 60px;
 }
 .team-info-row {
   margin: 20px 0;
