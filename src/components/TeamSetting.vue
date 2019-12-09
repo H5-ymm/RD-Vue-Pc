@@ -1,6 +1,6 @@
 <template>
   <div class="team-setting-view">
-    <p class="title">请选择团队性质</p>
+    <p class="title">{{type?'团队性质':'请选择团队性质'}}</p>
     <el-row class="team-setting-box" type="flex" justify="center" :gutter="20">
       <el-col :span="6" class="x-flex-center" v-for="(item,index) in menus" :key="index">
         <div
@@ -19,10 +19,11 @@
         </div>
       </el-col>
     </el-row>
-    <el-button type="primary" class="next-btn" @click="$router.push(url)">下一步</el-button>
+    <el-button type="primary" class="next-btn" @click="next">下一步</el-button>
   </div>
 </template>
 <script>
+import { getTeamInfo } from '../api/team'
 export default {
   data () {
     return {
@@ -34,15 +35,40 @@ export default {
       }, {
         title: '企业团队',
         imgUrl: require('../assets/img/team/team.png'),
-        url: 'teamForm'
+        url: 'companyForm'
       }],
-      url: ''
+      url: 'personalForm',
+      teamId: '',
+      type: ''
     }
+  },
+  created () {
+    let uid = localStorage.getItem('uid')
+    getTeamInfo({ uid }).then(res => {
+      if (res && res.data) {
+        this.teamId = res.data.uid
+        this.type = res.data.type
+        this.activIndex = this.type == 2 ? 0 : 1
+      }
+      else {
+        this.teamId = ''
+        this.type = ''
+        this.activIndex = 0
+      }
+    })
   },
   methods: {
     selectType (index, item) {
-      this.activIndex = index
-      this.url = item.url
+      if (!this.type) {
+        this.activIndex = index
+        this.url = item.url
+      }
+      else {
+        return
+      }
+    },
+    next () {
+      this.$router.push({ path: this.url, query: { teamId: this.teamId } })
     }
   }
 }

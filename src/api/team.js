@@ -2,6 +2,8 @@ import { post, $post } from '../axios'
 
 export const addTeamUser = data => $post('/team/addTeamUser', data) // 添加团队成员
 export const updateTeamUser = data => $post('/team/updateTeamUser', data) // 修改团队成员
+export const seeTeamUserInfo = data => $post('/team/seeTeamUserInfo', data) // 查看团队成员
+
 export const getTeamList = data => $post('/team/teamUserList', data) // 成员列表接口
 export const loginOutTeam = data => $post('/team/loginOutTeam', data) // 退出团队
 export const getTeamInfo = data => $post('/team/getTeamInfo', data) // 获取团队信息

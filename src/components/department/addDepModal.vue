@@ -6,13 +6,25 @@
         <p>添加部门</p>
       </section>
       <section class="member-col3 department-add-col3">
-        <el-form :model="formMember" :rules="rules" :inline="true" label-position="left" ref="formMember" class="demo-form-inline">
+        <el-form
+          :model="formMember"
+          :rules="rules"
+          :inline="true"
+          label-position="left"
+          ref="formMember"
+          class="demo-form-inline"
+        >
           <el-form-item label="部门名称" required prop="depart_name">
             <el-input v-model="formMember.depart_name" placeholder="请输入部门名称"></el-input>
           </el-form-item>
           <el-form-item label="部门经理" required prop="user_id">
             <el-select v-model="formMember.user_id" placeholder="请选择部门经理">
-              <el-option :label="item.user_name" :value="item.uid" v-for="(item,index) in userList" :key="index"></el-option>
+              <el-option
+                :label="item.user_name"
+                :value="item.uid"
+                v-for="(item,index) in userList"
+                :key="index"
+              ></el-option>
             </el-select>
           </el-form-item>
         </el-form>
@@ -56,17 +68,16 @@ export default {
   methods: {
     getList (uid) {
       getTeamListUser({ uid }).then(res => {
-        console.log(res)
         this.userList = res.data
       })
     },
     handleClose () {
       this.$parent.visible = false
     },
-    submitForm() {
+    submitForm () {
       this.$refs['formMember'].validate((valid) => {
         if (valid) {
-          this.$emit('submitForm',this.formMember)
+          this.$emit('submitForm', this.formMember)
         } else {
           return false
         }

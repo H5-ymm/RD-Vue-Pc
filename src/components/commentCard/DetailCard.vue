@@ -25,7 +25,9 @@
     <ul class="edit-card-content">
       <li class="edit-card-item x-flex-start border-bottom">
         <p>发布者：</p>
-        <p class="edit-input">{{type==0 ? username : commentInfo.user_name}}</p>
+        <p
+          class="edit-input"
+        >{{type==0 || !commentInfo.user_name ? username : commentInfo.user_name}}</p>
       </li>
       <li class="edit-card-item x-flex-start border-bottom">
         <p>标题：</p>
@@ -49,6 +51,15 @@
           <span class="tag" v-if="commentInfo&&type==2">{{getSortType(commentInfo.type)}}</span>
         </p>
       </li>
+      <li class="edit-card-item x-flex-start border-bottom" v-if="!type">
+        <p>置顶：</p>
+        <p>
+          <el-radio-group v-model="is_top">
+            <el-radio :label="1">置顶</el-radio>
+            <el-radio :label="2">不置顶</el-radio>
+          </el-radio-group>
+        </p>
+      </li>
       <li class="edit-card-item x-flex-start x-flex-wap border-bottom" v-if="type==2">
         <p>内容：</p>
         <p class="edit-card-item-content" v-html="commentInfo.content"></p>
@@ -66,7 +77,7 @@
       <li class="edit-card-item" v-else>
         <div class="bg-purple-start">
           <p>内容：</p>
-          <Editor :content="commentInfo.content"></Editor>
+          <Editor :content="commentInfo.content" @saveConent="saveConent"></Editor>
         </div>
         <div class="edit-btn-box">
           <el-button type="primary" size="mini" @click="submit(type)">提交</el-button>
@@ -93,7 +104,7 @@ import { commentSort } from '../../base/base'
 import ReplyCard from './ReplyCard'
 import commentInput from './commentInput'
 import Editor from './Editor'
-import { getReply, delReplyfirst, delReply, addReply, setTopComment, delDiscuss } from '../../api/comment'
+import { getReply, delReplyfirst, delReply, addReply, setTopComment } from '../../api/comment'
 export default {
   components: {
     ReplyCard,
@@ -112,6 +123,7 @@ export default {
         discuss_id: ''
       },
       sortType: 0,
+      is_top: 1,
       isShow: false,
       uid: localStorage.getItem('uid'),
       username: localStorage.getItem('username'),
@@ -141,6 +153,7 @@ export default {
       }
     },
     commentInfo (val) {
+      console.log(val)
       if (val) {
         this.showComment = false
         this.isShow = false
@@ -153,6 +166,9 @@ export default {
           this.commentList = []
           this.getCommentList(this.params)
         }
+      }
+      else {
+
       }
     }
   },
@@ -270,6 +286,9 @@ export default {
       this.sortType = value
       this.commentInfo.sort = value
     },
+    saveConent (val) {
+      this.content = val
+    },
     // 提交评论
     submitComment (val) {
       let params = {
@@ -291,7 +310,14 @@ export default {
     },
     // 修改、编辑
     submit (type) {
-      console.log(type)
+      let params = {
+        uid: localStorage.getItem('uid'),
+        type: this.sortType,
+        content: this.content,
+        title: this.comTitle,
+        is_top: this.is_top
+      }
+      this.$emit('saveDiscuss', params)
     },
     submitChildComment (val) {
       this.saveComment(val)

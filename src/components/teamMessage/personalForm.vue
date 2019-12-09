@@ -1,165 +1,163 @@
 <template>
-<div class="teamMessage">
-  <div class="title">
-    基本信息
-  </div>
-  <div class="teamMessage-form-row">
-  <el-form :model="companyForm" :rules="rules" ref="companyForm" label-width="110px" class="teamMessage-form">
-  <el-form-item label="团队名称" prop="companyName">
-    <el-input v-model="companyForm.companyName" class="width408" placeholder="请输入团队名称"></el-input>
-  </el-form-item>
-  <el-form-item label="团队logo" prop="name">
-    <el-upload
-      class="avatar-uploader"
-      action="https://jsonplaceholder.typicode.com/posts/"
-      :show-file-list="false"
-      :on-success="handleAvatarSuccess"
-     >
-      <img v-if="imageUrl" :src="imageUrl" class="avatar">
-      <i v-else class="el-icon-circle-plus avatar-uploader-icon"></i>
-      <p>上传logo</p>
-    </el-upload>
-  </el-form-item>
-  <el-form-item label="申请人姓名" required>
-    <el-input v-model="companyForm.name" class="width408" placeholder="请输入申请人姓名"></el-input>
-  </el-form-item>
-  <el-form-item label="性别" prop="delivery">
-    <el-radio-group class="width408">
-      <el-radio :label="1">男</el-radio>
-      <el-radio :label="2">女</el-radio>
-     </el-radio-group>
-  </el-form-item>
-  <el-form-item label="年龄" require上传logod>
-    <el-input v-model="companyForm.name" class="width408" placeholder="请输入年龄"></el-input>
-  </el-form-item>
-   <el-form-item label="学历" prop="region">
-    <el-select v-model="companyForm.region" class="width408" placeholder="请选择活动区域">
-      <el-option label="区域一" value="shanghai"></el-option>
-      <el-option label="区域二" value="beijing"></el-option>
-    </el-select>
-  </el-form-item>
-   <el-form-item label="地址" prop="region">
-    <el-select v-model="companyForm.region" class="width408" placeholder="请选择活动区域">
-      <el-option label="区域一" value="shanghai"></el-option>
-      <el-option label="区域二" value="beijing"></el-option>
-    </el-select>
-  </el-form-item>
-  <el-form-item label="上传身份证" required>
-    <div class="uploader-card">
-      <el-upload
-        class="idCard-uploader-card idCard-uploader"
-        action="https://jsonplaceholder.typicode.com/posts/"
-        :show-file-list="false"
-        :on-success="handleAvatarSuccess"
-        >
-        <img v-if="imageUrl" :src="imageUrl" class="avatar">
-        <img v-else src="../../assets/img/team/card.png" alt="" class="card-uploader-icon">
-      </el-upload>
-      <p class="idcard-text">点击上传带头像一面</p>
+  <div class="teamMessage">
+    <div class="title">基本信息</div>
+    <div class="teamMessage-form-row">
+      <el-form
+        :model="personalForm"
+        :rules="rules"
+        ref="personalForm"
+        label-width="110px"
+        class="teamMessage-form"
+      >
+        <el-form-item label="团队名称" prop="team_name">
+          <el-input v-model="personalForm.team_name" class="width408" placeholder="请输入团队名称"></el-input>
+        </el-form-item>
+        <el-form-item label="团队logo" required>
+          <el-upload
+            class="avatar-uploader"
+            action="customize"
+            ref="upload"
+            :show-file-list="false"
+            :http-request="upload"
+          >
+            <img v-if="imageUrl" :src="imageUrl" class="avatar" />
+            <i v-else class="el-icon-circle-plus avatar-uploader-icon"></i>
+            <p>上传logo</p>
+          </el-upload>
+        </el-form-item>
+        <el-form-item label="申请人姓名" required>
+          <el-input v-model="personalForm.user_name" class="width408" placeholder="请输入申请人姓名"></el-input>
+        </el-form-item>
+        <el-form-item label="身份证" required>
+          <el-input v-model="personalForm.id_card" class="width408" placeholder="请输入身份证"></el-input>
+        </el-form-item>
+        <el-form-item label="性别" prop="delivery">
+          <el-radio-group class="width408" v-model="personalForm.sex">
+            <el-radio :label="1">男</el-radio>
+            <el-radio :label="2">女</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="年龄" require>
+          <el-input v-model="personalForm.age" class="width408" placeholder="请输入年龄"></el-input>
+        </el-form-item>
+        <el-form-item label="学历" prop="education">
+          <el-select v-model="personalForm.education" class="width408" placeholder="请选择学历">
+            <el-option :label="item" :value="index" v-for="(item,index) in edu_type" :key="index"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="地址" prop="region">
+          <div class="width408">
+            <districtSelet @change="change" :address="address"></districtSelet>
+          </div>
+        </el-form-item>
+        <el-form-item label="团队简介" prop="introduction">
+          <el-input
+            type="textarea"
+            class="width408"
+            :autosize="{minRows: 5}"
+            v-model="personalForm.introduction"
+            placeholder="请输入团队介绍"
+          ></el-input>
+        </el-form-item>
+        <el-form-item class="teamMessage-btn">
+          <el-button type="primary" @click="submitForm('personalForm')">保存</el-button>
+          <el-button @click="resetForm('personalForm')">取消</el-button>
+        </el-form-item>
+      </el-form>
     </div>
-    <div class="uploader-card">
-     <el-upload
-        class="idCard-uploader-card idCard-uploader"
-        action="https://jsonplaceholder.typicode.com/posts/"
-        :show-file-list="false"
-        :on-success="handleAvatarSuccess"
-        >
-        <img v-if="imageUrl" :src="imageUrl" class="avatar">
-        <img v-else src="../../assets/img/team/card1.png" alt="" class="card-uploader-icon">
-      </el-upload>
-      <p class="idcard-text">点击上传带国徽的一面</p>
-      <ul class="idcard-tip">
-        <li>1.上传文件要求为扫描件或清晰照片；</li>
-        <li>2.照片要求格式为jpg、jpeg或png。</li>
-      </ul>
-    </div>
-  </el-form-item>
-  <el-form-item label="团队简介" prop="desc">
-    <el-input type="textarea" class="width408" :autosize="{ minRows: 6, maxRows: 10}" v-model="companyForm.desc" placeholder="请输入团队介绍"></el-input>
-  </el-form-item>
-   <el-form-item label="银行卡号" required>
-    <el-input v-model="companyForm.name" class="width408" placeholder="请输入银行卡号"></el-input>
-  </el-form-item>
-   <el-form-item label="选择银行" prop="region">
-    <el-select v-model="companyForm.region" class="width408" placeholder="请选择所属银行">
-      <el-option label="区域一" value="shanghai"></el-option>
-      <el-option label="区域二" value="beijing"></el-option>
-    </el-select>
-  </el-form-item>
-  <el-form-item label="手机号码" required>
-    <el-input v-model="companyForm.name" class="width408" placeholder="请输入您的手机号码"></el-input>
-  </el-form-item>
-  <el-form-item label="短信验证码" required>
-    <el-input v-model="companyForm.name"  class="width300" placeholder="请输入您的手机号码"></el-input>
-    <el-button type="primary" class="send-code-btn">获取验证码</el-button>
-  </el-form-item>
-  <el-form-item class="teamMessage-btn">
-    <el-button type="primary" @click="submitForm('companyForm')">保存</el-button>
-    <el-button @click="resetForm('companyForm')">取消</el-button>
-  </el-form-item>
-</el-form>
   </div>
-</div>
 </template>
 
 <script>
-  export default {
-    data() {
-      return {
-        companyForm: {
-          name: '',
-          region: '',
-          date1: '',
-          date2: '',
-          delivery: false,
-          type: [],
-          resource: '',
-          desc: ''
-        },
-        imageUrl:'',
-        rules: {
-          name: [
-            { required: true, message: '请输入活动名称', trigger: 'blur' },
-            { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
-          ],
-          region: [
-            { required: true, message: '请选择活动区域', trigger: 'change' }
-          ],
-          date1: [
-            { type: 'date', required: true, message: '请选择日期', trigger: 'change' }
-          ],
-          date2: [
-            { type: 'date', required: true, message: '请选择时间', trigger: 'change' }
-          ],
-          type: [
-            { type: 'array', required: true, message: '请至少选择一个活动性质', trigger: 'change' }
-          ],
-          resource: [
-            { required: true, message: '请选择活动资源', trigger: 'change' }
-          ],
-          desc: [
-            { required: true, message: '请填写活动形式', trigger: 'blur' }
-          ]
-        }
-      };
-    },
-    methods: {
-      submitForm(formName) {
-        this.$refs[formName].validate((valid) => {
-          if (valid) {
-            alert('submit!');
-          } else {
-            console.log('error submit!!');
-            return false;
-          }
-        });
+import { getConstant } from '../../api/dictionary'
+import districtSelet from '../districtSelet'
+import { getImg, getImgUrl } from '../../util/util'
+import { updateTeamInfo, getTeamInfo } from '../../api/team'
+import { uploadFile } from '../../api/upload'
+export default {
+  components: {
+    districtSelet
+  },
+  data () {
+    return {
+      personalForm: {
+        type: 2,
+        id: ''
       },
-      resetForm(formName) {
-        this.$refs[formName].resetFields();
+      imageUrl: '',
+      rules: {
+        team_name: [
+          { required: true, message: '请输入团队名称', trigger: 'blur' }
+        ]
       },
-      handleAvatarSuccess(){}
+      edu_type: [],
+      uid: localStorage.getItem('uid'),
+      address: []
+    };
+  },
+  created () {
+    this.personalForm.id = this.$route.query.teamId
+    let params = 'edu_type'
+    this.getList(params)
+    if (this.personalForm.id) {
+      this.getInfo(this.personalForm.id)
     }
+  },
+  methods: {
+    getInfo (uid) {
+      getTeamInfo({ uid }).then(res => {
+        if (res.data) {
+          this.personalForm = res.data || {}
+          this.imageUrl = getImgUrl(this.personalForm.log)
+          console.log(this.imageUrl)
+          this.address.push(this.personalForm.provinceid, this.personalForm.cityid, this.personalForm.three_cityid)
+          console.log(this.address)
+        }
+      })
+    },
+    getList (filed) {
+      getConstant({ filed }).then(res => {
+        this.edu_type = res.data.edu_type
+      })
+    },
+    upload (params) {
+      const _file = params.file;
+      const isLt2M = _file.size / 1024 / 1024 < 2;
+      if (!isLt2M) {
+        this.$message.error("请上传2M以下的.xlsx文件");
+        return false;
+      }
+      uploadFile(_file).then(res => {
+        this.imageUrl = getImg(_file)
+        this.personalForm.log = res.data.url
+      })
+    },
+    change (val) {
+      this.personalForm.provinceid = val[0]
+      this.personalForm.cityid = val[1]
+      this.personalForm.three_cityid = val[2]
+    },
+    submitForm (personalForm) {
+      this.$refs[personalForm].validate((valid) => {
+        if (valid) {
+          updateTeamInfo(this.personalForm).then(res => {
+            if (res.status.code == 200) {
+              this.$router.push('userlist')
+            }
+          }).catch(error => {
+            this.$message.error(error.status.remind)
+          })
+        } else {
+          return false
+        }
+      });
+    },
+    resetForm (personalForm) {
+      this.$refs[personalForm].resetFields();
+    },
+    handleAvatarSuccess () { }
   }
+}
 </script>
 <style lang="scss">
 .teamMessage {

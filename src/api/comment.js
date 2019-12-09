@@ -1,6 +1,7 @@
 
 import { post, $post } from '../axios'
 
+export const addDiscuss = data => $post('/teambls/add_discuss', data) // 新增文章
 export const getDiscussList = data => $post('/teambls/discussList', data) // 文章列表
 export const getDiscussInfo = data => $post('/teambls/discussInfo', data) // 文章详情
 export const delDiscuss = data => $post('/teambls/del_discuss', data)  // 删除文章

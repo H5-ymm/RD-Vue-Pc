@@ -3,10 +3,14 @@
     <memberCard :userType="userType"></memberCard>
     <div class="table-list">
       <memberQuery @onSubmit="onSubmit"></memberQuery>
-      <div class="member-table">
-        <memberHandle :len="len" @addMember="addMember"> </memberHandle>
-        <memberTable :total="total" :tableData="tableData" @handleEdit="handleEdit" @handleSelectionChange="handleSelectionChange"></memberTable>
-      </div>
+      <memberTable
+        :total="total"
+        :tableData="tableData"
+        @handleEdit="handleEdit"
+        @addMember="addMember"
+        @handleDel="handleDel"
+        @handleSelectionChange="handleSelectionChange"
+      ></memberTable>
       <el-pagination
         class="team-pagination"
         @size-change="handleSizeChange"
@@ -19,7 +23,11 @@
       ></el-pagination>
     </div>
     <memberAdd :dialogTableVisible="visible" @submitForm="submitForm"></memberAdd>
-    <memberInfo :dialogTableVisible="dialogTableVisible" :teamId="teamId"></memberInfo>
+    <memberInfo
+      :dialogTableVisible="dialogTableVisible"
+      @submitMember="submitMember"
+      :userId="userId"
+    ></memberInfo>
   </div>
 </template>
 
@@ -28,10 +36,9 @@ import Breadcrumb from './breadcrumb/Breadcrumb'
 import memberCard from './membership/memberCard'
 import memberQuery from './membership/memberQuery'
 import memberTable from './membership/memberTable'
-import memberHandle from './membership/memberHandle'
 import memberInfo from './membership/memberInfo'
 import memberAdd from './membership/memberAdd'
-import { getTeamList, loginOutTeam, addTeamUser } from '../api/team'
+import { getTeamList, loginOutTeam, addTeamUser, updateTeamUser } from '../api/team'
 import memberInfoVue from './membership/memberInfo.vue';
 export default {
   components: {
@@ -40,14 +47,13 @@ export default {
     memberQuery,
     memberTable,
     memberInfo,
-    memberAdd,
-    memberHandle
+    memberAdd
   },
   data () {
     return {
       breadcrumb: ['设置', '管理控制', '全部管理员'],
       dialogTableVisible: false,
-      visible:false,
+      visible: false,
       tableData: [],
       currentPage: 1,
       userType: 1,
@@ -58,7 +64,7 @@ export default {
       },
       total: 0,
       len: 0,
-      teamId: ''
+      userId: ''
     }
   },
   created () {
@@ -82,22 +88,36 @@ export default {
         this.total = data.count
       })
     },
-    handleEdit(val) {
+    handleEdit (val) {
       this.dialogTableVisible = true
-      this.teamId = val
-      console.log( this.teamId)
+      this.userId = val
+      console.log(this.userId)
     },
-    handleSelectionChange(val) {
+    handleDel (uid) {
+      loginOutTeam({ uid }).then(res => {
+        this.$message.success('退出成功')
+        this.getList(this.formMember)
+      }).catch(error => {
+        this.$message.error(error.status.remind)
+      })
+    },
+    submitMember (val) {
+      updateTeamUser(val).then(res => {
+        this.dialogTableVisible = false
+        this.getList(this.params)
+      })
+    },
+    handleSelectionChange (val) {
       this.len = val
     },
-    addMember(){
+    addMember () {
       this.visible = true
     },
     onSubmit (value) {
       let params = Object.assign(this.formMember, value)
       this.getList(params)
     },
-    submitForm(val) {
+    submitForm (val) {
       this.visible = false
       addTeamUser(val).then(res => {
         this.getList(this.formMember)

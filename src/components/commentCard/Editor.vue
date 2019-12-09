@@ -6,6 +6,7 @@ import VEmojiPicker from 'v-emoji-picker';
 import packData from 'v-emoji-picker/data/emojis.json';
 import E from 'wangeditor'
 import { upload } from '../../axios'
+import { getImg } from '../../util/util'
 export default {
   props: ['content'],
   data () {
@@ -29,38 +30,46 @@ export default {
         'undo',  // 撤销
         'redo'  // 重复
       ],
-      packData
+      packData,
+      editor: {},
+      contentHtml: ''
     }
   },
   mounted () {
-    var editor = new E('#editor')
+    this.editor = new E('#editor')
     let arr = packData.data.map(item => { return item.emoji })
-    editor.customConfig.menus = this.menus
-    editor.customConfig.emotions = [
+    this.editor.customConfig.onchange = html => {
+      // html 即变化之后的内容
+      console.log(html)
+      this.$emit('saveConent', html)
+    }
+    this.editor.customConfig.menus = this.menus
+    this.editor.customConfig.emotions = [
       {
         title: 'emoji',
         type: 'emoji',
         content: arr
       }]
-    editor.customConfig.customUploadImg = (files, insert) => {
-      console.log(files)
+
+    this.editor.customConfig.customUploadImg = (files, insert) => {
       this.insert(files[0])
     }
-    editor.create()
+    this.editor.customConfig.uploadImgShowBase64 = true
+    this.editor.create()
     if (this.content) {
-      editor.txt.html(this.content)
+      this.editor.txt.html(this.content)
     }
     else {
-      editor.txt.html('请在此处开始您的创作')
+      this.editor.txt.html('请在此处开始您的创作')
     }
   },
   methods: {
     insert (imgUrl) {
-      console.log(imgUrl)
-      let formFile = new FormData()
-      formFile.append('image', imgUrl); //加入文件对象
-      upload(formFile).then(res => {
-        console.log(res)
+      upload(imgUrl).then(res => {
+        let src = getImg(imgUrl)
+        console.log(src)
+        let img = "<img class='imgBg' src=" + src + " />"
+        this.editor.cmd.do('insertHTML', img)
       })
     }
   }
@@ -70,5 +79,9 @@ export default {
 <style lang="scss">
  .editor {
    width:92%;
+   .imgBg {
+     width: 120px;
+     height: 80px;
+   }
  }
 </style>

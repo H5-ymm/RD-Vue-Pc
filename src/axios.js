@@ -76,8 +76,7 @@ $axios.interceptors.response.use(
  */
 export function post (url, data) {
   return new Promise((resolve, reject) => {
-    console.log(data)
-    $axios.post(`${baseURL}${url}`, QS.stringify(data))
+    $axios.post(`${baseURL}${url}`, QS.stringify(data || {}))
       .then(res => {
         resolve(res.data)
       })
@@ -99,9 +98,10 @@ export function $post (url, params) {
   });
 }
 export function upload (params) {
-  console.log(params)
+  let file = new FormData()
+  file.append('image', params)
   return new Promise((resolve, reject) => {
-    $axios.post(`${baseURL}/uploadimg/moreupload`, params)
+    $axios.post(`${baseURL}/uploadimg/moreupload`, file)
       .then(res => {
         resolve(res.data)
       })

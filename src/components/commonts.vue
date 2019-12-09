@@ -28,7 +28,12 @@
       </div>
       <div class="team-box-content team-box-right">
         <!-- <edit-card></edit-card> -->
-        <detail-card :cardType="type" @refurbish="refurbish" :commentInfo="commentInfo"></detail-card>
+        <detail-card
+          :cardType="type"
+          @refurbish="refurbish"
+          @saveDiscuss="saveDiscuss"
+          :commentInfo="commentInfo"
+        ></detail-card>
       </div>
     </div>
   </div>
@@ -37,7 +42,7 @@
 <script>
 import PersonCard from './commentCard/PersonCard'
 import DetailCard from './commentCard/DetailCard'
-import { getDiscussList, getDiscussInfo } from '../api/comment'
+import { getDiscussList, getDiscussInfo, addDiscuss } from '../api/comment'
 export default {
   components: {
     PersonCard,
@@ -74,16 +79,27 @@ export default {
           this.commentId = this.list[0].id
           this.getDetail(this.commentId)
         }
+        else {
+          this.commentInfo = null
+        }
+      }).catch(error => {
+        this.$message.error(error.status.remind)
       })
     },
     getDetail (id) {
       getDiscussInfo({ id }).then(res => {
-        this.commentInfo = res.data
+        this.commentInfo = res.data || {}
       })
     },
     selectComment (id) {
       this.getDetail(id)
       this.type = 2
+    },
+    saveDiscuss (val) {
+      addDiscuss(val).then(res => {
+        console.log(res)
+        this.getList()
+      })
     },
     refurbish () {
       this.getList()

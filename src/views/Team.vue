@@ -8,9 +8,9 @@
         <el-header height="75px">
           <div style="height:37px;" class="x-flex-between team-header">
             <i class="el-icon-refresh-right"></i>
-            <div>
-              <el-link :underline="false">首页</el-link>
-              <i class="el-icon-bell"></i>
+            <div class="x-flex-center">
+              <el-link :underline="false" href="home">首页</el-link>
+              <i class="el-icon-bell unRead"></i>
               <span>天天向上团队</span>
             </div>
           </div>
@@ -48,7 +48,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .team-main-view{
   width: 100vw;
   height: 100vh;
@@ -56,9 +56,15 @@ export default {
   /* overflow: auto; */
   overflow: hidden;
   position: relative;
-}
-.team .el-header {
-  padding: 0;
+  .unRead {
+    margin: 0 10px;
+  }
+  .el-header {
+    padding: 0;
+  }
+  .team-header {
+    padding: 0 20px;
+  }
 }
 .team .team-header {
   padding: 0 38px;

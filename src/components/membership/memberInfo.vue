@@ -1,12 +1,12 @@
 <template>
-  <el-dialog width="500px" :visible.sync="dialogTableVisible" class="member-dialog" :show-close="false">
+  <el-dialog width="500px" :visible="dialogTableVisible" class="member-dialog" :show-close="false">
     <div class="member-row" v-if="formMember">
       <img src="../../assets/img/member/cancel.png" alt class="cancel-icon" @click="handleClose" />
       <section class="member-col1">
         <div class="head-box">
           <img src="../../assets/img/img1.png" class="head" alt />
         </div>
-        <p>{{formMember.user_name|| '斤斤计较'}}</p>
+        <p>{{formMember.user_name}}</p>
       </section>
       <section class="member-col2">
         <div class="x-flex-center">
@@ -19,44 +19,53 @@
         </div>
         <div class="x-flex-center">
           <p>学历</p>
-          <p>高中及以下</p>
+          <p>{{formMember.educationName}}</p>
         </div>
         <div class="x-flex-center">
           <p>当前职称</p>
-          <p>组员</p>
+          <p>{{formMember.grade_name}}</p>
         </div>
         <div class="x-flex-center">
           <p>部门</p>
-          <p>销售部</p>
+          <p>{{formMember.depart_name}}</p>
         </div>
         <div class="x-flex-center">
           <p>拥有简历</p>
-          <p>15</p>
+          <p>{{formMember.export_num}}</p>
         </div>
         <div class="x-flex-center">
           <p>入职人数</p>
-          <p>15</p>
+          <p>{{formMember.entry_num}}</p>
         </div>
         <div class="x-flex-center">
           <p>最后登录时间</p>
-          <p>2019-09-21 08:51:02</p>
+          <p>{{formMember.logout_time}}</p>
         </div>
         <div class="x-flex-center">
           <p>当前状态</p>
-          <p>正常</p>
+          <p>{{formMember.status == 1 ? '正常': '锁定'}}</p>
         </div>
       </section>
       <section class="member-col3">
         <el-form :model="formMember" class="demo-form-inline" label-width="90px">
-          <!-- <el-form-item label="当前职称">
-            <el-select v-model="formMember.region" placeholder="请选择">
-              <el-option label="姓名" value="shanghai"></el-option>
-              <el-option label="联系电话" value="beijing"></el-option>
-            </el-select>
-          </el-form-item> -->
           <el-form-item label="部门">
+            <el-select placeholder="请选择" v-model="depId" @change="selectDep">
+              <el-option
+                :label="item.depart_name"
+                :value="item.id"
+                v-for="(item,index) in depList"
+                :key="index"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="当前职称">
             <el-select v-model="formMember.grade_id" placeholder="请选择">
-              <el-option :label="item" :value="key" v-for="(item,key) in jobList" :key="key"></el-option>
+              <el-option
+                :label="item.grade_name"
+                :value="item.id"
+                v-for="(item,index) in jobList"
+                :key="index"
+              ></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="当前状态">
@@ -66,18 +75,29 @@
             </el-radio-group>
           </el-form-item>
           <el-form-item label="活动形式" v-if="formMember.status==2">
-            <el-input type="textarea" placeholder="请输入锁定说明（必填）"></el-input>
+            <el-input type="textarea" v-model="formMember.remark" placeholder="请输入锁定说明（必填）"></el-input>
           </el-form-item>
           <el-form-item label="认证信息">
-            <div class="x-flex-start member-status">
-              <img src="../../assets/img/member/phone.png" alt />
+            <div class="x-flex-start-justify member-status">
+              <img src="../../assets/img/member/phone.png" v-if="formMember.mobile" alt />
+              <img src="../../assets/img/member/phone1.png" v-else alt />
+              <img src="../../assets/img/member/IDCard.png" alt v-if="formMember.idcard_status" />
+              <img src="../../assets/img/member/IDCard1.png" alt v-else />
+              <img src="../../assets/img/member/zfb.png" alt v-if="formMember.alipay_status" />
+              <img src="../../assets/img/member/zfb1.png" alt v-else />
+              <img src="../../assets/img/member/wx.png" alt v-if="formMember.wx_status" />
+              <img src="../../assets/img/member/wx1.png" alt v-else />
+              <img src="../../assets/img/member/card.png" alt v-if="formMember.bank_status" />
+              <img src="../../assets/img/member/card1.png" alt v-else />
+              <img src="../../assets/img/member/email.png" alt v-if="formMember.email_status" />
+              <img src="../../assets/img/member/email1.png" alt v-else />
             </div>
           </el-form-item>
         </el-form>
       </section>
     </div>
     <div slot="footer">
-      <el-button type="primary" @click="handleClose">确定</el-button>
+      <el-button type="primary" @click="submitMember">确定</el-button>
       <!-- <el-button type="primary" @click="handleClose">关闭</el-button> -->
     </div>
   </el-dialog>
@@ -86,51 +106,89 @@
 // 部门经理只能编辑状态
 // 成员只能查看
 // 总经理可以编辑部门 职称 状态
-import { getTeamInfo } from '../../api/team'
+import { seeTeamUserInfo, departmentRoleList } from '../../api/team'
 import { getConstant } from '../../api/dictionary'
 export default {
-  props: ['dialogTableVisible', 'memberInfo', 'memberType', 'teamId'],
+  props: ['dialogTableVisible', 'memberInfo', 'memberType', 'userId'],
   data () {
     return {
       formMember: {},
-      jobList: {
-        "1": "贸易/百货", 
-        "2": "机械/设备/技工", 
-        "3": "公务员/翻译", 
-        "4": "化工/能源", 
-        "5": "销售/客服/技术支持", 
-        "6": "会计/金融/银行/保险", 
-        "7": "生产/营运/采购/物流", 
-        "8": "生产/制药/医疗/护理", 
-        "9": "广告/时长/媒体/艺术", 
-        "10": "建筑/房地产", 
-        "11": "人事/行政/高级管理", 
-        "12": "咨询/法律/教育/科研", 
-        "13": "服务业", 
-        "14": "通信/电子"
-      }
+      jobList: [],
+      depList: [],
+      depId: ''
     }
   },
   created () {
-    console.log(this.teamId)
+    this.getJobList()
   },
-  watch:{
-    teamId(val){
+  watch: {
+    userId (val) {
       if (val) {
         this.getInfo(val)
       }
     }
   },
   methods: {
-    getInfo (uid) {
-      getTeamInfo({ uid }).then(res => {
+    getInfo (id) {
+      let params = {
+        userId: id,
+        uid: localStorage.getItem('uid')
+      }
+      seeTeamUserInfo(params).then(res => {
         console.log(res)
         this.formMember = res.data
-        console.log(this.formMember)
+        this.depId = this.getJob(this.depList, this.formMember.grade_id)
+        this.jobList = this.getArr(this.depList, this.depId)
+        console.log(this.jobList)
       })
+    },
+    getJobList () {
+      let uid = localStorage.getItem('uid')
+      departmentRoleList({ uid }).then(res => {
+        console.log(res)
+        this.depList = res.data
+      })
+    },
+    getArr (arr, id) {
+      let newArr = []
+      arr.forEach(item => {
+        if (item.id == id) {
+          newArr = item.child
+        }
+      })
+      return newArr
+    },
+    getJob (arr, id) {
+      let depId
+      arr.forEach(item => {
+        if (item.child) {
+          item.child.forEach(val => {
+            if (val.id == id) {
+              depId = val.depart_id
+            }
+          })
+        }
+      })
+      return depId
+    },
+    selectDep (val) {
+      this.jobList = this.getArr(this.depList, val)
     },
     handleClose () {
       this.$parent.dialogTableVisible = false
+    },
+    submitMember () {
+      let params = {
+        uid: this.formMember.uid,
+        id: this.formMember.id,
+        grade_id: this.formMember.grade_id,
+        status: this.formMember.status,
+        provinceid: this.formMember.provinceid,
+        cityid: this.formMember.cityid,
+        three_cityid: this.formMember.three_cityid,
+        remark: this.formMember.remark
+      }
+      this.$emit('submitMember', params)
     }
   }
 }
@@ -229,6 +287,9 @@ export default {
         .member-status {
           margin-top: 12px;
           padding-left:14px;
+          img {
+            margin-right: 20px;
+          }
         }
       }
     }

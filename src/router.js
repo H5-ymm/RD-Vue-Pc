@@ -16,7 +16,7 @@ import TeamSetting from './components/TeamSetting.vue'
 
 import Department from './components/Department.vue'
 import personalForm from './components/teamMessage/personalForm'  // 个人
-import teamForm from './components/teamMessage/teamForm'   // 企业
+import companyForm from './components/teamMessage/companyForm'   // 企业
 
 import Write from './components/Write.vue' //新增文章页
 import Addtable from './components/addtable.vue'  //新增标签页
@@ -101,9 +101,9 @@ let routers = new Router({
           }
         },
         { // 团队个人设置
-          path: '/teamForm',
-          name: 'teamForm',
-          component: teamForm,
+          path: '/companyForm',
+          name: 'companyForm',
+          component: companyForm,
           meta: {
             requiresAuth: 2
           }

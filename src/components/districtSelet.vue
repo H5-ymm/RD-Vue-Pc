@@ -14,10 +14,10 @@
 import { getProvincesList, getCitysList, getAreasList } from '../api/login'
 export default {
   props: {
-    value: { type: Array, default: _ => [] },
     disabled: false,
     placeholder: { type: String, default: '请选择地区' },
     canAll: { type: Array, default: _ => [true, true, true] },
+    address: { type: Array, default: _ => [] }
   },
   data () {
     return {
@@ -31,23 +31,15 @@ export default {
     }
   },
   created () {
-    this.value.forEach(val => {
-      if (val) this.districtList.push(parseInt(val))
-    })
-    // this.getRegion([100000],_ => {
-    //   if (this.districtList[0]) {
-    //     this.getRegion([this.districtList[0]], _ => {
-    //       if (this.districtList[0] && this.districtList[1]) {
-    //         this.getRegion([this.districtList[0], this.districtList[1]], _ => {
-    //           if (this.districtList[0] && this.districtList[1] && this.districtList[2]) {
-    //             this.getRegion([this.districtList[0], this.districtList[1], this.districtList[2]])
-    //           }
-    //         })
-    //       }
-    //     })
-    //   }
-    // })
     this.getRegion([])
+  },
+  watch: {
+    address (val) {
+      val.forEach(val => {
+        if (val) this.districtList.push(val + '')
+        console.log(this.districtList)
+      })
+    }
   },
   methods: {
     handleItemChange (val) {
@@ -92,13 +84,10 @@ export default {
       else {
         code = value[0]
       }
-      console.log(code)
       getCitysList({ code }).then(res => {
         let arr = this.getProlist1(res.data)
         this.options.forEach(item => {
-          console.log(item.code == code)
           if (item.code == code) {
-            console.log(arr)
             item.children = arr
             return false
           }
@@ -125,11 +114,11 @@ export default {
             })
           }
         })
-        // this.options[0].children[0].children = arr
         console.log(this.options)
       })
     },
     changeData (val) {
+      console.log(val)
       this.$emit('input', val)
       this.$emit('change', val)
     }

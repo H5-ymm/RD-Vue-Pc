@@ -25,6 +25,7 @@
   </el-row>
 </template>
 <script>
+import { getTeamInfo } from '../../api/team'
 export default {
   props: ['userType', 'userInfo'],
   data () {
@@ -36,9 +37,6 @@ export default {
         jobStatus: '22'
       }
     }
-  },
-  created () {
-
   },
   computed: {
     userLabel () {
@@ -61,7 +59,15 @@ export default {
       }
       return obj
     }
-  }
+  },
+  created () {
+    let uid = localStorage.getItem('uid')
+    getTeamInfo({ uid }).then(res => {
+      if (res && res.data) {
+        console.log(res)
+      }
+    })
+  },
 }
 </script>
 <style lang="scss">

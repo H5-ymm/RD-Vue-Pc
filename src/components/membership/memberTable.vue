@@ -1,20 +1,20 @@
 <template>
-  <!-- <div class="member-table"> -->
-    <!-- <div class="action-btn x-flex-between">
+  <div class="member-table">
+    <div class="action-btn x-flex-between">
       <div>
-        <el-button type="primary" icon="el-icon-plus" @click="visible=true">添加</el-button>
+        <el-button type="primary" icon="el-icon-plus" @click="addMember">添加</el-button>
         <el-button>删除</el-button>
         <el-button>锁定</el-button>
         <span class="select-text">
           已选择
           <el-button type="text">{{multipleSelection.length}}&nbsp;</el-button>项
         </span>
-        <el-button type="text">清空</el-button>
+        <el-button type="text" @click="multipleSelection=[]">清空</el-button>
       </div>
       <div>
         <el-button @click="dismissTeam()">解散团队</el-button>
       </div>
-    </div> -->
+    </div>
     <div class="table">
       <el-table
         border
@@ -36,24 +36,27 @@
         <el-table-column label="简历数量" prop="entry_num" align="center" width="150"></el-table-column>
         <el-table-column label="入职人数" prop="entry_num" align="center" width="150"></el-table-column>
         <el-table-column label="最近登录时间" align="center" width="260">
-           <template slot-scope="props">
+          <template slot-scope="props">
             <span>{{ props.row.logout_time ? $moment(props.row.logout_time).format('YYYY-MM-DD HH:mm'): '--'}}</span>
           </template>
         </el-table-column>
         <el-table-column label="状态" align="center" width="150">
           <template slot-scope="props">
-            <span class="status">{{props.row.status==1?"正常":'锁定'}}</span>
+            <span
+              class="status"
+              :class="{'active-status':props.row.status==1}"
+            >{{props.row.status==1?"正常":'锁定'}}</span>
           </template>
         </el-table-column>
-        <el-table-column label="操作" fixed="right" align="center" width="150">
+        <el-table-column label="操作" align="center" width="150">
           <template slot-scope="scope">
             <el-button @click="handleEdit(scope.row)" type="text" size="small">编辑</el-button>
-            <el-button @click="handleClickB(scope.row)" type="text" size="small">删除</el-button>
+            <el-button @click="handleDel(scope.row)" type="text" size="small">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
     </div>
-  <!-- </div> -->
+  </div>
 </template>
 <script>
 export default {
@@ -66,18 +69,27 @@ export default {
   data () {
     return {
       memberInfo: {},
-      teamId: ''
+      teamId: '',
+      multipleSelection: []
     }
   },
   methods: {
+    addMember () {
+      this.$emit('addMember')
+    },
     handleEdit (row) {
-      this.memberInfo = row
-      this.teamId = row.uid
-      this.$emit('handleEdit', row.uid)    
+      // this.memberInfo = row
+      // this.teamId = row.uid
+      this.$emit('handleEdit', row.uid)
     },
     handleSelectionChange (val) {
       this.multipleSelection = val;
       this.$emit('handleSelectionChange', this.multipleSelection.length)
+    },
+    handleDel (row) {
+      // this.memberInfo = row
+      // this.teamId = row.uid
+      this.$emit('handleDel', row.uid)
     },
     dismissTeam () {
       this.$emit('dismissTeam')
@@ -95,6 +107,11 @@ export default {
   .status {
     position: relative;
     margin-left: 10px;
+    &.active-status{
+      &::before{
+       background: #71D875
+     }
+    }
     &::before{
       position: absolute;
       content: "";

@@ -1,8 +1,8 @@
 <template>
   <div class="tables-box">
     <div class="table-list">
-      <el-button type="primary" class="add-member" @click="visible=true">添加成员</el-button>
-      <tableList :tableData="tableData" @handleEdit="handleEdit" @handleDel="handleDel"></tableList>
+      <el-button type="primary" class="add-member" @click="visible=true">添加部门</el-button>
+      <tableList :tableData="tableData" @handleTurnover="handleEdit" @handleDel="handleDel"></tableList>
       <el-pagination
         class="team-pagination"
         @size-change="handleSizeChange"
@@ -14,10 +14,14 @@
         :total="total"
       ></el-pagination>
     </div>
-    <turnoverModal :dialogTableVisible="dialogTableVisible"></turnoverModal>
+    <turnoverModal
+      :dialogTableVisible="dialogTableVisible"
+      :departId="departId"
+      @handleClose="handle"
+    ></turnoverModal>
     <addDepModal :dialogTableVisible="visible" @submitForm="submitForm"></addDepModal>
-    <successModal :dialogTableVisible="visible1"></successModal>
-    <outDep :dialogTableVisible="delVisible"></outDep>
+    <successModal :dialogTableVisible="visible1" @handleTurnover="handleEdit"></successModal>
+    <outDep :dialogTableVisible="delVisible" @submitForm="handleUser"></outDep>
   </div>
 </template>
 
@@ -40,10 +44,10 @@ export default {
     return {
       breadcrumb: ['设置', '管理控制', '全部管理员'],
       dialogTableVisible: false,
-      visible:false,
-      visible1:false,
-      delVisible:false,
-      turnoverVisible:false,
+      visible: false,
+      visible1: false,
+      delVisible: false,
+      turnoverVisible: false,
       tableData: [],
       currentPage: 1,
       userType: 1,
@@ -53,7 +57,7 @@ export default {
         page: 1
       },
       total: 0,
-      teamId: '',
+      departId: '',
       uid: localStorage.getItem('uid')
     }
   },
@@ -75,38 +79,53 @@ export default {
       getDepartmentList(params).then(res => {
         const { data } = res
         this.tableData = data.data
+        this.delVisible = this.tableData.some(item => {
+          return !item.user_name
+        })
         this.total = data.count
       }).catch(error => {
         if (error.status) {
           this.$message.error(error.status.remind)
-        }    
-      }) 
+        }
+      })
     },
-    handleEdit(val) {
+    handleEdit (val) {
+      this.departId = val || this.tableData[0].id
       this.dialogTableVisible = true
-      this.teamId = val
     },
-    handleDel(val) {
+    handleDel (val) {
       let params = {
         departId: val,
         uid: this.uid
       }
-      delDepartment(params).then(res=>{
-        if (res.status.code ==200) {
-          this.delVisible = true
+      delDepartment(params).then(res => {
+        if (res.status.code == 200) {
+          // this.delVisible = true
+          this.getList(this.formMember)
+          this.$message.error('删除成功')
         }
       }).catch(error => {
         this.$message.error(res.status.remind)
       })
     },
-    addMember(){
+    handle (index) {
+      this.dialogTableVisible = false
+      if (index) {
+        this.getList(this.formMember)
+      }
+    },
+    handleUser () {
+      // this.dialogTableVisible = true
+      this.delVisible = false
+    },
+    addMember () {
       this.visible = true
     },
     onSubmit (value) {
       let params = Object.assign(this.formMember, value)
       this.getList(params)
     },
-    submitForm(val) {
+    submitForm (val) {
       this.visible = false
       addTeamDepartment(val).then(res => {
         this.visible1 = true

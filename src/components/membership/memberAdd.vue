@@ -6,7 +6,14 @@
         <p>添加组员</p>
       </section>
       <section class="member-col3 member-add-col3">
-        <el-form :model="formMember" :rules="rules" ref="formMember" class="demo-form-inline" label-position="right" label-width="100px">
+        <el-form
+          :model="formMember"
+          :rules="rules"
+          ref="formMember"
+          class="demo-form-inline"
+          label-position="right"
+          label-width="100px"
+        >
           <el-form-item label="姓名" required prop="user_name">
             <el-input v-model="formMember.user_name" placeholder="请输入组员姓名"></el-input>
           </el-form-item>
@@ -16,20 +23,35 @@
           <el-form-item label="联系电话">
             <el-input v-model="formMember.mobile" placeholder="请输入该组员联系电话"></el-input>
           </el-form-item>
-          <el-form-item label="户籍所在地">
+          <!-- <el-form-item label="户籍所在地">
             <el-input v-model="formMember.mobile" placeholder="请输入户籍所在地"></el-input>
-          </el-form-item>
-          <el-form-item label="详细地址">
-            <districtSelet @change="change"> </districtSelet>
+          </el-form-item>-->
+          <el-form-item label="户籍所在地">
+            <districtSelet @change="change"></districtSelet>
           </el-form-item>
           <el-form-item label="学历">
             <el-select v-model="formMember.education" placeholder="请选择学历">
               <el-option :label="item" :value="index" v-for="(item,index) in edu_type" :key="index"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="部门" required prop="grade_id">
-            <el-select v-model="formMember.grade_id" placeholder="请选择该成员当前部门">
-              <el-option :label="item" :value="key" v-for="(item,key) in jobList" :key="key"></el-option>
+          <el-form-item label="部门">
+            <el-select placeholder="请选择" v-model="depId" @change="selectDep">
+              <el-option
+                :label="item.depart_name"
+                :value="item.id"
+                v-for="(item,index) in depList"
+                :key="index"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="当前职称">
+            <el-select v-model="formMember.grade_id" placeholder="请选择">
+              <el-option
+                :label="item.grade_name"
+                :value="item.id"
+                v-for="(item,index) in jobList"
+                :key="index"
+              ></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="当前状态">
@@ -53,23 +75,24 @@
 // 总经理可以编辑部门 职称 状态
 import { getConstant } from '../../api/dictionary'
 import districtSelet from '../districtSelet'
+import { departmentRoleList } from '../../api/team'
 import { validateIdCard } from '../../util/util'
 export default {
-  components:{
+  components: {
     districtSelet
   },
   props: ['dialogTableVisible'],
   data () {
-     var validate = (rule, value, callback) => {
-        if (value === '') {
-          callback(new Error('请输入身份证号码'));
-        } else {
-          if (!validateIdCard(value)) {
-            callback(new Error('请输入正确的身份证号码'));
-          }
-          callback()
+    var validate = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请输入身份证号码'));
+      } else {
+        if (!validateIdCard(value)) {
+          callback(new Error('请输入正确的身份证号码'));
         }
-      };
+        callback()
+      }
+    };
     return {
       formMember: {
         region: '',
@@ -84,6 +107,8 @@ export default {
         three_cityid: '',
         uid: localStorage.getItem('uid'),
       },
+      depId: '',
+      depList: [],
       rules: {
         user_name: [
           { required: true, message: '请输入组员姓名', trigger: 'blur' },
@@ -96,43 +121,40 @@ export default {
           { required: true, message: '请选择组员所在部门', trigger: 'blur' }
         ]
       },
-      edu_type: [
-        "高中以下", 
-        "高中", 
-        "中专", 
-        "大专", 
-        "本科", 
-        "硕士"
-      ],
-      jobList: {
-          "1": "贸易/百货", 
-          "2": "机械/设备/技工", 
-          "3": "公务员/翻译", 
-          "4": "化工/能源", 
-          "5": "销售/客服/技术支持", 
-          "6": "会计/金融/银行/保险", 
-          "7": "生产/营运/采购/物流", 
-          "8": "生产/制药/医疗/护理", 
-          "9": "广告/时长/媒体/艺术", 
-          "10": "建筑/房地产", 
-          "11": "人事/行政/高级管理", 
-          "12": "咨询/法律/教育/科研", 
-          "13": "服务业", 
-          "14": "通信/电子"
-        }
+      edu_type: [],
+      jobList: []
     }
   },
   created () {
-    let params = 'edu_type,job_array'
+    let params = 'edu_type'
     this.getList(params)
+    this.getJobList()
   },
   methods: {
     getList (filed) {
       getConstant({ filed }).then(res => {
-        console.log(res)
+        this.edu_type = res.data.edu_type
       })
     },
-    change(val) {
+    getJobList () {
+      let uid = this.formMember.uid
+      departmentRoleList({ uid }).then(res => {
+        this.depList = res.data
+      })
+    },
+    getArr (arr, id) {
+      let newArr = []
+      arr.forEach(item => {
+        if (item.id == id) {
+          newArr = item.child
+        }
+      })
+      return newArr
+    },
+    selectDep (val) {
+      this.jobList = this.getArr(this.depList, val)
+    },
+    change (val) {
       this.formMember.provinceid = val[0]
       this.formMember.cityid = val[1]
       this.formMember.three_cityid = val[2]
@@ -140,10 +162,10 @@ export default {
     handleClose () {
       this.$parent.visible = false
     },
-    submitForm() {
+    submitForm () {
       this.$refs['formMember'].validate((valid) => {
         if (valid) {
-          this.$emit('submitForm',this.formMember)
+          this.$emit('submitForm', this.formMember)
         } else {
           return false
         }

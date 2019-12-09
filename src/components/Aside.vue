@@ -112,20 +112,24 @@ export default {
             {
               title: '团队信息',
               url: '/teamSetting'
-            }
-          ]
-        },
-        {
-          title: '部门管理',
-          icon: 'el-icon-collection-tag',
-          submenu: [
+            },
             {
-              title: '部门列表',
+              title: '部门管理',
               url: '/department'
             }
           ]
         },
-        
+        // {
+        //   title: '部门管理',
+        //   icon: 'el-icon-collection-tag',
+        //   submenu: [
+        //     {
+        //       title: '部门列表',
+        //       url: '/department'
+        //     }
+        //   ]
+        // },
+
       ],
       title: ''
     }

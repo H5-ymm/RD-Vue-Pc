@@ -1,10 +1,20 @@
 <template>
-  <el-dialog width="380px" top="30vh" :visible="dialogTableVisible" class="member-dialog dep-dialog" :show-close="false" center>
+  <el-dialog
+    width="380px"
+    top="30vh"
+    :visible="dialogTableVisible"
+    class="member-dialog dep-dialog"
+    :show-close="false"
+    center
+  >
     <div class="member-row">
       <img src="../../assets/img/member/cancel.png" alt class="cancel-icon" @click="handleClose" />
       <section class="member-col1 dep-col1"></section>
       <section class="member-col3 department-add-col3">
-        <p>部门创建成功 <br>现在去添加部门成员吧！</p>
+        <p>
+          部门创建成功
+          <br />现在去添加部门成员吧！
+        </p>
       </section>
     </div>
     <div slot="footer" class="dep-footer">
@@ -21,15 +31,15 @@ export default {
   props: ['dialogTableVisible'],
   data () {
     return {
-  
+
     }
   },
   methods: {
     handleClose () {
       this.$parent.visible1 = false
     },
-    submitForm() {
-      this.$emit('submitForm')
+    submitForm () {
+      this.$emit('handleTurnover')
     }
   }
 }

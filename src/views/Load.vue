@@ -333,6 +333,11 @@ export default {
   justify-content: space-between;
   align-items: center;
 }
+.x-flex-start-justify{
+  display: flex;
+  justify-content:flex-start;
+  align-items: center;
+}
 .loads .error {
   position:absolute;
   top:18%;

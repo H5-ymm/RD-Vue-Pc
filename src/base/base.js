@@ -71,9 +71,9 @@ export const paymentTaxType = [
 ]
 
 export const commentSort = [
-  { label: '晨会', value: 0 },
-  { label: '通知', value: 1 },
-  { label: '文章', value: 2 },
-  { label: '经验分享', value: 3 },
-  { label: '工作日志', value: 4 }
+  { label: '晨会', value: 1 },
+  { label: '通知', value: 2 },
+  { label: '文章', value: 3 },
+  { label: '经验分享', value: 4 },
+  { label: '工作日志', value: 5 }
 ]
