@@ -146,8 +146,7 @@ export default {
         .el-form-item__content {
           display: block;
         }
-        .el-input,.el-select {
-         
+        .el-input,.el-select {    
           width: 300px;
           margin-left: 0!important;
         }

@@ -32,7 +32,7 @@
 </template>
 
 <script>
-import Breadcrumb from './breadcrumb/Breadcrumb'
+// import Breadcrumb from './breadcrumb/Breadcrumb'
 import memberCard from './membership/memberCard'
 import memberQuery from './membership/memberQuery'
 import memberTable from './membership/memberTable'
@@ -42,7 +42,7 @@ import { getTeamList, loginOutTeam, addTeamUser, updateTeamUser } from '../api/t
 import memberInfoVue from './membership/memberInfo.vue';
 export default {
   components: {
-    Breadcrumb,
+    // Breadcrumb,
     memberCard,
     memberQuery,
     memberTable,

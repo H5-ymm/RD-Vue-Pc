@@ -223,8 +223,8 @@ export default {
     }
     .teamMessage-form-row {
       background:#fff;
-      width: 100%;
-      margin:  15px auto;
+      // width: 100%;
+      margin:  0 auto;
       padding: 20px 6px;
       border-radius: 10px;
       .teamMessage-form {

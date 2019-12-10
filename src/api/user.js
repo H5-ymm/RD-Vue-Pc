@@ -7,9 +7,10 @@ export const editUserPassword = data => $post('/userinfo/editUserPassword', data
 export const sendVerification = data => $post('/userinfo/sendVerification', data) // 发送重置密码短息验证
 export const getUserMobile = data => $post('/userinfo/getUserMobile', data) // 获取当前用户手机号和密码
 
-export const getUserInfo = data => $post('/userinfo/getUserName', data) // 获取当前用户真实姓名
-export const editUserInfo = data => $post('/userinfo/editUserInfo', data) // 设置支付密码
+export const getUserName = data => $post('/userinfo/getUserName', data) // 获取当前用户真实姓名
+export const getBankList = data => $post('/userinfo/bankList', data) // 银行列表
+
+export const getBindBankList = data => $post('/userinfo/bindBankList', data) // 用户绑定银行列表
+
 export const editPayPassword = data => $post('/userinfo/editPayPassword', data) // 修改支付密码
 export const sendPayPassword = data => $post('/userinfo/sendPayPassword', data) // 发送重置支付密码短息验证
-export const sendVerification = data => $post('/userinfo/sendVerification', data) // 发送重置密码短息验证
-export const getUserMobile = data => $post('/userinfo/getUserMobile', data) // 获取当前用户手机号和密码

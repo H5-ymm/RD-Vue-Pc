@@ -103,6 +103,7 @@ export default {
     border-bottom: 1px solid #eee;
     padding: 10px 0;
     height: 76%;
+    color: #333;
   }
   .status {
     position: relative;

@@ -12,13 +12,6 @@ import './assets/fontsize/fontsizea.css'
 import './assets/css/f1/iconfont.css'
 // 引入阿里图标库
 import './assets/css/f2/iconfont.css'
-// vue-quill-editor富文本编辑器
-import VueQuillEditor from 'vue-quill-editor'
-
-// require styles
-import 'quill/dist/quill.core.css'
-import 'quill/dist/quill.snow.css'
-import 'quill/dist/quill.bubble.css'
 import './assets/css/init.css'
 import './assets/css/element-variables.scss'
 // 引入axios
@@ -36,9 +29,6 @@ Vue.config.productionTip = false
 
 // 注册element-ui
 Vue.use(ElementUI);
-
-//注册富文本编辑器
-Vue.use(VueQuillEditor)
 
 
 new Vue({
