@@ -3,13 +3,13 @@
     <div class="member-row">
       <img src="../../assets/img/member/cancel.png" alt class="cancel-icon" @click="handleClose" />
       <section class="member-col1">
-        <p>添加组员</p>
+        <p>{{title}}</p>
       </section>
       <section class="member-col3 bind-col3">
         <slot :name="slotName"></slot>
       </section>
     </div>
-    <div slot="footer">
+    <div slot="footer" v-if="isShowFooter" class="account-btn-box">
       <el-button @click="handleClose">取消</el-button>
       <el-button type="primary" @click="submitForm">绑定</el-button>
     </div>
@@ -18,40 +18,36 @@
 <script>
 
 export default {
-  props: ['dialogTableVisible', 'isShowFooter', 'slotName'],
+  props: {
+    dialogTableVisible: {
+      type: Boolean,
+      default: false
+    },
+    slotName: {
+      type: String, 
+      default: ''
+    },
+    title:{
+      type: String, 
+      default: ''
+    },
+    isShowFooter: {
+      type: Boolean,
+      default: true
+    }
+  },
   data () {
-    var validate = (rule, value, callback) => {
-      if (value === '') {
-        callback(new Error('请输入身份证号码'));
-      } else {
-        if (!validateIdCard(value)) {
-          callback(new Error('请输入正确的身份证号码'));
-        }
-        callback()
-      }
-    };
     return {
       formMember: {
-        region: '',
-        status: 1,
-        user_name: '',
-        id_card: '',
-        mobile: '',
-        education: '',
-        grade_id: '',
-        provinceid: '',
-        cityid: '',
-        three_cityid: '',
         uid: localStorage.getItem('uid'),
       }
     }
   },
   created () {
-
   },
   methods: {
     handleClose () {
-      this.$parent.visible = false
+      this.$parent.dialogTableVisible = false
     },
     submitForm () {
       this.$refs['formMember'].validate((valid) => {
@@ -71,17 +67,55 @@ export default {
     .bind-col3 {
       .account-bind.demo-form-inline {
         .el-form-item__content {
-          margin-left: -80px!important;
-          .el-input,.el-select {    
-            width: 400px;
+          margin-left: 0!important;
+          .bind-input-code {
+            display: inline-block;
+            &.el-input {
+              width: 280px;
+            }
+            .el-input__inner {
+              width: 280px!important;
+            }
+          }
+          .el-radio-group {
+            margin-left: 0;
+          }
+          .el-input__inner {
+            width: 400px!important;
+          }
+          .el-radio__label {
+            float: left;
+            margin-left: 10px;
+          }
+          .el-radio.is-bordered {
+            width: 195px;
+            height: 42px;
+            line-height: 42px;
+          }
+          .el-input,.el-select {     
             margin-left: 0;
             border-radius:3px;
           }
           .el-input__suffix {
-            right: 60px;
+            right: 10px;
           }
         }
       }
+    }
+  }
+  .code-btn {
+    &.el-button--primary.is-plain {
+      background: #fff;
+      border: 1px solid #1890ff;
+    }
+    padding: 10px 20px;
+    border-radius:3px;
+    margin-left: 10px;
+  }
+  .account-btn-box {
+    .el-button {
+      border-radius: 3px;
+      margin-right: 32px;
     }
   }
 }

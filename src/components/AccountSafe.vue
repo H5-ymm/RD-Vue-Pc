@@ -12,35 +12,59 @@
             <p class="account-tip">{{item.status ? item.text: item.text1}}</p>
           </div>
           <div class="account-save-col3 x-flex-end">
-            <span class="account-btn" v-if="index!=1">修改</span>
-            <span class="account-btn" v-if="index==1">管理</span>
-            <span class="account-btn" v-if="!item.status">绑定</span>
+            <span class="account-btn" v-if="index!=1&&item.status" @click="editMobile(item)">修改</span>
+            <span class="account-btn" v-if="index==1" @click="$router.push('accountBank')">管理</span>
+            <span class="account-btn" v-if="!item.status&&index!=3" @click="hanbleBind(item,index)">绑定</span>
             <span v-if="item.status">已绑定</span>
           </div>
         </li>
       </ul>
     </div>
+     <accountDialog :title="title" :dialogTableVisible="dialogTableVisible" :isShowFooter="isShowFooter" :slotName="slotName">
+      <div slot="phone">
+        <bindPhone></bindPhone>
+      </div>
+      <div slot="wx">
+         <bindWx></bindWx>
+      </div>
+      <div slot="bank">
+         <bindBank></bindBank>
+      </div>
+       <div slot="email">
+         <bindEmail></bindEmail>
+      </div> 
+       <div slot="zfb">
+         <bindZfb></bindZfb>
+      </div>     
+      
+    </accountDialog>
   </div>
 </template>
 
 <script>
-import districtSelet from '@/components/districtSelet'
-import { getImg, getImgUrl } from '@/util/util'
-import { updateTeamInfo, getTeamInfo } from '@/api/team'
-import { uploadFile } from '@/api/upload'
-import { getUserInfo } from '@/api/user'
+import { getUserInfo, getUserBinkInfo } from '@/api/user'
+import accountDialog from './account/accountDialog'
+import bindPhone from './account/bindPhone'
+import bindWx from './account/bindWx'
+import bindBank from './account/bindBank'
+import bindEmail from './account/bindEmail'
+import bindZfb from './account/bindZfb'
+
 export default {
   components: {
-    districtSelet
+    accountDialog,
+    bindPhone,
+    bindWx,
+    bindBank,
+    bindEmail,
+    bindZfb
   },
   data () {
     return {
       personalForm: {},
-      imageUrl: '',
+      dialogTableVisible:false,
       uid: localStorage.getItem('uid'),
-      address: [],
       isEdit: false,
-      logo: '',
       list: [{
         type: '',
         status: 0,
@@ -92,55 +116,62 @@ export default {
         text1: '当前尚未绑定邮箱账号',
         text: '当前已绑定邮箱账号',
         title: '绑定邮箱'
-      }]
-    };
+      }],
+      slotName: '',
+      title: '',
+      isShowFooter: true
+    }
   },
   created () {
     this.getInfo(this.uid)
   },
   methods: {
     getInfo (uid) {
-      getUserInfo({ uid }).then(res => {
+      getUserBinkInfo({ uid }).then(res => {
         if (res.data) {
           const { uid, mobile, alipay_status, bank_status, email_status, wx_status, idcard_status } = res.data
-          this.personalForm = res.data
           this.list[0].status = mobile ? 1 : 0
           this.list[1].status = bank_status
           this.list[2].status = alipay_status
           this.list[3].status = idcard_status
           this.list[4].status = wx_status
           this.list[5].status = email_status
-          this.logo = getImgUrl(this.personalForm.log)
         }
       })
     },
-    upload (params) {
-      const _file = params.file;
-      const isLt2M = _file.size / 1024 / 1024 < 2;
-      if (!isLt2M) {
-        this.$message.error("请上传2M以下的.xlsx文件");
-        return false;
-      }
-      uploadFile(_file).then(res => {
-        this.imageUrl = getImg(_file)
-        this.personalForm.log = res.data.url
-      })
+    editMobile(val) {
+      this.title='修改绑定手机号'
+      this.slotName = 'phone'
+      this.dialogTableVisible = true
+      this.isShowFooter = true
     },
-    change (val) {
-      this.personalForm.provinceid = val[0]
-      this.personalForm.cityid = val[1]
-      this.personalForm.three_cityid = val[2]
+    hanbleBind(val,index){
+      this.dialogTableVisible = true
+      if (index == 4) {
+        this.title='绑定微信'
+        this.slotName = 'wx'
+        this.isShowFooter = false
+      }
+      else if (index == 1) {
+        this.title='绑定银行卡'
+        this.slotName = 'bank'
+        this.isShowFooter = true
+      }
+      else if (index == 2) {
+        this.title='绑定支付宝'
+        this.slotName = 'zfb'
+        this.isShowFooter = true
+      }
+      else if (index == 5) {
+        this.title='绑定邮箱'
+        this.slotName = 'email'
+        this.isShowFooter = true
+      }
     },
     submitForm (personalForm) {
       this.$refs[personalForm].validate((valid) => {
         if (valid) {
-          updateTeamInfo(this.personalForm).then(res => {
-            if (res.status.code == 200) {
-              this.$router.push('userlist')
-            }
-          }).catch(error => {
-            this.$message.error(error.status.remind)
-          })
+         
         } else {
           return false
         }
@@ -148,16 +179,16 @@ export default {
     },
     resetForm (personalForm) {
       this.$refs[personalForm].resetFields();
-    },
-    handleAvatarSuccess () { }
+    }
   }
 }
 </script>
 <style lang="scss">
   .account-save-view.team-box {
-    height: calc(100% - 80px);
+    height: 100%;
     overflow: hidden;
     background: #fff;
+    margin-bottom: 100px;
     .account-save-box {
       padding: 0 10px;
     }
@@ -188,6 +219,7 @@ export default {
     }
     .account-save-col3 {
       padding-right:110px;
+      width: 280px;
       span {
         padding: 6px 0;
         margin-left: 30px;

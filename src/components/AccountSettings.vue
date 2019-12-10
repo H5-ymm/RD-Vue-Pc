@@ -124,7 +124,6 @@ export default {
     getInfo (uid) {
       getUserInfo({ uid }).then(res => {
         if (res.data) {
-          console.log(res.data)
           this.personalForm = res.data
           if (this.personalForm.head_img) {
             this.logo = getImgUrl(this.personalForm.log)

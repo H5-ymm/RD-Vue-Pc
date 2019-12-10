@@ -133,10 +133,14 @@ export default {
           title: '账户安全',
           icon: 'el-icon-collection-tag',
           submenu: [
+             {
+              title: '密码管理',
+              url: '/passwordManage'
+            },
             {
               title: '账户绑定',
               url: '/accountSafe'
-            }
+            } 
           ]
         }
       ],
