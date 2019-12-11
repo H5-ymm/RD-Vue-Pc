@@ -1,62 +1,69 @@
 <template>
   <div class="account-save-view account-password">
     <div class="account-save-box">
-      <ul v-for="(item,index) in list" :key="index" class="account-save-list">
+      <ul>
         <li class="x-flex-start-justify account-save-item">
           <div class="account-save-col1">
-            <img :src="item.img"/>
+            <img src="../assets/img/account/password1.png" />
           </div>
           <div class="account-save-col2">
-            <p class="account-title">{{item.title}}</p>
-            <p class="account-tip">{{item.text}}</p>
+            <p class="account-title">账户密码</p>
+            <!-- <p class="account-tip">{{item.text}}</p> -->
           </div>
           <div class="account-save-col3 x-flex-end">
-            <span class="account-btn" @click="setPassword(item,index)">设置</span>
-            <span class="account-btn" @click="editPassword(item,index)">修改</span>
+            <span class="account-btn" @click="setPassword(phone,0)" v-if="!password">设置</span>
+            <span class="account-btn" @click="editPassword(phone,0)" v-else>修改</span>
+          </div>
+        </li>
+      </ul>
+      <ul>
+        <li class="x-flex-start-justify account-save-item">
+          <div class="account-save-col1">
+            <img src="../assets/img/account/password2.png" />
+          </div>
+          <div class="account-save-col2">
+            <p class="account-title">支付密码</p>
+            <!-- <p class="account-tip">{{item.text}}</p> -->
+          </div>
+          <div class="account-save-col3 x-flex-end">
+            <span class="account-btn" @click="setPassword(phone,1)" v-if="!alipay_status">设置</span>
+            <span class="account-btn" @click="editPassword(phone,1)" v-else>修改</span>
           </div>
         </li>
       </ul>
     </div>
-     <accountDialog :title="title" :dialogTableVisible="dialogTableVisible" :isShowFooter="isShowFooter" :slotName="slotName">
-      <div slot="userPas">
-        <setUserPas :isUpdate="isUpdate"></setUserPas>
-      </div>
-      <div slot="zfbPas">
-         <setZfbPas :isUpdate="isUpdate"></setZfbPas>
-      </div>
-    </accountDialog>
+    <accountDialog
+      :title="title"
+      :dialogTableVisible="dialogTableVisible"
+      :slotName="slotName"
+      @submitForm="submitForm"
+      :isUpdate="isUpdate"
+    ></accountDialog>
     <noBindZfb :dialogTableVisible="visible" @submitForm="$router.push('accountSafe')"></noBindZfb>
   </div>
 </template>
 
 <script>
-import districtSelet from '@/components/districtSelet'
 import { getImg, getImgUrl } from '@/util/util'
 import { updateTeamInfo, getTeamInfo } from '@/api/team'
 import { uploadFile } from '@/api/upload'
-import { getUserInfo, getUserBinkInfo } from '@/api/user'
+import { getUserInfo, getUserBinkInfo, getUserMobile, setLoginPassword, editPayPassword, setPayPassword, editUserPassword } from '@/api/user'
 import accountDialog from './account/accountDialog'
 import setUserPas from './account/setUserPas'
 import setZfbPas from './account/setZfbPas'
 import noBindZfb from './account/noBindZfb'
 export default {
   components: {
-    districtSelet,
     accountDialog,
-    setZfbPas,
-    setUserPas,
     noBindZfb
   },
   data () {
     return {
       personalForm: {},
-      dialogTableVisible:false,
-      visible:false,
-      imageUrl: '',
+      dialogTableVisible: false,
+      visible: false,
       uid: localStorage.getItem('uid'),
-      address: [],
       isEdit: false,
-      logo: '',
       list: [{
         type: '',
         status: 0,
@@ -75,11 +82,15 @@ export default {
       title: '',
       isShowFooter: true,
       alipay_status: '',
-      isUpdate: false
+      isUpdate: false,
+      password: '',
+      phone: '',
+      activeIndex: -1
     }
   },
   created () {
     this.getInfo(this.uid)
+    this.getMobilePas(this.uid)
   },
   methods: {
     getInfo (uid) {
@@ -91,36 +102,49 @@ export default {
         }
       })
     },
-    setPassword(val,index){
+    getMobilePas (uid) {
+      getUserMobile({ uid }).then(res => {
+        if (res.data) {
+          const { uid, phone, password } = res.data
+          this.password = password
+          this.phone = phone
+        }
+      })
+    },
+    setPassword (val, index) {
+      this.activeIndex = index
       this.isUpdate = false
       if (index == 0) {
-        this.title='设置账户密码'
-        this.slotName = 'userPas'
+        this.title = '设置账户密码'
+        this.slotName = 'setUserPas'
+        this.dialogTableVisible = true
       }
       if (index == 1) {
         if (this.alipay_status) {
-          this.title='设置支付密码'
-          this.slotName = 'zfbPas'
+          this.title = '设置支付密码'
+          this.slotName = 'setZfbPas'
           this.dialogTableVisible = false
+          this.visible = false
         }
         else {
-          this.dialogTableVisible = true
+          this.dialogTableVisible = false
           this.visible = true
         }
       }
     },
-    editPassword(val,index) {
+    editPassword (val, index) {
       this.isUpdate = true
+      this.activeIndex = index
       if (index == 0) {
-        this.title='修改账户密码'
-        this.slotName = 'userPas'
+        this.title = '修改账户密码'
+        this.slotName = 'setUserPas'
         this.dialogTableVisible = true
       }
       if (index == 1) {
         if (this.alipay_status) {
-          this.title='修改支付密码' 
+          this.title = '修改支付密码'
           this.dialogTableVisible = false
-          this.slotName = 'zfbPas'
+          this.slotName = 'setZfbPas'
         }
         else {
           this.visible = true
@@ -128,14 +152,14 @@ export default {
         }
       }
     },
-    hanbleBind(val,index){
+    hanbleBind (val, index) {
       if (index == 0) {
-        this.title='设置账户密码'
+        this.title = '设置账户密码'
         this.slotName = 'userPas'
         this.dialogTableVisible = true
       }
       if (index == 1) {
-        this.title='设置支付宝'
+        this.title = '设置支付宝'
         if (this.alipay_status) {
           this.dialogTableVisible = false
           this.slotName = 'zfbPas'
@@ -163,20 +187,61 @@ export default {
       this.personalForm.cityid = val[1]
       this.personalForm.three_cityid = val[2]
     },
-    submitForm (personalForm) {
-      this.$refs[personalForm].validate((valid) => {
-        if (valid) {
-          updateTeamInfo(this.personalForm).then(res => {
-            if (res.status.code == 200) {
-              this.$router.push('userlist')
-            }
-          }).catch(error => {
-            this.$message.error(error.status.remind)
-          })
-        } else {
-          return false
+    submitForm (val) {
+      console.log(val)
+      if (this.activeIndex == 0) {
+        if (this.isUpdate) {
+          this.updatePas(val)
         }
-      });
+        else {
+          this.setPas(val)
+        }
+      }
+      else {
+        if (this.isUpdate) {
+          this.setPayPas(val)
+        }
+        else {
+          this.updatePayPas(val)
+        }
+      }
+    },
+    setPas (val) {
+      setLoginPassword(val).then(res => {
+        if (res.status.code == 200) {
+          this.dialogTableVisible = false
+          this.getUserMobile(this.uid)
+        }
+      }).catch(error => {
+        this.$message.error(error.status.remind)
+      })
+    },
+    updatePas (val) {
+      editUserPassword(val).then(res => {
+        if (res.status.code == 200) {
+          this.dialogTableVisible = false
+        }
+      }).catch(error => {
+        this.$message.error(error.status.remind)
+      })
+    },
+    setPayPas (val) {
+      setPayPassword(val).then(res => {
+        if (res.status.code == 200) {
+          this.dialogTableVisible = false
+        }
+      }).catch(error => {
+        this.$message.error(error.status.remind)
+      })
+    },
+    updatePayPas (val) {
+      editPayPassword(val).then(res => {
+        if (res.status.code == 200) {
+          this.dialogTableVisible = false
+        }
+      }).catch(error => {
+        this.$message.error(error.status.remind)
+      })
     },
     resetForm (personalForm) {
       this.$refs[personalForm].resetFields();

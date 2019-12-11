@@ -7,44 +7,43 @@
     ref="formMember"
     class="demo-form-inline account-bind"
   >
-    <el-form-item label="原手机号码" required prop="depart_name">
-      <el-input v-model="formMember.depart_name" placeholder="请输入部门名称"></el-input>
+    <el-form-item label="原手机号码" required prop="mobile">
+      <el-input v-model="formMember.mobile" readonly placeholder="请输入原手机号码"></el-input>
     </el-form-item>
-    <el-form-item label="新手机号码" required prop="user_id">
-       <el-input v-model="formMember.depart_name" placeholder="请输入部门名称"></el-input>
+    <el-form-item label="新手机号码" required prop="newMobile">
+      <el-input v-model="formMember.newMobile" placeholder="请输入新手机号码"></el-input>
     </el-form-item>
-    <el-form-item label="短信验证码" required prop="depart_name">
-      <el-input v-model="formMember.depart_name" placeholder="请输入部门名称" class="bind-input-code"></el-input>
+    <el-form-item label="短信验证码" required prop="code">
+      <el-input v-model="formMember.code" placeholder="请输入短信验证码" class="bind-input-code"></el-input>
       <el-button type="primary" class="code-btn" plain>发送验证码</el-button>
     </el-form-item>
+    <div class="account-btn-box x-flex-end">
+      <el-button @click="handleClose">取消</el-button>
+      <el-button type="primary" @click="submitForm">绑定</el-button>
+    </div>
   </el-form>
 </template>
 <script>
 import { validateIdCard } from '../../util/util'
 export default {
-  props: ['dialogTableVisible'],
+  props: ['mobile'],
   data () {
     return {
       formMember: {
-        depart_name: '',
-        user_id: '',
         uid: localStorage.getItem('uid'),
       },
       rules: {
-        depart_name: [
-          { required: true, message: '请输入部门名称', trigger: 'blur' },
-        ],
-        user_id: [
-          { required: true, message: '请选择部门经理', trigger: 'blur' }
-        ]
       },
       uid: localStorage.getItem('uid')
     }
   },
   created () {
-
+    this.formMember.mobile = this.mobile
   },
   methods: {
+    handleClose () {
+      this.$emit('handleClose')
+    },
     submitForm () {
       this.$refs['formMember'].validate((valid) => {
         if (valid) {

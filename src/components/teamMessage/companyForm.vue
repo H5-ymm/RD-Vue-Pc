@@ -102,6 +102,8 @@
 </template>
 
 <script>
+// 团队 团队性质选择跳转
+// 企业从账户资料跳转
 import { getConstant } from '../../api/dictionary'
 import districtSelet from '../districtSelet'
 import { updateTeamInfo } from '../../api/team'

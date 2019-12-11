@@ -12,6 +12,11 @@ export const getBankList = data => $post('/userinfo/bankList', data) // 银行�
 export const getUserBinkInfo = data => $post('/userinfo/userBinkInfo', data) // 获取认证状态
 
 export const getBindBankList = data => $post('/userinfo/bindBankList', data) // 用户绑定银行列表
+export const userBinkBank = data => $post('/userinfo/userBinkBank', data) // 用户绑定银行卡
 
+
+export const setPayPassword = data => $post('/userinfo/setPayPassword', data) // 设置支付密码
 export const editPayPassword = data => $post('/userinfo/editPayPassword', data) // 修改支付密码
 export const sendPayPassword = data => $post('/userinfo/sendPayPassword', data) // 发送重置支付密码短息验证
+
+export const companyBinkInfo = data => $post('/company/companyBinkInfo', data)

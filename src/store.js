@@ -6,13 +6,11 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     user: {}, //用户信息
-    tx: '',  //新增文章内容
     token: '', //token
-    txB: '',  //修改文章内容
-    clsList: [],  //全部分类
-    tablesList: [], //全部标签
     uid: localStorage.getItem('uid'),
-    baseUrl: 'http://tiantianxsg.com:39888/index.php/'
+    baseUrl: 'http://tiantianxsg.com:39888/index.php/',
+    teamType: '',  // 团队性质
+    userType: '' // 登录身份
   },
   mutations: {
     addtx (state, str) {  //设置新增文章内容

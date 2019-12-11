@@ -8,7 +8,7 @@
         class="teamMessage-form x-flex-start"
       >
         <div>
-          <el-form-item label="姓名:" prop="user_name">
+          <el-form-item label="姓名 :" prop="user_name">
             <el-input
               v-model="personalForm.user_name"
               readonly
@@ -17,7 +17,7 @@
               placeholder="--"
             ></el-input>
           </el-form-item>
-          <el-form-item label="所在省市:">
+          <el-form-item label="所在省市 :">
             <div class="width408">
               <districtSelet
                 v-if="isEdit"
@@ -28,14 +28,14 @@
               ></districtSelet>
               <el-input
                 v-else
-                v-model="personalForm.address"
+                v-model="place"
                 :class="{'input-readonly':!isEdit}"
                 class="width408"
                 placeholder="--"
               ></el-input>
             </div>
           </el-form-item>
-          <el-form-item label="街道地址:">
+          <el-form-item label="街道地址 :">
             <el-input
               v-model="personalForm.address"
               :class="{'input-readonly':!isEdit}"
@@ -43,7 +43,7 @@
               placeholder="--"
             ></el-input>
           </el-form-item>
-          <el-form-item label="联系电话:">
+          <el-form-item label="联系电话 :">
             <el-input
               v-model="personalForm.mobile"
               :class="{'input-readonly':!isEdit}"
@@ -51,7 +51,7 @@
               placeholder="--"
             ></el-input>
           </el-form-item>
-          <el-form-item label="邮箱:">
+          <el-form-item label="邮箱 :">
             <el-input
               v-model="personalForm.email"
               :class="{'input-readonly':!isEdit}"
@@ -59,7 +59,7 @@
               placeholder="--"
             ></el-input>
           </el-form-item>
-          <el-form-item label="认证信息" v-if="!isEdit">
+          <el-form-item label="认证信息 :" v-if="!isEdit">
             <div class="x-flex-start-justify member-status">
               <el-tooltip
                 class="item"
@@ -114,7 +114,8 @@ export default {
       uid: localStorage.getItem('uid'),
       address: [],
       isEdit: false,
-      logo: ''
+      logo: '',
+      place: ''
     };
   },
   created () {
@@ -124,7 +125,8 @@ export default {
     getInfo (uid) {
       getUserInfo({ uid }).then(res => {
         if (res.data) {
-          this.personalForm = res.data
+          this.personalForm = res.data || {}
+          this.place = this.personalForm.provinceName + this.personalForm.cityName
           if (this.personalForm.head_img) {
             this.logo = getImgUrl(this.personalForm.log)
           }

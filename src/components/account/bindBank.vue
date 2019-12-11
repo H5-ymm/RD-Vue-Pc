@@ -7,29 +7,29 @@
     ref="formMember"
     class="demo-form-inline account-bind"
   >
-    <el-form-item label="姓名" required prop="depart_name">
-      <el-input v-model="formMember.depart_name" placeholder="请输入持卡人真实姓名"></el-input>
+    <el-form-item label="姓名" required prop="user_name">
+      <el-input v-model="formMember.user_name" placeholder="请输入持卡人真实姓名"></el-input>
     </el-form-item>
-    <el-form-item label="身份证号码" required prop="depart_name">
-      <el-input v-model="formMember.depart_name" placeholder="请输入持卡人的身份证号"></el-input>
+    <el-form-item label="身份证号码" required prop="idCard">
+      <el-input v-model="formMember.idCard" placeholder="请输入持卡人的身份证号"></el-input>
     </el-form-item>
-    <el-form-item label="银行卡号码" required prop="depart_name">
-      <el-input v-model="formMember.depart_name" placeholder="请输入您的银行卡号"></el-input>
+    <el-form-item label="银行卡号码" required prop="bankNum">
+      <el-input v-model="formMember.bankNum" placeholder="请输入您的银行卡号"></el-input>
     </el-form-item>
-     <el-form-item label="银行卡类型" required>
-      <el-radio-group v-model="formMember.status">
-        <el-radio :label="1" border>借记卡</el-radio>
-        <el-radio :label="2" border>信用卡</el-radio>
+    <el-form-item label="银行卡类型" required>
+      <el-radio-group v-model="formMember.card_type">
+        <el-radio label="DC" border>借记卡</el-radio>
+        <el-radio label="CC" border>信用卡</el-radio>
       </el-radio-group>
     </el-form-item>
     <el-form-item label="银行卡属性" required>
-      <el-radio-group v-model="formMember.status">
-        <el-radio :label="1" border>对私</el-radio>
-        <el-radio :label="2" border>对公</el-radio>
+      <el-radio-group v-model="formMember.card_attribute">
+        <el-radio label="C" border>对私</el-radio>
+        <el-radio label="B" border>对公</el-radio>
       </el-radio-group>
     </el-form-item>
     <el-form-item label="选择银行" required>
-      <el-select v-model="formMember.user_id" placeholder="请选择部门经理">
+      <el-select v-model="formMember.bank_name" placeholder="请选择部门经理">
         <el-option
           :label="item.bank_name"
           :value="item.bank_code"
@@ -38,37 +38,55 @@
         ></el-option>
       </el-select>
     </el-form-item>
-    <el-form-item label="手机号码" required prop="user_id">
-       <el-input v-model="formMember.depart_name" placeholder="请输入部门名称"></el-input>
+    <el-form-item label="手机号码" required prop="mobile">
+      <el-input v-model="formMember.mobile" placeholder="请输入手机号码"></el-input>
     </el-form-item>
-    <el-form-item label="短信验证码" required prop="depart_name">
-      <el-input v-model="formMember.depart_name" placeholder="请输入部门名称" class="bind-input-code"></el-input>
+    <el-form-item label="短信验证码" required prop="code">
+      <el-input v-model="formMember.code" placeholder="请输入短信验证码" class="bind-input-code"></el-input>
       <el-button type="primary" class="code-btn" plain>发送验证码</el-button>
     </el-form-item>
+    <div class="account-btn-box x-flex-end">
+      <el-button @click="handleClose">取消</el-button>
+      <el-button type="primary" @click="submitForm">绑定</el-button>
+    </div>
   </el-form>
 </template>
 <script>
-import { getBankList } from '../../api/user'
+import { getBankList, sendPayPassword } from '../../api/user'
 import { validateIdCard } from '../../util/util'
 export default {
   props: ['dialogTableVisible'],
   data () {
+    var validate = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请输入身份证号码'));
+      } else {
+        if (!validateIdCard(value)) {
+          callback(new Error('请输入正确的身份证号码'));
+        }
+        callback()
+      }
+    };
     return {
       formMember: {
-        depart_name: '',
-        user_id: '',
         uid: localStorage.getItem('uid'),
+        type: 2,
+        card_type: 'DC',
+        card_attribute: 'C'
       },
       rules: {
-        depart_name: [
-          { required: true, message: '请输入银行卡号', trigger: 'blur' },
+        user_name: [
+          { required: true, message: '请输入姓名', trigger: 'blur' }
         ],
-        user_id: [
-          { required: true, message: '请选择部门经理', trigger: 'blur' }
+        idCard: [
+          { required: true, message: '请输入身份证号码', trigger: 'blur' },
+          { validator: validate, trigger: 'blur' }
         ]
       },
       bankList: [],
-      uid: localStorage.getItem('uid')
+      uid: localStorage.getItem('uid'),
+      content: '发送验证码',
+      canClick: false
     }
   },
   created () {
@@ -76,9 +94,33 @@ export default {
   },
   methods: {
     getList () {
-      getBankList({ }).then(res => {
+      getBankList({}).then(res => {
         this.bankList = res.data
       })
+    },
+    sendCode () {
+      if (!this.formMember.mobile) {
+        return this.$message.warning('手机号不能为空')
+      }
+      this.countDown()
+      sendPayPassword({ mobile: this.formMember.mobile }).then(res => {
+        this.formMember.token = res.data.token
+      })
+    },
+    countDown () {
+      if (!this.canClick) return  //改动的是这两行代码
+      this.canClick = false
+      this.content = this.totalTime + 's后重发'
+      let clock = window.setInterval(() => {
+        this.totalTime--
+        this.content = this.totalTime + 's后重发'
+        if (this.totalTime < 0) {
+          window.clearInterval(clock)
+          this.content = '重新发送验证码'
+          this.totalTime = 10
+          this.canClick = true  //这里重新开启
+        }
+      }, 1000)
     },
     handleClose () {
       this.$parent.visible = false

@@ -12,57 +12,40 @@
             <p class="account-tip">{{item.status ? item.text: item.text1}}</p>
           </div>
           <div class="account-save-col3 x-flex-end">
-            <span class="account-btn" v-if="index!=1&&item.status" @click="editMobile(item)">修改</span>
+            <span class="account-btn" v-if="index==0&&item.status" @click="editMobile(item)">修改</span>
             <span class="account-btn" v-if="index==1" @click="$router.push('accountBank')">管理</span>
-            <span class="account-btn" v-if="!item.status&&index!=3" @click="hanbleBind(item,index)">绑定</span>
+            <span
+              class="account-btn"
+              v-if="!item.status&&index!=3"
+              @click="hanbleBind(item,index)"
+            >绑定</span>
             <span v-if="item.status">已绑定</span>
           </div>
         </li>
       </ul>
     </div>
-     <accountDialog :title="title" :dialogTableVisible="dialogTableVisible" :isShowFooter="isShowFooter" :slotName="slotName">
-      <div slot="phone">
-        <bindPhone></bindPhone>
-      </div>
-      <div slot="wx">
-         <bindWx></bindWx>
-      </div>
-      <div slot="bank">
-         <bindBank></bindBank>
-      </div>
-       <div slot="email">
-         <bindEmail></bindEmail>
-      </div> 
-       <div slot="zfb">
-         <bindZfb></bindZfb>
-      </div>     
-      
-    </accountDialog>
+    <accountDialog
+      :title="title"
+      :dialogTableVisible="dialogTableVisible"
+      :slotName="slotName"
+      :mobile="mobile"
+      @submitForm="submitForm"
+    ></accountDialog>
   </div>
 </template>
 
 <script>
-import { getUserInfo, getUserBinkInfo } from '@/api/user'
 import accountDialog from './account/accountDialog'
-import bindPhone from './account/bindPhone'
-import bindWx from './account/bindWx'
-import bindBank from './account/bindBank'
-import bindEmail from './account/bindEmail'
-import bindZfb from './account/bindZfb'
-
+import { getUserInfo, getUserBinkInfo } from '@/api/user'
+import { companyBinkInfo, bindEmail, userBinkBank } from '@/api/bind'
 export default {
   components: {
-    accountDialog,
-    bindPhone,
-    bindWx,
-    bindBank,
-    bindEmail,
-    bindZfb
+    accountDialog
   },
   data () {
     return {
       personalForm: {},
-      dialogTableVisible:false,
+      dialogTableVisible: false,
       uid: localStorage.getItem('uid'),
       isEdit: false,
       list: [{
@@ -119,7 +102,8 @@ export default {
       }],
       slotName: '',
       title: '',
-      isShowFooter: true
+      mobile: '',
+      activeIndex: -1
     }
   },
   created () {
@@ -136,49 +120,76 @@ export default {
           this.list[3].status = idcard_status
           this.list[4].status = wx_status
           this.list[5].status = email_status
+          this.mobile = mobile
         }
       })
     },
-    editMobile(val) {
-      this.title='修改绑定手机号'
-      this.slotName = 'phone'
+    editMobile (val) {
+      this.title = '修改绑定手机号'
+      this.slotName = 'bindPhone'
       this.dialogTableVisible = true
-      this.isShowFooter = true
     },
-    hanbleBind(val,index){
+    hanbleBind (val, index) {
       this.dialogTableVisible = true
+      this.activeIndex = index
       if (index == 4) {
-        this.title='绑定微信'
-        this.slotName = 'wx'
-        this.isShowFooter = false
+        this.title = '绑定微信'
+        this.slotName = 'bindWx'
       }
       else if (index == 1) {
-        this.title='绑定银行卡'
-        this.slotName = 'bank'
-        this.isShowFooter = true
+        this.title = '绑定银行卡'
+        this.slotName = 'bindBank'
       }
       else if (index == 2) {
-        this.title='绑定支付宝'
-        this.slotName = 'zfb'
-        this.isShowFooter = true
+        this.title = '绑定支付宝'
+        this.slotName = 'bindZfb'
       }
       else if (index == 5) {
-        this.title='绑定邮箱'
-        this.slotName = 'email'
-        this.isShowFooter = true
+        this.title = '绑定邮箱'
+        this.slotName = 'bindEmail'
       }
     },
-    submitForm (personalForm) {
-      this.$refs[personalForm].validate((valid) => {
-        if (valid) {
-         
-        } else {
-          return false
-        }
-      });
+    submitForm (val) {
+      console.log(val)
+      let activeIndex = this.activeIndex
+      switch (activeIndex) {
+        case 1:
+          this.bindBank(val)
+          break;
+        case 2:
+          this.bindAlipay(val)
+          break;
+        case 5:
+          this.bindEm(val)
+          break;
+        default:
+          console.log("val")
+      }
+      this.dialogTableVisible = false
     },
-    resetForm (personalForm) {
-      this.$refs[personalForm].resetFields();
+    bindBank (val) {
+      userBinkBank(val).then(res => {
+        console.log(res)
+        this.getInfo(this.uid)
+      }).catch(error => {
+        this.$message.error(error.status.remind)
+      })
+    },
+    bindEm (val) {
+      bindEmail(val).then(res => {
+        console.log(res)
+        this.getInfo(this.uid)
+      }).catch(error => {
+        this.$message.error(error.status.remind)
+      })
+    },
+    bindAlipay (val) {
+      userBinkAlipay(val).then(res => {
+        console.log(res)
+        this.getInfo(this.uid)
+      }).catch(error => {
+        this.$message.error(error.status.remind)
+      })
     }
   }
 }

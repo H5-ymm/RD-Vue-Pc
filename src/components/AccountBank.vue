@@ -4,7 +4,7 @@
       <el-row :gutter="20">
         <el-col :span="6" v-for="(item,index) in list" :key="index">
           <ul class="account-bank-list account-bank-add" v-if="index==0">
-            <li class="box-card-add x-flex-center">
+            <li class="box-card-add x-flex-center" @click="dialogTableVisible=true">
               <i class="el-icon-plus"></i>
               <p>新增银行卡</p>
             </li>
@@ -40,21 +40,20 @@
         </el-col>
       </el-row>
     </div>
-    <accountDialog :dialogTableVisible="dialogTableVisible" slotName="phone">
-      <div slot="phone">
-        <bindPhone></bindPhone>
-      </div>
-    </accountDialog>
+    <accountDialog
+      title="新建银行卡"
+      :dialogTableVisible="dialogTableVisible"
+      slotName="bindBank"
+      @submitForm="submitForm"
+    ></accountDialog>
   </div>
 </template>
 <script>
 import accountDialog from './account/accountDialog'
-import bindPhone from './account/bindPhone'
 import { getUserInfo, getBindBankList, getUserBinkInfo } from '@/api/user'
 export default {
   components: {
-    accountDialog,
-    bindPhone
+    accountDialog
   },
   filters: {
     bankNo (val) {
@@ -65,13 +64,8 @@ export default {
   },
   data () {
     return {
-      personalForm: {},
       dialogTableVisible: false,
-      imageUrl: '',
       uid: localStorage.getItem('uid'),
-      address: [],
-      isEdit: false,
-      logo: '',
       list: []
     };
   },
@@ -88,19 +82,9 @@ export default {
         }
       })
     },
-    submitForm (personalForm) {
-      this.$refs[personalForm].validate((valid) => {
-        if (valid) {
-          
-        } else {
-          return false
-        }
-      });
-    },
-    resetForm (personalForm) {
-      this.$refs[personalForm].resetFields();
-    },
-    handleAvatarSuccess () { }
+    submitForm (val) {
+      console.log(val)
+    }
   }
 }
 </script>
@@ -182,7 +166,7 @@ export default {
       height:40px;
       background:#F9F9F9;
       border-radius:0px 0px 5px 5px;
-      padding: 10px 20px;
+      padding: 10px 15px 10px 20px;
       font-size:12px;
       color: #333333;
       border:1px solid #EEEEEE;
@@ -200,7 +184,7 @@ export default {
     .account-bank-col3 {
       width: 100px;
       text-align: right;
-      padding-right:10px;
+      padding-right:15px;
       font-size: 14px;
     }
    }

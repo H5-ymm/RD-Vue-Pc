@@ -6,34 +6,61 @@
         <p>{{title}}</p>
       </section>
       <section class="member-col3 bind-col3">
-        <slot :name="slotName"></slot>
+        <!-- <keep-alive> -->
+        <component
+          :is="slotName"
+          :mobile="mobile"
+          @submitForm="submitForm"
+          @handleClose="handleClose"
+          :isUpdate="isUpdate"
+        ></component>
+        <!-- </keep-alive> -->
       </section>
-    </div>
-    <div slot="footer" v-if="isShowFooter" class="account-btn-box">
-      <el-button @click="handleClose">取消</el-button>
-      <el-button type="primary" @click="submitForm">绑定</el-button>
     </div>
   </el-dialog>
 </template>
 <script>
-
+import bindPhone from './bindPhone'
+import bindWx from './bindWx'
+import bindBank from './bindBank'
+import bindEmail from './bindEmail'
+import bindZfb from './bindZfb'
+import setUserPas from './setUserPas'
+import setZfbPas from './setZfbPas'
 export default {
+  components: {
+    bindPhone,
+    bindWx,
+    bindBank,
+    bindEmail,
+    bindZfb,
+    setZfbPas,
+    setUserPas
+  },
   props: {
     dialogTableVisible: {
       type: Boolean,
       default: false
     },
     slotName: {
-      type: String, 
+      type: String,
       default: ''
     },
-    title:{
-      type: String, 
+    title: {
+      type: String,
       default: ''
     },
     isShowFooter: {
       type: Boolean,
       default: true
+    },
+    mobile: {
+      type: String,
+      default: ''
+    },
+    isUpdate: {
+      type: Boolean,
+      default: false
     }
   },
   data () {
@@ -49,14 +76,16 @@ export default {
     handleClose () {
       this.$parent.dialogTableVisible = false
     },
-    submitForm () {
-      this.$refs['formMember'].validate((valid) => {
-        if (valid) {
-          this.$emit('submitForm', this.formMember)
-        } else {
-          return false
-        }
-      })
+    submitForm (val) {
+      console.log(val)
+      this.$emit('submitForm', val)
+      // this.$refs['formMember'].validate((valid) => {
+      //   if (valid) {
+      //     this.$emit('submitForm', this.formMember)
+      //   } else {
+      //     return false
+      //   }
+      // })
     }
   }
 }
@@ -82,6 +111,7 @@ export default {
           }
           .el-input__inner {
             width: 400px!important;
+            border-radius: 3px;
           }
           .el-radio__label {
             float: left;
@@ -113,9 +143,15 @@ export default {
     margin-left: 10px;
   }
   .account-btn-box {
+    padding: 10px 0;
     .el-button {
       border-radius: 3px;
-      margin-right: 32px;
+      margin-right: 30px;
+      &.el-button--primary.is-plain {
+        &:hover{
+          color: #1890ff;
+        }
+      }
     }
   }
 }

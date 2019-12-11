@@ -1,17 +1,17 @@
 <template>
-  <div class="hello">
+  <div class="company-aside">
     <!-- 侧边导航栏，需要给 具体 导航的 父级 加 class "acts" 则可以修改高亮状态 -->
     <!-- 关于 三级路由  不匹配侧边栏的问题，需要 对 返回的路由对象 进行重新改写,见 computed=> routerli -->
     <el-row class="tac">
       <el-col :span="24">
-        <div class="names">
-          仁事达
-          <!-- <div class="names-A">{{names}}</div>
-          <div class="names-B" @click="escUser">退出</div>-->
+        <div class="names company-names">仁事达</div>
+        <div class="company-info">
+          <img src="../assets/img/img1.png" alt class="company-logo" />
+          <p class="company-name">仁达网络科技（上海） 有限公司</p>
         </div>
         <el-menu
           class="el-menu-vertical-demo"
-          background-color="#000"
+          background-color="#262626"
           active-text-color="#1890FF"
           text-color="#fff"
           @open="handleOpen"
@@ -40,8 +40,9 @@
 </template>
 
 <script>
+import { companyBinkInfo } from '../api/user'
 export default {
-  name: 'Aside',
+  name: 'companyAside',
   props: {
 
   },
@@ -49,17 +50,17 @@ export default {
     return {
       menus: [
         {
-          title: '团队论坛',
+          title: '发单招聘',
           icon: 'el-icon-collection',
           submenu: [
             {
-              title: '论坛列表',
+              title: '新建接单',
               url: '/commonts'
             }
           ]
         },
         {
-          title: '团队管理',
+          title: '发单管理',
           icon: 'el-icon-collection-tag',
           submenu: [
             {
@@ -87,15 +88,9 @@ export default {
           icon: 'el-icon-collection-tag',
           submenu: [
             {
-              title: '基本信息',
-              url: '/accountSettings'
-            }
-          ]
-        },
-        {
-          title: '账户安全',
-          icon: 'el-icon-collection-tag',
-          submenu: [
+              title: '账户资料',
+              url: '/companyForm'
+            },
             {
               title: '密码管理',
               url: '/passwordManage'
@@ -105,12 +100,28 @@ export default {
               url: '/accountSafe'
             }
           ]
+        },
+        {
+          title: '财务',
+          icon: 'el-icon-collection-tag',
+          submenu: [
+
+          ]
         }
       ],
-      title: ''
+      title: '',
+      uid: localStorage.getItem('uid')
     }
   },
+  created () {
+    // this.getCompanyBind(this.uid)
+  },
   methods: {
+    getCompanyBind (uid) {
+      companyBinkInfo({ uid }).then(res => {
+        console.log(res)
+      })
+    },
     handleOpen (key, keyPath) {
       console.log(key, keyPath);
     },
@@ -145,13 +156,29 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style>
-.hello {
-  height: 100%;
-  background: #000;
+<style lang="scss">
+.company-aside {
+   height: 100%;
+   background: #32373E;
+  .el-menu-item.is-active {
+    background:#1890FF!important;
+    border-right: 4px solid #06ADFB;
+    box-sizing: border-box;
+    color: #fff;
+    padding-left: 50px!important;
+    margin-right: 0;
+  }
+  .is-opened {
+    .el-submenu__title {
+      color: #1890FF!important;
+    }
+    i {
+      color: #1890FF!important;
+    }
+  }
 }
 .el-submenu {
-  padding-right: 20px;
+  padding-right:0;
 }
 .el-menu-vertical-demo{
   border: 0px solid #ffffff;
@@ -160,25 +187,33 @@ export default {
 .el-submenu .el-menu-item {
   min-width: 170px;
 }
-.el-menu-item {
-  background-color: rgba(0, 0, 0, 0.1) !important;
-  padding-left: 50px!important;
+
+.names {
+  &.company-names {
+    background: #1890FF;
+    font-size:26px;
+    font-weight: bold;
+    color: #fff;
+    height:50px;
+    line-height: 50px;
+  }
 }
-.el-menu-item.is-active {
-  background:#1890FF!important;
-  border-right: 4px solid #06ADFB;
-  box-sizing: border-box;
-  color: #fff;
-  padding-left: 50px!important;
-  margin-right: 30px;
-}
-.names{
-  width: 100%;
-  height: 60px;
+.company-info {
   text-align: center;
-  color: #fff;
-  background:#20222A;
-  height:46px;
-  line-height: 46px;
+  height: 120px;
+  width: 100%;
+  margin: 20px auto 40px;
+  .company-logo {
+    height: 64px;
+    width: 64px;
+    border-radius: 50%;
+    margin: 10px auto;
+  }
+  .company-name {
+    font-size:14px;
+    color: #fff;
+    width: 140px;
+    margin-left: 35px;
+  }
 }
 </style>

@@ -2,7 +2,7 @@
   <div class="team-main-view">
     <el-container>
       <el-aside width="210px" class="team-aside">
-        <home-aside></home-aside>
+        <component :is="aside"></component>
       </el-aside>
       <el-container>
         <el-header height="75px">
@@ -27,22 +27,32 @@
 <script>
 // @ is an alias to /src
 import homeAside from '@/components/Aside' //侧边栏
+import companyAside from '@/components/companyAside'
 import Breadcrumb from '@/components/breadcrumb/Breadcrumb'
 export default {
   name: 'team',
   data () {
     return {
       breadcrumb: [],
+      type: 1,
+      aside: ''
     }
   },
   components: {
     homeAside,
-    Breadcrumb
+    Breadcrumb,
+    companyAside
   },
   computed: {
 
   },
   created () {
+    if (this.type == 1) {
+      this.aside = 'homeAside'
+    }
+    else {
+      this.aside = 'companyAside'
+    }
     this.breadcrumb = JSON.parse(sessionStorage.getItem('menus'))
   }
 }
