@@ -48,15 +48,11 @@
   </div>
 </template>
 <script>
-import districtSelet from './districtSelet'
 import accountDialog from './account/accountDialog'
 import bindPhone from './account/bindPhone'
-import { getImg, getImgUrl } from '@/util/util'
-import { updateTeamInfo, getTeamInfo } from '@/api/team'
-import { getUserInfo, getBindBankList } from '@/api/user'
+import { getUserInfo, getBindBankList, getUserBinkInfo } from '@/api/user'
 export default {
   components: {
-    districtSelet,
     accountDialog,
     bindPhone
   },
@@ -92,21 +88,10 @@ export default {
         }
       })
     },
-    change (val) {
-      this.personalForm.provinceid = val[0]
-      this.personalForm.cityid = val[1]
-      this.personalForm.three_cityid = val[2]
-    },
     submitForm (personalForm) {
       this.$refs[personalForm].validate((valid) => {
         if (valid) {
-          updateTeamInfo(this.personalForm).then(res => {
-            if (res.status.code == 200) {
-              this.$router.push('userlist')
-            }
-          }).catch(error => {
-            this.$message.error(error.status.remind)
-          })
+          
         } else {
           return false
         }

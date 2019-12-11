@@ -9,6 +9,7 @@ export const getUserMobile = data => $post('/userinfo/getUserMobile', data) // �
 
 export const getUserName = data => $post('/userinfo/getUserName', data) // 获取当前用户真实姓名
 export const getBankList = data => $post('/userinfo/bankList', data) // 银行列表
+export const getUserBinkInfo = data => $post('/userinfo/userBinkInfo', data) // 获取认证状态
 
 export const getBindBankList = data => $post('/userinfo/bindBankList', data) // 用户绑定银行列表
 

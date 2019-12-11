@@ -305,11 +305,11 @@ export default {
   padding: 0 0 0 20px ;
 }
 .register-box .error {
-    position:absolute;
-    top:16%;
-    right:0;
-    color:#FE2A00;
-    font-size:12px;
+  position:absolute;
+  top:16%;
+  right:0;
+  color:#FE2A00;
+  font-size:12px;
 }
 .register-box .errorInfo {
     right:0;

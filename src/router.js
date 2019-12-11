@@ -16,6 +16,8 @@ import TeamSetting from './components/TeamSetting.vue'
 import AccountSettings from './components/AccountSettings.vue'
 import AccountSafe from './components/AccountSafe.vue'
 import AccountBank from './components/AccountBank.vue'
+import PasswordManage from './components/PasswordManage.vue'
+
 import Department from './components/Department.vue'
 import personalForm from './components/teamMessage/personalForm'  // 个人
 import CompanyForm from './components/teamMessage/companyForm'   // 企业
@@ -105,6 +107,13 @@ let routers = new Router({
         {
           path: '/accountBank',  //账户设置
           component: AccountBank,
+          meta: {
+            requiresAuth: 2
+          }
+        },
+        {
+          path: '/passwordManage',  //账户设置
+          component: PasswordManage,
           meta: {
             requiresAuth: 2
           }
