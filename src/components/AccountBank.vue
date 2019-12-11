@@ -70,7 +70,7 @@ export default {
   data () {
     return {
       personalForm: {},
-      dialogTableVisible: true,
+      dialogTableVisible: false,
       imageUrl: '',
       uid: localStorage.getItem('uid'),
       address: [],
@@ -209,7 +209,7 @@ export default {
         border:1px solid #EEEEEE;
         width: 60px;
         line-height: 28px;
-        text-align: right;
+        text-align: center;
       }
     }
     .account-bank-col3 {

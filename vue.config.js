@@ -1,4 +1,10 @@
 
+const path = require('path')
+const webpack = require('webpack')
+
+function resolve (dir) {
+  return path.join(__dirname, dir)
+}
 module.exports = {
   publicPath: './',
   // 输出文件目录
@@ -39,7 +45,6 @@ module.exports = {
   configureWebpack: {
     // provide the app's title in webpack's name field, so that
     // it can be accessed in index.html to inject the correct title.
-    name: name,
     resolve: {
       alias: {
         '@': resolve('src')
