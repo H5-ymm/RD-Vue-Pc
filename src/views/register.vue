@@ -1,7 +1,7 @@
 <template>
   <el-container class="loads register-view">
     <el-header class="header x-flex-around">
-      <div class="bg-purple">
+      <div class="bg-purple head-left">
         <span class="header-left">人事达</span>
         <a class="welcome">欢迎登录</a>
       </div>
@@ -230,6 +230,9 @@ export default {
   width:100%;
   height:49px;
   background:rgba(50,55,62,1);
+}
+.head-left {
+  line-height: 30px;
 }
 .register-view{
   width: 100vw;

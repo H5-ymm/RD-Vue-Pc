@@ -54,7 +54,12 @@ export const rewardList = [
   { label: '日返(打包)', value: 4 },
   { label: '一次性返利', value: 5 }
 ]
-
+export const rewardTypeList = [
+  { label: '月返', value: 1 },
+  { label: '日返', value: 2 },
+  { label: '时返', value: 3 },
+  { label: '一次性返利', value: 4 }
+]
 export const requirePersonList = [
   { label: '不限', value: 0 },
   { label: '2-20人', value: 1 },

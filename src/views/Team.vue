@@ -5,18 +5,21 @@
         <component :is="aside"></component>
       </el-aside>
       <el-container>
-        <el-header height="75px">
-          <div style="height:37px;" class="x-flex-between team-header">
-            <i class="el-icon-refresh-right"></i>
+        <el-header :height="height">
+          <div class="x-flex-between team-header" :class="{'comany-team-header': type==2}">
+            <i class="el-icon-refresh-right" v-if="type==1"></i>
+            <el-link :underline="false" v-else>首页</el-link>
             <div class="x-flex-center">
-              <el-link :underline="false" href="home">首页</el-link>
-              <i class="el-icon-bell unRead"></i>
+              <el-link :underline="false" href="home" v-if="type==2">首页</el-link>
+              <el-badge :value="200" :max="99" class="item">
+                <i class="el-icon-bell unRead"></i>
+              </el-badge>
               <span>天天向上团队</span>
             </div>
           </div>
           <breadcrumb :breadcrumbs="breadcrumb"></breadcrumb>
         </el-header>
-        <el-main class="team-main">
+        <el-main class="team-main" :class="{'comany-main-page': type==2}">
           <router-view class="team-box"></router-view>
         </el-main>
       </el-container>
@@ -34,8 +37,9 @@ export default {
   data () {
     return {
       breadcrumb: [],
-      type: 1,
-      aside: ''
+      type: 2,
+      aside: '',
+      height: ''
     }
   },
   components: {
@@ -49,9 +53,11 @@ export default {
   created () {
     if (this.type == 1) {
       this.aside = 'homeAside'
+      this.height = "75px"
     }
     else {
       this.aside = 'companyAside'
+      this.height = "90px"
     }
     this.breadcrumb = JSON.parse(sessionStorage.getItem('menus'))
   }
@@ -67,20 +73,23 @@ export default {
   overflow: hidden;
   position: relative;
   .unRead {
-    margin: 0 10px;
+    margin: 0 20px;
   }
   .el-header {
     padding: 0;
   }
   .team-header {
     padding: 0 20px;
+    height: 36px;
+    &.comany-team-header{
+       height: 50px;
+    }
   }
 }
 .team .team-header {
   padding: 0 38px;
 }
 .team-aside{
-  /* height: 100vh; */
   overflow: hidden;
 }
 .team-main{
@@ -89,10 +98,8 @@ export default {
   background: #F0F2F5;
   padding: 10px 30px;
   box-sizing: border-box;
-}
-.team-box{
-  /* background: #ffffff; */
-  /* height: calc(100% - 20px); */
-  /* padding: 10px; */
+  &.comany-main-page {
+    padding: 0 ;
+  }
 }
 </style>

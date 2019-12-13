@@ -160,82 +160,82 @@ export default {
 }
 </script>
 <style lang="scss">
-.teamMessage {
-  padding-bottom: 80px;
-  .title {
-      width: 100%;
-      height:44px;
-      line-height: 44px;
-      font-size:14px;
-      color: #333;
-      padding-left: 15px;
-      background:#fff;
-      box-shadow:0px 4px 4px 0px rgba(106,106,106,0.1);
-      border-radius:5px;
-    }
-    .teamMessage-form-row {
-      background:#fff;
-      width: 100%;
-      margin: 0 auto;
-      padding: 20px 6px;
-      border-radius: 10px;
-      .teamMessage-form {
-        width: 50%;
-        margin: 0 auto;
-        .width408 {
-          width: 408px;
-        }
-        .width300 {
-           width: 300px;
-        }
-        .el-input__inner {
-          height: 38px;
-          line-height: 38px;
-          border: 1px solid #eee;
-          border-radius: 0;
-        }
-        .send-code-btn {
-          width: 98px;
-          margin-left: 10px;
-          padding: 10px 20px;
-          border-radius: 0;
-        }
-      }
-      .avatar-uploader .el-upload {
-        background: #eee;
-        border-radius: 3px;
-        cursor: pointer;
-        position: relative;
-        overflow: hidden;
-        color: #999999;
-        font-size: 14px;
-        width:91px;
-        height:91px;
-        >p {
-          margin-top: -10px;
-        }
-      }
-      .avatar-uploader-card {
-        display: inline-block;
-        margin-right: 20px;
-      }
-      .avatar-uploader .el-upload:hover {
-        border-color: #409EFF;
-      }
-      .avatar-uploader-icon {
-        font-size: 28px;
-        color: #8c939d;
-        text-align: center;
-        color: #999999;
-        font-size: 42px;
-        margin-top: 10px;
-      }
-      .avatar {
-        width:91px;
-        height:91px;
-        display: block;
-      }
-    }
+// .teamMessage {
+//   padding-bottom: 80px;
+//   .title {
+//       width: 100%;
+//       height:44px;
+//       line-height: 44px;
+//       font-size:14px;
+//       color: #333;
+//       padding-left: 15px;
+//       background:#fff;
+//       box-shadow:0px 4px 4px 0px rgba(106,106,106,0.1);
+//       border-radius:5px;
+//     }
+//     .teamMessage-form-row {
+//       background:#fff;
+//       width: 100%;
+//       margin: 0 auto;
+//       padding: 20px 6px;
+//       border-radius: 10px;
+//       .teamMessage-form {
+//         width: 50%;
+//         margin: 0 auto;
+//         .width408 {
+//           width: 408px;
+//         }
+//         .width300 {
+//            width: 300px;
+//         }
+//         .el-input__inner {
+//           height: 38px;
+//           line-height: 38px;
+//           border: 1px solid #eee;
+//           border-radius: 0;
+//         }
+//         .send-code-btn {
+//           width: 98px;
+//           margin-left: 10px;
+//           padding: 10px 20px;
+//           border-radius: 0;
+//         }
+//       }
+//       .avatar-uploader .el-upload {
+//         background: #eee;
+//         border-radius: 3px;
+//         cursor: pointer;
+//         position: relative;
+//         overflow: hidden;
+//         color: #999999;
+//         font-size: 14px;
+//         width:91px;
+//         height:91px;
+//         >p {
+//           margin-top: -10px;
+//         }
+//       }
+//       .avatar-uploader-card {
+//         display: inline-block;
+//         margin-right: 20px;
+//       }
+//       .avatar-uploader .el-upload:hover {
+//         border-color: #409EFF;
+//       }
+//       .avatar-uploader-icon {
+//         font-size: 28px;
+//         color: #8c939d;
+//         text-align: center;
+//         color: #999999;
+//         font-size: 42px;
+//         margin-top: 10px;
+//       }
+//       .avatar {
+//         width:91px;
+//         height:91px;
+//         display: block;
+//       }
+//     }
     .teamMessage-btn {
       padding-top: 30px;
       padding-bottom: 36px;
@@ -243,6 +243,6 @@ export default {
         margin-right: 35px;
       }
     }
-}
+// }
  
 </style>

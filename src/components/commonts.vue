@@ -120,14 +120,15 @@ export default {
 }
 </script>
 
-<style>
-.team-box {
-  height: 100%;
-  /* margin-bottom: -200px; */
+<style lang="scss">
+.team-view {
+  .team-box {
+    height: 100%;
+  }
 }
+
 .team-box .team-box-left {
   width:540px;
-  /* margin: 10px 30px; */
 }
 .team-box-left .el-input__inner {
   height: 44px;
@@ -137,7 +138,6 @@ export default {
   line-height: 44px;
 }
 .team-box-left .team-input .el-input__inner{
-    /* width:441px; */
   height:44px;
   background:rgba(255,255,255,1);
   border:1px solid rgba(238,238,238,1);

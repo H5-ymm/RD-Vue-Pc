@@ -1,7 +1,7 @@
 <template>
   <el-container class="loads login-page">
     <el-header class="header x-flex-around">
-      <div class="bg-purple">
+      <div class="bg-purple head-left">
         <span class="header-left">人事达</span>
         <a class="welcome">欢迎注册</a>
       </div>

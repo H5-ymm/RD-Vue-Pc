@@ -23,7 +23,7 @@ import personalForm from './components/teamMessage/personalForm'  // 个人
 import CompanyForm from './components/teamMessage/companyForm'   // 企业
 import Userlist from './components/Userlist.vue'  //全部用户
 import commonts from './components/commonts.vue'  //评论
-
+const createOrderTaking = resolve => (require(['./components/CeateOrderTaking.vue'], resolve))
 Vue.use(Router)
 
 let routers = new Router({
@@ -32,9 +32,9 @@ let routers = new Router({
   routes: [
     {
       path: '/',
-      name: 'Load',
-      component: Load,
-      redirect: 'Load',
+      name: 'Home',
+      component: Home,
+      redirect: 'home',
     },
     {
       path: '/team',
@@ -122,6 +122,14 @@ let routers = new Router({
           path: 'userlist',  //用户列表
           name: 'Userlist',
           component: Userlist,
+          meta: {
+            requiresAuth: 1
+          }
+        },
+        {
+          path: '/createOrderTaking',  // 新建接单
+          name: createOrderTaking,
+          component: createOrderTaking,
           meta: {
             requiresAuth: 1
           }

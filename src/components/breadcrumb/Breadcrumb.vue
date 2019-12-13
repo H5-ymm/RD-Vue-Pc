@@ -1,10 +1,12 @@
 <template>
-  <div class="breadcrumb">
+  <div class="breadcrumb" :class="{'ComBreadcrumb':type==2}">
     <el-row>
       <el-col :span="24" class="breadcrumb-bre">
         <div class="bg-purple-dark">
           <el-breadcrumb class="breadcrumb-bre-li">
-            <el-breadcrumb-item v-for="(item,index) in breadcrumbs" :key="index"><el-tag closable>{{item}}</el-tag></el-breadcrumb-item>
+            <el-breadcrumb-item v-for="(item,index) in breadcrumbs" :key="index">
+              <el-tag closable>{{item}}</el-tag>
+            </el-breadcrumb-item>
           </el-breadcrumb>
         </div>
       </el-col>
@@ -15,13 +17,21 @@
 <script>
 export default {
   // props: ['breadcrumbs'],
-  data(){
+  data () {
     return {
-      breadcrumbs: ['论坛列表']
+      breadcrumbs: [],
+      type: 2
+    }
+  },
+  created () {
+    if (this.type == 1) {
+      this.breadcrumbs = ['论坛列表']
+    } else {
+      this.breadcrumbs = ['新建接单']
     }
   },
   watch: {
-    $route(to, from) {
+    $route (to, from) {
       this.breadcrumbs = JSON.parse(sessionStorage.getItem('menus'))
       // console.log(to.path);
     }
@@ -31,34 +41,54 @@ export default {
   // }
 }
 </script>
-<style>
+<style lang="scss">
 .breadcrumb{
   overflow: hidden;
-  background: #fff;
+  background:#F0F2F5;
   width: 100%;
   height: 36px;
   border:1px solid #eee;
-}
-.breadcrumb-bre{
-  height: 36px;
-  box-sizing: border-box;
-  overflow: hidden;
-}
-.breadcrumb-bre-li{
-  line-height: 36px;
-}
-.breadcrumb .el-breadcrumb__separator {
-  position: absolute;
-  z-index: -22;
-}
-.breadcrumb .breadcrumb-bre-li .el-tag {
-  height: 36px;
-  border:none;
-  border-top: 1px solid #1890FF;
-  line-height: 36px;
-  border-radius: 0;
-  margin-right: 5px;
-  background: #DCEEFE;
-  color: #333333;
+   .el-breadcrumb__separator {
+    position: absolute;
+    z-index: -22;
+  }
+  .breadcrumb-bre{
+    height: 36px;
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+  .breadcrumb-bre-li {
+     line-height: 36px;
+      .el-tag {
+        height: 36px;
+        border:none;
+        border-top: 1px solid #1890FF;
+        line-height: 36px;
+        border-radius: 0;
+        margin-right: 5px;
+        background: #DCEEFE;
+        color: #333333;
+      }
+  }
+  &.ComBreadcrumb {
+    .breadcrumb-bre-li {
+       line-height: 36px;
+      .el-tag {
+        height: 36px;
+        border:none;
+        border-top: none;
+        border-bottom: 2px solid #1890FF;
+        line-height: 36px;
+        border-radius: 0;
+        padding:0;
+        margin-left: 20px;
+        background: #F0F2F5;
+        color: #1890FF;
+        .el-icon-close {
+          display: none;
+        }
+      }
+  }
+  }
 }
 </style>

@@ -4,7 +4,7 @@
     <!-- 关于 三级路由  不匹配侧边栏的问题，需要 对 返回的路由对象 进行重新改写,见 computed=> routerli -->
     <el-row class="tac">
       <el-col :span="24">
-        <div class="names company-names">仁事达</div>
+        <div class="names company-names">人事达</div>
         <div class="company-info">
           <img src="../assets/img/img1.png" alt class="company-logo" />
           <p class="company-name">仁达网络科技（上海） 有限公司</p>
@@ -55,7 +55,7 @@ export default {
           submenu: [
             {
               title: '新建接单',
-              url: '/commonts'
+              url: '/createOrderTaking'
             }
           ]
         },
