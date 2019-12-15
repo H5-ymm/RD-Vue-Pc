@@ -26,13 +26,13 @@
           <el-button type="text" @click="handleEdit(props.row)">{{props.row.name}}</el-button>
         </template>
         </el-table-column>
-        <el-table-column label="薪资类型" align="center" width="150">
+        <el-table-column label="薪资类型" align="center" width="100">
           <template slot-scope="props">
             <el-button type="text">{{props.row.money_type | moneyType}}</el-button>
           </template>
         </el-table-column>
         <el-table-column label="岗位薪资" prop="depart_name" align="center" width="150"></el-table-column>
-        <el-table-column label="返利类型" align="center" width="150">
+        <el-table-column label="返利类型" align="center" width="100">
           <template slot-scope="props">
             <el-button type="text">{{props.row.reward_type | rewardType}}</el-button>
           </template>   
@@ -47,7 +47,7 @@
             >{{props.row.status==1?"正常":'锁定'}}</span>
           </template>
         </el-table-column>
-        <el-table-column label="操作" align="center" width="150">
+        <el-table-column label="操作" align="center">
           <template slot-scope="scope">
             <el-button @click="handleEdit(scope.row)" type="text" size="small">编辑</el-button>
             <el-button @click="handleDel(scope.row)" type="text" size="small">删除</el-button>
@@ -111,8 +111,7 @@ export default {
         {label:'全部',value: 0},
         {label:'待审核',value: 1},
         {label:'已通过',value: 2},
-        {label:'未通过',value: 3},
-        {label:'已下架',value: -1}
+        {label:'未通过',value: 3}
       ],
       activeIndex: 0
     }
@@ -185,7 +184,7 @@ export default {
 <style lang="scss">
 .billingManagement {
   .demo-form-inline {
-    width: 84%;
+    width: 80%;
   }
   .table-list {
     padding-top: 70px;

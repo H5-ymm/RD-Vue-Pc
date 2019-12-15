@@ -165,7 +165,7 @@ export default {
 <style lang="scss">
 .billingManagement {
   .demo-form-inline {
-    width: 84%;
+    width: 80%;
   }
   .table-list {
     padding-top: 70px;

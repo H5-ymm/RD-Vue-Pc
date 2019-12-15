@@ -6,8 +6,8 @@
           <el-input v-model="formMember.name" class="width300" placeholder="请输入职位名称关键字"></el-input>
         </el-form-item>
         <el-form-item label="职位类别：">
-          <el-select v-model="formMember.industry" class="width300" placeholder="请选择">
-            <el-option :label="item.label" :value="item.value" v-for="(item,index) in teamTypeList" :key="index"></el-option>
+          <el-select v-model="formMember.industry" class="width300" placeholder="选择相应的职位类别">
+            <el-option :label="item" :value="key" v-for="(item,key) in jobList" :key="key"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="团队名称：">
@@ -15,12 +15,12 @@
         </el-form-item>
         <el-form-item label="薪资模式：">
           <el-select v-model="formMember.industry" class="width300" placeholder="请选择薪资模式">
-            <el-option :label="item.label" :value="item.value" v-for="(item,index) in teamTypeList" :key="index"></el-option>
+            <el-option :label="item.label" :value="item.value" v-for="(item,index) in moneyTypeList" :key="index"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="返利模式：">
           <el-select v-model="formMember.industry" class="width300" placeholder="请选择返利模式">
-            <el-option :label="item.label" :value="item.value" v-for="(item,index) in teamTypeList" :key="index"></el-option>
+            <el-option :label="item.label" :value="item.value" v-for="(item,index) in rewardTypeList" :key="index"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="发单状态：">
@@ -79,7 +79,7 @@
           </template>   
         </el-table-column>
         <el-table-column label="岗位薪资" prop="reward_money" align="center" width="150"></el-table-column>
-        <el-table-column label="薪资模式" prop="reward_money" align="center" width="150"></el-table-column>
+        <el-table-column label="薪资模式" prop="reward_money" align="center" width="100"></el-table-column>
         <el-table-column label="发单状态" align="center" width="150">
           <template slot-scope="props">
             <span
@@ -89,10 +89,10 @@
           </template>
         </el-table-column>
         <el-table-column label="岗位城市" prop="entry_num" sortable align="center" width="150"></el-table-column>
-        <el-table-column label="返利模式" prop="entry_num" sortable align="center" width="150"></el-table-column>
+        <el-table-column label="返利模式" prop="entry_num" sortable align="center" width="100"></el-table-column>
         <el-table-column label="接单时间" prop="entry_num" sortable align="center" width="150"></el-table-column>
         <el-table-column label="联系人" prop="entry_num" sortable align="center" width="150"></el-table-column>        
-        <el-table-column label="操作" align="center" width="150">
+        <el-table-column label="操作" align="center">
           <template slot-scope="scope">
             <!-- <el-button @click="handleDel(scope.row)" type="text" size="small">联系客服</el-button> -->
             <!-- <el-button @click="handleDel(scope.row)" type="text" size="small">查看部门</el-button> -->
@@ -122,6 +122,7 @@ import { getTeamList, loginOutTeam, addTeamUser, updateTeamUser } from '../../ap
 import { getReceiptList } from '../../api/receipt'
 import { moneyTypeList, rewardTypeList, payTypeList , weekList } from '../../base/base'
 import receiptModal from './receiptModal'
+import { getConstant } from '../../api/dictionary'
 export default {
   components:{
     receiptModal
@@ -167,14 +168,23 @@ export default {
         {label:'等待面试结果',value: 4},
         {label:'完成面试结果',value: 5}
       ],
-      activeIndex: 0
+      activeIndex: 0,
+      jobList: {}
     }
   },
   created () {
     // 初始化查询标签数据
     this.getList(this.formMember)
+    let params = 'job_array'
+    this.getData(params)
   },
   methods: {
+    getData (filed) {
+      getConstant({ filed }).then(res => {
+        const { job_array } = res.data
+        this.jobList = job_array
+      })
+    },
     getList (params) {
       getReceiptList(params).then(res => {
         const { data } = res
