@@ -18,6 +18,16 @@ import AccountSafe from './components/AccountSafe.vue'
 import AccountBank from './components/AccountBank.vue'
 import PasswordManage from './components/PasswordManage.vue'
 
+const checkReceipt = resolve => (require(['./components/receiptManagement/checkReceipt.vue'], resolve))
+const applicationTeam = resolve => (require(['./components/receiptManagement/applicationTeam.vue'], resolve))
+const talentResume = resolve => (require(['./components/receiptManagement/talentResume.vue'], resolve))
+const entryList = resolve => (require(['./components/receiptManagement/entryList.vue'], resolve))
+const entryDetailTable = resolve => (require(['./components/receiptManagement/entryDetailTable.vue'], resolve))
+const auditionResult = resolve => (require(['./components/receiptManagement/auditionResult.vue'], resolve))
+const viewResume = resolve => (require(['./components/receiptManagement/viewResume.vue'], resolve))
+const interviewPersonnel = resolve => (require(['./components/receiptManagement/interviewPersonnel.vue'], resolve))
+const checkResume = resolve => (require(['./components/receiptManagement/checkResume.vue'], resolve))
+
 import Department from './components/Department.vue'
 import personalForm from './components/teamMessage/personalForm'  // 个人
 import CompanyForm from './components/teamMessage/companyForm'   // 企业
@@ -57,6 +67,78 @@ let routers = new Router({
             requiresAuth: 2
           }
         },
+        { // 审核发单
+          path: '/checkReceipt',
+          name: 'checkReceipt',
+          component: checkReceipt,
+          meta: {
+            requiresAuth: 2
+          }
+        },
+        { // 申请团队
+          path: '/applicationTeam',
+          name: 'applicationTeam',
+          component: applicationTeam,
+          meta: {
+            requiresAuth: 2
+          }
+        },
+        { // 个人简历
+          path: '/talentResume',
+          name: 'talentResume',
+          component: talentResume,
+          meta: {
+            requiresAuth: 2
+          }
+        },
+        { // 入职名单
+          path: '/entryList',
+          name: 'entryList',
+          component: entryList,
+          meta: {
+            requiresAuth: 2
+          }
+        },
+        { // 审核简历
+          path: '/checkResume',
+          name: 'checkResume',
+          component: checkResume,
+          meta: {
+            requiresAuth: 2
+          }
+        },       
+        { // 简历详情
+          path: '/entryDetailTable',
+          name: 'entryDetailTable',
+          component: entryDetailTable,
+          meta: {
+            requiresAuth: 2
+          }
+        },
+        { // 面试人才
+          path: '/interviewPersonnel',
+          name: 'interviewPersonnel',
+          component: interviewPersonnel,
+          meta: {
+            requiresAuth: 2
+          }
+        },
+        { // 面试结果
+          path: '/auditionResult',
+          name: 'auditionResult',
+          component: auditionResult,
+          meta: {
+            requiresAuth: 2
+          }
+        },
+        { // 查看简历
+          path: '/viewResume',
+          name: 'viewResume',
+          component: viewResume,
+          meta: {
+            requiresAuth: 2
+          }
+        },   
         { // 团队设置
           path: '/teamSetting',
           name: 'TeamSetting',

@@ -64,8 +64,24 @@ export default {
           icon: 'el-icon-collection-tag',
           submenu: [
             {
-              title: '成员管理',
-              url: '/userlist'
+              title: '审核发单',
+              url: '/checkReceipt'
+            },
+            {
+              title:'申请发单',
+              url:'/applicationTeam'
+            },
+            {
+              title: '人才简历',
+              url: '/talentResume'
+            },
+            {
+              title: '面试人才',
+              url: '/interviewPersonnel'
+            },          
+            {
+              title:'入职名单',
+              url:'/entryList'
             }
           ]
         },
