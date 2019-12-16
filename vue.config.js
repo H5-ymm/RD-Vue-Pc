@@ -38,7 +38,13 @@ module.exports = {
     // 开启 CSS source maps?
     sourceMap: false,
     // css预设器配置项
-    loaderOptions: {},
+    loaderOptions: {
+      sass: {
+        // @/ 是 src/ 的别名
+        // 所以这里假设你有 `src/variables.scss` 这个文件
+        data: `@import "~@/assets/common.scss";`
+      }
+    },
     // 启用 CSS modules for all css / pre-processor files.
     modules: false
   },

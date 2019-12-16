@@ -7,7 +7,7 @@
       <el-container>
         <el-header :height="height">
           <div class="x-flex-between team-header" :class="{'comany-team-header': type==2}">
-            <i class="el-icon-refresh-right" v-if="type==1"></i>
+            <i class="el-icon-refresh-right" v-if="type==2"></i>
             <el-link :underline="false" v-else>首页</el-link>
             <div class="x-flex-center">
               <el-link :underline="false" href="home" v-if="type==2">首页</el-link>
@@ -65,6 +65,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
+@import '@/assets/css/common.scss';
 .team-main-view{
   width: 100vw;
   height: 100vh;

@@ -440,11 +440,6 @@ export default {
   align-items:center;
   justify-content: space-between;
 }
-.bg-purple-start {
-  display: flex;
-  align-items:center;
-  justify-content: flex-start;
-}
 .bg-purple-center {
   display: flex;
   align-items:center;
@@ -753,7 +748,7 @@ export default {
 .orderTaking-main-content .orderTaking-search {
   width:100%;
   background:#fff;
-  height:167px;
+  height:176px;
   padding: 30px 0;
   box-shadow:0px 1px 13px 0px rgba(4,4,4,0.15);
 }
@@ -774,11 +769,11 @@ export default {
 .orderTaking-main-content .el-input--prefix .el-input__inner {
   padding: 20px 110px;
 }
-.orderTaking-main-content  .search-btn {
+/* .orderTaking-main-content  .search-btn {
   border-radius:0px 5px 5px 0px;
   padding: 0 40px;
   height:39px;
-}
+} */
 .orderTaking-main-section {
   display: flex;
   justify-content: space-between;
@@ -856,9 +851,6 @@ export default {
 }
 .home-main-list  .home-list-title-active {
   color:#FE2A00;
-}
-.home-main-list .el-card__header {
-  padding:15px;
 }
 .home-main-list .el-card__body {
   padding:10px;

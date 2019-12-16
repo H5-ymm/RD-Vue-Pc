@@ -1,121 +1,217 @@
 <template>
-  <el-container class="loads register-view">
+  <el-container class="loads login-page">
     <el-header class="header x-flex-around">
       <div class="bg-purple head-left">
         <span class="header-left">人事达</span>
-        <a class="welcome">欢迎登录</a>
+        <a class="welcome">欢迎注册</a>
       </div>
       <div class="bg-purple-light">
         <span @click="$router.push('home')">浏览首页</span>
         <a>021-51991869</a>
       </div>
     </el-header>
-    <el-main class="login-main">
-      <div class="register-content">
-        <div class="register-box">
-          <el-form
-            ref="TabForm"
-            :model="formTab"
-            label-width="20"
-            :rules="formTabs"
-            class="form-box"
-          >
-            <div class="x-flex-around register-btn">
-              <el-button type="text" :class="loginWay==1?'':'active'" @click="switchLogin(1)">账号登录</el-button>|
-              <el-button type="text" :class="loginWay==2?'':'active'" @click="switchLogin(2)">短信登录</el-button>
+    <el-main>
+      <div class="content register-form" :class="{'timerContent':registerType==2}">
+        <el-row class="loads-box">
+          <el-col :span="12">
+            <el-form
+              :model="formTab"
+              label-width="20"
+              ref="TabForm"
+              :rules="formTabs"
+              class="register-form-box"
+            >
+              <div class="x-flex login-btn">
+                <el-button
+                  class="button"
+                  :class="registerType==1?'comRight':'timm-right'"
+                  @click="goRegister(1)"
+                >注册企业</el-button>
+                <el-button
+                  class="button"
+                  :class="registerType==2?'comRight':'timm-right'"
+                  @click="goRegister(2)"
+                >注册团队</el-button>
+              </div>
+              <el-form-item prop="mobile" label="手机号">
+                <el-input v-model="formTab.mobile" placeholder="请输入手机号"></el-input>
+                <span class="error el-icon-warning" v-if="isShowPhone">请输入手机号</span>
+              </el-form-item>
+              <el-form-item prop="password" label="密码">
+                <span class="error el-icon-warning passwordSave" v-if="isShowPasword">请输入密码</span>
+                <el-progress
+                  :percentage="40"
+                  :format="format"
+                  class="error progress"
+                  color="#FE2A00"
+                  v-if="formTab.password.length&&formTab.password.length<=6"
+                ></el-progress>
+                <el-progress
+                  :percentage="70"
+                  :format="format"
+                  class="error progress"
+                  color="#FF9938"
+                  v-if="formTab.password.length>6&&formTab.password.length<=10"
+                ></el-progress>
+                <el-progress
+                  :percentage="100"
+                  :format="format"
+                  class="error progress"
+                  color="#58B44E"
+                  v-if="formTab.password.length>10"
+                ></el-progress>
+                <el-input v-model="formTab.password" placeholder="请输入密码" show-word-limit></el-input>
+              </el-form-item>
+              <el-form-item prop="passworded" label="确认密码">
+                <span class="error el-icon-warning" v-if="isShowPas">两次输入的密码不一致</span>
+                <el-input v-model="formTab.passworded" placeholder="请输入密码" show-word-limit></el-input>
+              </el-form-item>
+              <el-form-item label="发送验证码">
+                <el-input
+                  v-model="formTab.code"
+                  placeholder="请输入密码"
+                  class="inputCode"
+                  show-word-limit
+                ></el-input>
+                <el-button type="primary" class="code-btn" @click="sendCode" plain>{{content}}</el-button>
+              </el-form-item>
+              <el-form-item prop="name" :label="registerType==1?'公司名称':'团队名称'">
+                <span
+                  class="error el-icon-warning"
+                  v-if="isShowName"
+                >请输入{{registerType==1?'公司名称':'团队名称'}}</span>
+                <span
+                  class="error error1 el-icon-warning"
+                  v-if="isShowRe"
+                >该{{registerType==1?'公司名称':'团队名称'}}已被注册，请使用其他{{registerType==1?'公司名称':'团队名称'}}注册</span>
+                <el-input v-model="formTab.name" placeholder="请输入您要创建的团队名称" show-word-limit></el-input>
+              </el-form-item>
+              <el-form-item :label="registerType==1?'公司地址':'团队地址'">
+                <districtSelet @change="districtChange"></districtSelet>
+                <span
+                  class="error el-icon-warning"
+                  v-if="isShowCom"
+                >请选择{{registerType==1?'公司地址':'团队地址'}}</span>
+              </el-form-item>
+              <el-form-item>
+                <el-button type="primary" @click="onSubmit('TabForm')" class="register">注册</el-button>
+              </el-form-item>
+              <p class="text">
+                点击注册即表示同意
+                <a>用户协议及隐私保护规则</a>
+              </p>
+            </el-form>
+          </el-col>
+          <el-col :span="12">
+            <div class="grid-content x-flex register-grid-content" ref="bg">
+              <img src="../assets/img/rightBg.png" v-if="registerType==1" />
+              <img src="../assets/img/timerBg.png" v-if="registerType==2" />
+              <p class="text">
+                已有账户，
+                <a>直接登录</a>
+                <img src="../assets/img/loginRight.png" alt class="loginRight" />
+              </p>
             </div>
-            <el-form-item prop="name" label="手机号">
-              <span class="error errorInfo el-icon-warning">账号或者密码错误，如遇到问题联系客服，021-51991869</span>
-              <el-input placeholder="请输入11位手机号" v-model="formTab.name">
-                <template slot="prepend">
-                  <span>+86</span>
-                  <i class="el-icon-arrow-down"></i> |
-                </template>
-              </el-input>
-            </el-form-item>
-            <el-form-item prop="passwords" label="密码" v-if="loginWay==1">
-              <el-input v-model="formTab.password" placeholder="请输入密码" show-word-limit></el-input>
-            </el-form-item>
-            <el-form-item prop="passwords" label="发送验证码" v-if="loginWay==2">
-              <span class="error el-icon-warning">验证码错误或者已过期</span>
-              <el-input
-                v-model="formTab.code"
-                placeholder="请输入密码"
-                class="inputCode"
-                show-word-limit
-              ></el-input>
-              <el-button
-                type="primary"
-                class="code-btn"
-                plain
-                :class="{disabled: !this.canClick}"
-                @click="sendCode"
-              >{{content}}</el-button>
-            </el-form-item>
-            <el-form-item>
-              <el-checkbox v-model="checked">记住密码</el-checkbox>
-              <span class="code-btn password">忘记密码</span>
-            </el-form-item>
-            <el-form-item class="submit-btn">
-              <el-button type="primary" @click="onSubmit('TabForm')" class="login">注册</el-button>
-            </el-form-item>
-            <p class="text">
-              还没有账户，
-              <a href="/load">免费注册</a>
-              <img src="../assets/img/loginRight.png" alt class="loginRight" />
-            </p>
-          </el-form>
-        </div>
+          </el-col>
+        </el-row>
       </div>
     </el-main>
   </el-container>
 </template>
 
 <script>
-import { goLogin, getCode } from '../api/login'
+import { userRegister, getCode } from '../api/login'
+import districtSelet from '../components/districtSelet'
 export default {
+  components: {
+    districtSelet
+  },
   data () {
-    let validatereg = function (rule, value, callback) {   //验证用户名是否合法
+    let validatereg = (rule, value, callback) => {   //验证用户名是否合法
       let reg = /^1[3456789]\d{9}$/;
-      console.log(value)
-      if (!(reg.test(value))) {
+      if (value === '') {
+        this.isShowPhone = true
+        callback();
+      }
+      else if (!(reg.test(value))) {
+        this.isShowPhone = false
         callback(new Error('手机号格式不正确'));
       } else {
+        this.isShowPhone = false
         callback();
       }
     };
-    let validatePassReg = function (rule, value, callback) {   //验证密码是否合法
-      let reg = /^[a-zA-Z][a-zA-Z0-9]{6,30}$/;
-      if (reg.test(value) == true) {
+    let validatePass = (rule, value, callback) => {
+      if (value === '') {
+        this.isShowPasword = true
         callback();
       } else {
-        callback(new Error('密码不合法(请输入数字或字母)'));
+        if (this.formTab.password !== '') {
+          this.$refs.TabForm.validateField('passworded')
+        }
+        let reg = /^[a-zA-Z][a-zA-Z0-9]{6,16}$/;
+        if (!reg.test(value)) {
+          callback();
+        } else {
+          callback(new Error('密码不合法(请输入数字或字母)'));
+        }
+        this.isShowPasword = false
+        callback();
       }
     };
+    let validatePassReg = (rule, value, callback) => {   //验证密码是否合法
+      if (value == this.formTab.password) {
+        this.isShowPas = false
+        callback();
+      } else {
+        this.isShowPas = true
+        callback();
+      }
+    }
     return {
       formTab: {
-        name: '',
+        mobile: '',
         password: '',
-        type: '1'
+        passworded: '',
+        name: '',
+        code: '',
+        type: 1,
+        province: '',
+        city: '',
+        area: ''
       },
-      checked: false,
+      isShowPhone: false,
+      isShowPasword: false,
+      isShowPas: false,
+      isShowName: false,
+      isShowRe: false,
+      isShowCom: false,
       formTabTsxt: {
         name: 'test',
         passwords: 'test1234',
         checked: false
       },
       formTabs: {  //验证规则
-        name: [
-          { message: '请输入手机号', trigger: 'blur' },
+        mobile: [
           { validator: validatereg, trigger: 'blur' }
         ],
-        passwords: [
-          { message: '请输入密码', trigger: 'blur' },
-          { min: 6, max: 30, message: '长度在 6 到 30 个字符', trigger: 'blur' },
+        password: [
+          // { message: '请输入密码', trigger: 'blur' },
+          { validator: validatePass, trigger: 'blur' }
+        ],
+        passworded: [
+          { message: '请再次输入密码', trigger: 'blur' },
           { validator: validatePassReg, trigger: 'blur' }
         ]
       },
-      loginWay: 1,
+      registerType: 1,
+      value: [],
+      options: [],
+      proviceList: [],
+      props: {},
+      departmentOptions: [],
+      cascaderData: [],
+      selectedOptions: [],
       content: '发送验证码',  // 按钮里显示的内容
       totalTime: 60,
       timer: null,
@@ -123,12 +219,30 @@ export default {
     }
   },
   methods: {
+    districtChange (val) {
+      console.log(val)
+      this.formTab.province = val[0]
+      this.formTab.city = val[1]
+      this.formTab.area = val[2]
+    },
+    handleChange (value) {
+      console.log(value);
+    },
+    handleExpand (value) {
+      console.log(value)
+    },
+    format (percentage) {
+      return percentage === 100 ? '强度：高' : percentage === 70 ? '强度：中' : '强度：低';
+    },
+    goRegister (index) {
+      this.registerType = index
+    },
     sendCode () {
-      if (!this.formTab.name) {
+      if (!this.formTab.mobile) {
         return this.$message.warning('手机号不能为空')
       }
       this.countDown()
-      getCode({ mobile: this.formTab.name }).then(res => {
+      getCode({ mobile: this.formTab.mobile }).then(res => {
         console.log(res)
       })
     },
@@ -147,80 +261,29 @@ export default {
         }
       }, 1000)
     },
-    switchLogin (index) {
-      this.loginWay = index
-      this.formTab.type = index
-      this.formTab.name = ''
-    },
-    onSubmit (formName) {
+    onSubmit: function (formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          console.log(this.formTab)
-          goLogin(this.formTab).then(res => {
-            console.log(res)
+          if (this.formTab.province == '') {
+            this.isShowCom = true
+            return
+          }
+          userRegister(this.formTab).then(res => {
           }).catch(error => {
-            console.log(error)
-            return this.$message.error(error.status.remind)
+            this.$message.error(error.status.remind)
           })
         } else {
-          return false
+          this.isShowCom = false
+          return false;
         }
       })
     },
-    onLoading () {
-      let token = null
-      if (window.localStorage.getItem('token')) {
-        token = window.localStorage.getItem('token')
-      } else if (window.sessionStorage.getItem('token')) {
-        token = window.sessionStorage.getItem('token')
-      } else {
-        token = null
-      }
-      if (token) {
-        this.$http({
-          url: 'rulesToken',
-          methos: 'GET',
-          headers: {
-            'Authorization': token
-          }
-        }).then(res => {
-
-          if (res.data.code == 0) {
-            this.$message({
-              showClose: true,
-              message: '登陆成功',
-              type: 'success'
-            });
-            this.$store.commit('adduser', res.data.msg)
-            this.$router.push('/')
-
-          } else {
-            this.$message({
-              showClose: true,
-              message: '登陆失败',
-              type: 'success'
-            });
-            window.localStorage.clear()
-            window.sessionStorage.clear()
-          }
-        }).catch(error => {
-          //   this.$message.error('Token过期，请重新登陆');
-          /// this.$router.push('/load')
-          window.localStorage.clear()
-          window.sessionStorage.clear()
-        })
-      }
-    },
-    onForget: function () {
-      this.$router.push('/load')
+    onForget () {
+      this.$router.push('/register')
     }
-
   },
-  components: {
-
-  },
-  created: function () {  //验证Token   
-    this.onLoading()
+  created () {  //验证Token   
+    // this.getPro()
   }
 }
 </script>
@@ -230,126 +293,177 @@ export default {
   width:100%;
   height:49px;
   background:rgba(50,55,62,1);
+  color:#fff;
+  font-size:14px;
 }
-.head-left {
-  line-height: 30px;
+.header span{
+  font-weight:bold;
+  color:#1890FF;
+  margin-right:30px;
 }
-.register-view{
+.header .welcome {
+  font-size: 18px;
+}
+.header .header-left {
+  font-size:26px;
+}
+.loads{
   width: 100vw;
-  height: 100vh;
-  overflow: hidden; 
+  /* height: 100vh; */
+  /* overflow: hidden;  */
+}
+.login-page {
+  height: 100%;
 }
 .loads .el-main {
   padding:0;
-  overflow:hidden;
+  /* overflow:hidden; */
+  overflow-x: hidden;
+  overflow-y: auto;
 }
-.loads .login-main {
-  height: 100vh;
-}
+
 .loads .el-form-item {
   margin-bottom:6px;
 }
-.x-flex-center {
+.loads .city-cascader {
+  display:block;
+}
+.x-flex {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
 }
-.x-flex-around {
+.x-flex-start-justify{
   display: flex;
-  justify-content:space-around;
+  justify-content:flex-start;
   align-items: center;
 }
-.register-btn {
-  margin:20px 70px;
-  color:rgba(153,153,153,1);
+.loads .error {
+  position:absolute;
+  top:18%;
+  right:0;
+  color:#FE2A00;
+  font-size:12px;
+  transition: 3s;
 }
-.register-btn  .button{
-   margin-right:10px;
+.loads .error1 {
+  top:60%;
+  z-index:23;
 }
-.register-btn .active {
-  color:#6A6A6A;
+.loads .passwordSave {
+  right:30%;
 }
-.x-flex  .com-right {
+.loads .progress {
+  width:100px;
+  margin-right:-50px;
+}
+.loads .el-progress__text {
+  font-size:10px;
+  position:absolute;
+  top:-15px;
+  left:-16px;
+  transform:scale(0.8); 
+}
+.login-btn  .button {
+  padding:8px 30px;
+  margin-bottom: 30px; 
+}
+.x-flex  .comRight {
   border:1px solid #1890FF;
   color:#1890FF;
   border-radius:0;
 }
-.register-content {
+.content {
   display: flex;
   justify-content: center;
   align-items: center;
   height:100%;
   width:110%;
-  /* overflow:hidden; */
-  background: url('../assets/img/re-bg.png') no-repeat left center;
+  /* overflow:hidden; 
+  padding: 40px 0;*/
+  background: url('../assets/img/bg.png') no-repeat left center;
   background-size:cover;
 }
-.form-box {
-  width:90%;
-  margin:0 auto;
-  overflow: hidden;
+.register-form {
+  /* padding: 0 0 40px; */
+  /* padding: 40px 0; */
 }
-.register-box{
-  width: 536px;
-  height:420px;
+.timerContent {
+  background: url('../assets/img/comBg.jpg') no-repeat left center;
+  background-size:cover;
+}
+.register-form-box {
+  width:90%;
+  padding: 40px 0;
+  height: 630px;
+}
+.loads-box{
+  width: 60%;
+  /* height: 86%; */
   background:rgba(255,255,255,1);
   box-shadow:0px 5px 18px 0px rgba(0, 0, 0, 0.15);
   border-radius:5px;
-  margin-left:-5%;
+  /* margin-left:-5%; */
+  margin: 40px 0 40px -5%;
 }
-.register-box .el-input__inner {
-  border-radius:3px;
-  background:#eee;
-  border:none;
+.loads-box .el-input__inner {
+  border-radius:0;
+  border:1px solid rgba(238,238,238,1);
 }
-.register-box .el-input-group__prepend {
-  border:none;
-  background:#eee;
-  padding: 0 0 0 20px ;
+.el-input__inner:focus {
+  border:1px solid #1890FF;
 }
-.register-box .error {
-  position:absolute;
-  top:16%;
-  right:0;
-  color:#FE2A00;
-  font-size:12px;
-}
-.register-box .errorInfo {
-    right:0;
-    width:100%;
-    height:20px;
-    top:-16px;
-    text-align:center;
-    line-height:20px;
-    background:rgba(254,42,0,0.1);
-    border-radius:3px;
- }
-.register-box .el-input-group__prepend span {
-   opacity:1;
-   display:inline-block;
-}
-.register-box .inputCode {
-  width: 70%!important;
+.loads-box .inputCode {
+  width: 68%!important;
   margin-right:10px;
   display:block;
 }
-.register-box .code-btn {
-  width: 130px!important;
+.loads-box .code-btn {
+  width: 110px!important;
   position:absolute;
   bottom:0;
   right:0;
   border-radius:0;
+  padding: 12px 0;
 }
-.register-box .disabled {
-  background:rgba(204,204,204,1);
-  border:none;
+.loads-box .el-col {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  height:100%;
 }
-.register-box .password {
+.grid-content {
+  background:rgba(248,248,248,1);
+  border-radius:0px 5px 5px 0px;
+  width:100%;
+  flex-wrap:wrap;
+}
+.register-grid-content {
+  height:720px;
+}
+.register-form-box .text {
+  text-align:left;
+  font-size:12px;
+  margin-top: 16px;
+}
+.grid-content .text {
   text-align:right;
-  color:#6A6A6A;
-  font-size:14px;
+  width:100%;
+  font-size:12px;
+  position: absolute;
+  bottom: 55px;
+  right: 30px
 }
-.register-box .el-button--primary{
+.text .loginRight {
+  margin-top: 2px;
+  margin-left: 5px;
+}
+.grid-content img {
+  max-width: 1200px;
+  margin: 0 auto ;
+}
+.loads-box .el-button--primary{
   width: 100%;
 }
 .texts{
@@ -358,25 +472,10 @@ export default {
 .passwords{
   text-align: right;
 }
-.submit-btn{
-  margin-top: -10px;
-}
-.login{
+.register{
   background:linear-gradient(180deg,rgba(24,144,255,1),rgba(89,175,255,1));
-  border-radius:20px;
+  border-radius:5px;
   border:none;
-}
-.register-box .text {
-  text-align:right;
-  font-size:14px;
-  margin-right:30px;
-  color:#333333;
-  margin-top: 20px;
-}
-.text  a {
-  color:#1890FF;
-}
-.register-box .loginRight {
-  margin-top: 4px;
+  margin: 20px 0 0;
 }
 </style>

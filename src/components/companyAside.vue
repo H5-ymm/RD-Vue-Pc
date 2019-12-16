@@ -15,6 +15,7 @@
           active-text-color="#1890FF"
           text-color="#fff"
           @open="handleOpen"
+          :unique-opened="true"
           @close="handleClose"
           @select="selectMenus"
           router
@@ -68,8 +69,8 @@ export default {
               url: '/checkReceipt'
             },
             {
-              title:'申请发单',
-              url:'/applicationTeam'
+              title: '申请发单',
+              url: '/applicationTeam'
             },
             {
               title: '人才简历',
@@ -78,10 +79,10 @@ export default {
             {
               title: '面试人才',
               url: '/interviewPersonnel'
-            },          
+            },
             {
-              title:'入职名单',
-              url:'/entryList'
+              title: '入职名单',
+              url: '/entryList'
             }
           ]
         },

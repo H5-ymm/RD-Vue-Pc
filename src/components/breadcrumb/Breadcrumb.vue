@@ -16,7 +16,6 @@
 
 <script>
 export default {
-  // props: ['breadcrumbs'],
   data () {
     return {
       breadcrumbs: [],
@@ -33,12 +32,8 @@ export default {
   watch: {
     $route (to, from) {
       this.breadcrumbs = JSON.parse(sessionStorage.getItem('menus'))
-      // console.log(to.path);
     }
   }
-  // created() {
-  //   this.breadcrumbs = JSON.parse(sessionStorage.getItem('menus'))
-  // }
 }
 </script>
 <style lang="scss">

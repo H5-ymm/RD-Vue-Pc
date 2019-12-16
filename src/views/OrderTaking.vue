@@ -1,18 +1,12 @@
 <template>
   <el-container class="orderTaking" id="header">
-    <el-header class="header x-flex-around home" height="50px" >
+    <el-header class="header x-flex-around home" height="50px">
       <headerView></headerView>
     </el-header>
     <el-main class="orderTaking-main-content">
       <div class="orderTaking-search">
         <div class="home-search orderTaking-main-box">
-          <el-input placeholder="请输入职位名称或公司名，例如：普工" v-model="params.kew_name">
-            <el-select v-model="params.type" slot="prepend" style="width:120px" placeholder="请选择">
-              <el-option label="职位搜索" value="1"></el-option>
-              <el-option label="企业搜索" value="2"></el-option>
-            </el-select>
-          </el-input>
-          <el-button type="primary" class="search-btn">搜索</el-button>
+          <searchInput @searchQuery="searchQuery"></searchInput>
         </div>
         <div class="orderTaking-search-list">
           <div class="orderTaking-search-query">
@@ -70,7 +64,7 @@
                   :value="item.value"
                 ></el-option>
               </el-select>
-               <el-select v-model="params.is_fund" placeholder="缴纳公积金">
+              <el-select v-model="params.is_fund" placeholder="缴纳公积金">
                 <el-option
                   v-for="(item,index) in paymentTaxType"
                   :key="index"
@@ -190,13 +184,13 @@
 import homeAside from '@/components/Aside' //侧边栏
 import ModalCity from '@/components/ModalCity'
 import LoginBox from '@/components/LoginBox'
-import HeaderView  from '@/components/HeaderView'
-import FooterView  from '@/components/FooterView'
-import AsideBox  from '@/components/AsideBox'
-
+import HeaderView from '@/components/HeaderView'
+import FooterView from '@/components/FooterView'
+import AsideBox from '@/components/AsideBox'
+import searchInput from '@/components/searchInput'
 import { getList } from '../api/orderTarking'
 import { getProvincesList, getCitysList, getAreasList } from '../api/login'
-import { cityList, moneyTypeList,rewardList,requirePersonList, paymentTaxType} from '../base/base'
+import { cityList, moneyTypeList, rewardList, requirePersonList, paymentTaxType } from '../base/base'
 export default {
   name: 'OrderTaking',
   components: {
@@ -205,11 +199,12 @@ export default {
     LoginBox,
     AsideBox,
     HeaderView,
-    FooterView
+    FooterView,
+    searchInput
   },
   data () {
     return {
-      isShow:false,
+      isShow: false,
       dialogVisible: false,
       total: 0,
       activeIndex: 1,
@@ -236,8 +231,6 @@ export default {
         }
       ],
       params: {
-        type: '',
-        kew_name: '',
         limit: 20,
         page: 1
       },
@@ -253,14 +246,14 @@ export default {
   computed: {
 
   },
-  mounted(){
+  mounted () {
     window.addEventListener('scroll', this.windowScroll)
   },
   methods: {
     windowScroll () {
-      let scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop 
+      let scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
       console.log(scrollTop - document.documentElement.clientHeight)
-      if (scrollTop - document.documentElement.clientHeight + 100 >=0) {
+      if (scrollTop - document.documentElement.clientHeight + 100 >= 0) {
         this.isShow = true
       }
       else {
@@ -280,12 +273,14 @@ export default {
     },
     getData (params) {
       getList(params).then(res => {
-        console.log(res.data.count)
         this.list = res.data.data.data
-        console.log(this.list)
         this.browsingList = res.data.data.data
         this.total = res.data.count
       })
+    },
+    searchQuery (val) {
+      let params = Object.assign(val, this.params)
+      this.getData(params)
     },
     getmoneyType (type) {
       return type === 1 ? '日' : type === 2 ? '月' : '时'
@@ -359,14 +354,8 @@ export default {
 }
 </script>
 
-<style>
-.home{
-  width: 100%;
-  height: 100vh;
-  overflow: hidden;
-  position: relative;
-  padding: 0 50px;
-}
+<style lang="scss">
+ @import '@/assets/css/home.scss';
 .orderTaking {
   background: #EEEEEE;
 }
@@ -376,57 +365,7 @@ export default {
   display: flex;
   justify-content: space-between;
 }
-.home .header-left{
-  display: inline-block;
-}
-.home .bg-purple .welcome {
-  font-size:14px;
-  margin-left:8px;
-}
-.bg-purple {
-  display: flex;
-  align-items:center;
-  justify-content: space-between;
-}
-.bg-purple-start {
-  display: flex;
-  align-items:center;
-  justify-content: flex-start;
-}
-.home-aside{
-  height: 100vh;
-  /* overflow: hidden; */
-  overflow-y: scroll;
-  overflow-x: hidden;
-}
-.nav {
-  display: inline-block;
-}
-.nav .nav-item {
-   position: relative;
-   display: inline-block;
-   padding: 15px 10px;
-   font-weight:normal;
-}
-.nav .nav-item.active {
-  color:#1890FF;
-}
-.home .home-purple-left {
-  color: #fff;
-  font-weight:normal;
-}
-.nav .line {
-  width:30px;
-  height:3px;
-  background:#1890FF;
-  position:absolute;
-  left:10px;
-  bottom: 0;
-}
-.divider {
-  color:rgba(255,255,255,0.2);
-  margin-left:8px;
-}
+
 .orderTaking-main-content{
   overflow: hidden;
   width: 100%;
@@ -440,7 +379,7 @@ export default {
 }
 .orderTaking-main-box {
   margin: 0 auto;
-  width: 56%;
+  width: 780px;
 }
 .orderTaking-search-list {
   margin: 20px auto;
@@ -599,7 +538,7 @@ export default {
 .orderTaking-main-content .orderTaking-search {
   width:100%;
   background:#fff;
-  height:167px;
+  height:176px;
   padding: 30px 0;
   box-shadow:0px 1px 13px 0px rgba(4,4,4,0.15);
 }
@@ -609,9 +548,6 @@ export default {
   top:5px;
   color:#6A6A6A;
 }
-.orderTaking-main-content .el-input {
-  box-shadow:0px 1px 6px 0px rgba(88,88,90,0.1);
-}
 .orderTaking-main-content .el-input__inner {
   padding:14px 10px;
   border-radius: 0;
@@ -619,11 +555,6 @@ export default {
 }
 .orderTaking-main-content .el-input--prefix .el-input__inner {
   padding: 20px 110px;
-}
-.orderTaking-main-content  .search-btn {
-  border-radius:0px 5px 5px 0px;
-  padding: 0 40px;
-  height:39px;
 }
 .orderTaking-main-section {
   display: flex;
@@ -704,7 +635,7 @@ export default {
   color:#FE2A00;
 }
 .home-main-list .el-card__header {
-  padding:15px;
+  /* padding:15px; */
 }
 .home-main-list .el-card__body {
   padding:10px;

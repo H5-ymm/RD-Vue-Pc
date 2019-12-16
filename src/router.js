@@ -3,21 +3,17 @@ import Router from 'vue-router'
 import Home from './views/Home.vue'
 
 import store from './store.js'
-
-import Load from './views/Load.vue'  //登录页
-import Register from './views/register.vue'  //登录页
-
 import Team from './views/Team.vue'  //登录页
-
-import OrderTaking from './views/OrderTaking.vue'   //接单
-import OrderTakingDetail from './views/OrderTakingDetail.vue'  //接单详情
 import About from './views/About.vue'
 import TeamSetting from './components/TeamSetting.vue'
 import AccountSettings from './components/AccountSettings.vue'
 import AccountSafe from './components/AccountSafe.vue'
 import AccountBank from './components/AccountBank.vue'
 import PasswordManage from './components/PasswordManage.vue'
-
+const login = resolve => (require(['./views/Login.vue'], resolve))
+const register = resolve => (require(['./views/Register.vue'], resolve)) //登录页
+const OrderTaking = resolve => (require(['./views/OrderTaking.vue'], resolve))
+const OrderTakingDetail = resolve => (require(['./views/OrderTakingDetail.vue'], resolve)) // 接单详情
 const checkReceipt = resolve => (require(['./components/receiptManagement/checkReceipt.vue'], resolve))
 const applicationTeam = resolve => (require(['./components/receiptManagement/applicationTeam.vue'], resolve))
 const talentResume = resolve => (require(['./components/receiptManagement/talentResume.vue'], resolve))
@@ -106,7 +102,7 @@ let routers = new Router({
           meta: {
             requiresAuth: 2
           }
-        },       
+        },
         { // 简历详情
           path: '/entryDetailTable',
           name: 'entryDetailTable',
@@ -138,7 +134,7 @@ let routers = new Router({
           meta: {
             requiresAuth: 2
           }
-        },   
+        },
         { // 团队设置
           path: '/teamSetting',
           name: 'TeamSetting',
@@ -238,21 +234,21 @@ let routers = new Router({
       component: OrderTakingDetail
     },
     {
-      path: '/load',
-      name: 'Load',
-      component: Load
+      path: '/register',
+      name: 'register',
+      component: register
     },
     {
-      path: '/register',
-      name: 'Register',
-      component: Register
+      path: '/login',
+      name: 'login',
+      component: login
     }
   ]
 })
 // 全部钩子
 // routers.beforeEach((to,from,next)=>{
 //   let path=from.path
-//       if (to.path === '/load'|| to.path === '/about' || to.path==='/register') {
+//       if (to.path === '/load'|| to.path === '/about' || to.path==='/login') {
 //             next();
 //           } else {
 //             let desc= store.state.user.desc;

@@ -15,6 +15,7 @@
           active-text-color="#1890FF"
           text-color="#fff"
           @open="handleOpen"
+          :unique-opened="true"
           @close="handleClose"
           @select="selectMenus"
           router
@@ -105,7 +106,21 @@ export default {
               url: '/accountSafe'
             }
           ]
-        }
+        },
+        {
+          title: '接单管理',
+          icon: 'el-icon-collection-tag',
+          submenu: [
+            {
+              title: '申请接单',
+              url: '/checkReceipt'
+            },
+            {
+              title: '输送人才',
+              url: '/interviewPersonnel'
+            }
+          ]
+        },
       ],
       title: ''
     }

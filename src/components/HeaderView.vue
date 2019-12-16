@@ -18,9 +18,9 @@
     <div class="bg-purple-light bg-purple">
       <span class="home-purple-left">
         <i class="el-icon-user-solid"></i>
-        <a class="welcome">登录</a>
+        <a class="welcome" href="login">登录</a>
         <a class="divider">|</a>
-        <a class="welcome">注册</a>
+        <a class="welcome" href="register">注册</a>
       </span>
       <a class="el-icon-phone-outline">021-51991869</a>
     </div>
@@ -28,11 +28,11 @@
 </template>
 <script>
 export default {
-  name:'',
-  data() {
+  name: '',
+  data () {
     return {
-       activeIndex: 1,
-       menus: [
+      activeIndex: 1,
+      menus: [
         {
           title: '首页',
           url: 'home'
@@ -52,10 +52,12 @@ export default {
       ]
     }
   },
-  methods:{
+  methods: {
     switchNav (item, index) {
       this.activeIndex = index
-      this.$router.push(item.url)
+      if (index < 2) {
+        this.$router.push(item.url)
+      }
     }
   }
 }

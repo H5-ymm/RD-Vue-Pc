@@ -1,7 +1,7 @@
 <template>
   <el-row :gutter="20" class="team-info-row">
     <el-col :span="6" v-for="(item,key) in userLabel" :key="key">
-      <el-card class="box-card" :class="key">
+      <el-card class="box-cardbox-card1" :class="key">
         <p>{{item}}</p>
         <p>{{userLabel1[key]}}</p>
         <img src="../../assets/img/cardBg1.png" alt class="cardBg" v-if="key=='name'" />
@@ -84,6 +84,9 @@ export default {
     padding-left: 20px;
     padding-top: 10px;
     position: relative;
+    &.box-card{
+      padding-right: 20px;
+    }
     &.el-card{
       color: #fff;
     }

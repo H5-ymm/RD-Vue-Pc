@@ -6,8 +6,8 @@ import router from './router'
 import store from './store'
 import moment from 'moment'
 
-import './assets/css/init.css'
-import './assets/css/element-variables.scss'
+import './assets/css/init.css';
+import './assets/css/element-variables.scss';
 // 引入axios
 import axios from './axios'
 Vue.prototype.$http = axios
