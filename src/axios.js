@@ -100,11 +100,38 @@ export function $post (url, params) {
       })
   });
 }
+
+export function postFormData (url, params) {
+  return new Promise((resolve, reject) => {
+    $axios.get(`${baseURL}${url}`, { params }, { responseType: 'blob' })
+      .then(res => {
+        resolve(res.data)
+      })
+      .catch(err => {
+        reject(err.data)
+      })
+  });
+}
 export function upload (params) {
   let file = new FormData()
   file.append('image', params)
   return new Promise((resolve, reject) => {
     $axios.post(`${baseURL}/uploadimg/moreupload`, file)
+      .then(res => {
+        resolve(res.data)
+      })
+      .catch(err => {
+        reject(err.data)
+      })
+  });
+}
+export function uploadFile (url, params) {
+  let file = new FormData()
+  file.append('uid', localStorage.getItem('uid'))
+  file.append('file', params)
+  console.log(params)
+  return new Promise((resolve, reject) => {
+    $axios.post(`${baseURL}${url}`, file)
       .then(res => {
         resolve(res.data)
       })

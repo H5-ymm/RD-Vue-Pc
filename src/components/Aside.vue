@@ -121,6 +121,20 @@ export default {
             }
           ]
         },
+        {
+          title: '简历管理',
+          icon: 'el-icon-collection-tag',
+          submenu: [
+            {
+              title: '新增简历',
+              url: '/addResume'
+            },
+            {
+              title: '报名简历',
+              url: '/appyResume'
+            }
+          ]
+        }
       ],
       title: ''
     }

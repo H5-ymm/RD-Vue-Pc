@@ -23,6 +23,10 @@ const auditionResult = resolve => (require(['./components/receiptManagement/audi
 const viewResume = resolve => (require(['./components/receiptManagement/viewResume.vue'], resolve))
 const interviewPersonnel = resolve => (require(['./components/receiptManagement/interviewPersonnel.vue'], resolve))
 const checkResume = resolve => (require(['./components/receiptManagement/checkResume.vue'], resolve))
+const addResume = resolve => (require(['./components/resumeManage/addResume.vue'], resolve))
+const ResumeManage = resolve => (require(['./components/ResumeManage.vue'], resolve))
+const recommendJob = resolve => (require(['./components/resumeManage/recommendJob.vue'], resolve))
+const appyResume = resolve => (require(['./components/resumeManage/appyResume.vue'], resolve)) // 推荐简历
 
 import Department from './components/Department.vue'
 import personalForm from './components/teamMessage/personalForm'  // 个人
@@ -211,7 +215,33 @@ let routers = new Router({
           meta: {
             requiresAuth: 1
           }
-        }],
+        },
+        {
+          path: '/addResume',  // 新建简历
+          name: addResume,
+          component: addResume,
+          meta: {
+            requiresAuth: 1
+          }
+        },
+        {
+          path: '/recommendJob',  // 简历管理
+          name: recommendJob,
+          component: recommendJob,
+          meta: {
+            requiresAuth: 1
+          }
+        },
+        {
+          path: '/appyResume',  // 报名简历
+          name: appyResume,
+          component: appyResume,
+          meta: {
+            requiresAuth: 1
+          }
+        },
+
+      ],
     },
     {
       path: '/about',

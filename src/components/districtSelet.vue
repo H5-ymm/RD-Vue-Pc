@@ -69,6 +69,16 @@ export default {
         return obj
       })
     },
+    getList (list) {
+      return list.map(item => {
+        let obj =
+        {
+          code: item.code,
+          name: item.name
+        }
+        return obj
+      })
+    },
     getRegion (value) {
       getProvincesList().then(res => {
         let arr = this.getProlist(res.data)
@@ -85,14 +95,16 @@ export default {
         code = value[0]
       }
       getCitysList({ code }).then(res => {
-        let arr = this.getProlist1(res.data)
+        let arr = this.getList(res.data)
         this.options.forEach(item => {
           if (item.code == code) {
             item.children = arr
             return false
           }
         })
-        this.getAreaList(value)
+        if (!this.disabled) {
+          this.getAreaList(value)
+        }
       })
     },
     getAreaList (value) {

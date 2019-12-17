@@ -98,3 +98,9 @@ export const weekList = [
   { label: '周六', value: 6 },
   { label: '周日', value: 7 }
 ]
+export const followStatusList = [
+  { label: '全部', value: 0 },
+  { label: '待反馈', value: 1 },
+  { label: '已通过', value: 2 },
+  { label: '未通过', value: 3 }
+]

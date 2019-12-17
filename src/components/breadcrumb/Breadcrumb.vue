@@ -19,7 +19,7 @@ export default {
   data () {
     return {
       breadcrumbs: [],
-      type: 2
+      type: 1
     }
   },
   created () {

@@ -37,7 +37,7 @@ export default {
   data () {
     return {
       breadcrumb: [],
-      type: 2,
+      type: 1,
       aside: '',
       height: ''
     }
