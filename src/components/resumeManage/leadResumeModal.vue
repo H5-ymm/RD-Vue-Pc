@@ -10,7 +10,7 @@
       <section class="member-col1">
         <p>导入简历</p>
       </section>
-      <section class="resume-col3">
+      <section class="record-col3">
         <p class="import-record-title">仅支持下载模板上传的简历，其他格式可能识别失败</p>
         <ul class="import-resume-box">
           <p class="import-record-thead">表格名称</p>
@@ -159,7 +159,7 @@ export default {
       top: 5px;
       right: 0;
     }
-    .resume-col3 {
+    .record-col3 {
       width: 82%;
       border-top: 1px solid #eee;
       padding-top: 20px;

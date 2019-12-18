@@ -8,7 +8,7 @@
         :model="formMember"
         class="demo-form-inline"
       >
-        <el-form-item label="职位名称：">
+        <el-form-item label="姓名：">
           <el-input v-model="formMember.name" class="width300" placeholder="请输入职位名称关键字"></el-input>
           <el-button type="primary" @click="onSubmit" class="select-btn">查询</el-button>
         </el-form-item>
@@ -31,24 +31,24 @@
           style="width: 100%"
           @selection-change="handleSelectionChange"
         >
-          <el-table-column label="职位名称" align="center" width="150">
+          <el-table-column label="姓名" align="center" width="150">
             <template slot-scope="props">
               <el-button type="text" @click="handleEdit(props.row)">{{props.row.name}}</el-button>
             </template>
           </el-table-column>
-          <el-table-column label="薪资类型" align="center" width="150">
+          <el-table-column label="年龄" align="center" width="150">
             <template slot-scope="props">
               <el-button type="text">{{props.row.money_type | moneyType}}</el-button>
             </template>
           </el-table-column>
-          <el-table-column label="岗位薪资" prop="depart_name" align="center" width="150"></el-table-column>
-          <el-table-column label="返利类型" align="center" width="150">
+          <el-table-column label="性别" prop="depart_name" align="center" width="150"></el-table-column>
+          <el-table-column label="学历" align="center" width="150">
             <template slot-scope="props">
               <el-button type="text">{{props.row.reward_type | rewardType}}</el-button>
             </template>
           </el-table-column>
-          <el-table-column label="返利金额" prop="reward_money" align="center" width="150"></el-table-column>
-          <el-table-column label="发布日期" prop="entry_num" sortable align="center" width="150"></el-table-column>
+          <el-table-column label="住址" prop="reward_money" align="center" width="150"></el-table-column>
+          <el-table-column label="推荐时间" prop="entry_num" sortable align="center" width="150"></el-table-column>
           <el-table-column label="状态" align="center" width="150">
             <template slot-scope="props">
               <span
@@ -57,10 +57,13 @@
               >{{props.row.status==1?"正常":'锁定'}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="操作" align="center" width="150">
+          <el-table-column label="操作" align="center">
             <template slot-scope="scope">
-              <el-button @click="handleEdit(scope.row)" type="text" size="small">编辑</el-button>
-              <el-button @click="handleDel(scope.row)" type="text" size="small">删除</el-button>
+              <!-- <el-button @click="handleDel(scope.row)" type="text" size="small">联系客服</el-button> -->
+              <!-- <el-button @click="handleDel(scope.row)" type="text" size="small">查看部门</el-button> -->
+              <el-button @click="handleDel(scope.row)" type="text" size="small">放弃报名</el-button>
+              <el-button @click="$router.push('/auditionResult')" type="text" size="small">放弃面试</el-button>
+              <el-button @click="$router.push('/auditionResult')" type="text" size="small">推荐岗位</el-button>
             </template>
           </el-table-column>
         </el-table>

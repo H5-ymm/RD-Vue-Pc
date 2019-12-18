@@ -101,8 +101,10 @@
                       <li>返利方式：长期返利</li>
                     </ul>
                     <ul class="orderTaking-main-item">
-                      <li>{{getmoneyType(item.money_type)}}薪: {{item.money}}/人/{{getmoneyType(item.money_type)}}</li>
-                      <li>需求人数：20人</li>
+                      <li
+                        class="require-number"
+                      >{{getmoneyType(item.money_type)}}薪: {{item.money}}/人/{{getmoneyType(item.money_type)}}</li>
+                      <li>返利：20人</li>
                       <li
                         v-if="item.reward_money_type==3"
                       >持续时间：{{item.reward_money_type==1?'长期返利':'持续返利'}}</li>
@@ -133,7 +135,7 @@
                     </ul>
                   </div>
                   <div>
-                    <el-button type="primary">立即接单</el-button>
+                    <el-button type="primary" @click="handleApply(item)">立即接单</el-button>
                   </div>
                 </div>
               </section>
@@ -155,11 +157,11 @@
                   v-for="(item,index) in browsingList"
                   :key="index"
                 >
-                  <li class="bg-purple">
+                  <li class="x-flex-between">
                     <span class="company-name">{{item.name}}</span>
                     <span class="require-number">{{item.required_number}}人</span>
                   </li>
-                  <li class="bg-purple">
+                  <li class="x-flex-between">
                     <span class="require-number">{{getmoneyType(item.money_type)}}薪:</span>
                     <span>{{item.money}}/人/{{getmoneyType(item.money_type)}}</span>
                   </li>
@@ -167,7 +169,7 @@
                 </ul>
               </div>
             </div>
-            <div class="orderTaking-login">
+            <div class="orderTaking-login" v-if="isShowLogin">
               <LoginBox></LoginBox>
             </div>
           </div>
@@ -188,7 +190,7 @@ import HeaderView from '@/components/HeaderView'
 import FooterView from '@/components/FooterView'
 import AsideBox from '@/components/AsideBox'
 import searchInput from '@/components/searchInput'
-import { getList } from '../api/orderTarking'
+import { getList, addApply } from '@/api/orderTarking'
 import { getProvincesList, getCitysList, getAreasList } from '../api/login'
 import { cityList, moneyTypeList, rewardList, requirePersonList, paymentTaxType } from '../base/base'
 export default {
@@ -240,7 +242,9 @@ export default {
       moneyTypeList,
       code: '310100',
       money_type: '',
-      browsingList: []
+      browsingList: [],
+      token: localStorage.getItem('token'),
+      isShowLogin: false
     }
   },
   computed: {
@@ -252,7 +256,6 @@ export default {
   methods: {
     windowScroll () {
       let scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
-      console.log(scrollTop - document.documentElement.clientHeight)
       if (scrollTop - document.documentElement.clientHeight + 100 >= 0) {
         this.isShow = true
       }
@@ -277,6 +280,22 @@ export default {
         this.browsingList = res.data.data.data
         this.total = res.data.count
       })
+    },
+    handleApply (val) {
+      if (this.token) {
+        let params = {
+          job_id: val.id,
+          uid: val.uid
+        }
+        addApply(params).then(res => {
+          console.log(res)
+        }).catch(error => {
+          this.$message.error(error.status.remind)
+        })
+      }
+      else {
+        this.isShowLogin = true
+      }
     },
     searchQuery (val) {
       let params = Object.assign(val, this.params)
@@ -319,37 +338,6 @@ export default {
   created () {
     this.getData(this.params)
     this.getAreaList(this.code)
-    //验证Token
-    //         let token=null
-    //         if(window.localStorage.getItem('token')){
-    //           token=window.localStorage.getItem('token')
-    //         }else if(window.sessionStorage.getItem('token')){
-    //           token=window.sessionStorage.getItem('token')
-    //         }else{
-    //           token=null
-    //         }
-    //      // console.log(token)
-
-    // if(token){
-    //      this.$http({
-    //           url:'rulesToken',
-    //           methos: 'POST',
-    //           headers:{
-    //             'Authorization':token
-    //           }
-    //         }).then(res=>{
-
-    //           if(res.data.code==0){
-
-    //               this.$store.commit('adduser',res.data.msg)
-    //           }else{
-    //              //console.log(res.data.msg)
-    //           }
-    //         }).catch(error=>{
-    //           console.log('error')
-    //         })
-    // }
-
   }
 }
 </script>

@@ -1,5 +1,5 @@
 <template>
-  <div class="breadcrumb" :class="{'ComBreadcrumb':type==2}">
+  <div class="breadcrumb" :class="{'ComBreadcrumb':type==1}">
     <el-row>
       <el-col :span="24" class="breadcrumb-bre">
         <div class="bg-purple-dark">
@@ -19,14 +19,14 @@ export default {
   data () {
     return {
       breadcrumbs: [],
-      type: 1
+      type: localStorage.getItem('userType')
     }
   },
   created () {
     if (this.type == 1) {
-      this.breadcrumbs = ['论坛列表']
+      this.breadcrumbs = sessionStorage.getItem('menus') ? JSON.parse(sessionStorage.getItem('menus')) : ['新建接单']
     } else {
-      this.breadcrumbs = ['新建接单']
+      this.breadcrumbs = sessionStorage.getItem('menus') ? JSON.parse(sessionStorage.getItem('menus')) : ['论坛列表']
     }
   },
   watch: {

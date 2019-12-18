@@ -6,7 +6,7 @@
       v-for="(item,index) in list"
       :key="index"
     >
-      <section class="view-card-row bg-purple-start" @click="selectComment(index,item)">
+      <section class="view-card-row x-flex-start-justify" @click="selectComment(index,item)">
         <span class="top" v-if="!item.is_top">
           <span>置顶</span>
         </span>

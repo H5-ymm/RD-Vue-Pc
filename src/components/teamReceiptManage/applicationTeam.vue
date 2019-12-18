@@ -10,17 +10,33 @@
       >
         <el-form-item label="职位名称：">
           <el-input v-model="formMember.name" class="width300" placeholder="请输入职位名称关键字"></el-input>
-          <el-button type="primary" @click="onSubmit" class="select-btn">查询</el-button>
         </el-form-item>
-        <el-form-item label="状态筛选：">
-          <el-button
-            :type="activeIndex==index ?'primary':''"
-            v-for="(item,index) in statusList"
-            :key="index"
-            plain
-            @click="selectStatus(item,index)"
-            class="select-status"
-          >{{item.label}}</el-button>
+        <el-form-item label="团队名称：">
+          <el-input v-model="formMember.name" class="width300" placeholder="请输入团队名称关键字"></el-input>
+        </el-form-item>
+        <el-form-item label="返利模式：">
+          <el-select v-model="formMember.industry" class="width300" placeholder="请选择返利模式">
+            <el-option
+              :label="item.label"
+              :value="item.value"
+              v-for="(item,index) in rewardTypeList"
+              :key="index"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="申请状态：">
+          <el-select v-model="formMember.industry" class="width300" placeholder="请选择">
+            <el-option
+              :label="item.label"
+              :value="item.value"
+              v-for="(item,index) in applyStatusList"
+              :key="index"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="onSubmit" class="select-btn">查询</el-button>
+          <el-button type="primary" @click="onSubmit" class="select-btn">重置</el-button>
         </el-form-item>
       </el-form>
       <div class="member-table">
@@ -36,19 +52,19 @@
               <el-button type="text" @click="handleEdit(props.row)">{{props.row.name}}</el-button>
             </template>
           </el-table-column>
-          <el-table-column label="薪资类型" align="center" width="150">
+          <el-table-column label="团队名称" align="center" width="150">
             <template slot-scope="props">
               <el-button type="text">{{props.row.money_type | moneyType}}</el-button>
             </template>
           </el-table-column>
-          <el-table-column label="岗位薪资" prop="depart_name" align="center" width="150"></el-table-column>
-          <el-table-column label="返利类型" align="center" width="150">
+          <el-table-column label="需求人数" align="center" width="150">
             <template slot-scope="props">
               <el-button type="text">{{props.row.reward_type | rewardType}}</el-button>
             </template>
           </el-table-column>
-          <el-table-column label="返利金额" prop="reward_money" align="center" width="150"></el-table-column>
-          <el-table-column label="发布日期" prop="entry_num" sortable align="center" width="150"></el-table-column>
+          <el-table-column label="岗位薪资" prop="depart_name" align="center" width="150"></el-table-column>
+          <el-table-column label="返利模式" prop="reward_money" align="center" width="150"></el-table-column>
+          <el-table-column label="申请日期" prop="entry_num" sortable align="center" width="150"></el-table-column>
           <el-table-column label="状态" align="center" width="150">
             <template slot-scope="props">
               <span
@@ -59,7 +75,9 @@
           </el-table-column>
           <el-table-column label="操作" align="center" width="150">
             <template slot-scope="scope">
-              <el-button @click="handleEdit(scope.row)" type="text" size="small">编辑</el-button>
+              <el-button @click="handleDel(scope.row)" type="text" size="small">查看职位</el-button>
+              <el-button @click="handleDel(scope.row)" type="text" size="small">取消申请</el-button>
+              <el-button @click="handleEdit(scope.row)" type="text" size="small">联系客服</el-button>
               <el-button @click="handleDel(scope.row)" type="text" size="small">删除</el-button>
             </template>
           </el-table-column>
@@ -80,9 +98,8 @@
 </template>
 
 <script>
-import { getTeamList, loginOutTeam, addTeamUser, updateTeamUser } from '../../api/team'
-import { getReceiptList } from '../../api/receipt'
-import { moneyTypeList, rewardTypeList, payTypeList, weekList } from '../../base/base'
+import { getTeamReceiptList } from '../../api/teamReceipt'
+import { moneyTypeList, rewardTypeList, payTypeList, weekList, applyStatusList } from '../../base/base'
 export default {
   filters: {
     moneyType (val) {
@@ -102,6 +119,7 @@ export default {
     return {
       moneyTypeList,
       rewardTypeList,
+      applyStatusList,
       dialogTableVisible: false,
       visible: false,
       tableData: [],
@@ -113,18 +131,8 @@ export default {
         page: 1
       },
       total: 0,
-      len: 0,
       userId: '',
-      multipleSelection: [],
       form: {},
-      statusList: [
-        { label: '全部', value: 0 },
-        { label: '待审核', value: 1 },
-        { label: '已通过', value: 2 },
-        { label: '未通过', value: 3 },
-        { label: '已下架', value: -1 }
-      ],
-      activeIndex: 0
     }
   },
   created () {
@@ -133,10 +141,12 @@ export default {
   },
   methods: {
     getList (params) {
-      getReceiptList(params).then(res => {
+      getTeamReceiptList(params).then(res => {
         const { data } = res
         this.tableData = data.data
         this.total = data.count
+      }).catch(error => {
+        this.$message.error(error.status.remind)
       })
     },
     selectStatus (item, index) {
@@ -205,6 +215,7 @@ export default {
     }
     .member-table {
       margin-top: 40px;
+      padding-left: 20px;
     }
   }
   .width300 {

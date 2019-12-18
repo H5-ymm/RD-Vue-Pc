@@ -95,16 +95,20 @@ export default {
         code = value[0]
       }
       getCitysList({ code }).then(res => {
-        let arr = this.getList(res.data)
+        let arr = []
+        if (!this.disabled) {
+          arr = this.getProlist1(res.data)
+          this.getAreaList(value)
+        }
+        else {
+          arr = this.getList(res.data)
+        }
         this.options.forEach(item => {
           if (item.code == code) {
             item.children = arr
             return false
           }
         })
-        if (!this.disabled) {
-          this.getAreaList(value)
-        }
       })
     },
     getAreaList (value) {
@@ -126,11 +130,9 @@ export default {
             })
           }
         })
-        console.log(this.options)
       })
     },
     changeData (val) {
-      console.log(val)
       this.$emit('input', val)
       this.$emit('change', val)
     }

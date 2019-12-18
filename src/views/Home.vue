@@ -22,13 +22,18 @@
           </ul>
         </div>
         <div class="bg-purple-light bg-purple">
-          <span class="home-purple-left">
+          <span class="home-purple-left" v-if="!userInfo">
             <i class="el-icon-user-solid"></i>
             <a class="welcome" href="login">登录</a>
             <a class="divider">|</a>
             <a class="welcome" href="register">注册</a>
           </span>
-          <a class="el-icon-phone-outline">021-51991869</a>
+          <P class="home-purple-left" v-else>
+            <img :src="userInfo.head_img" alt v-if="userInfo.head_img" />
+            <i class="el-icon-user-solid" v-else></i>&nbsp;
+            <span>{{userInfo.user_name?userInfo.user_name:userInfo.mobile}}</span>
+          </P>
+          <a class="el-icon-phone-outline">&nbsp;021-51991869</a>
         </div>
       </div>
     </el-header>
@@ -84,9 +89,9 @@
               </el-card>
             </el-col>
           </el-row>
-          <el-button class="home-main-more">查看更多</el-button>
+          <el-button class="home-main-more" @click="$router.push('OrderTaking')">查看更多</el-button>
           <div class="home-main-more-right">
-            <el-link type="primary">查看更多</el-link>
+            <el-link type="primary" @click="$router.push('OrderTaking')">查看更多</el-link>
             <img src="../assets/img/more.png" alt />
           </div>
         </section>
@@ -207,7 +212,9 @@ export default {
         title: '大多数90后离职和薪资有关，面试能说吗？',
         content: '你是不是也听到过这样的言论，比如“90后太难管了，说两句就要离职”、“现在的90后离职率比80后高多了”……所以，这些宁愿折损“名声”也要离职的90后到底都经历了什么？'
       }],
-      list: []
+      list: [],
+      userInfo: null,
+      token: ''
     }
   },
   computed: {
@@ -251,6 +258,10 @@ export default {
   },
   created () {
     this.getList(this.params)
+    // this.token = localStorage.getItem('token')
+    if (sessionStorage.getItem('userInfo')) {
+      this.userInfo = JSON.parse(sessionStorage.getItem('userInfo'))
+    }
   }
 }
 </script>

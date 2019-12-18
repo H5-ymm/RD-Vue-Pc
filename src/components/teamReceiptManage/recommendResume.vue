@@ -1,29 +1,82 @@
+
+<style lang="scss">
+@import '@/assets/css/resume.scss';
+.recomment-card  {
+  background: #fff;
+  border-radius: 5px;
+  height: 100px;
+  box-shadow:2px 5px 17px 0px rgba(51,51,51,0.2);
+  padding: 0 60px;
+  line-height: 30px;
+  color: #999;
+  font-size: 16px;
+  margin-bottom: 10px;
+  .desired-position {
+    font-size: 18px;
+    color: #333333;
+    font-weight: bold;
+  }
+  .recomment-card-col1 {
+    width: 40%;
+  }
+  .recomment-card-col2 {
+    width: 50%;
+  }
+  .recomment-card-info {
+    text-align: center;
+    p {
+      &:nth-of-type(2) {
+        margin-left: -10px;
+      }
+    }
+  }
+}
+</style>
+
 <template>
   <div class="tables-box billingManagement">
-    <div class="table-list">
+    <div class="recomment-card x-flex-start-justify">
+      <div class="recomment-card-col1">
+        <p>推荐岗位：</p>
+        <p class="desired-position">仁达网络科技（上海）有限公司</p>
+      </div>
+      <div class="x-flex-around recomment-card-col2">
+        <div class="recomment-card-info">
+          <p>需求人数：</p>
+          <p>33</p>
+        </div>
+        <div class="recomment-card-info">
+          <p>需求人数：</p>
+          <p>33</p>
+        </div>
+        <div class="recomment-card-info">
+          <p>需求人数：</p>
+          <p>3</p>
+        </div>
+      </div>
+    </div>
+    <div class="table-list recommend-table">
       <el-form
         :inline="true"
-        label-width="100px"
+        label-width="75px"
         label-position="right"
         :model="formMember"
         class="demo-form-inline"
       >
-        <el-form-item label="职位名称：">
+        <el-form-item label="姓名：">
           <el-input v-model="formMember.name" class="width300" placeholder="请输入职位名称关键字"></el-input>
           <el-button type="primary" @click="onSubmit" class="select-btn">查询</el-button>
         </el-form-item>
-        <el-form-item label="状态筛选：">
-          <el-button
-            :type="activeIndex==index ?'primary':''"
-            v-for="(item,index) in statusList"
-            :key="index"
-            plain
-            @click="selectStatus(item,index)"
-            class="select-status"
-          >{{item.label}}</el-button>
-        </el-form-item>
       </el-form>
-      <div class="member-table">
+      <div class="member-table resume-table">
+        <div class="table-query">
+          <el-button>批量推荐</el-button>
+          <span class="select-text">
+            已选择
+            <el-button type="text">{{multipleSelection.length}}&nbsp;</el-button>项
+          </span>
+          <el-button type="text" @click="multipleSelection=[]">清空</el-button>
+        </div>
         <el-table
           border
           :data="tableData"
@@ -31,36 +84,35 @@
           style="width: 100%"
           @selection-change="handleSelectionChange"
         >
-          <el-table-column label="职位名称" align="center" width="150">
+          <el-table-column type="selection" align="center" width="50"></el-table-column>
+          <el-table-column label="姓名" align="center" width="150">
             <template slot-scope="props">
               <el-button type="text" @click="handleEdit(props.row)">{{props.row.name}}</el-button>
             </template>
           </el-table-column>
-          <el-table-column label="薪资类型" align="center" width="150">
+          <el-table-column label="联系电话" prop="mobile" align="center" width="150"></el-table-column>
+          <el-table-column label="性别" align="center" width="90">
             <template slot-scope="props">
-              <el-button type="text">{{props.row.money_type | moneyType}}</el-button>
+              <el-button type="text">{{props.row.sex==2?'男':'女'}}</el-button>
             </template>
           </el-table-column>
-          <el-table-column label="岗位薪资" prop="depart_name" align="center" width="150"></el-table-column>
-          <el-table-column label="返利类型" align="center" width="150">
+          <el-table-column label="年龄" prop="age" align="center" width="90"></el-table-column>
+          <el-table-column label="意向岗位" prop="depart_name" align="center" width="150"></el-table-column>
+          <el-table-column label="意向工资" prop="depart_name" align="center" width="120"></el-table-column>
+          <el-table-column label="意向城市" align="center" width="100">
             <template slot-scope="props">
               <el-button type="text">{{props.row.reward_type | rewardType}}</el-button>
             </template>
           </el-table-column>
-          <el-table-column label="返利金额" prop="reward_money" align="center" width="150"></el-table-column>
-          <el-table-column label="发布日期" prop="entry_num" sortable align="center" width="150"></el-table-column>
-          <el-table-column label="状态" align="center" width="150">
+          <el-table-column label="岗位匹配度" prop="reward_money" align="center" width="150">
             <template slot-scope="props">
-              <span
-                class="status"
-                :class="{'active-status':props.row.status==1}"
-              >{{props.row.status==1?"正常":'锁定'}}</span>
+              <el-rate v-model="props.row.reward_type"></el-rate>
             </template>
           </el-table-column>
-          <el-table-column label="操作" align="center" width="150">
+          <el-table-column label="岗位匹配项" prop="entry_num" align="center" width="150"></el-table-column>
+          <el-table-column label="操作" align="center" min-width="120">
             <template slot-scope="scope">
-              <el-button @click="handleEdit(scope.row)" type="text" size="small">编辑</el-button>
-              <el-button @click="handleDel(scope.row)" type="text" size="small">删除</el-button>
+              <el-button @click="$router.push('recommendJob')" type="text" size="small">推荐岗位</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -120,9 +172,8 @@ export default {
       statusList: [
         { label: '全部', value: 0 },
         { label: '待审核', value: 1 },
-        { label: '已通过', value: 2 },
-        { label: '未通过', value: 3 },
-        { label: '已下架', value: -1 }
+        { label: '已入职', value: 2 },
+        { label: '未入职', value: 3 }
       ],
       activeIndex: 0
     }
@@ -191,28 +242,3 @@ export default {
   }
 }
 </script>
-
-<style lang="scss">
-.billingManagement {
-  .demo-form-inline {
-    width: 80%;
-  }
-  .table-list {
-    padding-top: 70px;
-    padding-left: 10px;
-    .select-btn {
-      margin-left: 20px;
-    }
-    .member-table {
-      margin-top: 40px;
-    }
-  }
-  .width300 {
-    width: 300px;
-  }
-  .select-status {
-    margin-right: 10px;
-  }
-}
-
-</style>

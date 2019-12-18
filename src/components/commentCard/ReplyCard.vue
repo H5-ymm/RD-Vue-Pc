@@ -10,7 +10,7 @@
           <span class="user-name">{{item.username}}</span>
           <span>：{{item.content}}</span>
         </p>
-        <div class="bg-purple text-light reply-btn">
+        <div class="x-flex-between text-light reply-btn">
           <span>{{$moment(item.addTime).format('YYYY-MM-DD')}}</span>
           <!-- <p> -->
           <!-- <span v-if="uid==item.user_id" @click="deleteComment(item.id)">删除</span> -->
@@ -33,7 +33,7 @@
                 <span class="user-name">{{val.username}}</span>
                 <span>：{{val.content}}</span>
               </p>
-              <p class="bg-purple text-light">
+              <p class="x-flex-between text-light">
                 <span>2019-12-01</span>
                 <span
                   class="reply-active"

@@ -153,6 +153,7 @@ export default {
       }
       .team-pagination {
         margin-top: 20px;
+        margin-left: 20px;
       }
     }
   }

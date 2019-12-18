@@ -1,3 +1,7 @@
+
+<style lang="scss">
+@import '@/assets/css/resume';
+</style>
 <template>
   <div class="tables-box billingManagement">
     <div class="table-list add-resum">
@@ -53,16 +57,6 @@
             end-placeholder="结束日期"
           ></el-date-picker>
         </el-form-item>
-        <el-form-item label="报名状态：">
-          <el-select v-model="formMember.industry" class="width300" placeholder="请选择报名状态">
-            <el-option
-              :label="item.label"
-              :value="item.value"
-              v-for="(item,index) in followStatusList"
-              :key="index"
-            ></el-option>
-          </el-select>
-        </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="onSubmit" class="select-btn">查询</el-button>
           <el-button type="primary" @click="onSubmit" class="select-btn">重置</el-button>
@@ -78,9 +72,8 @@
           ref="multipleTable"
           style="width: 100%"
           @sort-change="sortChange"
-          @selection-change="handleSelectionChange"
         >
-          <el-table-column label="序号" align="center" prop="id" width="40"></el-table-column>
+          <el-table-column label="序号" align="center" prop="id" width="50"></el-table-column>
           <el-table-column label="姓名" align="center" width="100">
             <template slot-scope="props">
               <el-button
@@ -98,7 +91,7 @@
           </el-table-column>
           <el-table-column label="岗位名称" prop="desired_position" align="center" width="150"></el-table-column>
           <el-table-column
-            label="报名时间"
+            label="离职时间"
             prop="entry_num"
             sortable="custom"
             align="center"
@@ -110,7 +103,7 @@
               >{{props.row.uptime?$moment(props.row.uptime).format('YYYY-MM-DD'):'--'}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="报名状态" prop="money_m" align="center" width="150"></el-table-column>
+          <el-table-column label="离职次数" prop="desired_position" align="center" width="150"></el-table-column>
           <el-table-column label="跟进记录" align="center" width="100">
             <template slot-scope="props">
               <el-button
@@ -144,25 +137,8 @@
           <el-table-column label="跟进人" prop="track_name" align="center" width="100"></el-table-column>
           <el-table-column label="操作" align="center" min-width="200">
             <template slot-scope="scope">
-              <el-button
-                @click="abandoned (1,scope.row)"
-                type="text"
-                size="small"
-                v-if="scope.row.status==1"
-              >放弃报名</el-button>
-              <el-button
-                @click="abandoned(2,scope.row)"
-                type="text"
-                size="small"
-                v-if="scope.row.status==2"
-              >放弃面试</el-button>
-              <el-button
-                @click="abandoned(scope.row)"
-                type="text"
-                size="small"
-                v-if="scope.row.status==3"
-              >推荐岗位</el-button>
-              <el-button @click="abandoned(3,scope.row)" type="text" size="small">放弃用户</el-button>
+              <el-button @click="$router.push('/recommendJob')" type="text" size="small">推荐岗位</el-button>
+              <el-button @click="abandoned(scope.row)" type="text" size="small">放弃用户</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -178,18 +154,12 @@
         :total="total"
       ></el-pagination>
     </div>
-    <viewResume
-      :dialogTableVisible="dialogTableVisible"
-      :resumeId="resumeId"
-      @submitForm="submitForm"
-      :resumeInfo="resumeInfo"
-    ></viewResume>
     <confirmDialog
       :dialogTableVisible="visible"
       @submit="submit"
       @handleClose="handleClose"
       :dialogObj="dialogObj"
-      :isShow="isShow"
+      isShow="true"
     ></confirmDialog>
     <followUpRecord
       :dialogTableVisible="followUpRecordVisible"
@@ -197,25 +167,20 @@
       @handleClose="followUpRecordVisible=false"
       :trackList="trackList"
     ></followUpRecord>
-    <leadResumeModal :dialogTableVisible="leadResumeVisible" @handleClose="leadResumeVisible=false"></leadResumeModal>
   </div>
 </template>
 <script>
-import { teamRecommendResumeList, addUserResume, selectUserResumeInfo, giveUpResume, exportUserResume } from '@/api/resume'
+import { quitResumeList, quitUser, exportDelResumeList } from '@/api/resume'
 import { moneyTypeList, rewardTypeList, followStatusList } from '../../base/base'
-import viewResume from './viewResume'
 import followUpRecord from './followUpRecord'
-import leadResumeModal from './leadResumeModal'
 import confirmDialog from '../common/confirmDialog'
 import districtSelet from '../districtSelet'
 import { getConstant } from '../../api/dictionary'
 export default {
   components: {
-    viewResume,
     districtSelet,
     confirmDialog,
-    followUpRecord,
-    leadResumeModal
+    followUpRecord
   },
   filters: {
     moneyType (val) {
@@ -236,15 +201,13 @@ export default {
       moneyTypeList,
       rewardTypeList,
       followStatusList,
-      dialogTableVisible: true,
       visible: false,
       followUpRecordVisible: false,
-      leadResumeVisible: false,
       dialogObj: {
-        title: '放弃报名',
-        subTitle: '放弃理由',
-        okText: '确认放弃',
-        placeholder: '请输入放弃理由'
+        title: '离职原因',
+        subTitle: '离职详情',
+        okText: '确认离职',
+        placeholder: '请输入离职详情'
       },
       tableData: [],
       currentPage: 1,
@@ -257,23 +220,12 @@ export default {
       total: 0,
       len: 0,
       userId: '',
-      multipleSelection: [],
       form: {},
-      statusList: [
-        { label: '全部', value: 0 },
-        { label: '等待面试', value: 1 },
-        { label: '面试开始', value: 2 },
-        { label: '面试结束', value: 3 },
-        { label: '等待面试结果', value: 4 },
-        { label: '完成面试结果', value: 5 }
-      ],
       activeIndex: 0,
       jobList: {},
       resumeId: '',
-      resumeInfo: {},
       trackList: [],
-      timeList: [],
-      isShow: true
+      timeList: []
     }
   },
   created () {
@@ -290,7 +242,7 @@ export default {
       })
     },
     getList (params) {
-      teamRecommendResumeList(params).then(res => {
+      quitResumeList(params).then(res => {
         const { data } = res
         this.tableData = data.data
         this.total = data.count
@@ -300,16 +252,9 @@ export default {
       this.formMember.beginTime = val[0]
       this.formMember.endTime = val[1]
     },
-    importResume () {
-
-    },
     exportResume () {
       let uid = localStorage.getItem('uid')
-      let query = new FormData()
-      query.append('uid', uid)
-      exportUserResume({ uid }).then(res => {
-        console.log(res)
-      })
+      exportDelResumeList(uid)
     },
     sortChange (column) {
       if (column.order == 'ascending') {
@@ -340,26 +285,10 @@ export default {
       this.followUpRecordVisible = true
       this.trackList = val.trackList
     },
-    viewResume (val) {
-      this.dialogTableVisible = true
-      this.resumeInfo = val
-    },
     submitRecord (val) {
       this.followUpRecordVisible = false
     },
-    abandoned (index, val) {
-      if (index == 1) {
-        this.dialogObj.title = '放弃报名'
-        this.isShow = true
-      }
-      else if (index == 1) {
-        this.dialogObj.title = '放弃面试'
-        this.isShow = true
-      }
-      else {
-        this.dialogObj.title = '放弃用户'
-        this.isShow = false
-      }
+    abandoned (val) {
       this.visible = true
       this.resumeId = val.id
     },
@@ -374,86 +303,15 @@ export default {
         reason: val.reason
       }
       this.visible = false
-      giveUpResume(params).then(res => {
+      quitUser(params).then(res => {
         this.resumeId = ''
         this.getList(this.formMember)
       })
     },
-    handleSelectionChange (val) {
-      this.len = val
-    },
     onSubmit (value) {
       let params = Object.assign(this.formMember, value)
       this.getList(params)
-    },
-    updateResume (val) {
-      updateTeamUser(val).then(res => {
-        this.getList(this.params)
-      })
-    },
-    submitForm (val) {
-      this.dialogTableVisible = false
-      if (this.resumeId) {
-        this.updateResume(val)
-      }
-      else {
-        addUserResume(val).then(res => {
-          this.getList(this.formMember)
-          this.$message.success('保存成功')
-        }).catch(error => {
-          this.$message.error(error.status.remind)
-        })
-      }
     }
   }
 }
 </script>
-
-<style lang="scss">
-.billingManagement {
-  .table-list {
-    padding-top: 70px;
-    padding-left: 10px;
-    &.add-resum {
-    .demo-form-inline {
-        width: 100%;
-      }
-    }
-    .select-btn {
-      margin-left: 20px;
-    }
-    .member-table {
-      margin-top: 40px;
-      padding-left: 20px;
-      &.resume-table {
-        margin-top: 0;
-        .select-text {
-          margin-left: 10px;
-        }
-      }
-    }
-    .table-query {
-      margin-bottom:20px;
-      .el-button {
-        margin-right: 10px;
-      }
-    }
-  }
-  .width300 {
-    width: 300px;
-  }
-  .text-line {
-    white-space:nowrap;//不换行
-    overflow: hidden;//超出隐藏
-    text-overflow: ellipsis;//变成..
-  }
-  .select-status {
-    margin-right: 10px;
-  }
-  .resume-number {
-    font-size:14px;
-    color:#FF1818;
-  }
-}
-
-</style>

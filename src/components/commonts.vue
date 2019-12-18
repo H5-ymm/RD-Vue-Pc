@@ -68,8 +68,8 @@ export default {
   },
   mounted () {
     this.getList()
-    localStorage.setItem('uid', 6)
-    localStorage.setItem('username', '测试一号哦')
+    // localStorage.setItem('uid', 6)
+    // localStorage.setItem('username', '测试一号哦')
   },
   methods: {
     getList () {

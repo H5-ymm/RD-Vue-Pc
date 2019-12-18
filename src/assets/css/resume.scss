@@ -1,0 +1,48 @@
+.billingManagement {
+  .table-list {
+    padding-top: 70px;
+    padding-left: 10px;
+    &.add-resum {
+      .demo-form-inline {
+        width: 100%;
+      }
+    }
+    &.recommend-table {
+      padding-top: 30px;
+    }
+    .select-btn {
+      margin-left: 20px;
+    }
+    .member-table {
+      margin-top: 40px;
+      padding-left: 20px;
+      &.resume-table {
+        margin-top: 0;
+        .select-text {
+          margin-left: 10px;
+        }
+      }
+      .table-query {
+        margin-bottom:20px;
+        .el-button {
+          margin-right: 10px;
+        }
+      }
+    }
+  }
+  .width300 {
+    width: 300px;
+  }
+  .text-line {
+    white-space:nowrap;//不换行
+    overflow: hidden;//超出隐藏
+    text-overflow: ellipsis;//变成..
+  }
+  .select-status {
+    margin-right: 10px;
+  }
+  .resume-number {
+    font-size:14px;
+    color:#FF1818;
+  }
+}

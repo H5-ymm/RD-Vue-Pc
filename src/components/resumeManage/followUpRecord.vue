@@ -6,25 +6,32 @@
     class="member-dialog record-dialog"
     :show-close="false"
   >
-    <div class="member-row">
+    <div class="member-row" id="top">
       <img src="../../assets/img/member/cancel.png" alt class="cancel-icon" @click="handleClose" />
       <section class="member-col1">
         <p>跟进记录</p>
       </section>
-      <section class="resume-col3">
+      <section class="record-col3">
         <ul>
-          <li v-for="(item,index) in list" :key="index" class="record-item">
+          <li v-for="(item,index) in trackList" :key="index" class="record-item">
             <p class="record-time">{{$moment(item.addtime).format('YYYY-MM-DD')}}</p>
             <el-divider>
               <img src="../../assets/img/icon9.png" class="line-icon" alt />
             </el-divider>
             <p class="record-title">{{item.title}}</p>
-            <div class="record-content">{{item.title}}</div>
+            <div class="record-content">
+              <span class="record-text">{{item.operator}}</span>
+              {{item.type}}
+              <span class="record-text">{{item.username}}</span>
+              {{item.remark}}
+            </div>
             <p class="record-footer">{{$moment(item.addtime).format('HH:mm:ss')}}</p>
           </li>
         </ul>
         <div class="resume-btn">
-          <el-button @click="handleClose">返回顶部</el-button>
+          <a href="#top">
+            <el-button @click="handleClose">返回顶部</el-button>
+          </a>
           <el-button type="primary" @click="submitForm">确定</el-button>
         </div>
       </section>
@@ -54,12 +61,9 @@
   </el-dialog>
 </template>
 <script>
-// 部门经理只能编辑状态
-// 成员只能查看
-// 总经理可以编辑部门 职称 状态
-
+import { addTrackingInfo } from '@/api/resume'
 export default {
-  props: ['dialogTableVisible', 'trackList'],
+  props: ['dialogTableVisible', 'trackList', 'id'],
   data () {
     return {
       reason: '',
@@ -85,7 +89,15 @@ export default {
           uid: 6,
         }
       ],
-      show: false
+      show: false,
+      resumeId: ''
+    }
+  },
+  watch: {
+    id (val) {
+      if (val) {
+        this.resumeId = val
+      }
     }
   },
   created () {
@@ -100,6 +112,15 @@ export default {
     },
     save () {
       this.show = false
+      let params = {
+        uid: localStorage.getItem('uid'),
+        resumeId: this.resumeId,
+        remark: this.reason
+      }
+      addTrackingInfo(params).then(res => {
+        console.log(res)
+        this.reason = ''
+      })
     }
   }
 }
@@ -156,7 +177,7 @@ export default {
       top: 5px;
       right: 0;
     }
-    .resume-col3 {
+    .record-col3 {
       width: 82%;
       border-top: 1px solid #eee;
       padding-top: 20px;
@@ -186,6 +207,10 @@ export default {
         margin: 20px 0;
         text-align: left;
         color: #333333;
+        .record-text {
+          color: #1890FF;
+          margin: 0 4px;
+        }
       }
       .record-footer {
         text-align: right;

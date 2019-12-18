@@ -6,20 +6,25 @@
       </el-aside>
       <el-container>
         <el-header :height="height">
-          <div class="x-flex-between team-header" :class="{'comany-team-header': type==2}">
-            <i class="el-icon-refresh-right" v-if="type==2"></i>
-            <el-link :underline="false" v-else>首页</el-link>
+          <div class="x-flex-between team-header" :class="{'comany-team-header': type==1}">
+            <i class="el-icon-refresh-right" v-if="type==1"></i>
+            <!-- <el-link :underline="false" href="home" v-else>首页</el-link> -->
+            <div v-else class="x-flex-between">
+              <img :src="baseInfo.log" alt class="team-logo" v-if="baseInfo.log" />
+              <p class="team-logo no-logo" v-else></p>
+              <span>{{baseInfo.team_name}}</span>
+            </div>
             <div class="x-flex-center">
               <el-link :underline="false" href="home" v-if="type==2">首页</el-link>
               <el-badge :value="200" :max="99" class="item">
                 <i class="el-icon-bell unRead"></i>
               </el-badge>
-              <span>天天向上团队</span>
+              <span>{{userInfo.user_name?userInfo.user_name:userInfo.mobile}}</span>
             </div>
           </div>
           <breadcrumb :breadcrumbs="breadcrumb"></breadcrumb>
         </el-header>
-        <el-main class="team-main" :class="{'comany-main-page': type==2}">
+        <el-main class="team-main" :class="{'comany-main-page': type==1}">
           <router-view class="team-box"></router-view>
         </el-main>
       </el-container>
@@ -32,14 +37,20 @@
 import homeAside from '@/components/Aside' //侧边栏
 import companyAside from '@/components/companyAside'
 import Breadcrumb from '@/components/breadcrumb/Breadcrumb'
+import { getTeamInfo } from '@/api/team'
+import { getUserInfo } from '@/api/user'
+import { join } from 'path'
+
 export default {
   name: 'team',
   data () {
     return {
       breadcrumb: [],
-      type: 1,
+      type: '',
       aside: '',
-      height: ''
+      height: '',
+      baseInfo: {},
+      userInfo: {}
     }
   },
   components: {
@@ -51,16 +62,46 @@ export default {
 
   },
   created () {
+    // type 1 企业
+    // 2 团队
+    this.type = localStorage.getItem('userType')
+    let uid = localStorage.getItem('uid')
     if (this.type == 1) {
-      this.aside = 'homeAside'
-      this.height = "75px"
-    }
-    else {
       this.aside = 'companyAside'
       this.height = "90px"
+      this.getCompanyInfo(uid)
     }
+    else {
+      this.aside = 'homeAside'
+      this.height = "74px"
+      this.getInfo(uid)
+    }
+    this.getUser(uid)
     this.breadcrumb = JSON.parse(sessionStorage.getItem('menus'))
-  }
+  },
+  methods: {
+    getInfo (uid) {
+      getTeamInfo({ uid }).then(res => {
+        console.log(res)
+        this.baseInfo = res.data
+        sessionStorage.setItem('baseInfo', this.baseInfo)
+      })
+    },
+    getCompanyInfo (uid) {
+      getCompanyDetail({ uid }).then(res => {
+        console.log(res)
+        this.baseInfo = res.data
+        sessionStorage.setItem('baseInfo', this.baseInfo)
+      })
+    },
+    getUser (uid) {
+      getUserInfo({ uid }).then(res => {
+        console.log(res)
+        this.userInfo = res.data
+        sessionStorage.setItem('userInfo', JSON.stringify(this.userInfo))
+      })
+    }
+  },
 }
 </script>
 
@@ -74,16 +115,28 @@ export default {
   overflow: hidden;
   position: relative;
   .unRead {
+    font-size: 24px;
+  }
+  .el-badge {
     margin: 0 20px;
   }
   .el-header {
     padding: 0;
   }
   .team-header {
-    padding: 0 20px;
-    height: 36px;
+    padding: 0 30px;
+    height: 40px;
     &.comany-team-header{
        height: 50px;
+    }
+  }
+  .team-logo {
+    width: 30px;
+    height: 30px;
+    border-radius:3px;
+    margin-right: 10px;
+    &.no-logo {
+      border: 1px solid #eee;
     }
   }
 }

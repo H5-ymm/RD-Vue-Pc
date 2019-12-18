@@ -1,70 +1,69 @@
 <template>
   <div class="tables-box billingManagement">
     <div class="table-list">
-      <el-form
-        :inline="true"
-        label-width="100px"
-        label-position="right"
-        :model="formMember"
-        class="demo-form-inline"
-      >
-        <el-form-item label="职位名称：">
+      <el-form :inline="true" label-width="100px" label-position="right" :model="formMember" class="demo-form-inline">
+        <el-form-item label="姓名：">
           <el-input v-model="formMember.name" class="width300" placeholder="请输入职位名称关键字"></el-input>
           <el-button type="primary" @click="onSubmit" class="select-btn">查询</el-button>
         </el-form-item>
         <el-form-item label="状态筛选：">
-          <el-button
-            :type="activeIndex==index ?'primary':''"
-            v-for="(item,index) in statusList"
-            :key="index"
+          <el-button :type="activeIndex==index ?'primary':''"
+            v-for="(item,index) in statusList" :key="index"
             plain
-            @click="selectStatus(item,index)"
-            class="select-status"
-          >{{item.label}}</el-button>
+           @click="selectStatus(item,index)" class="select-status">{{item.label}}</el-button>
         </el-form-item>
-      </el-form>
-      <div class="member-table">
-        <el-table
-          border
-          :data="tableData"
-          ref="multipleTable"
-          style="width: 100%"
-          @selection-change="handleSelectionChange"
-        >
-          <el-table-column label="职位名称" align="center" width="150">
-            <template slot-scope="props">
-              <el-button type="text" @click="handleEdit(props.row)">{{props.row.name}}</el-button>
-            </template>
-          </el-table-column>
-          <el-table-column label="薪资类型" align="center" width="150">
-            <template slot-scope="props">
-              <el-button type="text">{{props.row.money_type | moneyType}}</el-button>
-            </template>
-          </el-table-column>
-          <el-table-column label="岗位薪资" prop="depart_name" align="center" width="150"></el-table-column>
-          <el-table-column label="返利类型" align="center" width="150">
-            <template slot-scope="props">
-              <el-button type="text">{{props.row.reward_type | rewardType}}</el-button>
-            </template>
-          </el-table-column>
-          <el-table-column label="返利金额" prop="reward_money" align="center" width="150"></el-table-column>
-          <el-table-column label="发布日期" prop="entry_num" sortable align="center" width="150"></el-table-column>
-          <el-table-column label="状态" align="center" width="150">
-            <template slot-scope="props">
-              <span
-                class="status"
-                :class="{'active-status':props.row.status==1}"
-              >{{props.row.status==1?"正常":'锁定'}}</span>
-            </template>
-          </el-table-column>
-          <el-table-column label="操作" align="center" width="150">
-            <template slot-scope="scope">
-              <el-button @click="handleEdit(scope.row)" type="text" size="small">编辑</el-button>
-              <el-button @click="handleDel(scope.row)" type="text" size="small">删除</el-button>
-            </template>
-          </el-table-column>
-        </el-table>
+    </el-form>
+    <div class="member-table resume-table">
+      <div class="table-query">
+        <el-button>已入职</el-button>
+        <el-button>未入职</el-button>
+        <span class="select-text">
+          已选择
+          <el-button type="text">{{multipleSelection.length}}&nbsp;</el-button>项
+        </span>
+        <el-button type="text" @click="multipleSelection=[]">清空</el-button>
       </div>
+      <el-table
+        border
+        :data="tableData"
+        ref="multipleTable"
+        style="width: 100%"
+        @selection-change="handleSelectionChange"
+      >
+      <el-table-column label="职位名称"  align="center" width="150">
+        <template slot-scope="props">
+          <el-button type="text" @click="handleEdit(props.row)">{{props.row.name}}</el-button>
+        </template>
+        </el-table-column>
+        <el-table-column label="薪资类型" align="center" width="100">
+          <template slot-scope="props">
+            <el-button type="text">{{props.row.money_type | moneyType}}</el-button>
+          </template>
+        </el-table-column>
+        <el-table-column label="岗位薪资" prop="depart_name" align="center" width="150"></el-table-column>
+        <el-table-column label="返利类型" align="center" width="100">
+          <template slot-scope="props">
+            <el-button type="text">{{props.row.reward_type | rewardType}}</el-button>
+          </template>   
+        </el-table-column>
+        <el-table-column label="返利金额" prop="reward_money" align="center" width="150"></el-table-column>
+        <el-table-column label="发布日期" prop="entry_num" sortable align="center" width="150"></el-table-column>
+        <el-table-column label="状态" align="center" width="150">
+          <template slot-scope="props">
+            <span
+              class="status"
+              :class="{'active-status':props.row.status==1}"
+            >{{props.row.status==1?"正常":'锁定'}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" align="center">
+          <template slot-scope="scope">
+            <el-button @click="handleEdit(scope.row)" type="text" size="small">编辑</el-button>
+            <el-button @click="handleDel(scope.row)" type="text" size="small">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
       <el-pagination
         class="team-pagination"
         @size-change="handleSizeChange"
@@ -82,16 +81,16 @@
 <script>
 import { getTeamList, loginOutTeam, addTeamUser, updateTeamUser } from '../../api/team'
 import { getReceiptList } from '../../api/receipt'
-import { moneyTypeList, rewardTypeList, payTypeList, weekList } from '../../base/base'
+import { moneyTypeList, rewardTypeList, payTypeList , weekList } from '../../base/base'
 export default {
-  filters: {
-    moneyType (val) {
+  filters:{
+    moneyType(val){
       let obj = moneyTypeList.find(item => {
         return val == item.value
       })
       return obj.label
     },
-    rewardType (val) {
+    rewardType(val){
       let obj = rewardTypeList.find(item => {
         return val == item.value
       })
@@ -118,11 +117,10 @@ export default {
       multipleSelection: [],
       form: {},
       statusList: [
-        { label: '全部', value: 0 },
-        { label: '待审核', value: 1 },
-        { label: '已通过', value: 2 },
-        { label: '未通过', value: 3 },
-        { label: '已下架', value: -1 }
+        {label:'全部',value: 0},
+        {label:'待审核',value: 1},
+        {label:'已入职',value: 2},
+        {label:'未入职',value: 3}
       ],
       activeIndex: 0
     }
@@ -139,7 +137,7 @@ export default {
         this.total = data.count
       })
     },
-    selectStatus (item, index) {
+    selectStatus(item,index){
       this.activeIndex = index
       this.formMember.status = item.value
     },

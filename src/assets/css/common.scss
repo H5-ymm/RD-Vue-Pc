@@ -18,9 +18,17 @@
   justify-content: space-between;
   align-items: center;
 }
+.x-flex-around {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
 
 .x-flex-between-start {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
+}
+.x-flex-wap {
+  flex-wrap: wrap;
 }

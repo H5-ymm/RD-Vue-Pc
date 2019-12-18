@@ -104,3 +104,20 @@ export const followStatusList = [
   { label: '已通过', value: 2 },
   { label: '未通过', value: 3 }
 ]
+
+export const applyStatusList = [
+  { label: '全部', value: 0 },
+  { label: '待审核', value: 1 },
+  { label: '已同意', value: 2 },
+  { label: '已拒绝', value: 3 },
+  { label: '已下架', value: 4 },
+  { label: '已取消申请', value: 5 },
+  { label: '被抢走', value: 6 }
+]
+export const entryStatusList = [
+  { label: '全部', value: 0 },
+  { label: '入职开始', value: 1 },
+  { label: '入职结束', value: 2 },
+  { label: '审核入职', value: 3 },
+  { label: '审核结束', value: 4 }
+]

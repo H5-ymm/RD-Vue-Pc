@@ -1,6 +1,6 @@
 <template>
   <div class="edit-card" v-if="commentInfo">
-    <p class="edit-card-title border-bottom bg-purple">
+    <p class="edit-card-title border-bottom x-flex-between">
       <!-- 2019年12月1日晨会-查看详情 -->
       {{title}}
       <el-dropdown v-if="type==2" @command="handleCommand">
@@ -63,7 +63,7 @@
       <li class="edit-card-item x-flex-start x-flex-wap border-bottom" v-if="type==2">
         <p>内容：</p>
         <p class="edit-card-item-content" v-html="commentInfo.content"></p>
-        <p class="edit-card-comment bg-purple text-light">
+        <p class="edit-card-comment x-flex-between text-light">
           <span>{{commentInfo.addtime}}</span>
           <span class="el-icon-chat-dot-square" @click="reply">&nbsp;评论</span>
         </p>
@@ -75,7 +75,7 @@
         ></commentInput>
       </li>
       <li class="edit-card-item" v-else>
-        <div class="bg-purple-start">
+        <div class="x-flex-start-justify">
           <p>内容：</p>
           <Editor :content="commentInfo.content" @saveConent="saveConent"></Editor>
         </div>

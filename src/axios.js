@@ -5,6 +5,9 @@ const $axios = axios.create({
   timeout: 4000
 });
 const baseURL = 'http://tiantianxsg.com:39888/index.php'
+// const instance = axios.create({
+//   responseType: 'blob', //返回数据的格式，可选值为arraybuffer,blob,document,json,text,stream，默认值为json
+// })
 //请求拦截
 $axios.interceptors.request.use(
   function (config) {
@@ -12,10 +15,9 @@ $axios.interceptors.request.use(
     // 通过reudx的store拿到拿到全局状态树的token ，添加到请求报文，后台会根据该报文返回status
     // 此处应根据具体业务写token
     const token = localStorage.getItem('token');
-    // const token = 'ca8165aa88d74bf48164177fb';
     // if (localStorage.getItem('token')) {
     // config.headers['HTTP_TOKEN'] = token || 'ca8165aa88d74bf48164177fb';
-    // config.headers['HTTP-USERID'] = 6
+    // config.headers['HTTP-USERID'] = localStorage.getItem('uid')
     // }
     config.headers = { 'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8' }
     return config;
@@ -102,15 +104,21 @@ export function $post (url, params) {
 }
 
 export function postFormData (url, params) {
-  return new Promise((resolve, reject) => {
-    $axios.get(`${baseURL}${url}`, { params }, { responseType: 'blob' })
-      .then(res => {
-        resolve(res.data)
-      })
-      .catch(err => {
-        reject(err.data)
-      })
-  });
+  window.location.href = `${baseURL}${url}?uid=${params}`
+  // $axios.create = {
+  //   responseType: 'blob'
+  // }
+  // return new Promise((resolve, reject) => {
+  //   let file = new FormData()
+  //   file.append('uid', localStorage.getItem('uid'))
+  //   $axios.post(`${baseURL}${url}`, file)
+  //     .then(res => {
+  //       resolve(res.data)
+  //     })
+  //     .catch(err => {
+  //       reject(err.data)
+  //     })
+  // });
 }
 export function upload (params) {
   let file = new FormData()

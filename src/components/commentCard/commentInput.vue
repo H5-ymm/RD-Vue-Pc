@@ -12,7 +12,7 @@
           ref="replyContent"
         ></div>
       </div>
-      <div class="bg-purple edit-card-emoji">
+      <div class="x-flex-between edit-card-emoji">
         <img src="../../assets/img/emjo.png" alt @click="showEmoji=!showEmoji" />
         <VEmojiPicker
           :pack="pack.data"

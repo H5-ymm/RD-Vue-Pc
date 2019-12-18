@@ -26,7 +26,20 @@ const checkResume = resolve => (require(['./components/receiptManagement/checkRe
 const addResume = resolve => (require(['./components/resumeManage/addResume.vue'], resolve))
 const ResumeManage = resolve => (require(['./components/ResumeManage.vue'], resolve))
 const recommendJob = resolve => (require(['./components/resumeManage/recommendJob.vue'], resolve))
-const appyResume = resolve => (require(['./components/resumeManage/appyResume.vue'], resolve)) // 推荐简历
+const applyResume = resolve => (require(['./components/resumeManage/applyResume.vue'], resolve)) // 推荐简历
+
+const onTheJobResumes = resolve => (require(['./components/resumeManage/onTheJobResumes.vue'], resolve)) // 在职简历
+const dimissionResume = resolve => (require(['./components/resumeManage/dimissionResume.vue'], resolve)) // 离职简历
+const waiverOfResume = resolve => (require(['./components/resumeManage/waiverOfResume.vue'], resolve)) // 放弃简历
+
+
+const teamApplication = resolve => (require(['./components/teamReceiptManage/applicationTeam.vue'], resolve)) // 团队申请接单
+const teamInterviewPersonnel = resolve => (require(['./components/teamReceiptManage/interviewPersonnel.vue'], resolve)) // 团队人才输送
+
+const resumeResult = resolve => (require(['./components/teamReceiptManage/talentResume.vue'], resolve)) // 团队面试结果
+const teamEntryList = resolve => (require(['./components/teamReceiptManage/entryList.vue'], resolve)) // 团队入职结果
+const commonTableList = resolve => (require(['./components/teamReceiptManage/commonTableList.vue'], resolve)) // 团队入职结果
+const recommendResume = resolve => (require(['./components/teamReceiptManage/recommendResume.vue'], resolve)) // 团队 推荐简历
 
 import Department from './components/Department.vue'
 import personalForm from './components/teamMessage/personalForm'  // 个人
@@ -63,6 +76,54 @@ let routers = new Router({
           path: '/userlist',
           name: 'Userlist',
           component: Userlist,
+          meta: {
+            requiresAuth: 2
+          }
+        },
+        {
+          path: '/teamApplication',
+          name: 'teamApplication',
+          component: teamApplication,
+          meta: {
+            requiresAuth: 2
+          }
+        },
+        {
+          path: '/teamInterviewPersonnel',
+          name: 'teamInterviewPersonnel',
+          component: teamInterviewPersonnel,
+          meta: {
+            requiresAuth: 2
+          }
+        },
+        {
+          path: '/recommendResume',
+          name: 'recommendResume',
+          component: recommendResume,
+          meta: {
+            requiresAuth: 2
+          }
+        },
+        {
+          path: '/resumeResult',
+          name: 'resumeResult',
+          component: resumeResult,
+          meta: {
+            requiresAuth: 2
+          }
+        },
+        {
+          path: '/teamEntryList',
+          name: 'teamEntryList',
+          component: teamEntryList,
+          meta: {
+            requiresAuth: 2
+          }
+        },
+        {
+          path: '/commonTableList',
+          name: 'commonTableList',
+          component: commonTableList,
           meta: {
             requiresAuth: 2
           }
@@ -225,7 +286,7 @@ let routers = new Router({
           }
         },
         {
-          path: '/recommendJob',  // 简历管理
+          path: '/recommendJob',  // 推荐岗位
           name: recommendJob,
           component: recommendJob,
           meta: {
@@ -233,14 +294,37 @@ let routers = new Router({
           }
         },
         {
-          path: '/appyResume',  // 报名简历
-          name: appyResume,
-          component: appyResume,
+          path: '/applyResume',  // 报名简历
+          name: applyResume,
+          component: applyResume,
           meta: {
             requiresAuth: 1
           }
         },
-
+        {
+          path: '/onTheJobResumes',  // 在职简历
+          name: onTheJobResumes,
+          component: onTheJobResumes,
+          meta: {
+            requiresAuth: 1
+          }
+        },
+        {
+          path: '/dimissionResume',  // 离职简历
+          name: dimissionResume,
+          component: dimissionResume,
+          meta: {
+            requiresAuth: 1
+          }
+        },
+        {
+          path: '/waiverOfResume',  // 放弃简历
+          name: waiverOfResume,
+          component: waiverOfResume,
+          meta: {
+            requiresAuth: 1
+          }
+        }
       ],
     },
     {

@@ -16,13 +16,18 @@
       </ul>
     </div>
     <div class="bg-purple-light bg-purple">
-      <span class="home-purple-left">
+      <span class="home-purple-left" v-if="!userInfo">
         <i class="el-icon-user-solid"></i>
         <a class="welcome" href="login">登录</a>
         <a class="divider">|</a>
         <a class="welcome" href="register">注册</a>
       </span>
-      <a class="el-icon-phone-outline">021-51991869</a>
+      <P class="home-purple-left" v-else>
+        <img :src="userInfo.head_img" alt v-if="userInfo.head_img" />
+        <i class="el-icon-user-solid" v-else></i>&nbsp;
+        <span>{{userInfo.user_name?userInfo.user_name:userInfo.mobile}}</span>
+      </P>
+      <a class="el-icon-phone-outline">&nbsp;021-51991869</a>
     </div>
   </div>
 </template>
@@ -49,7 +54,13 @@ export default {
           title: '资讯',
           url: ''
         }
-      ]
+      ],
+      userInfo: null,
+    }
+  },
+  created () {
+    if (sessionStorage.getItem('userInfo')) {
+      this.userInfo = JSON.parse(sessionStorage.getItem('userInfo'))
     }
   },
   methods: {

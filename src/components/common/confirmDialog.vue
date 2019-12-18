@@ -37,12 +37,13 @@ export default {
   props: {
     dialogTableVisible: false,
     dialogObj: { type: Object, default: {} },
-    isShow: false
+    isShow: false,
+    reason: { type: String, default: '' }
   },
   data () {
     return {
       form: {
-
+        reason: ''
       },
       checked: false,
       rules: {
@@ -52,11 +53,22 @@ export default {
       }
     }
   },
+  watch: {
+    reason (val) {
+      if (val) {
+        this.form.reason = val
+      }
+    }
+  },
   methods: {
     handleClose () {
       this.$emit('handleClose')
     },
     submit () {
+      if (this.reason) {
+        this.$emit('handleClose')
+        return false
+      }
       this.$refs['form'].validate((valid) => {
         if (valid) {
           this.$emit('submit', this.form)

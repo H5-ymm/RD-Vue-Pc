@@ -94,7 +94,7 @@
                 >请选择{{registerType==1?'公司地址':'团队地址'}}</span>
               </el-form-item>
               <el-form-item>
-                <el-button type="primary" @click="onSubmit('TabForm')" class="register">注册</el-button>
+                <el-button type="primary" @click="onSubmit" class="register">注册</el-button>
               </el-form-item>
               <p class="text">
                 点击注册即表示同意
@@ -202,6 +202,9 @@ export default {
         passworded: [
           { message: '请再次输入密码', trigger: 'blur' },
           { validator: validatePassReg, trigger: 'blur' }
+        ],
+        name: [
+          { message: '请输入公司名称', trigger: 'blur' },
         ]
       },
       registerType: 1,
@@ -236,6 +239,7 @@ export default {
     },
     goRegister (index) {
       this.registerType = index
+      this.formTab.type = index
     },
     sendCode () {
       if (!this.formTab.mobile) {
@@ -243,7 +247,9 @@ export default {
       }
       this.countDown()
       getCode({ mobile: this.formTab.mobile }).then(res => {
-        console.log(res)
+        this.formTab.token = res.data.token
+      }).catch(error => {
+        this.$message.error(error.status.remind)
       })
     },
     countDown () {
@@ -261,14 +267,23 @@ export default {
         }
       }, 1000)
     },
-    onSubmit: function (formName) {
-      this.$refs[formName].validate((valid) => {
+    onSubmit () {
+      console.log(1)
+      this.$refs['TabForm'].validate((valid) => {
         if (valid) {
           if (this.formTab.province == '') {
             this.isShowCom = true
             return
           }
           userRegister(this.formTab).then(res => {
+            localStorage.setItem('userType', this.registerType)
+            localStorage.setItem('token', res.data.token)
+            if (this.registerType == 2) {
+              this.$router.push('/commonts')
+            }
+            else {
+              this.$router.push('/createOrderTaking')
+            }
           }).catch(error => {
             this.$message.error(error.status.remind)
           })
@@ -424,7 +439,7 @@ export default {
   bottom:0;
   right:0;
   border-radius:0;
-  padding: 12px 0;
+  padding: 11px 0;
 }
 .loads-box .el-col {
   display: flex;

@@ -4,11 +4,7 @@
     <!-- 关于 三级路由  不匹配侧边栏的问题，需要 对 返回的路由对象 进行重新改写,见 computed=> routerli -->
     <el-row class="tac">
       <el-col :span="24">
-        <div class="names">
-          仁事达
-          <!-- <div class="names-A">{{names}}</div>
-          <div class="names-B" @click="escUser">退出</div>-->
-        </div>
+        <div class="names">人事达</div>
         <el-menu
           class="el-menu-vertical-demo"
           background-color="#000"
@@ -70,6 +66,28 @@ export default {
           ]
         },
         {
+          title: '接单管理',
+          icon: 'el-icon-collection-tag',
+          submenu: [
+            {
+              title: '申请接单',
+              url: '/teamApplication'
+            },
+            {
+              title: '输送人才',
+              url: '/teamInterviewPersonnel'
+            },
+            {
+              title: '面试结果',
+              url: '/resumeResult'
+            },
+            {
+              title: '入职名单',
+              url: '/teamEntryList'
+            },
+          ]
+        },
+        {
           title: '团队设置',
           icon: 'el-icon-collection-tag',
           submenu: [
@@ -108,20 +126,6 @@ export default {
           ]
         },
         {
-          title: '接单管理',
-          icon: 'el-icon-collection-tag',
-          submenu: [
-            {
-              title: '申请接单',
-              url: '/checkReceipt'
-            },
-            {
-              title: '输送人才',
-              url: '/interviewPersonnel'
-            }
-          ]
-        },
-        {
           title: '简历管理',
           icon: 'el-icon-collection-tag',
           submenu: [
@@ -131,8 +135,29 @@ export default {
             },
             {
               title: '报名简历',
-              url: '/appyResume'
+              url: '/applyResume?view=1'
+            },
+            {
+              title: '入职结果',
+              url: '/applyResume?view=2'
+            },
+            {
+              title: '在职简历',
+              url: '/onTheJobResumes'
+            },
+            {
+              title: '离职简历',
+              url: '/dimissionResume'
             }
+            ,
+            {
+              title: '放弃简历',
+              url: '/waiverOfResume?view=1'
+            },
+            {
+              title: '还原简历',
+              url: '/waiverOfResume?view=2'
+            },
           ]
         }
       ],
@@ -192,14 +217,13 @@ export default {
 .el-menu-item {
   background-color: rgba(0, 0, 0, 0.1) !important;
   padding-left: 50px!important;
+  box-sizing: border-box;
+  margin-right: 30px;
 }
 .el-menu-item.is-active {
   background:#1890FF!important;
-  border-right: 4px solid #06ADFB;
-  box-sizing: border-box;
-  color: #fff;
-  padding-left: 50px!important;
-  margin-right: 30px;
+  border-right: 4px solid #1890FF;
+  color: #fff!important;
 }
 .names{
   width: 100%;

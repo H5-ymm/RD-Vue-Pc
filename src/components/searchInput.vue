@@ -37,8 +37,8 @@ export default {
       border: none;
     }
     .search-btn {
-      padding: 17px 40px;
-      border-radius:0px 5px 5px 0px;
+      padding: 17px 48px;
+      border-radius:0 5px 5px 0;
     }
     .select-input-box {
       border: 1px solid #eee;
