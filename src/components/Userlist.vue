@@ -51,7 +51,6 @@ export default {
   },
   data () {
     return {
-      breadcrumb: ['设置', '管理控制', '全部管理员'],
       dialogTableVisible: false,
       visible: false,
       tableData: [],
@@ -133,7 +132,6 @@ export default {
 .table-list {
   background: #fff;
   border-radius:10px;
-  // height: calc(100% - 100px);
   padding: 15px;
   .team-pagination {
     margin-top: 20px;

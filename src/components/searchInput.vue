@@ -33,8 +33,10 @@ export default {
       outline: none;
       height: 48px;
     }
-    .el-input__inner:focus {
-      border: none;
+    .el-input__inner {
+      &:focus,&:hover{
+        border: none;
+      }     
     }
     .search-btn {
       padding: 17px 48px;
