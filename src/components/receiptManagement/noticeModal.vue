@@ -3,50 +3,54 @@
     <div class="receipt-row">
       <img src="../../assets/img/member/cancel.png" alt class="cancel-icon" @click="handleClose" />
       <section class="member-col1">
-        <p>通知面试</p>
+        <p>通知{{noticeType}}</p>
       </section>
       <section class="member-col3 bind-col3">
         <el-form
           :model="formMember"
-          :rules="rules"
           :inline="true"
           label-position="left"
           ref="formMember"
           class="demo-form-inline"
         >
-          <el-form-item label="面试时间" required prop="depart_name">
+          <el-form-item :label="`${noticeType}时间`" required>
             <div class="x-flex-between">
               <el-date-picker
                 v-model="formMember.date"
                 type="date"
                 class="width195"
-                placeholder="请选择面试日期">
-              </el-date-picker>
+                value-format="yyyy-MM-dd"
+                format="yyyy-MM-dd"
+                :placeholder="`请选择${noticeType}日期`"
+              ></el-date-picker>
               <el-time-select
                 class="width195"
-                v-model="formMember.value"
-                :picker-options="{
-                  start: '08:30',
-                  step: '00:15',
-                  end: '18:30'
-                }"
-                placeholder="请选择面试时间">
-              </el-time-select>
-             </div>
+                type="date"
+                value-format="HH:mm"
+                format="HH:mm"
+                v-model="formMember.time"
+                :placeholder="`请选择${noticeType}时间`"
+              ></el-time-select>
+            </div>
           </el-form-item>
-          <el-form-item label="面试地点" required prop="user_id">
+          <el-form-item :label="`${noticeType}地点`" required>
             <districtSelet
               class="width400"
-              placeholder="--"
+              @change="changeAddress"
+              :placeholder="`请选择${noticeType}地点`"
               :address="address"
-              ></districtSelet>
+            ></districtSelet>
             <el-input v-model="formMember.address" class="address" placeholder="请输入详细地址"></el-input>
           </el-form-item>
-          <el-form-item label="通知内容" required prop="user_id">
-            <el-input v-model="formMember.depart_name"  
-             type="textarea"
-             class="width400"
-             :autosize="{maxRows: 4}" placeholder="请输入通知内容"></el-input>
+          <el-form-item label="通知内容" required>
+            <span class="error el-icon-warning">审核通过简历会直接发送{{noticeType}}}通知，谨慎操作</span>
+            <el-input
+              v-model="formMember.content"
+              type="textarea"
+              class="width400"
+              :autosize="{maxRows: 4}"
+              placeholder="请输入通知内容"
+            ></el-input>
           </el-form-item>
         </el-form>
       </section>
@@ -58,53 +62,43 @@
   </el-dialog>
 </template>
 <script>
-// 部门经理只能编辑状态
-// 成员只能查看
-// 总经理可以编辑部门 职称 状态
-import { getTeamListUser } from '../../api/department'
-import { validateIdCard } from '../../util/util'
+
 import districtSelet from '../districtSelet'
 export default {
   components: {
     districtSelet
   },
-  props: ['dialogTableVisible'],
+  props: ['dialogTableVisible', 'noticeType'],
   data () {
     return {
       formMember: {
-        depart_name: '',
-        user_id: '',
-        uid: localStorage.getItem('uid'),
+
       },
-      rules: {
-        depart_name: [
-          { required: true, message: '请输入部门名称', trigger: 'blur' },
-        ],
-        user_id: [
-          { required: true, message: '请选择部门经理', trigger: 'blur' }
-        ]
-      },
-      userList: [],
       uid: localStorage.getItem('uid'),
       address: []
     }
   },
   created () {
-    this.getList(this.uid)
+
   },
   methods: {
-    getList (uid) {
-      getTeamListUser({ uid }).then(res => {
-        this.userList = res.data
-      })
-    },
     handleClose () {
-      this.$parent.visible = false
+      this.$parent.dialogTableVisible = false
+    },
+    changeAddress (val) {
+      this.address = val
     },
     submitForm () {
+      let date = this.formMember.date + this.formMember.time
+      let date1 = this.$moment(date, 'YYYY-MM-DD HH:mm').valueOf()
+      let address = this.address.join('/')
+      let params = {
+        time: date1,
+        content: address + '/' + this.formMember.content
+      }
       this.$refs['formMember'].validate((valid) => {
         if (valid) {
-          this.$emit('submitForm', this.formMember)
+          this.$emit('submitForm', params)
         } else {
           return false
         }
@@ -172,9 +166,16 @@ export default {
         }
       }
     }
+     .error {
+        position:absolute;
+        top:-24px;
+        right:0;
+        color:#FE2A00;
+        font-size:12px;
+      }
   }
   .notice-footer-btn {
-    // padding-right: 20px;
+    margin-right: 10px;
     .el-button {
       margin-right: 20px;
     }

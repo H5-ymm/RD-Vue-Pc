@@ -69,7 +69,7 @@ export default {
               url: '/checkReceipt'
             },
             {
-              title: '申请发单',
+              title: '申请团队',
               url: '/applicationTeam'
             },
             {
@@ -83,20 +83,6 @@ export default {
             {
               title: '入职名单',
               url: '/entryList'
-            }
-          ]
-        },
-        {
-          title: '团队设置',
-          icon: 'el-icon-collection-tag',
-          submenu: [
-            {
-              title: '团队信息',
-              url: '/teamSetting'
-            },
-            {
-              title: '部门管理',
-              url: '/department'
             }
           ]
         },

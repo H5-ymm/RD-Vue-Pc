@@ -84,7 +84,7 @@
           @sort-change="sortChange"
           @selection-change="handleSelectionChange"
         >
-          <el-table-column label="序号" align="center" fixed="left" prop="id" width="40"></el-table-column>
+          <el-table-column label="序号" align="center" fixed="left" prop="id" width="50"></el-table-column>
           <el-table-column label="姓名" fixed="left" align="center" width="100">
             <template slot-scope="props">
               <el-button

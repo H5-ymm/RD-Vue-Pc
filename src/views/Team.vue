@@ -9,10 +9,10 @@
           <div class="x-flex-between team-header" :class="{'comany-team-header': type==1}">
             <i class="el-icon-refresh-right" v-if="type==1"></i>
             <!-- <el-link :underline="false" href="home" v-else>首页</el-link> -->
-            <div v-else class="x-flex-between">
-              <img :src="baseInfo.log" alt class="team-logo" v-if="baseInfo.log" />
+            <div class="x-flex-start-justify">
+              <img :src="baseInfo.log" alt class="team-logo" v-if="baseInfo&&baseInfo.log" />
               <p class="team-logo no-logo" v-else></p>
-              <span>{{baseInfo.team_name}}</span>
+              <span>{{baseInfo&&baseInfo.team_name}}</span>
             </div>
             <div class="x-flex-center">
               <el-link :underline="false" href="home" v-if="type==2">首页</el-link>
@@ -39,6 +39,8 @@ import companyAside from '@/components/companyAside'
 import Breadcrumb from '@/components/breadcrumb/Breadcrumb'
 import { getTeamInfo } from '@/api/team'
 import { getUserInfo } from '@/api/user'
+import { getCompanyDetail } from '@/api/company'
+
 import { join } from 'path'
 
 export default {
@@ -82,22 +84,19 @@ export default {
   methods: {
     getInfo (uid) {
       getTeamInfo({ uid }).then(res => {
-        console.log(res)
-        this.baseInfo = res.data
+        this.baseInfo = res.data || null
         sessionStorage.setItem('baseInfo', this.baseInfo)
       })
     },
     getCompanyInfo (uid) {
       getCompanyDetail({ uid }).then(res => {
-        console.log(res)
-        this.baseInfo = res.data
+        this.baseInfo = res.data || null
         sessionStorage.setItem('baseInfo', this.baseInfo)
       })
     },
     getUser (uid) {
       getUserInfo({ uid }).then(res => {
-        console.log(res)
-        this.userInfo = res.data
+        this.userInfo = res.data || null
         sessionStorage.setItem('userInfo', JSON.stringify(this.userInfo))
       })
     }

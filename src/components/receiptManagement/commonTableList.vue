@@ -9,30 +9,11 @@
         class="demo-form-inline"
       >
         <el-form-item label="姓名：">
-          <el-input v-model="formMember.name" class="width300" placeholder="请输入职位名称关键字"></el-input>
+          <el-input v-model="formMember.where" class="width300" placeholder="请输入职位名称关键字"></el-input>
           <el-button type="primary" @click="onSubmit" class="select-btn">查询</el-button>
         </el-form-item>
-        <el-form-item label="状态筛选：">
-          <el-button
-            :type="activeIndex==index ?'primary':''"
-            v-for="(item,index) in statusList"
-            :key="index"
-            plain
-            @click="selectStatus(item,index)"
-            class="select-status"
-          >{{item.label}}</el-button>
-        </el-form-item>
       </el-form>
-      <div class="member-table resume-table">
-        <div class="table-query">
-          <el-button @click="handleUser(1,id)">已入职</el-button>
-          <el-button @click="handleUser(2,id)">未入职</el-button>
-          <span class="select-text">
-            已选择
-            <el-button type="text">{{multipleSelection.length}}&nbsp;</el-button>项
-          </span>
-          <el-button type="text" @click="multipleSelection=[]">清空</el-button>
-        </div>
+      <div class="member-table">
         <el-table
           border
           :data="tableData"
@@ -40,40 +21,28 @@
           style="width: 100%"
           @selection-change="handleSelectionChange"
         >
-          <el-table-column label="职位名称" align="center" width="150">
+          <el-table-column label="姓名" align="center" width="150">
             <template slot-scope="props">
               <el-button type="text" @click="handleEdit(props.row)">{{props.row.name}}</el-button>
             </template>
           </el-table-column>
-          <el-table-column label="薪资类型" align="center" width="100">
+          <el-table-column label="年龄" align="center" width="150">
             <template slot-scope="props">
               <el-button type="text">{{props.row.money_type | moneyType}}</el-button>
             </template>
           </el-table-column>
-          <el-table-column label="岗位薪资" prop="depart_name" align="center" width="150"></el-table-column>
-          <el-table-column label="返利类型" align="center" width="100">
+          <el-table-column label="性别" prop="depart_name" align="center" width="150"></el-table-column>
+          <el-table-column label="学历" align="center" width="150">
             <template slot-scope="props">
               <el-button type="text">{{props.row.reward_type | rewardType}}</el-button>
             </template>
           </el-table-column>
-          <el-table-column label="返利金额" prop="reward_money" align="center" width="150"></el-table-column>
-          <el-table-column label="发布日期" prop="entry_num" sortable align="center" width="150"></el-table-column>
-          <el-table-column label="状态" align="center" width="150">
+          <el-table-column label="住址" prop="reward_money" align="center" width="150"></el-table-column>
+          <el-table-column label="推荐时间" prop="entry_num" sortable align="center" width="150"></el-table-column>
+          <el-table-column label="状态" prop="status" sortable align="center" width="150"></el-table-column>
+          <el-table-column label="操作" align="center" v-if="viewType==5">
             <template slot-scope="props">
-              <span
-                class="status"
-                :class="{'active-status':props.row.status==1}"
-              >{{props.row.status==1?"正常":'锁定'}}</span>
-            </template>
-          </el-table-column>
-          <el-table-column label="操作" align="center">
-            <template slot-scope="scope">
-              <div v-if="scope.row.status==0">
-                <el-button @click="handleUser(1,scope.row.id)" type="text" size="small">已入职</el-button>
-                <el-button @click="handleUser(2,scope.row.id)" type="text" size="small">未入职</el-button>
-              </div>
-              <span v-if="scope.row.status==2">未入职</span>
-              <span v-if="scope.row.status==1">已入职</span>
+              <el-button type="text" @click="handleUser(props.row)" size="small">离职</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -89,25 +58,13 @@
         :total="total"
       ></el-pagination>
     </div>
-    <modal
-      :dialogTableVisible="dialogTableVisible"
-      @handleOk="handleOk"
-      isShow="true"
-      :modalObj="modalObj"
-      @handleClose="visible=false,jobId=''"
-    ></modal>
   </div>
 </template>
 
 <script>
-// 入职审核
-import { entryUserResumeList, updateEntryUser } from '../../api/receipt'
+import { incumbencyUserResumeList, entryUserResumeList, entryResumeList, updateEntryUser } from '../../api/receipt'
 import { moneyTypeList, rewardTypeList, payTypeList } from '../../base/base'
-import modal from '../common/modal'
 export default {
-  components: {
-    modal
-  },
   filters: {
     moneyType (val) {
       let obj = moneyTypeList.find(item => {
@@ -142,33 +99,48 @@ export default {
       multipleSelection: [],
       form: {},
       statusList: [
-        { label: '全部', value: -1 },
-        { label: '待审核', value: 0 },
-        { label: '已入职', value: 1 },
-        { label: '未入职', value: 2 }
+        { label: '全部', value: 0 },
+        { label: '待审核', value: 1 },
+        { label: '已通过', value: 2 },
+        { label: '未通过', value: 3 },
+        { label: '已下架', value: -1 }
       ],
-      activeIndex: -1,
-      id: '',
-      modalObj: {
-        content: '你确定要批量操作？',
-        okText: '确定',
-        closeText: '取消'
-      },
-      status: ''
+      activeIndex: 0,
+      viewType: '',
+      jobId: ''
     }
   },
   created () {
-    let jobId = this.$route.query.id
-    this.formMember.jobId = jobId
+    // 初始化查询标签数据
+    // viewType
+    // 3.面试结果
+    // 4.在职名单
+    // 5.入职名单
+    this.viewType = this.$route.query.view
     this.getList(this.formMember)
   },
   methods: {
     getList (params) {
-      entryUserResumeList(params).then(res => {
-        const { data } = res
-        this.tableData = data.data
-        this.total = data.count
-      })
+      if (this.viewType == 4) {
+        incumbencyUserResumeList(params).then(res => {
+          this.getData(res)
+        })
+      }
+      else if (this.viewType == 3) {
+        entryResumeList(params).then(res => {
+          this.getData(res)
+        })
+      }
+      else {
+        entryUserResumeList(params).then(res => {
+          this.getData(res)
+        })
+      }
+    },
+    getData (res) {
+      const { data } = res
+      this.tableData = data.data
+      this.total = data.count
     },
     selectStatus (item, index) {
       this.activeIndex = index
@@ -182,26 +154,11 @@ export default {
       this.formMember.page = val
       this.getList(this.formMember)
     },
-    handleUser (status, id) {
-      if (!id) {
-        return this.$message.warning('请选择成员')
-      }
-      if (id && this.multipleSelection.length) {
-        this.dialogTableVisible = true
-        this.status = status
-        this.id = id
-        return false
-      }
-      this.status = status
-      this.id = id
-      this.handleUserResume()
-    },
-    handleUserResume () {
-      this.dialogTableVisible = false
+    handleUser (val) {
       let params = {
-        status: this.status,
-        id: this.id,
-        uid: localStorage.getItem('uid')
+        uid: localStorage.getItem('uid'),
+        id: val.id,
+        status: 4
       }
       updateEntryUser(params).then(res => {
         this.$message.success('操作成功')
@@ -215,15 +172,6 @@ export default {
         this.dialogTableVisible = false
         this.getList(this.params)
       })
-    },
-    handleSelectionChange (val) {
-      let arr = val.map(item => {
-        return item.id
-      })
-      this.id = arr.join(',')
-    },
-    handleOk () {
-      this.handleUserResume()
     },
     onSubmit (value) {
       let params = Object.assign(this.formMember, value)

@@ -103,10 +103,14 @@
           <el-table-column label="接单时间" prop="entry_num" sortable align="center" width="150"></el-table-column>
           <el-table-column label="联系人" prop="entry_num" sortable align="center" width="150"></el-table-column>
           <el-table-column label="操作" align="center" width="150">
-            <template slot-scope="scope">
+            <template slot-scope="props">
               <el-button @click="$router.push('/commonTableList')" type="text" size="small">面试名单</el-button>
-              <el-button @click="$router.push('/viewResume')" type="text" size="small">联系客服</el-button>
-              <el-button @click="$router.push('/commonTableList')" type="text" size="small">入职名单</el-button>
+              <el-button @click="dialogTableVisible=true" type="text" size="small">联系客服</el-button>
+              <el-button
+                @click="$router.push({path:'commonTableList',query:{id:props.row.id,view:5}})"
+                type="text"
+                size="small"
+              >入职名单</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -122,7 +126,8 @@
         :total="total"
       ></el-pagination>
     </div>
-    <noticeModal :dialogTableVisible="dialogTableVisible"></noticeModal>
+    <noticeModal :dialogTableVisible="visible"></noticeModal>
+    <customerService :dialogTableVisible="dialogTableVisible"></customerService>
   </div>
 </template>
 
@@ -131,10 +136,12 @@ import { getTeamList, loginOutTeam, addTeamUser, updateTeamUser } from '../../ap
 import { getResumeList } from '../../api/receipt'
 import { moneyTypeList, rewardTypeList, payTypeList, weekList } from '../../base/base'
 import noticeModal from './noticeModal'
+import customerService from '../common/customerService'
 import { getConstant } from '../../api/dictionary'
 export default {
   components: {
-    noticeModal
+    noticeModal,
+    customerService
   },
   filters: {
     moneyType (val) {

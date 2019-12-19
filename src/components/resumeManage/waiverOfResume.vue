@@ -74,7 +74,7 @@
           style="width: 100%"
           @sort-change="sortChange"
         >
-          <el-table-column label="序号" align="center" prop="id" width="40"></el-table-column>
+          <el-table-column label="序号" align="center" prop="id" width="50"></el-table-column>
           <el-table-column label="姓名" align="center" width="100">
             <template slot-scope="props">
               <el-button
@@ -94,10 +94,10 @@
           </el-table-column>
           <el-table-column
             label="放弃时间"
-            prop="entry_num"
             sortable="custom"
             align="center"
             width="150"
+            v-if="viewType==1"
           >
             <template slot-scope="props">
               <span
@@ -105,12 +105,14 @@
               >{{props.row.uptime?$moment(props.row.uptime).format('YYYY-MM-DD'):'--'}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="放弃原因" prop="desired_position" align="center" width="150">
-            <el-button
-              type="text"
-              class="text-line"
-              @click="viewReason(props.row)"
-            >{{props.row.name}}</el-button>
+          <el-table-column label="放弃原因" v-if="viewType==1" align="center" width="150">
+            <template slot-scope="props">
+              <el-button
+                type="text"
+                class="text-line"
+                @click="viewReason(props.row)"
+              >{{props.row.name}}</el-button>
+            </template>
           </el-table-column>
           <el-table-column label="跟进记录" align="center" width="100">
             <template slot-scope="props">
@@ -121,13 +123,7 @@
               >{{props.row.name}}</el-button>
             </template>
           </el-table-column>
-          <el-table-column
-            label="跟进时间"
-            prop="entry_num"
-            sortable="custom"
-            align="center"
-            width="150"
-          >
+          <el-table-column label="跟进时间" sortable="custom" align="center" width="150">
             <template slot-scope="props">
               <span
                 type="text"
@@ -137,13 +133,13 @@
           <el-table-column label="录入人" prop="input_username" align="center" width="100"></el-table-column>
           <el-table-column label="跟进人" prop="track_name" align="center" width="100"></el-table-column>
           <el-table-column label="操作" align="center" min-width="200">
-            <template slot-scope="scope">
-              <div v-if=" this.viewType==1">
-                <el-button @click="handleResume(1,scope.row)" type="text" size="small">领取</el-button>
-                <el-button @click="handleResume(2,scope.row)" type="text" size="small">删除</el-button>
+            <template slot-scope="props">
+              <div v-if="viewType==1">
+                <el-button @click="handleResume(1,props.row)" type="text" size="small">领取</el-button>
+                <el-button @click="handleResume(2,props.row)" type="text" size="small">删除</el-button>
               </div>
               <div v-else>
-                <el-button @click="handleResume(3,scope.row)" type="text" size="small">还原</el-button>
+                <el-button @click="handleResume(3,props.row)" type="text" size="small">还原</el-button>
               </div>
             </template>
           </el-table-column>
@@ -254,10 +250,15 @@ export default {
   },
   created () {
     // 初始化查询标签数据
-    this.viewType = this.$route.query.view
+
     this.getList(this.formMember)
     let params = 'job_array'
     this.getData(params)
+  },
+  watch: {
+    $route () {
+      this.viewType = this.$route.query.view
+    }
   },
   methods: {
     getData (filed) {

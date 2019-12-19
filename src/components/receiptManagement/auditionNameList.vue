@@ -1,9 +1,5 @@
-
-<style lang="scss">
-@import '@/assets/css/resume';
-</style>
 <template>
-  <div class="tables-box billingManagement receipt-manage">
+  <div class="tables-box billingManagement">
     <div class="table-list">
       <el-form
         :inline="true"
@@ -12,14 +8,14 @@
         :model="formMember"
         class="demo-form-inline"
       >
-        <el-form-item label="职位名称：">
-          <el-input v-model="formMember.name" class="width300" placeholder="请输入职位名称关键字"></el-input>
+        <el-form-item label="姓名：">
+          <el-input v-model="formMember.where" class="width300" placeholder="请输入职位名称关键字"></el-input>
           <el-button type="primary" @click="onSubmit" class="select-btn">查询</el-button>
         </el-form-item>
         <el-form-item label="状态筛选：">
           <el-button
             :type="activeIndex==index ?'primary':''"
-            v-for="(item,index) in checkStatusList"
+            v-for="(item,index) in statusList"
             :key="index"
             plain
             @click="selectStatus(item,index)"
@@ -27,7 +23,16 @@
           >{{item.label}}</el-button>
         </el-form-item>
       </el-form>
-      <div class="member-table">
+      <div class="member-table resume-table">
+        <div class="table-query">
+          <el-button @click="handleUser(1,scope.row)">通过</el-button>
+          <el-button @click="handleUser(2,scope.row)">未通过</el-button>
+          <span class="select-text">
+            已选择
+            <el-button type="text">{{multipleSelection.length}}&nbsp;</el-button>项
+          </span>
+          <el-button type="text" @click="multipleSelection=[]">清空</el-button>
+        </div>
         <el-table
           border
           :data="tableData"
@@ -35,7 +40,8 @@
           style="width: 100%"
           @selection-change="handleSelectionChange"
         >
-          <el-table-column label="职位名称" align="center" width="150">
+          <el-table-column type="selection" align="center" width="50"></el-table-column>
+          <el-table-column label="姓名" align="center" width="150">
             <template slot-scope="props">
               <el-button type="text" @click="handleEdit(props.row)">{{props.row.name}}</el-button>
             </template>
@@ -57,42 +63,15 @@
             <template slot-scope="props">
               <span
                 class="status"
-                :class="`{active-status${props.row.status}}`"
-              >{{props.row.status | statusType}}</span>
+                :class="{'active-status':props.row.status==1}"
+              >{{props.row.status==1?"正常":'锁定'}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="操作" align="center" width="150">
+          <el-table-column label="面试结果" align="center" width="150">
             <template slot-scope="scope">
-              <el-button
-                @click="handleEdit(scope.row)"
-                type="text"
-                v-if="scope.row.status==1"
-                size="small"
-              >修改</el-button>
-              <el-button
-                @click="handleRecceipt(scope.row)"
-                type="text"
-                v-if="scope.row.status==1||scope.row.status==3"
-                size="small"
-              >删除</el-button>
-              <el-button
-                @click="handleEdit(scope.row)"
-                type="text"
-                v-if="scope.row.status==4"
-                size="small"
-              >查看</el-button>
-              <el-button
-                @click="handleDel(scope.row)"
-                v-if="scope.row.status==3"
-                type="text"
-                size="small"
-              >下架</el-button>
-              <el-button
-                @click="handleDel(scope.row)"
-                type="text"
-                v-if="scope.row.status==4"
-                size="small"
-              >上架</el-button>
+              <el-button @click="handleUser(1,scope.row)" type="text" size="small">通过</el-button>
+              <el-button @click="handleUser(2,scope.row)" type="text" size="small">未通过</el-button>
+              <el-button @click="handleUser(3,scope.row)" type="text" size="small">未参加</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -108,14 +87,24 @@
         :total="total"
       ></el-pagination>
     </div>
+    <modal
+      :dialogTableVisible="dialogTableVisible"
+      @handleOk="handleOk"
+      isShow="true"
+      :modalObj="modalObj"
+      @handleClose="visible=false,jobId=''"
+    ></modal>
   </div>
 </template>
 
 <script>
-import { getTeamList, loginOutTeam, addTeamUser, updateTeamUser } from '../../api/team'
-import { getReceiptList, companyReceiptShelf } from '../../api/receipt'
-import { moneyTypeList, rewardTypeList, payTypeList, checkStatusList } from '../../base/base'
+import { entryResumeList, auditEntryResume } from '../../api/receipt'
+import { moneyTypeList, rewardTypeList, payTypeList, weekList } from '../../base/base'
+import modal from '../common/modal'
 export default {
+  components: {
+    modal
+  },
   filters: {
     moneyType (val) {
       let obj = moneyTypeList.find(item => {
@@ -129,18 +118,11 @@ export default {
       })
       return obj.label
     },
-    statusType (val) {
-      let obj = checkStatusList.find(item => {
-        return val == item.value
-      })
-      return obj.label
-    }
   },
   data () {
     return {
       moneyTypeList,
       rewardTypeList,
-      checkStatusList,
       dialogTableVisible: false,
       visible: false,
       tableData: [],
@@ -156,26 +138,36 @@ export default {
       userId: '',
       multipleSelection: [],
       form: {},
-      activeIndex: 0
+      statusList: [
+        { label: '全部', value: 0 },
+        { label: '待审核', value: 1 },
+        { label: '已通过', value: 2 },
+        { label: '未通过', value: 3 },
+        { label: '未参加', value: 4 }
+      ],
+      activeIndex: 0,
+      status: 0,
+      id: '',
+      modalObj: {
+        content: '你确定要批量操作？',
+        okText: '确定',
+        closeText: '取消'
+      },
     }
   },
   created () {
     // 初始化查询标签数据
+    // 面试名单
+    this.formMember.jobId = this.$route.query.id
     this.getList(this.formMember)
   },
   methods: {
     getList (params) {
-      getReceiptList(params).then(res => {
+      entryResumeList(params).then(res => {
         const { data } = res
         this.tableData = data.data
         this.total = data.count
       })
-    },
-    statusType (val) {
-      let obj = this.statusList.find(item => {
-        return val == item.value
-      })
-      return obj.label
     },
     selectStatus (item, index) {
       this.activeIndex = index
@@ -189,47 +181,65 @@ export default {
       this.formMember.page = val
       this.getList(this.formMember)
     },
-    handleRecceipt () {
-
+    handleUser (status, uid) {
+      if (!id) {
+        return this.$message.warning('请选择成员')
+      }
+      if (id && this.multipleSelection.length) {
+        this.dialogTableVisible = true
+        this.status = status
+        this.id = id
+        this.handleResume()
+      }
     },
-    handleEdit (val) {
-      this.dialogTableVisible = true
-      this.userId = val
-      console.log(this.userId)
+    handleOk () {
+      this.handleResume()
     },
-    handleDel (uid) {
-      loginOutTeam({ uid }).then(res => {
-        this.$message.success('退出成功')
+    handleResume () {
+      let params = {
+        status: this.status,
+        id: this.id,
+        uid: localStorage.getItem('uid')
+      }
+      this.dialogTableVisible = false
+      auditEntryResume(params).then(res => {
+        this.$message.success('操作成功')
         this.getList(this.formMember)
       }).catch(error => {
         this.$message.error(error.status.remind)
-      })
-    },
-    submitMember (val) {
-      updateTeamUser(val).then(res => {
-        this.dialogTableVisible = false
-        this.getList(this.params)
       })
     },
     handleSelectionChange (val) {
-      this.len = val
-    },
-    addMember () {
-      this.visible = true
-    },
-    onSubmit (value) {
-      let params = Object.assign(this.formMember, value)
-      this.getList(params)
-    },
-    submitForm (val) {
-      this.visible = false
-      addTeamUser(val).then(res => {
-        this.getList(this.formMember)
-      }).catch(error => {
-        this.$message.error(error.status.remind)
+      let arr = val.map(item => {
+        return item.id
       })
+      this.id = arr.join(',')
     }
   }
 }
 </script>
 
+<style lang="scss">
+.billingManagement {
+  .demo-form-inline {
+    width: 80%;
+  }
+  .table-list {
+    padding-top: 70px;
+    padding-left: 10px;
+    .select-btn {
+      margin-left: 20px;
+    }
+    .member-table {
+      margin-top: 40px;
+    }
+  }
+  .width300 {
+    width: 300px;
+  }
+  .select-status {
+    margin-right: 10px;
+  }
+}
+
+</style>

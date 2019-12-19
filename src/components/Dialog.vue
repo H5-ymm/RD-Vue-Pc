@@ -1,11 +1,7 @@
 <template>
-  <el-dialog
-    title=""
-    :visible.sync="centerDialogVisible"
-    width="340px"
-    center class="dialog">
+  <el-dialog title :visible.sync="centerDialogVisible" width="340px" center class="dialog">
     <div class="dialog-centent">
-      <img src="../assets/img/success.png" alt="">
+      <img src="../assets/img/success.png" alt />
       <p class="dialog-title">申请成功</p>
     </div>
     <span slot="footer" class="dialog-footer">
@@ -15,14 +11,14 @@
   </el-dialog>
 </template>
 <script>
-  export default {
-    props: ['centerDialogVisible','imgBg', 'title', 'okText', 'closeText'],
-    data() {
-      return {
-        
-      };
-    }
-  };
+export default {
+  props: ['centerDialogVisible', 'imgBg', 'title', 'okText', 'closeText'],
+  data () {
+    return {
+
+    };
+  }
+};
 </script>
 <style>
 .dialog {

@@ -1,78 +1,136 @@
 <template>
   <div class="tables-box billingManagement">
     <div class="table-list">
-      <el-form :inline="true" label-width="100px" label-position="right" :model="formMember" class="demo-form-inline">
+      <el-form
+        :inline="true"
+        label-width="100px"
+        label-position="right"
+        :model="formMember"
+        class="demo-form-inline"
+      >
         <el-form-item label="职位名称：">
           <el-input v-model="formMember.name" class="width300" placeholder="请输入职位名称关键字"></el-input>
         </el-form-item>
         <el-form-item label="团队名称：">
           <el-input v-model="formMember.name" class="width300" placeholder="请输入团队名称关键字"></el-input>
         </el-form-item>
-         <el-form-item label="团队负责人：">
+        <el-form-item label="团队负责人：">
           <el-input v-model="formMember.name" class="width300" placeholder="请输入团队负责人姓名"></el-input>
         </el-form-item>
         <el-form-item label="团队性质：">
           <el-select v-model="formMember.industry" class="width300" placeholder="请选择">
-            <el-option :label="item.label" :value="item.value" v-for="(item,index) in teamTypeList" :key="index"></el-option>
+            <el-option
+              :label="item.label"
+              :value="item.value"
+              v-for="(item,index) in teamTypeList"
+              :key="index"
+            ></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="状态：">
           <el-select v-model="formMember.industry" class="width300" placeholder="请选择">
-            <el-option :label="item.label" :value="item.value" v-for="(item,index) in statusList" :key="index"></el-option>
+            <el-option
+              :label="item.label"
+              :value="item.value"
+              v-for="(item,index) in applyStatusList"
+              :key="index"
+            ></el-option>
           </el-select>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="onSubmit" class="select-btn">查询</el-button>
           <el-button type="primary" @click="onSubmit" class="select-btn">重置</el-button>
         </el-form-item>
-    </el-form>
-  <div class="member-table">
-      <el-table
-        border
-        :data="tableData"
-        ref="multipleTable"
-        style="width: 100%"
-        @selection-change="handleSelectionChange"
-      >
-      <el-table-column label="职位名称"  align="center" width="150">
-        <template slot-scope="props">
-          <el-button type="text" @click="handleEdit(props.row)">{{props.row.name}}</el-button>
-        </template>
-        </el-table-column>
-        <el-table-column label="团队名称" align="center" width="150">
-          <template slot-scope="props">
-            <el-button type="text">{{props.row.money_type | moneyType}}</el-button>
-          </template>
-        </el-table-column>
-        <el-table-column label="岗位薪资" prop="depart_name" align="center" width="150"></el-table-column>
-        <el-table-column label="团队负责人" align="center" width="150">
-          <template slot-scope="props">
-            <el-button type="text">{{props.row.reward_type | rewardType}}</el-button>
-          </template>   
-        </el-table-column>
-        <el-table-column label="团队性质" prop="reward_money" align="center" width="150"></el-table-column>
-        <el-table-column label="申请日期" prop="entry_num" sortable align="center" width="150"></el-table-column>
-        <el-table-column label="状态" align="center" width="150">
-          <template slot-scope="props">
-            <span
-              class="status"
-              :class="{'active-status':props.row.status==1}"
-            >{{props.row.status==1?"正常":'锁定'}}</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="操作" align="center" width="150">
-          <template slot-scope="scope">
-            <el-button @click="handleDel(scope.row)" type="text" size="small">查看团队</el-button>
-            <!-- <el-button @click="handleDel(scope.row)" type="text" size="small">联系客服</el-button> -->
-            <!-- <el-button @click="handleDel(scope.row)" type="text" size="small">查看部门</el-button> -->
-            
-            <el-button @click="handleDel(scope.row)" type="text" size="small">下架</el-button>
-            <el-button @click="handleEdit(scope.row)" type="text" size="small">同意</el-button>
-            <el-button @click="handleDel(scope.row)" type="text" size="small">拒绝</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-    </div>
+      </el-form>
+      <div class="member-table">
+        <el-table
+          border
+          :data="tableData"
+          ref="multipleTable"
+          style="width: 100%"
+          @selection-change="handleSelectionChange"
+        >
+          <el-table-column label="职位名称" align="center" width="150">
+            <template slot-scope="props">
+              <el-button type="text" @click="handleEdit(props.row)">{{props.row.name}}</el-button>
+            </template>
+          </el-table-column>
+          <el-table-column label="团队名称" align="center" width="150">
+            <template slot-scope="props">
+              <el-button type="text">{{props.row.money_type | moneyType}}</el-button>
+            </template>
+          </el-table-column>
+          <el-table-column label="岗位薪资" prop="depart_name" align="center" width="150"></el-table-column>
+          <el-table-column label="团队负责人" align="center" width="150">
+            <template slot-scope="props">
+              <el-button type="text">{{props.row.reward_type | rewardType}}</el-button>
+            </template>
+          </el-table-column>
+          <el-table-column label="团队性质" prop="reward_money" align="center" width="150"></el-table-column>
+          <el-table-column label="申请日期" prop="entry_num" sortable align="center" width="150"></el-table-column>
+          <el-table-column label="状态" align="center" width="150">
+            <template slot-scope="props">
+              <span
+                class="status"
+                :class="`active-status${props.row.status}`"
+              >{{props.row.status|statusType}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="操作" align="center" width="150">
+            <template slot-scope="scope">
+              <el-button
+                @click="handleDel(scope.row)"
+                type="text"
+                v-if="props.row.status<2"
+                size="small"
+              >查看团队</el-button>
+              <el-button
+                5
+                @click="handleDel(scope.row)"
+                type="text"
+                size="small"
+                v-if="props.row.status>=2&&props.row.status<5"
+              >查看职位</el-button>
+              <el-button
+                @click="handleDel(scope.row)"
+                type="text"
+                v-if="props.row.status>1"
+                size="small"
+              >删除</el-button>
+              <el-button
+                @click="dialogTableVisible=true"
+                type="text"
+                size="small"
+                v-if="props.row.status==1"
+              >联系客服</el-button>
+              <el-button
+                @click="handleShelf(1,scope.row)"
+                type="text"
+                size="small"
+                v-if="props.row.status==6"
+              >上架</el-button>
+              <el-button
+                @click="handleShelf(2,scope.row)"
+                type="text"
+                size="small"
+                v-if="props.row.status==5"
+              >下架</el-button>
+              <el-button
+                @click="handleAudit(1,scope.row)"
+                type="text"
+                size="small"
+                v-if="props.row.status==0"
+              >同意</el-button>
+              <el-button
+                @click="handleAudit(2,scope.row)"
+                v-if="props.row.status==1"
+                type="text"
+                size="small"
+              >拒绝</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
       <el-pagination
         class="team-pagination"
         @size-change="handleSizeChange"
@@ -84,36 +142,48 @@
         :total="total"
       ></el-pagination>
     </div>
+    <customerService :dialogTableVisible="dialogTableVisible"></customerService>
   </div>
 </template>
 
 <script>
 import { getTeamList, loginOutTeam, addTeamUser, updateTeamUser } from '../../api/team'
-import { getReceiptList } from '../../api/receipt'
-import { moneyTypeList, rewardTypeList, payTypeList , weekList } from '../../base/base'
+import { applyInvoiceList, auditInvoiceInfo, delCompanyTeamApply, companyReceiptShelf } from '../../api/receipt'
+import customerService from '../common/customerService'
+import { moneyTypeList, rewardTypeList, payTypeList, applyStatusList } from '../../base/base'
 export default {
-  filters:{
-    moneyType(val){
+  components: {
+    customerService
+  },
+  filters: {
+    moneyType (val) {
       let obj = moneyTypeList.find(item => {
         return val == item.value
       })
       return obj.label
     },
-    rewardType(val){
+    rewardType (val) {
       let obj = rewardTypeList.find(item => {
         return val == item.value
       })
       return obj.label
     },
+    statusType (val) {
+      let obj = applyStatusList.find(item => {
+        return val == item.value
+      })
+      return obj.label
+    }
+
   },
   data () {
     return {
       moneyTypeList,
       rewardTypeList,
+      applyStatusList,
       dialogTableVisible: false,
       visible: false,
       tableData: [],
-      currentPage: 1,
       userType: 1,
       formMember: {
         uid: localStorage.getItem('uid'),
@@ -121,24 +191,14 @@ export default {
         page: 1
       },
       total: 0,
-      len: 0,
       userId: '',
       multipleSelection: [],
       form: {},
-      statusList: [
-        {label:'全部',value: 0},
-        {label:'待审核',value: 1},
-        {label:'已同意',value: 2},
-        {label:'已拒绝',value: 3},
-        {label:'已下架',value: -1},
-        {label:'已取消申请',value: -1},
-        {label:'其他团队已接',value: -1}
-      ],
       activeIndex: 0,
       teamTypeList: [
-        {label:'全部',value: 0},
-        {label:'个人',value: 2},
-        {label:'企业',value: 1},
+        { label: '全部', value: 0 },
+        { label: '个人', value: 2 },
+        { label: '企业', value: 1 },
       ]
     }
   },
@@ -148,13 +208,13 @@ export default {
   },
   methods: {
     getList (params) {
-      getReceiptList(params).then(res => {
+      applyInvoiceList(params).then(res => {
         const { data } = res
         this.tableData = data.data
         this.total = data.count
       })
     },
-    selectStatus(item,index){
+    selectStatus (item, index) {
       this.activeIndex = index
       this.formMember.status = item.value
     },
@@ -171,9 +231,37 @@ export default {
       this.userId = val
       console.log(this.userId)
     },
-    handleDel (uid) {
-      loginOutTeam({ uid }).then(res => {
-        this.$message.success('退出成功')
+    handleAudit (status, val) {
+      let params = {
+        uid: localStorage.getItem('uid'),
+        id: val.id,
+        status: status
+      }
+      auditInvoiceInfo(params).then(res => {
+        this.$message.success('操作成功')
+      }).catch(error => {
+        this.$message.warning(error.status.remind)
+      })
+    },
+    handleShelf (status, val) {
+      let params = {
+        uid: localStorage.getItem('uid'),
+        id: val.id,
+        status: status
+      }
+      companyReceiptShelf(params).then(res => {
+        this.$message.success('操作成功')
+      }).catch(error => {
+        this.$message.warning(error.status.remind)
+      })
+    },
+    handleDel (val) {
+      let params = {
+        uid: localStorage.getItem('uid'),
+        id: val.id,
+      }
+      delCompanyTeamApply(params).then(res => {
+        this.$message.success('删除成功')
         this.getList(this.formMember)
       }).catch(error => {
         this.$message.error(error.status.remind)

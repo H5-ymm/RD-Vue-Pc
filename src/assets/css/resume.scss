@@ -1,4 +1,9 @@
 .billingManagement {
+  &.receipt-manage {
+    .el-form-item {
+      display: block;
+    }
+  }
   .table-list {
     padding-top: 70px;
     padding-left: 10px;

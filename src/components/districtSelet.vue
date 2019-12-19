@@ -5,6 +5,7 @@
     :options="options"
     clearable
     :props="props"
+    ref="cascader"
     class="cascader"
     @change="changeData"
     @active-item-change="handleItemChange"
@@ -12,6 +13,7 @@
 </template>
 <script>
 import { getProvincesList, getCitysList, getAreasList } from '../api/login'
+import { cityList } from '../base/base'
 export default {
   props: {
     disabled: false,
@@ -27,24 +29,25 @@ export default {
         value: 'code',
         label: 'name',
         children: 'children'
-      }
+      },
+      cityList,
+      list: [],
+      arr: []
     }
   },
   created () {
     this.getRegion([])
   },
   watch: {
-    address (val) {
-      val.forEach(val => {
-        if (val) this.districtList.push(val + '')
-        console.log(this.districtList)
-      })
-    }
+    // address (val) {
+    //   val.forEach(val => {
+    //     if (val) this.districtList.push(val + '')
+
+    //   })
+    // }
   },
   methods: {
     handleItemChange (val) {
-      console.log(val);
-      // this.districtList = val
       this.getCityList(val)
     },
     getProlist (list) {
@@ -109,6 +112,20 @@ export default {
             return false
           }
         })
+
+        let arr1 = []
+        arr.forEach(item => {
+          cityList.forEach(val => {
+            if (item.name == val.name) {
+              let obj = {
+                name: val.name,
+                code: item.code
+              }
+              arr1.push(obj)
+            }
+          })
+        })
+        console.log(arr1)
       })
     },
     getAreaList (value) {
@@ -123,9 +140,14 @@ export default {
         let arr = res.data
         this.options.forEach(item => {
           if (item.code == value[0]) {
+            console.log(item.name)
+            this.list.push(item.name)
             item.children.forEach(val => {
               if (val.code == code) {
+                this.list.push(val.name)
                 val.children = arr
+                this.arr = arr
+                console.log(this.arr)
               }
             })
           }
@@ -133,8 +155,18 @@ export default {
       })
     },
     changeData (val) {
+      if (this.arr.length) {
+        this.arr.forEach(item => {
+          if (val[2] && item.code == val[2]) {
+            this.list.push(item.name)
+          }
+        })
+      }
+      let arr = [...new Set(this.list)]
+      console.log(arr)
       this.$emit('input', val)
       this.$emit('change', val)
+      this.$emit('changeAddress', arr)
     }
   }
 }

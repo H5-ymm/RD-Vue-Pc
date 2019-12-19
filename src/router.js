@@ -19,8 +19,8 @@ const applicationTeam = resolve => (require(['./components/receiptManagement/app
 const talentResume = resolve => (require(['./components/receiptManagement/talentResume.vue'], resolve))
 const entryList = resolve => (require(['./components/receiptManagement/entryList.vue'], resolve))
 const entryDetailTable = resolve => (require(['./components/receiptManagement/entryDetailTable.vue'], resolve))
-const auditionResult = resolve => (require(['./components/receiptManagement/auditionResult.vue'], resolve))
-const viewResume = resolve => (require(['./components/receiptManagement/viewResume.vue'], resolve))
+const auditionNameList = resolve => (require(['./components/receiptManagement/auditionNameList.vue'], resolve))
+const commonTable = resolve => (require(['./components/receiptManagement/commonTableList.vue'], resolve))
 const interviewPersonnel = resolve => (require(['./components/receiptManagement/interviewPersonnel.vue'], resolve))
 const checkResume = resolve => (require(['./components/receiptManagement/checkResume.vue'], resolve))
 const addResume = resolve => (require(['./components/resumeManage/addResume.vue'], resolve))
@@ -184,18 +184,18 @@ let routers = new Router({
             requiresAuth: 2
           }
         },
-        { // 面试结果
-          path: '/auditionResult',
-          name: 'auditionResult',
-          component: auditionResult,
+        { // 面试名单
+          path: '/auditionNameList',
+          name: 'auditionNameList',
+          component: auditionNameList,
           meta: {
             requiresAuth: 2
           }
         },
         { // 查看简历
-          path: '/viewResume',
-          name: 'viewResume',
-          component: viewResume,
+          path: '/commonTable',
+          name: 'commonTable',
+          component: commonTable,
           meta: {
             requiresAuth: 2
           }

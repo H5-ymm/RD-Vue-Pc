@@ -105,20 +105,10 @@ export function $post (url, params) {
 
 export function postFormData (url, params) {
   window.location.href = `${baseURL}${url}?uid=${params}`
-  // $axios.create = {
-  //   responseType: 'blob'
-  // }
-  // return new Promise((resolve, reject) => {
-  //   let file = new FormData()
-  //   file.append('uid', localStorage.getItem('uid'))
-  //   $axios.post(`${baseURL}${url}`, file)
-  //     .then(res => {
-  //       resolve(res.data)
-  //     })
-  //     .catch(err => {
-  //       reject(err.data)
-  //     })
-  // });
+}
+
+export function exportData (url, params) {
+  window.location.href = `${baseURL}${url}${'?' + QS.stringify(params)}`
 }
 export function upload (params) {
   let file = new FormData()
