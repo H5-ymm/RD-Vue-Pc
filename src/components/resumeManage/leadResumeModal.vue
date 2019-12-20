@@ -17,13 +17,13 @@
           <li v-for="(item,index) in list" :key="index" class="record-item">
             <div class="record-content x-flex-start-justify">
               <img src="../../assets/img/xlsx.png" alt />
-              <p>2019.6.15号招聘会参会公司及招聘岗位.xlsx</p>
+              <p>{{item}}</p>
             </div>
           </li>
         </ul>
         <div class="x-flex-between">
-          <el-button size="small" class="hanble-btn" @click="download">
-            <img src="../../assets/img/upload.png" alt />
+          <el-button size="small" class="handle-btn" @click="download">
+            <img src="../../assets/img/upload.png" class="download-icon" alt />
             <span>下载模板</span>
           </el-button>
           <el-upload
@@ -35,7 +35,7 @@
             :http-request="upload"
             @on-success="changeList"
           >
-            <el-button size="small" class="hanble-btn">
+            <el-button size="small" class="handle-btn">
               <img src="../../assets/img/upload.png" alt />
               <span>导入简历</span>
             </el-button>
@@ -57,28 +57,7 @@ export default {
   data () {
     return {
       reason: '',
-      list: [
-        {
-          title: '跟进记录',
-          addtime: 1576569206,
-          id: 7,
-          operator: "人才推荐",
-          reason: "",
-          remark: "内部推送职位",
-          resume_id: 2,
-          uid: 6,
-        },
-        {
-          title: '跟进记录',
-          addtime: 1576569206,
-          id: 7,
-          operator: "人才推荐",
-          reason: "",
-          remark: "内部推送职位",
-          resume_id: 2,
-          uid: 6,
-        }
-      ],
+      list: [],
       show: false,
       fileList: []
     }
@@ -97,6 +76,7 @@ export default {
       console.log(_file)
       importUserResume(_file).then(res => {
         console.log(res)
+        this.list.push(_file.name)
       })
       console.log(this.fileList)
     },
@@ -170,7 +150,7 @@ export default {
         width: 100%;
         margin: 20px 0;
       }
-      .hanble-btn {
+      .handle-btn {
         span {
           margin-left: 6px;
         }
@@ -178,6 +158,9 @@ export default {
           display: flex;
           justify-content: center;
           align-items: center; 
+        }
+        .download-icon {
+          transform: rotate(-180deg);
         }
       }
       .record-item {
@@ -197,7 +180,7 @@ export default {
         border-bottom: 1px solid #eee;
       }
       .record-content {
-        margin: 15px 10px;
+        margin: 12px 10px;
         text-align: left;
         color: #333333;
         > img {

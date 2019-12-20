@@ -159,6 +159,30 @@ export default {
               url: '/waiverOfResume?view=2'
             },
           ]
+        },
+        {
+          title: '我的收藏',
+          icon: 'el-icon-collection-tag',
+          submenu: [
+            {
+              title: '收藏职位',
+              url: '/collectJob'
+            },
+            {
+              title: '成员推荐',
+              url: '/userRecommend'
+            },
+          ]
+        },
+        {
+          title: '内部发单',
+          icon: 'el-icon-collection-tag',
+          submenu: [
+            {
+              title: '已发布职位',
+              url: '/publishJobList'
+            }
+          ]
         }
       ],
       title: ''

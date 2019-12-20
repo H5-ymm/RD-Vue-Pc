@@ -1,46 +1,46 @@
 export const cityList = [
-  { name: '上海', code: '' },
+  { name: '上海', code: '310100' },
   { name: '全国', code: '' },
   {
     name: '上海',
-    code: ''
+    code: '310100'
   },
   {
     name: '北京',
-    code: ''
+    code: '110100'
   },
   {
     name: '郑州',
-    code: ''
+    code: '410100'
   },
   {
     name: '广州',
-    code: ''
+    code: '440100'
   },
   {
     name: '杭州',
-    code: ''
+    code: '330100'
   },
   {
     name: '天津',
-    code: ''
+    code: '120000'
   },
   {
     name: '西安',
-    code: ''
+    code: '610100'
   },
   {
     name: '苏州',
-    code: ''
+    code: '320500'
   },
   {
     name: '武汉',
-    code: ''
+    code: '420100'
   }
 ]
 
 export const moneyTypeList = [
-  { label: '不限', value: 0 },
+  { label: '全部', value: 0 },
   { label: '月薪', value: 1 },
   { label: '日薪', value: 2 },
   { label: '时薪', value: 3 }
@@ -55,6 +55,7 @@ export const rewardList = [
   { label: '一次性返利', value: 5 }
 ]
 export const rewardTypeList = [
+  { label: '全部', value: 0 },
   { label: '月返', value: 1 },
   { label: '日返', value: 2 },
   { label: '时返', value: 3 },
@@ -137,4 +138,21 @@ export const userResumeStatusList = [
   { label: '审核中', value: 1 },
   { label: '面试开始', value: 2 },
   { label: '面试结束', value: 3 }
+]
+
+export const recommendStatusList = [
+  { label: '全部', value: -1 },
+  { label: '未推荐', value: 0 },
+  { label: '已推荐', value: 1 },
+  { label: '已申请', value: 2 },
+  { label: '已拒绝', value: 3 }
+]
+
+export const timeStatusList = [
+  { label: '全部', value: 0 },
+  { label: '今天', value: 1 },
+  { label: '最近三天', value: 2 },
+  { label: '最近七天', value: 3 },
+  { label: '最近半月', value: 4 },
+  { label: '最近一个月', value: 5 }
 ]

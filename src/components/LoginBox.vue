@@ -139,51 +139,8 @@ export default {
         }
       })
     },
-    onLoading () {
-      let token = null
-      if (window.localStorage.getItem('token')) {
-        token = window.localStorage.getItem('token')
-      } else if (window.sessionStorage.getItem('token')) {
-        token = window.sessionStorage.getItem('token')
-      } else {
-        token = null
-      }
-      if (token) {
-        this.$http({
-          url: 'rulesToken',
-          methos: 'GET',
-          headers: {
-            'Authorization': token
-          }
-        }).then(res => {
 
-          if (res.data.code == 0) {
-            this.$message({
-              showClose: true,
-              message: '登陆成功',
-              type: 'success'
-            });
-            this.$store.commit('adduser', res.data.msg)
-            this.$router.push('/')
-
-          } else {
-            this.$message({
-              showClose: true,
-              message: '登陆失败',
-              type: 'success'
-            });
-            window.localStorage.clear()
-            window.sessionStorage.clear()
-          }
-        }).catch(error => {
-          //   this.$message.error('Token过期，请重新登陆');
-          /// this.$router.push('/load')
-          window.localStorage.clear()
-          window.sessionStorage.clear()
-        })
-      }
-    },
-    onForget: function () {
+    onForget () {
       this.$router.push('/load')
     }
 
@@ -191,8 +148,8 @@ export default {
   components: {
 
   },
-  created: function () {  //验证Token   
-    this.onLoading()
+  created () {  //验证Token   
+
   }
 }
 </script>

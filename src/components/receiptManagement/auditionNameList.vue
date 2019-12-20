@@ -92,7 +92,7 @@
       @handleOk="handleOk"
       isShow="true"
       :modalObj="modalObj"
-      @handleClose="visible=false,jobId=''"
+      @handleClose="dialogTableVisible=false,jobId=''"
     ></modal>
   </div>
 </template>

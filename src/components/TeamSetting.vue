@@ -48,7 +48,9 @@ export default {
       if (res && res.data) {
         this.teamId = res.data.uid
         this.type = res.data.type
-        this.activIndex = this.type == 2 ? 0 : 1
+        if (this.type) {
+          this.activIndex = this.type == 2 ? 0 : 1
+        }
       }
       else {
         this.teamId = ''

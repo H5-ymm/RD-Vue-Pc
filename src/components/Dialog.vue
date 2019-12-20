@@ -1,23 +1,38 @@
 <template>
-  <el-dialog title :visible.sync="centerDialogVisible" width="340px" center class="dialog">
+  <el-dialog
+    title
+    :visible.sync="centerDialogVisible"
+    top="35vh"
+    width="340px"
+    center
+    class="dialog"
+  >
     <div class="dialog-centent">
-      <img src="../assets/img/success.png" alt />
-      <p class="dialog-title">申请成功</p>
+      <img :src="modalInfo.imgBg" alt />
+      <p class="dialog-title">{{modalInfo.title}}</p>
     </div>
     <span slot="footer" class="dialog-footer">
-      <el-button @click="centerDialogVisible = false" type="primary" plain>关闭</el-button>
-      <el-button type="primary" @click="centerDialogVisible = false">查看申请</el-button>
+      <el-button @click="handleClose" type="primary" plain>{{modalInfo.closeText}}</el-button>
+      <el-button type="primary" @click="handleCloseOk">{{modalInfo.okText}}</el-button>
     </span>
   </el-dialog>
 </template>
 <script>
 export default {
-  props: ['centerDialogVisible', 'imgBg', 'title', 'okText', 'closeText'],
+  props: ['centerDialogVisible', 'modalInfo'],
   data () {
     return {
 
-    };
-  }
+    }
+  },
+  methods: {
+    handleClose () {
+      this.$emit('handleClose')
+    },
+    handleOk () {
+      this.$emit('handleOk')
+    },
+  },
 };
 </script>
 <style>

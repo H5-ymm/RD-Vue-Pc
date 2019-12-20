@@ -20,17 +20,13 @@
               type="primary"
               size="medium"
               class="orderTarking-btn"
-              @click="centerDialogVisible=true"
+              @click="applyReceipt"
               plain
             >申请接单</el-button>
             <div class="x-flex-around">
               <p class="x-flex-around">
                 <img src="../assets/img/collect.png" alt />
-                <el-link
-                  :underline="false"
-                  class="orderTarking-link"
-                  @click="centerDialogVisible=true"
-                >收藏</el-link>
+                <el-link :underline="false" class="orderTarking-link" @click="handleCollect">收藏</el-link>
               </p>
               <p class="x-flex-around">
                 <img src="../assets/img/tip.png" alt />
@@ -250,7 +246,12 @@
     </el-main>
     <FooterView></FooterView>
     <AsideBox :isShow="isShow"></AsideBox>
-    <Dialog :centerDialogVisible="centerDialogVisible"></Dialog>
+    <Dialog
+      :centerDialogVisible="centerDialogVisible"
+      :modalInfo="modalInfo"
+      @handleClose="handleClose"
+      @handleOk="handleOk"
+    ></Dialog>
     <TipDialog :tipDialogVisible="tipDialogVisible"></TipDialog>
   </el-container>
 </template>
@@ -267,6 +268,7 @@ import HeaderView from '@/components/HeaderView'
 import FooterView from '@/components/FooterView'
 import { getOrderDetail, getList } from '../api/orderTarking'
 import { getCompanyDetail, getCompanyInfo } from '../api/company'
+import { teamCollectionJob } from '../api/collect'
 import { moneyTypeList } from '../base/base'
 export default {
   name: 'home',
@@ -323,7 +325,14 @@ export default {
       id: '',
       uid: '',
       isShow: false,
-      textShow: true
+      textShow: true,
+      modalInfo: {
+        title: '收藏成功！',
+        okText: '继续逛逛',
+        closeText: '查看收藏',
+        imgBg: require('../assets/img/collect1.png')
+      },
+      dialogType: 1
     }
   },
   computed: {
@@ -340,7 +349,6 @@ export default {
   },
   mounted () {
     window.addEventListener('scroll', this.windowScroll)
-    console.log(this.$refs.content.clientHeight)
     if (this.$refs.content.clientHeight > 30) {
       this.textShow = true
       this.$refs.content.style.display = '-webkit-box'
@@ -374,6 +382,8 @@ export default {
       getCompanyDetail({ uid }).then(res => {
         console.log(res)
         this.companyInfo = res.data
+      }).catch(error => {
+        this.message.$error(error.status.remind)
       })
     },
     switchNav (item, index) {
@@ -386,7 +396,41 @@ export default {
         console.log(this.list)
         this.browsingList = res.data.data.data
         this.total = res.data.count
+      }).catch(error => {
+        this.message.$error(error.status.remind)
       })
+    },
+    applyReceipt () {
+      this.modalInfo = {
+        title: '申请成功！',
+        okText: '查看申请',
+        closeText: '关闭',
+        imgBg: require('../assets/img/success.png')
+      }
+    },
+    // 收藏
+    handleCollect () {
+      let params = {
+        uid: this.orderTakingDetail.uid,
+        jobId: this.orderTakingDetail.id
+      }
+      teamCollectionJob(params).then(res => {
+        this.centerDialogVisible = true
+      }).catch(error => {
+        this.message.$error(error.status.remind)
+      })
+    },
+    handleClose () {
+      this.centerDialogVisible = false
+      if (this.dialogType == 2) {
+        this.$router.push('CollectJob')
+      }
+    },
+    handleOk () {
+      this.centerDialogVisible = false
+      if (this.dialogType == 1) {
+        this.$router.push('teamApplication')
+      }
     },
     getmoneyType (type) {
       return type === 1 ? '日' : type === 2 ? '月' : '时'

@@ -108,10 +108,10 @@ export default {
       getTeamInfo({ uid }).then(res => {
         if (res.data) {
           this.personalForm = res.data || {}
-          this.imageUrl = getImgUrl(this.personalForm.log)
-          console.log(this.imageUrl)
+          if (this.personalForm.log) {
+            this.imageUrl = getImgUrl(this.personalForm.log)
+          }
           this.address.push(this.personalForm.provinceid, this.personalForm.cityid, this.personalForm.three_cityid)
-          console.log(this.address)
         }
       })
     },

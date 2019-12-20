@@ -2,7 +2,6 @@
 import TeamSetting from '../components/TeamSetting.vue'
 import AccountSettings from '../components/AccountSettings.vue'
 
-
 const addResume = resolve => (require(['../components/resumeManage/addResume.vue'], resolve))
 const recommendJob = resolve => (require(['../components/resumeManage/recommendJob.vue'], resolve))
 const applyResume = resolve => (require(['../components/resumeManage/applyResume.vue'], resolve)) // 推荐简历
@@ -19,7 +18,9 @@ const resumeResult = resolve => (require(['../components/teamReceiptManage/talen
 const teamEntryList = resolve => (require(['../components/teamReceiptManage/entryList.vue'], resolve)) // 团队入职结果
 const commonTableList = resolve => (require(['../components/teamReceiptManage/commonTableList.vue'], resolve)) // 团队入职结果
 const recommendResume = resolve => (require(['../components/teamReceiptManage/recommendResume.vue'], resolve)) // 团队 推荐简历
-
+const CollectJob = resolve => (require(['../components/CollectJob.vue'], resolve))
+const userRecommend = resolve => (require(['../components/collectManage/userRecommend.vue'], resolve)) // 成员推荐
+const publishJobList = resolve => (require(['../components/internalInvoice/publishJobList.vue'], resolve)) // 内部发单
 import Department from '../components/Department.vue'
 import personalForm from '../components/teamMessage/personalForm'  // 个人
 import CompanyForm from '../components/teamMessage/companyForm'   // 企业
@@ -91,8 +92,8 @@ export const teamRouters = [{  // 团队论坛
   meta: {
     requiresAuth: 2
   }
- },
- { // 团队设置
+},
+{ // 团队设置
   path: '/teamSetting',
   name: 'TeamSetting',
   component: TeamSetting,
@@ -179,5 +180,30 @@ export const teamRouters = [{  // 团队论坛
   meta: {
     requiresAuth: 1
   }
+},
+{
+  path: '/collectJob',  // 收藏职位
+  name: CollectJob,
+  component: CollectJob,
+  meta: {
+    requiresAuth: 1
+  }
+},
+{
+  path: '/userRecommend',  // 成员推荐 只有团长看到菜单
+  name: userRecommend,
+  component: userRecommend,
+  meta: {
+    requiresAuth: 1
+  }
+},
+{
+  path: '/publishJobList',  // 内部发单
+  name: publishJobList,
+  component: publishJobList,
+  meta: {
+    requiresAuth: 1
+  }
+
 }
 ]

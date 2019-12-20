@@ -23,7 +23,21 @@
   justify-content: space-around;
   align-items: center;
 }
-
+.x-flex-end {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+.x-flex-end-justify {
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+}
+.x-flex-end-align {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+}
 .x-flex-between-start {
   display: flex;
   justify-content: space-between;

@@ -327,7 +327,7 @@ export default {
       })
     },
     handleSelectionChange (val) {
-      this.len = val
+      this.multipleSelection = val
     },
     addResume () {
       this.dialogTableVisible = true

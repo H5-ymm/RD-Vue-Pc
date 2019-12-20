@@ -37,7 +37,7 @@
   <div class="tables-box billingManagement">
     <div class="recomment-card x-flex-start-justify">
       <div class="recomment-card-col1">
-        <p>推荐岗位：</p>
+        <p>推荐公司：</p>
         <p class="desired-position">仁达网络科技（上海）有限公司</p>
       </div>
       <div class="x-flex-around recomment-card-col2">

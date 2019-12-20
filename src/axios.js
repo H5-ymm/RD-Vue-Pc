@@ -102,7 +102,17 @@ export function $post (url, params) {
       })
   });
 }
-
+export function $get (url) {
+  return new Promise((resolve, reject) => {
+    $axios.get(`${baseURL}${url}`)
+      .then(res => {
+        resolve(res.data)
+      })
+      .catch(err => {
+        reject(err.data)
+      })
+  });
+}
 export function postFormData (url, params) {
   window.location.href = `${baseURL}${url}?uid=${params}`
 }

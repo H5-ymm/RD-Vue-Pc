@@ -69,7 +69,11 @@
             </template>
           </el-table-column>
           <el-table-column label="接单状态" prop="reward_money" align="center" width="120"></el-table-column>
-          <el-table-column label="岗位匹配度" prop="entry_num" align="center" width="150"></el-table-column>
+          <el-table-column label="岗位匹配度" prop="entry_num" align="center" width="150">
+            <template slot-scope="props">
+              <jobMate :statusObj="props.row"></jobMate>
+            </template>
+          </el-table-column>
           <el-table-column label="岗位匹配项" align="center" width="150">
             <template slot-scope="props">
               <span
@@ -80,7 +84,7 @@
           </el-table-column>
           <el-table-column label="操作" align="center" min-width="120">
             <template slot-scope="scope">
-              <el-button @click="handleEdit(scope.row)" type="text" size="small">推荐岗位</el-button>
+              <el-button @click="handleApply(scope.row)" type="text" size="small">推荐岗位</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -100,10 +104,14 @@
 </template>
 
 <script>
-import { getTeamList, loginOutTeam, addTeamUser, updateTeamUser } from '@/api/team'
 import { getResumeList, addUserResume } from '@/api/resume'
 import { moneyTypeList, rewardTypeList, payTypeList, weekList } from '@/base/base'
+import { recommendTeamUserJob } from '@/api/collect'
+import jobMate from './jobMate'
 export default {
+  components: {
+    jobMate
+  },
   filters: {
     moneyType (val) {
       let obj = moneyTypeList.find(item => {
@@ -168,42 +176,25 @@ export default {
       this.formMember.page = val
       this.getList(this.formMember)
     },
-    handleEdit (val) {
-      this.dialogTableVisible = true
-      this.userId = val
-      console.log(this.userId)
-    },
-    handleDel (uid) {
-      loginOutTeam({ uid }).then(res => {
-        this.$message.success('退出成功')
+    handleApply (val) {
+      let params = {
+        jobId: val.jobId,
+        id: val.id,
+        uid: localStorage.getItem('uid'),
+        collectId: val.id
+      }
+      teamcollection(params).then(res => {
+        this.dialogTableVisible = true
         this.getList(this.formMember)
       }).catch(error => {
         this.$message.error(error.status.remind)
-      })
-    },
-    submitMember (val) {
-      updateTeamUser(val).then(res => {
-        this.dialogTableVisible = false
-        this.getList(this.params)
       })
     },
     handleSelectionChange (val) {
       this.len = val
     },
-    addMember () {
-      this.visible = true
-    },
-    onSubmit (value) {
-      let params = Object.assign(this.formMember, value)
-      this.getList(params)
-    },
-    submitForm (val) {
-      this.visible = false
-      addTeamUser(val).then(res => {
-        this.getList(this.formMember)
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+    onSubmit () {
+      this.getList(this.formMember)
     }
   }
 }
