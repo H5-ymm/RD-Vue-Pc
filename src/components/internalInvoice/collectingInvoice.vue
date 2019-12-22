@@ -196,49 +196,26 @@
               <el-button type="text">{{props.row.reward_type | rewardType}}</el-button>
             </template>
           </el-table-column>
-          <el-table-column label="招聘人数" prop="put_num" align="center" width="110">
-          </el-table-column>
-          <el-table-column label="报名人数" prop="depart_name" align="center" width="110">    
-             <template slot-scope="props">
-              <div>
-                <span class="el-icon-circle-check success-color">{{
-                  props.row.view_dcl}}</span>
-              </div>
-            </template>
-          </el-table-column>
-          <el-table-column label="面试人数" prop="depart_name" align="center" width="110">    
-             <template slot-scope="props">
-              <div>
-                {{
-                  props.row.view_num}}
-                <span class="fail-color">{{
-                  props.row.view_dcl}}</span>
-              </div>
-            </template>
-          </el-table-column>
-          <el-table-column label="面试情况" prop="depart_name" align="center" width="110">
+          <el-table-column label="招聘人数" align="center" width="110">
             <template slot-scope="props">
-              <div>
-                <span class="el-icon-circle-check success-color">{{
-                  props.row.view_yes}}</span>
-                <el-divider direction="vertical"></el-divider>
-                <span class="el-icon-circle-close fail-color">{{
-                  props.row.view_nopass}}</span>
-                <el-divider direction="vertical"></el-divider>
-                <span class="el-icon-remove-outline outline-color">{{
-                  props.row.view_no}}</span>
-              </div>
+              <span>{{props.row.status==1?"招聘中":'已下架'}}</span>
             </template>
           </el-table-column>
           <el-table-column label="上架状态" align="center" width="110" v-if="userPosition!=3">
             <template slot-scope="props">
               <span
                 class="status"
-                :class="`status${props.row.status}`"
-              >{{props.row.status|recommendStatus}}</span>
+                :class="`status${props.row.is_up}`"
+              >{{props.row.is_up==1?'已上架':'已下架'}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="创建日期" prop="depart_name" align="center" width="110"></el-table-column>   
+          <el-table-column label="创建日期" align="center" width="110">
+              <template slot-scope="props">
+              <div>
+                {{props.row.depart_name?$moment(props.row.depart_name).format('YYYY-MM-DD'):'--'}}
+              </div>
+            </template>
+          </el-table-column>
           <el-table-column label="操作" align="center" min-width="150">
             <template slot-scope="scope">
               <el-button
@@ -251,9 +228,7 @@
                 v-if="scope.row.is_up==1"
                 type="text"
                 size="small"
-
-              >推荐简历</el-button>
-              <el-button @click="$router.push('applyResume?view=3')" type="text" size="small">已推荐简历</el-button>
+              >领取</el-button>
             </template>
           </el-table-column>
         </el-table>

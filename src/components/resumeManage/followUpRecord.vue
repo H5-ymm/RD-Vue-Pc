@@ -12,7 +12,7 @@
         <p>跟进记录</p>
       </section>
       <section class="record-col3">
-        <ul>
+        <ul class="record-box">
           <li v-for="(item,index) in trackList" :key="index" class="record-item">
             <p class="record-time">{{$moment(item.addtime).format('YYYY-MM-DD')}}</p>
             <el-divider>
@@ -182,6 +182,10 @@ export default {
       border-top: 1px solid #eee;
       padding-top: 20px;
       margin: 0 auto;
+      .record-box {
+        height: 300px;
+        overflow: auto;
+      }
       .record-item {
         margin-bottom: 10px;
       }

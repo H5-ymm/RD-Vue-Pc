@@ -156,3 +156,10 @@ export const timeStatusList = [
   { label: '最近半月', value: 4 },
   { label: '最近一个月', value: 5 }
 ]
+
+export const  positionStatusList = [
+  { label: '全部', value: 0 },
+  { label: '高薪返利', value: 1 },
+  { label: '企业急招', value: 2 },
+  { label: '精选岗位', value: 3 }
+]

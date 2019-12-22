@@ -1,0 +1,198 @@
+<template>
+  <div
+    class="job-detail-view reward-rule-row">
+    <div class="job-detail-row">
+      <section class="resume-col3">
+        <el-form
+          :model="formMember"
+          :rules="rules"
+          ref="formMember"
+          class="demo-form-inline"
+          label-position="right"
+          label-width="100px"
+          :inline="true"
+        >
+          <section class="resume-card">
+            <div class="x-flex-between-start resume-card-row">
+              <div class="resume-card-item">
+                <el-form-item label="岗位类型">
+                  <el-radio-group v-model="formMember.job_type">
+                    <el-radio :label="1" border class="width126">精选岗位</el-radio>
+                    <el-radio :label="2" border class="width126">高额返利</el-radio>
+                    <el-radio :label="3" border class="width126">企业急招</el-radio>
+                  </el-radio-group>
+                </el-form-item>
+                <el-form-item label="岗位来源">
+                  <el-input v-model="formMember.source" class="width406" placeholder="请输入岗位来源"></el-input>
+                </el-form-item>
+                 <el-form-item label="合作商务姓名">
+                  <el-input v-model="formMember.work_man" class="width406" placeholder="请输入合作商务姓名"></el-input>
+                </el-form-item>
+                 <el-form-item label="合作商务电话">
+                  <el-input v-model="formMember.work_tel" class="width406" placeholder="请输入合作商务电话"></el-input>
+                </el-form-item>
+                  <el-form-item label="面试时间">
+                   <el-date-picker
+                    class="width406"
+                    format="yyyy-MM-dd"
+                    value-format="timestamp"
+                    v-model="formMember.meeting_time"
+                    type="date"
+                    placeholder="选择面试时间">
+                  </el-date-picker>
+                </el-form-item>
+                <el-form-item label="面试地址" prop="user_name">
+                  <el-input v-model="formMember.meeting_addr" class="width406" placeholder="请输入面试地址"></el-input>
+                </el-form-item>
+                <el-form-item label="发单负责人" prop="user_name">
+                  <el-input v-model="formMember.link_man" class="width406" placeholder="请输入发单负责人"></el-input>
+                </el-form-item>
+                <el-form-item label="负责人电话" prop="user_name">
+                  <el-input v-model="formMember.link_tel" class="width406" placeholder="请输入负责人电话"></el-input>
+                </el-form-item>
+                <el-form-item label="指定招聘人">
+                  <el-radio-group v-model="formMember.is_assign">
+                    <el-radio :label="1" border>是</el-radio>
+                    <el-radio :label="2" border>否</el-radio>
+                  </el-radio-group>
+                  <div class="x-flex-between select-people-box" @click="dialogTableVisible=true">
+                    <p class="select-people-text">请选择指定招聘者</p>
+                    <img src="../../assets/img/receipt/people.png" alt="">
+                  </div>
+                </el-form-item>
+              </div>
+            </div>
+          </section>
+        </el-form>
+      </section>
+    </div>
+    <div class="resume-footer-btn">
+      <el-button type="primary" @click="submitForm">保存</el-button>
+    </div>
+    <personalModal :dialogTableVisible="dialogTableVisible" @handleClose="dialogTableVisible=false"></personalModal>
+  </div>
+</template>
+<script>
+import personalModal from '../common/personalModal'
+export default {
+  components: {
+    personalModal
+  },
+  data () {
+    return {
+      dialogTableVisible:false,
+      formMember: {
+        job_type:1
+      },
+      assignUids: '',
+      meetingTime: ''
+    }
+  },
+  created () {
+  },
+  methods: {
+    handleClose () {
+      this.$parent.dialogTableVisible = false
+    },
+    submitForm () {
+      this.$emit('submitForm', this.formMember)
+    }
+  }
+}
+</script>
+<style lang="scss">
+.job-detail-view{
+  border-radius:10px;
+  background: #fff;
+  &.reward-rule-row {
+    .job-detail-row {
+      width: 100%;
+      margin: 0 auto;
+      text-align: center;
+      color: #333333;
+      padding: 40px 0 10px;
+      .el-form-item{
+        display: block;
+      }
+      .width406 {
+        width: 406px;
+      }
+      .width180{
+        width: 180px;
+      }
+      .line {
+        margin: 0 10px;
+        color: #BEBEBE;
+      }
+      .resume-col3 {
+        width: 100%;
+        padding-top: 10px;
+        margin: 0 auto;
+       .demo-form-inline {
+          width: 95%;
+          margin: 10px auto;
+          .el-form-item {
+            margin-bottom: 10px;
+          }
+          .el-input__inner{
+            height:38px;
+            line-height:38px;
+            border-radius:3px;
+          }
+        }
+      }
+    }
+    .resume-card {  
+     .resume-card-row {
+       margin: 0;
+      .resume-card-item {
+        width: 100%;
+        text-align: left;
+        &:nth-child(2) {
+          .el-form-item {
+            margin-right:0;
+          }
+        }
+        .el-radio.is-bordered {
+          height: 38px;
+          width: 198.5px;
+          border-radius: 3px;
+          line-height: 38px;
+          padding:0;
+          border: 1px solid #eee;
+          margin-right: 0;
+          &+.el-radio.is-bordered {
+            margin-left: 10px;
+          }
+          &.width126 {
+            width: 128.5px;
+          }
+        }
+        .el-radio__input {
+          float: right;
+          margin-top: 12px;
+          margin-right: 10px;
+        }
+      }
+      .el-form-item__error{
+        top:-50%;
+      }
+    }  
+  }
+  .select-people-box {
+    border: 1px solid #eee;
+    padding: 0 10px;
+    margin: 10px 0 ;
+    width: 385px;
+    border-radius: 3px;
+    .select-people-text {
+      color: #999999;
+    }
+  }
+  .resume-footer-btn {
+    margin-left: 126px;
+    padding-bottom: 32px;
+  }
+ }
+}
+</style>

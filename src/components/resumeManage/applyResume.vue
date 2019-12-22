@@ -18,7 +18,13 @@
         <el-form-item label="联系电话：">
           <el-input v-model="formMember.name" class="width300" placeholder="请输入联系电话"></el-input>
         </el-form-item>
-        <el-form-item label="意向岗位：">
+        <el-form-item label="企业名称：" v-if="viewType==3">
+          <el-input v-model="formMember.name" class="width300" placeholder="请输入企业名称"></el-input>
+        </el-form-item>
+        <el-form-item label="岗位名称：" v-if="viewType==3">
+          <el-input v-model="formMember.name" class="width300" placeholder="请输入岗位名称"></el-input>
+        </el-form-item>
+        <el-form-item label="意向岗位：" v-if="viewType!=3">
           <el-select v-model="formMember.industry" class="width300" placeholder="请输入意向岗位关键字">
             <el-option :label="item" :value="key" v-for="(item,key) in jobList" :key="key"></el-option>
           </el-select>
@@ -26,7 +32,7 @@
         <el-form-item label="录入人：">
           <el-input v-model="formMember.name" class="width300" placeholder="请输入录入人关键字"></el-input>
         </el-form-item>
-        <el-form-item label="意向地区：">
+        <el-form-item label="意向地区：" v-if="viewType!=3">
           <div class="width300">
             <districtSelet @change="change" :placeholder="'请选择意向地区'" :disabled="true"></districtSelet>
           </div>
@@ -34,7 +40,7 @@
         <el-form-item label="跟进人：">
           <el-input v-model="formMember.name" class="width300" placeholder="请输入跟进人关键字"></el-input>
         </el-form-item>
-        <el-form-item label="意向工资：">
+        <el-form-item label="意向工资：" v-if="viewType!=3">
           <el-select v-model="formMember.industry" class="width300" placeholder="请选择意向工资">
             <el-option
               :label="item.label"
@@ -44,7 +50,7 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="跟进时间：">
+        <el-form-item :label="labelTime+':'" >
           <el-date-picker
             class="width300"
             v-model="timeList"
@@ -57,7 +63,7 @@
             end-placeholder="结束日期"
           ></el-date-picker>
         </el-form-item>
-        <el-form-item :label="label+':'">
+        <el-form-item :label="label+':'" v-if="viewType!=3">
           <el-select v-model="formMember.industry" class="width300" placeholder="请选择报名状态">
             <el-option
               :label="item.label"
@@ -291,6 +297,9 @@ export default {
   computed: {
     label () {
       return this.viewType == 1 ? '报名状态' : '入职状态'
+    },
+    labelTime () {
+      return this.viewType == 3 ? '报名时间' : '跟进时间'
     }
   },
   methods: {

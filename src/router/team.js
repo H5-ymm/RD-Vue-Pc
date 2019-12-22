@@ -21,6 +21,12 @@ const recommendResume = resolve => (require(['../components/teamReceiptManage/re
 const CollectJob = resolve => (require(['../components/CollectJob.vue'], resolve))
 const userRecommend = resolve => (require(['../components/collectManage/userRecommend.vue'], resolve)) // 成员推荐
 const publishJobList = resolve => (require(['../components/internalInvoice/publishJobList.vue'], resolve)) // 内部发单
+const jobDetail = resolve => (require(['../components/internalInvoice/jobDetail.vue'], resolve)) // 内部发单详情
+const postJob = resolve => (require(['../components/internalInvoice/postJob.vue'], resolve)) // 内部发单详情
+
+const collectingInvoice = resolve => (require(['../components/internalInvoice/collectingInvoice.vue'], resolve)) // 领取发单
+
+
 import Department from '../components/Department.vue'
 import personalForm from '../components/teamMessage/personalForm'  // 个人
 import CompanyForm from '../components/teamMessage/companyForm'   // 企业
@@ -204,6 +210,29 @@ export const teamRouters = [{  // 团队论坛
   meta: {
     requiresAuth: 1
   }
-
-}
+},
+{
+  path: '/jobDetail',  // 内部发单详情
+  name: jobDetail,
+  component: jobDetail,
+  meta: {
+    requiresAuth: 1
+  }
+},
+{
+  path: '/postJob',  // 发布岗位
+  name: postJob,
+  component: postJob,
+  meta: {
+    requiresAuth: 1
+  }
+},
+{
+  path: '/collectingInvoice',  // 领取发单
+  name: collectingInvoice,
+  component: collectingInvoice,
+  meta: {
+    requiresAuth: 1
+  }
+},
 ]

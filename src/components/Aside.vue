@@ -181,7 +181,15 @@ export default {
             {
               title: '已发布职位',
               url: '/publishJobList'
-            }
+            },
+            {
+              title: '已推荐简历',
+              url: '/applyResume?view=3'
+            },
+            {
+              title: '领取发单',
+              url: '/collectingInvoice'
+            },
           ]
         }
       ],
