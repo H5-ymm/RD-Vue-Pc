@@ -86,7 +86,7 @@
 </style>
 
 <template>
- <div class="job-detail-view">
+  <div class="job-detail-view">
     <div class="member-row">
       <section class="resume-col3">
         <div class="demo-form-inline resume-info-card">
@@ -96,7 +96,7 @@
               <span>岗位信息</span>
             </p>
             <div class="resume-card-row x-flex-start">
-              <div class="resume-card-item ">
+              <div class="resume-card-item">
                 <div class="x-flex-start">
                   <p class="resume-col1">岗位名称</p>
                   <p>{{formMember.name}}</p>
@@ -115,7 +115,7 @@
                 </div>
               </div>
               <div class="company-info-box">
-                <img src="../../assets/img/icon8.png" alt="">
+                <img src="../../assets/img/icon8.png" alt />
                 <p>仁达网络科技（上海）有限公司</p>
               </div>
             </div>
@@ -126,7 +126,7 @@
               <span>薪资说明</span>
             </p>
             <div class="resume-card-row">
-              <div class="resume-card-item ">
+              <div class="resume-card-item">
                 <div class="x-flex-start">
                   <p class="resume-col1">综合薪资</p>
                   <p>{{formMember.name}}仁达网络科技（上海）有限公司仁达网络科技（上海</p>
@@ -138,13 +138,13 @@
               </div>
             </div>
           </section>
-           <section class="resume-card">
+          <section class="resume-card">
             <p class="resume-main-title x-flex-start-justify">
               <img src="../../assets/img/receipt/icon3.png" />
               <span>岗位说明</span>
             </p>
             <div class="resume-card-row">
-              <div class="resume-card-item ">
+              <div class="resume-card-item">
                 <div class="x-flex-start">
                   <p class="resume-col1">工作地址</p>
                   <p>{{formMember.name}}</p>
@@ -170,7 +170,7 @@
               <span>其他说明</span>
             </p>
             <div class="resume-card-row">
-              <div class="resume-card-item ">
+              <div class="resume-card-item">
                 <div class="x-flex-start">
                   <p class="resume-col1">性别要求</p>
                   <p>{{formMember.name}}</p>
@@ -212,13 +212,13 @@
               </div>
             </div>
           </section>
-           <section class="resume-card">
+          <section class="resume-card">
             <p class="resume-main-title x-flex-start-justify">
               <img src="../../assets/img/receipt/icon6.png" />
               <span>运营信息</span>
             </p>
             <div class="resume-card-row">
-              <div class="resume-card-item ">
+              <div class="resume-card-item">
                 <div class="x-flex-start">
                   <p class="resume-col1">岗位类型</p>
                   <p>{{formMember.name}}</p>
@@ -239,7 +239,7 @@
                   <p class="resume-col1">合作商务电话</p>
                   <p>{{formMember.address}}</p>
                 </div>
-                   <div class="x-flex-start">
+                <div class="x-flex-start">
                   <p class="resume-col1">面试时间</p>
                   <p>{{formMember.address}}</p>
                 </div>
@@ -255,7 +255,7 @@
                   <p class="resume-col1">负责人电话</p>
                   <p>{{formMember.address}}</p>
                 </div>
-                 <div class="x-flex-start">
+                <div class="x-flex-start">
                   <p class="resume-col1">指定招聘人</p>
                   <p>{{formMember.address}}</p>
                 </div>
@@ -268,14 +268,18 @@
         <el-button type="primary" @click="$router.go(-1)">关闭</el-button>
       </div>
     </div>
- </div>
+  </div>
 </template>
 <script>
 export default {
-  data() {
+  data () {
     return {
-      formMember: {}
+      formMember: {},
+      id: ''
     }
+  },
+  created () {
+    this.id = this.$route.query.id
   }
 }
 </script>

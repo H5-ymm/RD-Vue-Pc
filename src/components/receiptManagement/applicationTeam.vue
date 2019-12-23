@@ -52,7 +52,7 @@
         >
           <el-table-column label="职位名称" align="center" width="150">
             <template slot-scope="props">
-              <el-button type="text" @click="handleEdit(props.row)">{{props.row.name}}</el-button>
+              <el-button type="text" @click="viewJob(props.row)">{{props.row.name}}</el-button>
             </template>
           </el-table-column>
           <el-table-column label="团队名称" align="center" width="150">
@@ -79,14 +79,14 @@
           <el-table-column label="操作" align="center" width="150">
             <template slot-scope="scope">
               <el-button
-                @click="handleDel(scope.row)"
+                @click="viewTeam(scope.row)"
                 type="text"
                 v-if="props.row.status<2"
                 size="small"
               >查看团队</el-button>
               <el-button
                 5
-                @click="handleDel(scope.row)"
+                @click="viewJob(scope.row)"
                 type="text"
                 size="small"
                 v-if="props.row.status>=2&&props.row.status<5"
@@ -143,17 +143,22 @@
       ></el-pagination>
     </div>
     <customerService :dialogTableVisible="dialogTableVisible"></customerService>
+    <viewJob :dialogTableVisible="dialogJobVisible" @handleClose="dialogJobVisible=fasle"></viewJob>
+    <viewTeam :dialogTableVisible="dialogTeamVisible" @handleClose="dialogTeamVisible=fasle"></viewTeam>
   </div>
 </template>
 
 <script>
-import { getTeamList, loginOutTeam, addTeamUser, updateTeamUser } from '../../api/team'
 import { applyInvoiceList, auditInvoiceInfo, delCompanyTeamApply, companyReceiptShelf } from '../../api/receipt'
 import customerService from '../common/customerService'
+import viewJob from '../common/viewJob'
+import viewTeam from '../common/viewTeam'
 import { moneyTypeList, rewardTypeList, payTypeList, applyStatusList } from '../../base/base'
 export default {
   components: {
-    customerService
+    customerService,
+    viewJob,
+    viewTeam
   },
   filters: {
     moneyType (val) {
@@ -182,7 +187,8 @@ export default {
       rewardTypeList,
       applyStatusList,
       dialogTableVisible: false,
-      visible: false,
+      dialogTeamVisible: false,
+      dialogJobVisible: false,
       tableData: [],
       userType: 1,
       formMember: {
@@ -226,10 +232,11 @@ export default {
       this.formMember.page = val
       this.getList(this.formMember)
     },
-    handleEdit (val) {
-      this.dialogTableVisible = true
-      this.userId = val
-      console.log(this.userId)
+    viewTeam (val) {
+      this.dialogTeamVisible = true
+    },
+    viewJob (val) {
+      this.dialogJobVisible = true
     },
     handleAudit (status, val) {
       let params = {

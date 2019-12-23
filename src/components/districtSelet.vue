@@ -37,7 +37,9 @@ export default {
     }
   },
   created () {
-    // this.getRegion([])
+    if (!this.address.length) {
+      this.getRegion([])
+    }
   },
   watch: {
     address (val) {

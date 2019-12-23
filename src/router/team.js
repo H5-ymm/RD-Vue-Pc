@@ -25,8 +25,7 @@ const jobDetail = resolve => (require(['../components/internalInvoice/jobDetail.
 const postJob = resolve => (require(['../components/internalInvoice/postJob.vue'], resolve)) // 内部发单详情
 
 const collectingInvoice = resolve => (require(['../components/internalInvoice/collectingInvoice.vue'], resolve)) // 领取发单
-
-
+const checkResume = resolve => (require(['../components/internalInvoice/checkResume.vue'], resolve)) // 内部审核简历
 import Department from '../components/Department.vue'
 import personalForm from '../components/teamMessage/personalForm'  // 个人
 import CompanyForm from '../components/teamMessage/companyForm'   // 企业
@@ -203,6 +202,7 @@ export const teamRouters = [{  // 团队论坛
     requiresAuth: 1
   }
 },
+// 成员无法查看
 {
   path: '/publishJobList',  // 内部发单
   name: publishJobList,
@@ -235,4 +235,12 @@ export const teamRouters = [{  // 团队论坛
     requiresAuth: 1
   }
 },
+{
+  path: '/checkResume',  // 内部审核简历
+  name: checkResume,
+  component: checkResume,
+  meta: {
+    requiresAuth: 1
+  }
+}
 ]

@@ -7,25 +7,60 @@
       <el-container>
         <el-header :height="height">
           <div class="x-flex-between team-header" :class="{'comany-team-header': type==1}">
-            <i class="el-icon-refresh-right" v-if="type==1"></i>
-            <!-- <el-link :underline="false" href="home" v-else>首页</el-link> -->
-            <div class="x-flex-start-justify">
-              <img :src="baseInfo.log" alt class="team-logo" v-if="baseInfo&&baseInfo.log" />
+            <!-- <i class="el-icon-refresh-right" v-if="type==1"></i> -->
+            <el-link :underline="false" href="home" v-if="type==1">首页</el-link>
+            <div class="x-flex-start-justify" v-if="type==2">
+              <img
+                :src="getImgUrl(baseInfo.log)"
+                alt
+                class="team-logo"
+                v-if="baseInfo&&baseInfo.log"
+              />
               <p class="team-logo no-logo" v-else></p>
               <span>{{baseInfo&&baseInfo.team_name}}</span>
             </div>
-            <div class="x-flex-center">
-              <el-link :underline="false" href="home" v-if="type==2">首页</el-link>
+            <div class="x-flex-center" v-if="type==2">
+              <el-link :underline="false" href="home">首页</el-link>
               <el-badge :value="200" :max="99" class="item">
                 <i class="el-icon-bell unRead"></i>
               </el-badge>
-              <span>{{userInfo.user_name?userInfo.user_name:userInfo.mobile}}</span>
+              <el-dropdown @command="handleCommand">
+                <span class="el-dropdown-link">
+                  <span>{{userInfo.user_name?userInfo.user_name:userInfo.mobile}}</span>
+                  <i class="el-icon-caret-bottom"></i>
+                </span>
+                <el-dropdown-menu slot="dropdown">
+                  <el-dropdown-item command="0">账户信息</el-dropdown-item>
+                  <el-dropdown-item command="1">退出登录</el-dropdown-item>
+                </el-dropdown-menu>
+              </el-dropdown>
+            </div>
+            <div class="x-flex-start-justify" v-if="type==1">
+              <img
+                :src="getImgUrl(baseInfo.logo_url)"
+                alt
+                class="team-logo"
+                v-if="baseInfo&&baseInfo.logo_url"
+              />
+              <p class="team-logo no-logo" v-else></p>
+              <el-dropdown @command="handleCommand">
+                <span class="el-dropdown-link">
+                  <span>{{baseInfo&&baseInfo.com_name}}</span>
+                  <i class="el-icon-caret-bottom"></i>
+                </span>
+                <el-dropdown-menu slot="dropdown">
+                  <el-dropdown-item command="0">账户信息</el-dropdown-item>
+                  <el-dropdown-item command="1">退出登录</el-dropdown-item>
+                </el-dropdown-menu>
+              </el-dropdown>
             </div>
           </div>
           <breadcrumb :breadcrumbs="breadcrumb"></breadcrumb>
         </el-header>
         <el-main class="team-main" :class="{'comany-main-page': type==1}">
-          <router-view class="team-box"></router-view>
+          <keep-alive>
+            <router-view class="team-box"></router-view>
+          </keep-alive>
         </el-main>
       </el-container>
     </el-container>
@@ -40,9 +75,7 @@ import Breadcrumb from '@/components/breadcrumb/Breadcrumb'
 import { getTeamInfo } from '@/api/team'
 import { getUserInfo } from '@/api/user'
 import { getCompanyDetail } from '@/api/company'
-
-import { join } from 'path'
-
+import { getImgUrl } from '@/util/util'
 export default {
   name: 'team',
   data () {
@@ -52,7 +85,8 @@ export default {
       aside: '',
       height: '',
       baseInfo: {},
-      userInfo: {}
+      userInfo: {},
+      uid: localStorage.getItem('uid')
     }
   },
   components: {
@@ -60,38 +94,42 @@ export default {
     Breadcrumb,
     companyAside
   },
-  computed: {
-
-  },
   created () {
     // type 1 企业
     // 2 团队
     this.type = localStorage.getItem('userType')
-    let uid = localStorage.getItem('uid')
-    if (this.type == 1) {
-      this.aside = 'companyAside'
-      this.height = "90px"
-      this.getCompanyInfo(uid)
+    this.getUser(this.uid)
+    if (sessionStorage.getItem('menus')) {
+      this.breadcrumb = JSON.parse(sessionStorage.getItem('menus'))
     }
-    else {
-      this.aside = 'homeAside'
-      this.height = "74px"
-      this.getInfo(uid)
+  },
+  watch: {
+    type (val) {
+      console.log(val)
+      if (val == 1) {
+        this.aside = 'companyAside'
+        this.height = "90px"
+        this.getCompanyInfo(this.uid)
+      }
+      else {
+        this.aside = 'homeAside'
+        this.height = "74px"
+        this.getInfo(this.uid)
+      }
     }
-    this.getUser(uid)
-    this.breadcrumb = JSON.parse(sessionStorage.getItem('menus'))
   },
   methods: {
+    getImgUrl,
     getInfo (uid) {
       getTeamInfo({ uid }).then(res => {
         this.baseInfo = res.data || null
-        sessionStorage.setItem('baseInfo', this.baseInfo)
+        sessionStorage.setItem('baseInfo', JSON.stringify(this.baseInfo))
       })
     },
     getCompanyInfo (uid) {
       getCompanyDetail({ uid }).then(res => {
         this.baseInfo = res.data || null
-        sessionStorage.setItem('baseInfo', this.baseInfo)
+        sessionStorage.setItem('baseInfo', JSON.stringify(this.baseInfo))
       })
     },
     getUser (uid) {
@@ -99,6 +137,11 @@ export default {
         this.userInfo = res.data || null
         sessionStorage.setItem('userInfo', JSON.stringify(this.userInfo))
       })
+    },
+    handleCommand (val) {
+      localStorage.clear('')
+      sessionStorage.clear('')
+      this.$router.push('login')
     }
   },
 }

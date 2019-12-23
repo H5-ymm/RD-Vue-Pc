@@ -49,13 +49,13 @@ export default {
       this.$emit('handleClose')
     },
     handle (item, index) {
-      this.code = item.code
+      this.code = item.value
       this.codeList.push(this.code)
       this.activeIndex = index
-      this.getCityList(item.code)
+      this.getCityList(item.value)
     },
     getCityCode (item) {
-      this.codeList.push(item.code)
+      this.codeList.push(item.value)
       this.$emit('getCityCode', item)
       this.codeList = []
     },
@@ -63,7 +63,7 @@ export default {
       return list.map(item => {
         let obj =
         {
-          code: item.provinceid,
+          value: item.provinceid,
           name: item.province,
           children: []
         }

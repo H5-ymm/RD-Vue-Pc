@@ -11,92 +11,92 @@ const checkResume = resolve => (require(['../components/receiptManagement/checkR
 import CompanyForm from '../components/teamMessage/companyForm'   // 企业
 const createOrderTaking = resolve => (require(['../components/CeateOrderTaking.vue'], resolve))
 export const companyRouters = [
-        { // 审核发单
-          path: '/checkReceipt',
-          name: 'checkReceipt',
-          component: checkReceipt,
-          meta: {
-            requiresAuth: 2
-          }
-        },
-        { // 申请团队
-          path: '/applicationTeam',
-          name: 'applicationTeam',
-          component: applicationTeam,
-          meta: {
-            requiresAuth: 2
-          }
-        },
-        { // 个人简历
-          path: '/talentResume',
-          name: 'talentResume',
-          component: talentResume,
-          meta: {
-            requiresAuth: 2
-          }
-        },
-        { // 入职名单
-          path: '/entryList',
-          name: 'entryList',
-          component: entryList,
-          meta: {
-            requiresAuth: 2
-          }
-        },
-        { // 审核简历
-          path: '/checkResume',
-          name: 'checkResume',
-          component: checkResume,
-          meta: {
-            requiresAuth: 2
-          }
-        },
-        { // 简历详情
-          path: '/entryDetailTable',
-          name: 'entryDetailTable',
-          component: entryDetailTable,
-          meta: {
-            requiresAuth: 2
-          }
-        },
-        { // 面试人才
-          path: '/interviewPersonnel',
-          name: 'interviewPersonnel',
-          component: interviewPersonnel,
-          meta: {
-            requiresAuth: 2
-          }
-        },
-        { // 面试名单
-          path: '/auditionNameList',
-          name: 'auditionNameList',
-          component: auditionNameList,
-          meta: {
-            requiresAuth: 2
-          }
-        },
-        { // 查看简历
-          path: '/commonTable',
-          name: 'commonTable',
-          component: commonTable,
-          meta: {
-            requiresAuth: 2
-          }
-        },
-        { // 团队个人设置
-          path: '/companyForm',
-          name: 'CompanyForm',
-          component: CompanyForm,
-          meta: {
-            requiresAuth: 2
-          }
-        },
-        {
-          path: '/createOrderTaking',  // 新建接单
-          name: createOrderTaking,
-          component: createOrderTaking,
-          meta: {
-            requiresAuth: 1
-          }
-        }
-      ]
+  { // 审核发单
+    path: '/checkReceipt',
+    name: 'checkReceipt',
+    component: checkReceipt,
+    meta: {
+      requiresAuth: 2
+    }
+  },
+  { // 申请团队
+    path: '/applicationTeam',
+    name: 'applicationTeam',
+    component: applicationTeam,
+    meta: {
+      requiresAuth: 2
+    }
+  },
+  { // 个人简历
+    path: '/talentResume',
+    name: 'talentResume',
+    component: talentResume,
+    meta: {
+      requiresAuth: 2
+    }
+  },
+  { // 入职名单
+    path: '/entryList',
+    name: 'entryList',
+    component: entryList,
+    meta: {
+      requiresAuth: 2
+    }
+  },
+  { // 审核简历
+    path: '/checkResume',
+    name: 'checkResume',
+    component: checkResume,
+    meta: {
+      requiresAuth: 2
+    }
+  },
+  { // 简历详情
+    path: '/entryDetailTable',
+    name: 'entryDetailTable',
+    component: entryDetailTable,
+    meta: {
+      requiresAuth: 2
+    }
+  },
+  { // 面试人才
+    path: '/interviewPersonnel',
+    name: 'interviewPersonnel',
+    component: interviewPersonnel,
+    meta: {
+      requiresAuth: 2
+    }
+  },
+  { // 面试名单
+    path: '/auditionNameList',
+    name: 'auditionNameList',
+    component: auditionNameList,
+    meta: {
+      requiresAuth: 2
+    }
+  },
+  { // 查看简历
+    path: '/commonTable',
+    name: 'commonTable',
+    component: commonTable,
+    meta: {
+      requiresAuth: 2
+    }
+  },
+  { // 团队个人设置
+    path: '/companyForm',
+    name: 'CompanyForm',
+    component: CompanyForm,
+    meta: {
+      requiresAuth: 2
+    }
+  },
+  {
+    path: '/createOrderTaking',  // 新建接单
+    name: createOrderTaking,
+    component: createOrderTaking,
+    meta: {
+      requiresAuth: 1
+    }
+  }
+]

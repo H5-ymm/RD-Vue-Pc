@@ -1,23 +1,26 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import {teamRouters} from './router/team'
-import {companyRouters} from './router/company'
-import { commonRouters} from './router/index'
+import { teamRouters } from './router/team'
+import { companyRouters } from './router/company'
+import { commonRouters } from './router/index'
 import Team from './views/Team.vue'  //登录页
 import About from './views/About.vue'
 import Home from './views/Home.vue'
+import ForgetPassword from './views/ForgetPassword.vue'
+
 const login = resolve => (require(['./views/Login.vue'], resolve))
 const register = resolve => (require(['./views/Register.vue'], resolve)) //登录页
 const OrderTaking = resolve => (require(['./views/OrderTaking.vue'], resolve))
 const OrderTakingDetail = resolve => (require(['./views/OrderTakingDetail.vue'], resolve)) // 接单详情
 Vue.use(Router)
 let children = []
+let userType = localStorage.getItem('userType')
 // 企业和团队路由
-if (localStorage.getItem('userType')==1) {
-  children = [...companyRouters,...commonRouters]
+if (localStorage.getItem('userType') == 1) {
+  children = [...companyRouters, ...commonRouters]
 }
 else {
-  children = [...teamRouters,...commonRouters]
+  children = [...teamRouters, ...commonRouters]
 }
 let routers = new Router({
   mode: "history",
@@ -33,7 +36,7 @@ let routers = new Router({
       path: '/team',
       name: 'Team',
       component: Team,
-      children:children,
+      children: children,
     },
     {
       path: '/about',
@@ -64,7 +67,13 @@ let routers = new Router({
       path: '/login',
       name: 'login',
       component: login
-    }
+    },
+    {
+      path: '/forgetPassword',
+      name: 'ForgetPassword',
+      component: ForgetPassword
+    },
+
   ]
 })
 // 全部钩子

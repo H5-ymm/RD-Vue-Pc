@@ -905,7 +905,7 @@ export default {
   padding: 3px 8px; 
 }
 .box-card {
-  height:160px;
+  height:150px;
 }
 .home-list-clearfix {
   line-height:30px;

@@ -1,6 +1,5 @@
 <template>
-  <div
-    class="job-detail-view reward-rule-row">
+  <div class="job-detail-view reward-rule-row">
     <div class="job-detail-row">
       <section class="resume-col3">
         <el-form
@@ -25,24 +24,28 @@
                 <el-form-item label="岗位来源">
                   <el-input v-model="formMember.source" class="width406" placeholder="请输入岗位来源"></el-input>
                 </el-form-item>
-                 <el-form-item label="合作商务姓名">
+                <el-form-item label="合作商务姓名">
                   <el-input v-model="formMember.work_man" class="width406" placeholder="请输入合作商务姓名"></el-input>
                 </el-form-item>
-                 <el-form-item label="合作商务电话">
+                <el-form-item label="合作商务电话">
                   <el-input v-model="formMember.work_tel" class="width406" placeholder="请输入合作商务电话"></el-input>
                 </el-form-item>
-                  <el-form-item label="面试时间">
-                   <el-date-picker
+                <el-form-item label="面试时间">
+                  <el-date-picker
                     class="width406"
                     format="yyyy-MM-dd"
                     value-format="timestamp"
                     v-model="formMember.meeting_time"
                     type="date"
-                    placeholder="选择面试时间">
-                  </el-date-picker>
+                    placeholder="选择面试时间"
+                  ></el-date-picker>
                 </el-form-item>
                 <el-form-item label="面试地址" prop="user_name">
-                  <el-input v-model="formMember.meeting_addr" class="width406" placeholder="请输入面试地址"></el-input>
+                  <el-input
+                    v-model="formMember.meeting_addr"
+                    class="width406"
+                    placeholder="请输入面试地址"
+                  ></el-input>
                 </el-form-item>
                 <el-form-item label="发单负责人" prop="user_name">
                   <el-input v-model="formMember.link_man" class="width406" placeholder="请输入发单负责人"></el-input>
@@ -55,9 +58,9 @@
                     <el-radio :label="1" border>是</el-radio>
                     <el-radio :label="2" border>否</el-radio>
                   </el-radio-group>
-                  <div class="x-flex-between select-people-box" @click="dialogTableVisible=true">
+                  <div class="x-flex-between select-people-box" @click="selectPerson">
                     <p class="select-people-text">请选择指定招聘者</p>
-                    <img src="../../assets/img/receipt/people.png" alt="">
+                    <img src="../../assets/img/receipt/people.png" alt />
                   </div>
                 </el-form-item>
               </div>
@@ -69,10 +72,17 @@
     <div class="resume-footer-btn">
       <el-button type="primary" @click="submitForm">保存</el-button>
     </div>
-    <personalModal :dialogTableVisible="dialogTableVisible" @handleClose="dialogTableVisible=false"></personalModal>
+    <personalModal
+      :dialogTableVisible="dialogTableVisible"
+      title="指定招聘人"
+      @handleClose="dialogTableVisible=false"
+      @handleOk="handleOk"
+      :personalList="personalList"
+    ></personalModal>
   </div>
 </template>
 <script>
+import { getTeamManage } from '@/api/internalInvoice'
 import personalModal from '../common/personalModal'
 export default {
   components: {
@@ -80,20 +90,31 @@ export default {
   },
   data () {
     return {
-      dialogTableVisible:false,
+      dialogTableVisible: false,
       formMember: {
-        job_type:1
+        job_type: 1
       },
       assignUids: '',
-      meetingTime: ''
+      meetingTime: '',
+      personalList: []
     }
   },
   created () {
   },
   methods: {
+    selectPerson () {
+      let uid = localStorage.getItem('uid')
+      getTeamManage(uid).then(res => {
+        this.personalList = res.data
+        this.dialogTableVisible = true
+      }).catch(error => {
+        this.$message.error(error.status.remind)
+      })
+    },
     handleClose () {
       this.$parent.dialogTableVisible = false
     },
+    handleOk (val) { },
     submitForm () {
       this.$emit('submitForm', this.formMember)
     }

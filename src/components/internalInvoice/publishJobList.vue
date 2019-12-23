@@ -7,15 +7,18 @@
         padding-left: 10px;
       }
     }
+    .internal-invoice-form {
+      .el-button {
+        padding: 10px;
+      }
+      .el-form-item{
+        margin-bottom:10px;
+      }
+    }
     .select-status {
       margin-right: 2px;
     }
-    .el-button {
-      padding: 10px;
-    }
-    .el-form-item{
-      margin-bottom:10px;
-    }
+
     .success-color {
       color: #71D875;
     }
@@ -60,7 +63,7 @@
         :inline="true"
         label-width="96px"
         label-position="right"
-        :model="formMember" 
+        :model="formMember"
         class="internal-invoice-form"
       >
         <el-form-item label="搜索类型：">
@@ -69,7 +72,12 @@
             <el-option label="企业名称" value="com_name"></el-option>
             <el-option label="工作地址" value="address"></el-option>
           </el-select>
-          <el-input v-model="keyword" class="width300" @change="changeInput" placeholder="请输入你要搜索的关键字"></el-input>
+          <el-input
+            v-model="keyword"
+            class="width300"
+            @change="changeInput"
+            placeholder="请输入你要搜索的关键字"
+          ></el-input>
           <el-button type="primary" @click="handleSearch" class="select-btn">查询</el-button>
           <p @click="show=!show" class="x-flex-center senior-search-btn">
             <el-link :type="!show?'primary': ''" :underline="false">高级筛选</el-link>
@@ -108,7 +116,7 @@
                   @click="selectStatus('reward_type',item)"
                   class="select-status"
                 >{{item.label}}</el-button>
-              </el-form-item>          
+              </el-form-item>
             </div>
             <div class="senior-search-col2">
               <el-form-item label="缴纳五险：">
@@ -161,7 +169,7 @@
             class="select-status"
           >{{item.label}}</el-button>
         </el-form-item>
-        <el-form-item label="招聘类型：" >
+        <el-form-item label="招聘类型：">
           <el-button
             :type="formMember.moneyType==item.value ?'primary':''"
             v-for="(item,index) in advertisesList"
@@ -179,10 +187,10 @@
         <el-table border :data="tableData" ref="multipleTable" style="width: 100%">
           <el-table-column label="企业名称" align="center" width="150">
             <template slot-scope="props">
-              <el-button type="text" @click="handleEdit(props.row)">{{props.row.name}}</el-button>
+              <el-button type="text" @click="handleEdit(props.row)">{{props.row.company_name}}</el-button>
             </template>
           </el-table-column>
-          <el-table-column label="岗位名称" prop="name" align="center" width="150"></el-table-column>
+          <el-table-column label="岗位名称" prop="job_name" align="center" width="150"></el-table-column>
           <el-table-column label="岗位类型" prop="name" align="center" width="110"></el-table-column>
           <el-table-column label="工作地址" prop="name" align="center" width="110"></el-table-column>
           <el-table-column label="员工薪资" align="center" width="110">
@@ -196,37 +204,30 @@
               <el-button type="text">{{props.row.reward_type | rewardType}}</el-button>
             </template>
           </el-table-column>
-          <el-table-column label="招聘人数" prop="put_num" align="center" width="110">
-          </el-table-column>
-          <el-table-column label="报名人数" prop="depart_name" align="center" width="110">    
-             <template slot-scope="props">
+          <el-table-column label="招聘人数" prop="put_num" align="center" width="110"></el-table-column>
+          <el-table-column label="报名人数" prop="depart_name" align="center" width="110">
+            <template slot-scope="props">
               <div>
-                <span class="el-icon-circle-check success-color">{{
-                  props.row.view_dcl}}</span>
+                <span class="el-icon-circle-check success-color">{{props.row.view_dcl}}</span>
               </div>
             </template>
           </el-table-column>
-          <el-table-column label="面试人数" prop="depart_name" align="center" width="110">    
-             <template slot-scope="props">
+          <el-table-column label="面试人数" prop="depart_name" align="center" width="110">
+            <template slot-scope="props">
               <div>
-                {{
-                  props.row.view_num}}
-                <span class="fail-color">{{
-                  props.row.view_dcl}}</span>
+                {{props.row.view_num}}
+                <span class="fail-color">{{ props.row.view_dcl}}</span>
               </div>
             </template>
           </el-table-column>
           <el-table-column label="面试情况" prop="depart_name" align="center" width="110">
             <template slot-scope="props">
               <div>
-                <span class="el-icon-circle-check success-color">{{
-                  props.row.view_yes}}</span>
+                <span class="el-icon-circle-check success-color">{{props.row.view_yes}}</span>
                 <el-divider direction="vertical"></el-divider>
-                <span class="el-icon-circle-close fail-color">{{
-                  props.row.view_nopass}}</span>
+                <span class="el-icon-circle-close fail-color">{{ props.row.view_nopass}}</span>
                 <el-divider direction="vertical"></el-divider>
-                <span class="el-icon-remove-outline outline-color">{{
-                  props.row.view_no}}</span>
+                <span class="el-icon-remove-outline outline-color">{{props.row.view_no}}</span>
               </div>
             </template>
           </el-table-column>
@@ -238,22 +239,72 @@
               >{{props.row.status|recommendStatus}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="创建日期" prop="depart_name" align="center" width="110"></el-table-column>   
-          <el-table-column label="操作" align="center" min-width="150">
+          <el-table-column label="创建日期" prop="depart_name" align="center" width="110"></el-table-column>
+          <el-table-column label="已领取人" align="center" width="180" v-if="viewType==2">
             <template slot-scope="scope">
-              <el-button
-                @click="$router.push('jobDetail')"
-                type="text"
-                size="small"
-              >详情</el-button>
-              <el-button
-                @click="handleApply(scope.row)"
-                v-if="scope.row.is_up==1"
-                type="text"
-                size="small"
-
-              >推荐简历</el-button>
-              <el-button @click="$router.push('applyResume?view=3')" type="text" size="small">已推荐简历</el-button>
+              <div
+                class="text-line"
+                @click="handleRecepit(2,scope.row)"
+                v-if="(scope.row&&scope.row.uid==uid)||userPosition==3"
+              >
+                <el-button
+                  v-for="(item,index) in scope.row.tolist"
+                  :key="index"
+                  type="text"
+                  size="small"
+                >{{item.name}}</el-button>
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column label="操作" align="center" min-width="200">
+            <template slot-scope="scope">
+              <div v-if="viewType==1">
+                <el-button @click="$router.push('jobDetail')" type="text" size="small">详情</el-button>
+                <el-button
+                  @click="handleRecepit(1,scope.row)"
+                  type="text"
+                  v-if="scope.row.is_up==1"
+                  size="small"
+                >分配跟进人</el-button>
+                <el-button
+                  @click="changeJobstatus(0,scope.row)"
+                  type="text"
+                  size="small"
+                  v-if="((scope.row&&scope.row.uid==uid)||userPosition==3)&&scope.row.is_up==1"
+                >下架</el-button>
+                <el-button
+                  @click="changeJobstatus(1,scope.row)"
+                  type="text"
+                  size="small"
+                  v-if="((scope.row&&scope.row.uid==uid)||userPosition==3)&&scope.row.is_up==0"
+                >上架</el-button>
+                <el-button
+                  @click="delJob(scope.row)"
+                  type="text"
+                  size="small"
+                  v-if="(scope.row&&scope.row.uid==uid)||userPosition==3"
+                >删除</el-button>
+                <el-button
+                  @click="$router.push('jobDetail?id='+scope.row.id)"
+                  type="text"
+                  size="small"
+                  v-if="(scope.row&&scope.row.uid==uid)||userPosition==3"
+                >编辑</el-button>
+              </div>
+              <div v-if="userPosition==2">
+                <el-button @click="$router.push('jobDetail')" type="text" size="small">详情</el-button>
+                <el-button
+                  @click="putResume(scope.row)"
+                  v-if="scope.row.is_up==1"
+                  type="text"
+                  size="small"
+                >推荐简历</el-button>
+                <el-button
+                  @click="$router.push('applyResume?view=3')"
+                  type="text"
+                  size="small"
+                >已推荐简历</el-button>
+              </div>
             </template>
           </el-table-column>
         </el-table>
@@ -269,42 +320,48 @@
         :total="total"
       ></el-pagination>
     </div>
-    <modal
+    <personalModal
       :dialogTableVisible="dialogTableVisible"
+      :personalList="personalList"
       @handleOk="handleOk"
-      isShow="true"
-      :modalObj="modalObj"
       @handleClose="dialogTableVisible=false"
-    ></modal>
+    ></personalModal>
+    <havePersonModal
+      :dialogTableVisible="personVisible"
+      @handleClose="personVisible=false"
+      @handleOk="handleOk"
+    ></havePersonModal>
   </div>
 </template>
 
 <script>
-import { getJoblist,addPut } from '@/api/internalInvoice'
-import { moneyTypeList, rewardTypeList, payTypeList, weekList, recommendStatusList, timeStatusList,positionStatusList } from '@/base/base'
-import modal from '../common/modal'
+import { getJoblist, addPut, cancelrecv, setjobtouser, getTomember, deleteJob, changestatus } from '@/api/internalInvoice'
+import { moneyTypeList, rewardTypeList, payTypeList, weekList, recommendStatusList, timeStatusList, positionStatusList } from '@/base/base'
+import personalModal from '../common/personalModal'
+import havePersonModal from './havePersonModal'
 export default {
   components: {
-    modal
+    personalModal,
+    havePersonModal
   },
   filters: {
     moneyType (val) {
       let obj = moneyTypeList.find(item => {
         return val == item.value
       })
-      return obj.label
+      return obj ? obj.label : ''
     },
     rewardType (val) {
       let obj = rewardTypeList.find(item => {
         return val == item.value
       })
-      return obj.label
+      return obj ? obj.label : ''
     },
     recommendStatus () {
       let obj = recommendStatusList.find(item => {
         return val == item.value
       })
-      return obj.label
+      return obj ? obj.label : ''
     }
   },
   data () {
@@ -315,20 +372,21 @@ export default {
       positionStatusList,
       timeStatusList,
       dialogTableVisible: false,
+      personVisible: false,
       tableData: [],
       formMember: {
         uid: localStorage.getItem('uid'),
         limit: 10,
         page: 1,
         reward_type: 0,
-        offermoney_type:0,
-        five_risks:0,
-        reserve_fund:0,
-        is_up:0,
-        job_type:0,
-        ctime:0
+        offermoney_type: 0,
+        five_risks: 0,
+        reserve_fund: 0,
+        is_up: 0,
+        job_type: 0,
+        ctime: 0
       },
-      type:'',
+      type: '',
       total: 0,
       jobStatusList: [
         { label: '全部', value: 0 },
@@ -340,23 +398,33 @@ export default {
         { label: '缴纳', value: 1 },
         { label: '不缴纳', value: 2 }
       ],
-      advertisesList:[
+      advertisesList: [
         { label: '全部', value: 0 },
         { label: '返利招聘', value: 1 },
         { label: '普通招聘', value: 2 }
       ],
-      modalObj: {
-        content: '申请成功！</br>已申请的接单请到申请接单查看进度',
-        okText: '查看申请',
-        closeText: '继续浏览'
-      },
-      userPosition: 1, // 1 成员，2经理，3 总经理
+      userPosition: 2, // 1 成员，2经理，3 总经理
+      keyword: '',
+      viewType: '',
       show: false,
-      keyword: ''
+      jobId: '',
+      handleStatus: 1,
+      personalList: [],
+      uid: localStorage.getItem('uid')
     }
   },
   created () {
     // 初始化查询标签数据
+    // viewType 1 管理内部发单
+    // 2.已发布职位
+
+    // 内部发单成员无法看到该模块
+    // 内部发单1：是我自己发布的页面。可以进行编辑删除下架分配跟进人操作
+    // 内部发单2：我是部门经理，领取到的内部发单可以进行分配跟进人操作。
+    // 跟进人：3级成员。
+    // 分配跟进人弹窗：可以进行批量分配，可以进行姓名模糊搜索
+    // 管理领取人：取消分配只能由总经理与发布人可以进行操作。
+    this.viewType = this.$route.query.view
     this.getList(this.formMember)
   },
   methods: {
@@ -365,9 +433,11 @@ export default {
         const { data } = res
         this.tableData = data.data
         this.total = data.count
+      }).catch(error => {
+        this.$message.error(error.status.remind)
       })
     },
-    changeInput(val){
+    changeInput (val) {
       this.formMember[this.type] = val
     },
     selectStatus (key, item) {
@@ -381,35 +451,97 @@ export default {
       this.formMember.page = val
       this.getList(this.formMember)
     },
-    handleRecommend (val) {
+    // 推荐简历
+    putResume (val) {
       let params = {
-        jobId: val.jobId,
-        id: val.id,
-        uid: localStorage.getItem('uid')
+        job_id: val.id,
+        resume_id: val.resume_id,
+        uid: this.uid
       }
-      recommendTeamUserJob(params).then(res => {
+      addPut(params).then(res => {
+        this.getList(this.formMember)
+      }).catch(error => {
+        this.$message.error(error.status.remind)
+      })
+    },
+    getPersonList () {
+      let params = {
+        job_id: this.jobId,
+        uid: this.uid
+      }
+      getTomember(params).then(res => {
+        this.personalList = res.data || []
+        this.dialogTableVisible = true
+      }).catch(error => {
+        this.$message.error(error.status.remind)
+      })
+    },
+    // 删除
+    delJob (val) {
+      let params = {
+        job_id: val.id,
+        uid: this.uid
+      }
+      deleteJob(params).then(res => {
+        this.getList(this.formMember)
+      }).catch(error => {
+        this.$message.error(error.status.remind)
+      })
+    },
+    // 上下架
+    changeJobstatus (status, val) {
+      let params = {
+        job_id: val.id,
+        uid: this.uid,
+        status
+      }
+      changestatus(params).then(res => {
+        this.getList(this.formMember)
+      }).catch(error => {
+        this.$message.error(error.status.remind)
+      })
+    },
+    // 发单操作
+    handleRecepit (status, val) {
+      this.handleStatus = status
+      this.jobId = val.id
+      if (status == 1) {
+        this.getPersonList()
+      }
+      else {
+        this.personalModal = true
+      }
+    },
+    // 取消分配
+    cancleAssigned (params) {
+      cancelrecv(params).then(res => {
+        this.personalModal = false
+        this.getList(this.formMember)
+      }).catch(error => {
+        this.$message.error(error.status.remind)
+      })
+    },
+    // 分配跟进人
+    setAssigned (params) {
+      setjobtouser(params).then(res => {
         this.dialogTableVisible = true
         this.getList(this.formMember)
       }).catch(error => {
         this.$message.error(error.status.remind)
       })
     },
-    handleApply (val) {
+    handleOk (val) {
       let params = {
-        jobId: val.jobId,
+        jobId: this.jobId,
         id: val.id,
-        uid: localStorage.getItem('uid'),
-        collectId: val.id
+        uid: this.uid
       }
-      teamcollection(params).then(res => {
-        this.dialogTableVisible = true
-        this.getList(this.formMember)
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
-    },
-    handleOk () {
-      this.$router.push('teamApplication')
+      if (handleStatus == 1) {
+        this.setAssigned(params)
+      }
+      else {
+        this.cancleAssigned(params)
+      }
     },
     handleSearch () {
       this.getList(this.formMember)

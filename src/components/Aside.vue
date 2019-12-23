@@ -178,9 +178,14 @@ export default {
           title: '内部发单',
           icon: 'el-icon-collection-tag',
           submenu: [
+
+            {
+              title: '管理内部职位',
+              url: '/publishJobList?view=1'
+            },
             {
               title: '已发布职位',
-              url: '/publishJobList'
+              url: '/publishJobList?view=2'
             },
             {
               title: '已推荐简历',
@@ -190,6 +195,10 @@ export default {
               title: '领取发单',
               url: '/collectingInvoice'
             },
+            {
+              title: '内部审核简历',
+              url: '/checkResume'
+            }
           ]
         }
       ],

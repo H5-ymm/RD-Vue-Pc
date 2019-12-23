@@ -37,7 +37,7 @@
         >
           <el-table-column label="职位名称" align="center" width="150">
             <template slot-scope="props">
-              <el-button type="text" @click="handleEdit(props.row)">{{props.row.name}}</el-button>
+              <el-button type="text" @click="viewJob(props.row)">{{props.row.name}}</el-button>
             </template>
           </el-table-column>
           <el-table-column label="薪资类型" align="center" width="150">
@@ -108,6 +108,7 @@
         :total="total"
       ></el-pagination>
     </div>
+    <viewJob :dialogTableVisible="dialogJobVisible" @handleClose="dialogJobVisible=fasle"></viewJob>
   </div>
 </template>
 
@@ -115,7 +116,11 @@
 import { getTeamList, loginOutTeam, addTeamUser, updateTeamUser } from '../../api/team'
 import { getReceiptList, companyReceiptShelf } from '../../api/receipt'
 import { moneyTypeList, rewardTypeList, payTypeList, checkStatusList } from '../../base/base'
+import viewJob from '../common/viewJob'
 export default {
+  components: {
+    viewJob
+  },
   filters: {
     moneyType (val) {
       let obj = moneyTypeList.find(item => {
@@ -142,7 +147,7 @@ export default {
       rewardTypeList,
       checkStatusList,
       dialogTableVisible: false,
-      visible: false,
+      dialogJobVisible: false,
       tableData: [],
       currentPage: 1,
       userType: 1,
@@ -192,10 +197,8 @@ export default {
     handleRecceipt () {
 
     },
-    handleEdit (val) {
-      this.dialogTableVisible = true
-      this.userId = val
-      console.log(this.userId)
+    viewJob (val) {
+      this.dialogJobVisible = true
     },
     handleDel (uid) {
       loginOutTeam({ uid }).then(res => {

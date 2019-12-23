@@ -89,6 +89,8 @@ export default {
     getDetail (id) {
       getDiscussInfo({ id }).then(res => {
         this.commentInfo = res.data || {}
+      }).catch(error => {
+        this.$message.error(error.status.remind)
       })
     },
     selectComment (id) {
@@ -99,6 +101,8 @@ export default {
       addDiscuss(val).then(res => {
         console.log(res)
         this.getList()
+      }).catch(error => {
+        this.$message.error(error.status.remind)
       })
     },
     refurbish () {

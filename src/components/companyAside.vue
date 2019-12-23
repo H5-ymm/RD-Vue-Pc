@@ -6,8 +6,9 @@
       <el-col :span="24">
         <div class="names company-names">人事达</div>
         <div class="company-info">
-          <img src="../assets/img/img1.png" alt class="company-logo" />
-          <p class="company-name">仁达网络科技（上海） 有限公司</p>
+          <img src="../assets/img/img1.png" alt class="company-logo" v-if="!baseInfo.logo_url" />
+          <img src="../assets/img/img1.png" alt class="company-logo" v-else />
+          <p class="company-name">{{baseInfo.com_name}}</p>
         </div>
         <el-menu
           class="el-menu-vertical-demo"
@@ -113,11 +114,13 @@ export default {
         }
       ],
       title: '',
-      uid: localStorage.getItem('uid')
+      uid: localStorage.getItem('uid'),
+      baseInfo: {}
     }
   },
   created () {
     // this.getCompanyBind(this.uid)
+    this.baseInfo = sessionStorage.getItem('baseInfo') ? JSON.parse(sessionStorage.getItem('baseInfo')) : null
   },
   methods: {
     getCompanyBind (uid) {

@@ -31,11 +31,13 @@ export default {
       menus: [{
         title: '个人团队',
         imgUrl: require('../assets/img/team/person.png'),
-        url: 'personalForm'
+        url: 'personalForm',
+        type: 2
       }, {
         title: '企业团队',
         imgUrl: require('../assets/img/team/team.png'),
-        url: 'companyForm'
+        url: 'companyForm',
+        type: 1
       }],
       url: 'personalForm',
       teamId: '',
@@ -64,13 +66,17 @@ export default {
       if (!this.type) {
         this.activIndex = index
         this.url = item.url
+        this.type = item.type
       }
       else {
         return
       }
     },
     next () {
-      this.$router.push({ path: this.url, query: { teamId: this.teamId } })
+      if (!this.activIndex) {
+        this.type = 2
+      }
+      this.$router.push({ path: this.url, query: { teamId: this.teamId, type: this.type } })
     }
   }
 }

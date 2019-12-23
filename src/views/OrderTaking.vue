@@ -15,7 +15,8 @@
               <li
                 v-for="(item, index) in cityList"
                 :key="index"
-                :class="{'active': index==0}"
+                @click="querySelect(item.value,'cityid')"
+                :class="{'active': cityid==item.value}"
               >{{item.name}}</li>
             </ul>
             <el-button type="text" class="orderTaking-more" @click="dialogVisible=true">更多</el-button>
@@ -26,13 +27,18 @@
               <li
                 v-for="(item, index) in areaList"
                 :key="index"
-                :class="{'active': index==0}"
+                @click="querySelect(item.value,'three_cityid')"
+                :class="{'active': three_cityid==item.value}"
               >{{item.name}}</li>
             </ul>
           </div>
           <div class="orderTaking-search-select">
             <div class="orderTaking-search-value">
-              <el-select v-model="params.money_type" placeholder="薪资方式">
+              <el-select
+                v-model="params.money_type"
+                @change="querySelect($event,'money_type')"
+                placeholder="薪资方式"
+              >
                 <el-option
                   v-for="(item,index) in moneyTypeList"
                   :key="index"
@@ -40,7 +46,11 @@
                   :value="item.value"
                 ></el-option>
               </el-select>
-              <el-select v-model="params.reward_type" placeholder="返利方式">
+              <el-select
+                v-model="params.reward_type"
+                @change="querySelect($event,'reward_type')"
+                placeholder="返利方式"
+              >
                 <el-option
                   v-for="(item,index) in rewardList"
                   :key="index"
@@ -48,7 +58,11 @@
                   :value="item.value"
                 ></el-option>
               </el-select>
-              <el-select v-model="params.require_number" placeholder="需求人数">
+              <el-select
+                v-model="params.require_number"
+                @change="querySelect($event,'require_number')"
+                placeholder="需求人数"
+              >
                 <el-option
                   v-for="(item,index) in requirePersonList"
                   :key="index"
@@ -56,7 +70,11 @@
                   :value="item.value"
                 ></el-option>
               </el-select>
-              <el-select v-model="params.is_five_risks" placeholder="缴纳五金">
+              <el-select
+                v-model="params.is_five_risks"
+                @change="querySelect($event,'is_five_risks')"
+                placeholder="缴纳五金"
+              >
                 <el-option
                   v-for="(item,index) in paymentTaxType"
                   :key="index"
@@ -64,7 +82,11 @@
                   :value="item.value"
                 ></el-option>
               </el-select>
-              <el-select v-model="params.is_fund" placeholder="缴纳公积金">
+              <el-select
+                v-model="params.is_fund"
+                @change="querySelect($event,'is_fund')"
+                placeholder="缴纳公积金"
+              >
                 <el-option
                   v-for="(item,index) in paymentTaxType"
                   :key="index"
@@ -73,7 +95,7 @@
                 ></el-option>
               </el-select>
             </div>
-            <span class="clear">清空筛选条件</span>
+            <span class="clear" @click="clearQuery">清空筛选条件</span>
           </div>
         </div>
       </div>
@@ -236,6 +258,8 @@ export default {
         limit: 20,
         page: 1
       },
+      cityid: '310100',
+      three_cityid: '310101',
       list: [],
       cityList,
       areaList: [],
@@ -247,8 +271,9 @@ export default {
       isShowLogin: false
     }
   },
-  computed: {
-
+  created () {
+    this.getData(this.params)
+    this.getAreaList(this.code)
   },
   mounted () {
     window.addEventListener('scroll', this.windowScroll)
@@ -267,18 +292,31 @@ export default {
       this.activeIndex = index
       this.$router.push(item.url)
     },
+    querySelect (val, key) {
+      this.params[key] = val
+      this[key] = val
+      this.getData(this.params)
+    },
     handleClose () {
       this.dialogVisible = false
     },
     getCityCode (value) {
       this.params.three_cityid = value[0]
+      this.getData(this.params)
       this.dialogVisible = false
     },
     getData (params) {
       getList(params).then(res => {
-        this.list = res.data.data.data
-        this.browsingList = res.data.data.data
-        this.total = res.data.count
+        if (res.data.data) {
+          this.list = res.data.data.data
+          this.browsingList = res.data.data.data
+          this.total = res.data.count
+        }
+        else {
+          this.list = []
+          this.browsingList = []
+          this.total = 0
+        }
       })
     },
     handleApply (val) {
@@ -320,11 +358,6 @@ export default {
       }
       return text
     },
-    getRegion (value) {
-      getProvincesList().then(res => {
-
-      })
-    },
     getAreaList (code) {
       getAreasList({ code }).then(res => {
         this.areaList = res.data
@@ -333,11 +366,14 @@ export default {
     currentChange (page) {
       this.params.page = page
       this.getData(this.params)
+    },
+    clearQuery () {
+      this.params = {
+        limit: 20,
+        page: 1
+      }
+      this.getData(this.params)
     }
-  },
-  created () {
-    this.getData(this.params)
-    this.getAreaList(this.code)
   }
 }
 </script>
@@ -405,10 +441,10 @@ export default {
 .orderTaking-search-query .orderTaking-search-value {
   overflow: hidden;
   width: 92%;
-  height:20px;
+  // height:20px;
 }
 .orderTaking-search-query .orderTaking-search-value li {
-  padding: 0 8px;
+  padding: 2px 8px;
   display: inline-block;
   color: #6A6A6A;
 }
@@ -447,6 +483,17 @@ export default {
 }
 .orderTaking-main-item {
   margin-right: 10px;
+  &:nth-of-type(2) {
+    margin-left: 30px;
+    li {
+      &:nth-of-type(2){
+        text-align: right;
+      }
+       &:nth-of-type(3){
+        margin-left: 10px;
+      }
+    }
+  }
 }
 .orderTaking-main-item .el-tag {
   margin-right: 4px;
@@ -634,7 +681,7 @@ export default {
   padding: 3px 8px; 
 }
 .box-card {
-  height:160px;
+  height:150px;
 }
 .home-list-clearfix {
   line-height:30px;

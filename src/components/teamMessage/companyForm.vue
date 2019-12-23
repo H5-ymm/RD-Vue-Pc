@@ -137,6 +137,7 @@ export default {
   created () {
     console.log(this.$route.query)
     this.companyForm.id = this.$route.query.teamId
+    this.personalForm.type = this.$route.query.type
     let params = 'com_type,com_scale,job_array'
     this.getList(params)
   },

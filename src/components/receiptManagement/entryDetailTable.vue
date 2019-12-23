@@ -42,7 +42,7 @@
         >
           <el-table-column label="职位名称" align="center" width="150">
             <template slot-scope="props">
-              <el-button type="text" @click="handleEdit(props.row)">{{props.row.name}}</el-button>
+              <el-button type="text" @click="viewJob(props.row)">{{props.row.name}}</el-button>
             </template>
           </el-table-column>
           <el-table-column label="薪资类型" align="center" width="100">
@@ -96,6 +96,7 @@
       :modalObj="modalObj"
       @handleClose="visible=false,jobId=''"
     ></modal>
+    <viewJob :dialogTableVisible="dialogJobVisible" @handleClose="dialogJobVisible=fasle"></viewJob>
   </div>
 </template>
 
@@ -104,9 +105,11 @@
 import { entryUserResumeList, updateEntryUser } from '../../api/receipt'
 import { moneyTypeList, rewardTypeList, payTypeList } from '../../base/base'
 import modal from '../common/modal'
+import viewJob from '../common/viewJob'
 export default {
   components: {
-    modal
+    modal,
+    viewJob
   },
   filters: {
     moneyType (val) {
@@ -127,7 +130,7 @@ export default {
       moneyTypeList,
       rewardTypeList,
       dialogTableVisible: false,
-      visible: false,
+      dialogJobVisible: false,
       tableData: [],
       currentPage: 1,
       userType: 1,
@@ -181,6 +184,9 @@ export default {
     handleCurrentChange (val) {
       this.formMember.page = val
       this.getList(this.formMember)
+    },
+    viewJob (val) {
+      this.dialogJobVisible = true
     },
     handleUser (status, id) {
       if (!id) {

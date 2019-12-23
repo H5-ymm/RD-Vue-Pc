@@ -108,7 +108,7 @@
               <img src="../assets/img/timerBg.png" v-if="registerType==2" />
               <p class="text">
                 已有账户，
-                <a>直接登录</a>
+                <a href="login">直接登录</a>
                 <img src="../assets/img/loginRight.png" alt class="loginRight" />
               </p>
             </div>
@@ -279,10 +279,10 @@ export default {
             localStorage.setItem('userType', this.registerType)
             localStorage.setItem('token', res.data.token)
             if (this.registerType == 2) {
-              this.$router.push('/commonts')
+              this.$router.push('commonts')
             }
             else {
-              this.$router.push('/createOrderTaking')
+              this.$router.push('createOrderTaking')
             }
           }).catch(error => {
             this.$message.error(error.status.remind)
@@ -419,7 +419,7 @@ export default {
   box-shadow:0px 5px 18px 0px rgba(0, 0, 0, 0.15);
   border-radius:5px;
   /* margin-left:-5%; */
-  margin: 40px 0 40px -5%;
+  margin: 40px 0 40px -8%;
 }
 .loads-box .el-input__inner {
   border-radius:0;

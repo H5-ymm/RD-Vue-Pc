@@ -40,8 +40,11 @@ export default {
     let arr = packData.data.map(item => { return item.emoji })
     this.editor.customConfig.onchange = html => {
       // html 即变化之后的内容
-      console.log(html)
+      // this.contentHtml = html
       this.$emit('saveConent', html)
+    }
+    this.editor.customConfig.onfocus = () => {
+      this.contentHtml = '请在此处开始您的创作'
     }
     this.editor.customConfig.menus = this.menus
     this.editor.customConfig.emotions = [
@@ -63,6 +66,13 @@ export default {
       this.editor.txt.html('请在此处开始您的创作')
     }
   },
+  watch: {
+    contentHtml (val) {
+      if (val) {
+        this.editor.txt.html('')
+      }
+    },
+  },
   methods: {
     insert (imgUrl) {
       upload(imgUrl).then(res => {
@@ -79,9 +89,16 @@ export default {
 <style lang="scss">
  .editor {
    width:92%;
+    .w-e-text-container,.w-e-toolbar {
+      border: 1px solid #eee!important;
+    }
    .imgBg {
      width: 120px;
      height: 80px;
+   }
+   .w-e-text {
+     padding: 10px;
+     overflow-y: auto;
    }
  }
 </style>

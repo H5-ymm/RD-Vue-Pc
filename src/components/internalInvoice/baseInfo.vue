@@ -1,7 +1,5 @@
 <template>
-  <div
-    class="job-detail-view"
-  >
+  <div class="job-detail-view">
     <div class="job-detail-row">
       <section class="resume-col3">
         <el-form
@@ -42,7 +40,11 @@
               </div>
               <div class="resume-card-item">
                 <el-form-item label="用工企业名称">
-                 <el-input v-model="formMember.company_name" class="width406" placeholder="请输入用工企业名称"></el-input>
+                  <el-input
+                    v-model="formMember.company_name"
+                    class="width406"
+                    placeholder="请输入用工企业名称"
+                  ></el-input>
                 </el-form-item>
                 <el-form-item label="招工截止日期">
                   <el-date-picker
@@ -51,8 +53,8 @@
                     value-format="yyyy-MM-dd"
                     v-model="formMember.offtime"
                     type="date"
-                    placeholder="选择日期">
-                  </el-date-picker>
+                    placeholder="选择日期"
+                  ></el-date-picker>
                 </el-form-item>
               </div>
             </div>
@@ -77,7 +79,7 @@
               </div>
             </div>
           </section>
-           <section class="resume-card">
+          <section class="resume-card">
             <p class="resume-main-title x-flex-start-justify">
               <img src="../../assets/img/receipt/icon3.png" />
               <span>岗位说明</span>
@@ -88,7 +90,11 @@
                   <el-input v-model="formMember.address" class="width406" placeholder="请输入工作地址"></el-input>
                 </el-form-item>
                 <el-form-item label="入职条件">
-                  <el-input v-model="formMember.entry_requirements" class="width406" placeholder="请输入期望岗位"></el-input>
+                  <el-input
+                    v-model="formMember.entry_requirements"
+                    class="width406"
+                    placeholder="请输入期望岗位"
+                  ></el-input>
                 </el-form-item>
                 <el-form-item label="工作内容">
                   <el-input
@@ -102,12 +108,16 @@
               </div>
               <div class="resume-card-item">
                 <el-form-item label="工作时长">
-                  <el-input v-model="formMember.working_hours" class="width406" placeholder="请输入工作时长"></el-input>
+                  <el-input
+                    v-model="formMember.working_hours"
+                    class="width406"
+                    placeholder="请输入工作时长"
+                  ></el-input>
                 </el-form-item>
               </div>
             </div>
           </section>
-           <section class="resume-card">
+          <section class="resume-card">
             <p class="resume-main-title x-flex-start-justify">
               <img src="../../assets/img/receipt/icon4.png" />
               <span>其他说明</span>
@@ -115,21 +125,17 @@
             <div class="x-flex-between-start resume-card-row">
               <div class="resume-card-item">
                 <el-form-item label="性别要求" prop="user_name">
-                  <el-select
-                      v-model="formMember.sex"
-                      class="width406"
-                      placeholder="请选择"
-                    >
-                      <el-option
-                        :label="item.label"
-                        :value="item.value"
-                        v-for="item in sexList"
-                        :key="item.label"
-                      ></el-option>
+                  <el-select v-model="formMember.sex" class="width406" placeholder="请选择">
+                    <el-option
+                      :label="item.label"
+                      :value="item.value"
+                      v-for="item in sexList"
+                      :key="item.label"
+                    ></el-option>
                   </el-select>
                 </el-form-item>
                 <el-form-item label="缴纳五险">
-                  <el-radio-group v-model="formMember.is_five_risks" class="width406" >
+                  <el-radio-group v-model="formMember.is_five_risks" class="width406">
                     <el-radio :label="2">否</el-radio>
                     <el-radio :label="1">是</el-radio>
                     <el-radio :label="3">试用期后</el-radio>
@@ -147,33 +153,15 @@
               </div>
               <div class="resume-card-item">
                 <el-form-item label="年龄要求">
-                   <div class="x-flex-start-justify">
-                      <el-select
-                      v-model="formMember.age_min"
-                      class="width180"
-                      placeholder="请选择"
-                    >
-                      <el-option
-                        :label="item.label"
-                        :value="item.value"
-                        v-for="item in sexList"
-                        :key="item.label"
-                      ></el-option>
-                  </el-select>
-                  <span class="line">-</span>
-                    <el-select
-                      v-model="formMember.age_max"
-                      class="width180"
-                      placeholder="请选择"
-                    >
-                      <el-option
-                        :label="item.label"
-                        :value="item.value"
-                        v-for="item in sexList"
-                        :key="item.label"
-                      ></el-option>
-                  </el-select>
-                   </div>
+                  <div class="x-flex-start-justify">
+                    <el-select v-model="formMember.age_min" class="width180" placeholder="请选择">
+                      <el-option :label="item" :value="item" v-for="item in ageList" :key="item"></el-option>
+                    </el-select>
+                    <span class="line">-</span>
+                    <el-select v-model="formMember.age_max" class="width180" placeholder="请选择">
+                      <el-option :label="item" :value="item" v-for="item in ageList" :key="item"></el-option>
+                    </el-select>
+                  </div>
                 </el-form-item>
                 <el-form-item label="缴纳公积金">
                   <el-radio-group v-model="formMember.is_fund" class="width406">
@@ -212,7 +200,8 @@ export default {
       formMember: {
         is_five_risks: 2,
         is_fund: 2,
-        age: 18,
+        age_min: 16,
+        age_max: 45,
         sex: 0,
         name: '',
         mobile: '',
@@ -238,13 +227,13 @@ export default {
       imageUrl: '',
       sexList: [
         {
-          label:'男',value:1
+          label: '男', value: 1
         },
         {
-          label:'女',value: 2
+          label: '女', value: 2
         },
         {
-          label:'男女不限',value:0
+          label: '男女不限', value: 0
         }
       ]
     }
@@ -263,7 +252,6 @@ export default {
         resumeId: this.resumeId
       }
       selectUserResumeInfo(params).then(res => {
-        console.log(res)
         this.formMember = res.data
         this.entryTime[0] = res.data.entry_begintime
         this.entryTime[1] = res.data.entry_endtime
@@ -303,6 +291,9 @@ export default {
       this.$parent.dialogTableVisible = false
     },
     submitForm () {
+      if (this.formMember.age_max < this.formMember.age_min) {
+        return this.$message.warning('最大年龄应该大于最小年龄')
+      }
       this.$refs['formMember'].validate((valid) => {
         if (valid) {
           console.log(this.formMember)

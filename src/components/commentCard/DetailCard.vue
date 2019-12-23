@@ -25,9 +25,7 @@
     <ul class="edit-card-content">
       <li class="edit-card-item x-flex-start border-bottom">
         <p>发布者：</p>
-        <p
-          class="edit-input"
-        >{{type==0 || !commentInfo.user_name ? username : commentInfo.user_name}}</p>
+        <p class="edit-input">{{!commentInfo.user_name ? username : commentInfo.user_name}}</p>
       </li>
       <li class="edit-card-item x-flex-start border-bottom">
         <p>标题：</p>
@@ -36,7 +34,7 @@
           :contenteditable="contenteditable"
           @input="changeInput($event)"
           class="edit-input"
-        >{{type ? commentInfo.title: '请输入标题'}}</p>
+        >{{comTitle}}</p>
       </li>
       <li class="edit-card-item x-flex-start border-bottom">
         <p>分类：</p>
@@ -126,7 +124,7 @@ export default {
       is_top: 1,
       isShow: false,
       uid: localStorage.getItem('uid'),
-      username: localStorage.getItem('username'),
+      username: localStorage.getItem('userName'),
       comTitle: '',
       storeComment: {},
       content: '',
@@ -146,6 +144,7 @@ export default {
   watch: {
     cardType (val) {
       this.type = val
+      console.log(this.type)
       if (val != 2) {
         this.contenteditable = true
       } else {
@@ -154,7 +153,7 @@ export default {
     },
     commentInfo (val) {
       console.log(val)
-      if (val) {
+      if (val && val.uid) {
         this.showComment = false
         this.isShow = false
         this.storeComment = JSON.parse(JSON.stringify(val))
@@ -168,7 +167,7 @@ export default {
         }
       }
       else {
-
+        this.comTitle = '请输入标题'
       }
     }
   },
@@ -333,13 +332,6 @@ export default {
   .border-bottom {
     border-bottom: 1px solid#eee;
   }
-  .w-e-text-container,.w-e-toolbar {
-    border: 1px solid #eee!important;
-  }
-  .w-e-text {
-    overflow-y: auto;
-    padding: 10px;
-  }
   .edit-card {
     font-size: 14px;
     color: #333;
@@ -353,6 +345,7 @@ export default {
     width: 70%;
     text-align: left;
     outline: none;
+    color: #333;
     &.add-title {
       color: #999;
     }

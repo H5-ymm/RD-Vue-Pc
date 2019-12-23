@@ -71,6 +71,7 @@ export default {
 }
 </script>
 <style lang="scss">
+.team-info-row {
   .cardBg {
     position: absolute;
     bottom: 0;
@@ -103,4 +104,5 @@ export default {
       background:linear-gradient(117deg,rgba(166,91,251,1),rgba(189,94,255,1));
     }
   }
+}
 </style>

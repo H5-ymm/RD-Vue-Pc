@@ -1,41 +1,41 @@
 export const cityList = [
-  { name: '上海', code: '310100' },
-  { name: '全国', code: '' },
+  // { name: '上海', value: '310100' },
+  { name: '全国', value: '' },
   {
     name: '上海',
-    code: '310100'
+    value: '310100'
   },
   {
     name: '北京',
-    code: '110100'
+    value: '110100'
   },
   {
     name: '郑州',
-    code: '410100'
+    value: '410100'
   },
   {
     name: '广州',
-    code: '440100'
+    value: '440100'
   },
   {
     name: '杭州',
-    code: '330100'
+    value: '330100'
   },
   {
     name: '天津',
-    code: '120000'
+    value: '120000'
   },
   {
     name: '西安',
-    code: '610100'
+    value: '610100'
   },
   {
     name: '苏州',
-    code: '320500'
+    value: '320500'
   },
   {
     name: '武汉',
-    code: '420100'
+    value: '420100'
   }
 ]
 
@@ -51,8 +51,7 @@ export const rewardList = [
   { label: '月返', value: 1 },
   { label: '日返', value: 2 },
   { label: '时返', value: 3 },
-  { label: '日返(打包)', value: 4 },
-  { label: '一次性返利', value: 5 }
+  { label: '一次性返利', value: 4 }
 ]
 export const rewardTypeList = [
   { label: '全部', value: 0 },
@@ -157,7 +156,7 @@ export const timeStatusList = [
   { label: '最近一个月', value: 5 }
 ]
 
-export const  positionStatusList = [
+export const positionStatusList = [
   { label: '全部', value: 0 },
   { label: '高薪返利', value: 1 },
   { label: '企业急招', value: 2 },

@@ -60,7 +60,7 @@
         :inline="true"
         label-width="96px"
         label-position="right"
-        :model="formMember" 
+        :model="formMember"
         class="internal-invoice-form"
       >
         <el-form-item label="搜索类型：">
@@ -69,7 +69,12 @@
             <el-option label="企业名称" value="com_name"></el-option>
             <el-option label="工作地址" value="address"></el-option>
           </el-select>
-          <el-input v-model="keyword" class="width300" @change="changeInput" placeholder="请输入你要搜索的关键字"></el-input>
+          <el-input
+            v-model="keyword"
+            class="width300"
+            @change="changeInput"
+            placeholder="请输入你要搜索的关键字"
+          ></el-input>
           <el-button type="primary" @click="handleSearch" class="select-btn">查询</el-button>
           <p @click="show=!show" class="x-flex-center senior-search-btn">
             <el-link :type="!show?'primary': ''" :underline="false">高级筛选</el-link>
@@ -108,7 +113,7 @@
                   @click="selectStatus('reward_type',item)"
                   class="select-status"
                 >{{item.label}}</el-button>
-              </el-form-item>          
+              </el-form-item>
             </div>
             <div class="senior-search-col2">
               <el-form-item label="缴纳五险：">
@@ -161,7 +166,7 @@
             class="select-status"
           >{{item.label}}</el-button>
         </el-form-item>
-        <el-form-item label="招聘类型：" >
+        <el-form-item label="招聘类型：">
           <el-button
             :type="formMember.moneyType==item.value ?'primary':''"
             v-for="(item,index) in advertisesList"
@@ -210,19 +215,13 @@
             </template>
           </el-table-column>
           <el-table-column label="创建日期" align="center" width="110">
-              <template slot-scope="props">
-              <div>
-                {{props.row.depart_name?$moment(props.row.depart_name).format('YYYY-MM-DD'):'--'}}
-              </div>
+            <template slot-scope="props">
+              <div>{{props.row.depart_name?$moment(props.row.depart_name).format('YYYY-MM-DD'):'--'}}</div>
             </template>
           </el-table-column>
           <el-table-column label="操作" align="center" min-width="150">
             <template slot-scope="scope">
-              <el-button
-                @click="$router.push('jobDetail')"
-                type="text"
-                size="small"
-              >详情</el-button>
+              <el-button @click="$router.push('jobDetail')" type="text" size="small">详情</el-button>
               <el-button
                 @click="handleApply(scope.row)"
                 v-if="scope.row.is_up==1"
@@ -255,8 +254,8 @@
 </template>
 
 <script>
-import { getJoblist,addPut } from '@/api/internalInvoice'
-import { moneyTypeList, rewardTypeList, payTypeList, weekList, recommendStatusList, timeStatusList,positionStatusList } from '@/base/base'
+import { getJoblist, addPut } from '@/api/internalInvoice'
+import { moneyTypeList, rewardTypeList, payTypeList, weekList, recommendStatusList, timeStatusList, positionStatusList } from '@/base/base'
 import modal from '../common/modal'
 export default {
   components: {
@@ -296,14 +295,14 @@ export default {
         limit: 10,
         page: 1,
         reward_type: 0,
-        offermoney_type:0,
-        five_risks:0,
-        reserve_fund:0,
-        is_up:0,
-        job_type:0,
-        ctime:0
+        offermoney_type: 0,
+        five_risks: 0,
+        reserve_fund: 0,
+        is_up: 0,
+        job_type: 0,
+        ctime: 0
       },
-      type:'',
+      type: '',
       total: 0,
       jobStatusList: [
         { label: '全部', value: 0 },
@@ -315,7 +314,7 @@ export default {
         { label: '缴纳', value: 1 },
         { label: '不缴纳', value: 2 }
       ],
-      advertisesList:[
+      advertisesList: [
         { label: '全部', value: 0 },
         { label: '返利招聘', value: 1 },
         { label: '普通招聘', value: 2 }
@@ -340,9 +339,11 @@ export default {
         const { data } = res
         this.tableData = data.data
         this.total = data.count
+      }).catch(error => {
+        this.$message.error(error.status.remind)
       })
     },
-    changeInput(val){
+    changeInput (val) {
       this.formMember[this.type] = val
     },
     selectStatus (key, item) {

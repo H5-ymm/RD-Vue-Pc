@@ -21,25 +21,21 @@
             class="form-box"
           >
             <div class="x-flex-around register-btn">
-              <el-button type="text" :class="loginWay==1?'':'active'" @click="switchLogin(1)">账号登录</el-button>|
-              <el-button type="text" :class="loginWay==2?'':'active'" @click="switchLogin(2)">短信登录</el-button>
+              <el-button type="text">忘记密码</el-button>
             </div>
             <el-form-item prop="name" label="手机号">
               <span
                 class="error errorInfo el-icon-warning"
                 v-if="isShowError"
               >账号或者密码错误，如遇到问题联系客服，021-51991869</span>
-              <el-input placeholder="请输入11位手机号" v-model="formTab.name">
+              <el-input placeholder="请输入11位手机号" v-model="formTab.mobile">
                 <template slot="prepend">
                   <span>+86</span>
                   <i class="el-icon-arrow-down"></i> |
                 </template>
               </el-input>
             </el-form-item>
-            <el-form-item prop="passwords" label="密码" v-if="loginWay==1">
-              <el-input v-model="formTab.password" placeholder="请输入密码" show-word-limit></el-input>
-            </el-form-item>
-            <el-form-item label="发送验证码" v-if="loginWay==2">
+            <el-form-item label="发送验证码">
               <span class="error el-icon-warning" v-if="isCodeError">验证码错误或者已过期</span>
               <el-input
                 v-model="formTab.code"
@@ -55,16 +51,18 @@
                 @click="sendCode"
               >{{content}}</el-button>
             </el-form-item>
-            <el-form-item v-if="loginWay==1">
-              <el-checkbox v-model="checked" @change="remind">记住密码</el-checkbox>
-              <el-link :underline="false" class="code-btn password" href="forgetPassword">忘记密码</el-link>
+            <el-form-item prop="newPassword" label="密码">
+              <el-input v-model="formTab.newPassword" placeholder="请输入密码" show-word-limit></el-input>
+            </el-form-item>
+            <el-form-item prop="newPassworded" label="确认密码">
+              <el-input v-model="formTab.newPassworded" placeholder="请输入确认密码" show-word-limit></el-input>
             </el-form-item>
             <el-form-item class="submit-btn">
-              <el-button type="primary" @click="onSubmit('TabForm')" class="login">登录</el-button>
+              <el-button type="primary" @click="onSubmit('TabForm')" class="login">确认</el-button>
             </el-form-item>
             <p class="text">
-              还没有账户，
-              <a href="/register">免费注册</a>
+              已有账户，
+              <a href="/register">现在登录</a>
               <img src="../assets/img/loginRight.png" alt class="loginRight" />
             </p>
           </el-form>
@@ -75,6 +73,7 @@
 </template>
 <script>
 import { goLogin, getCode, userRegister } from '../api/login'
+import { sendVerification, editUserPassword } from '../api/user'
 export default {
   data () {
     let validatereg = function (rule, value, callback) {   //验证用户名是否合法
@@ -95,21 +94,20 @@ export default {
     };
     return {
       formTab: {
-        name: '',
-        type: '1'
+        mobile: '',
+        type: '2'
       },
       checked: false,
       formTabs: {  //验证规则
-        name: [
+        mobile: [
           { message: '请输入手机号', trigger: 'blur' },
           { validator: validatereg, trigger: 'blur' }
         ],
-        passwords: [
+        newPassword: [
           { message: '请输入密码', trigger: 'blur' },
           // { validator: validatePassReg, trigger: 'blur' }
         ]
       },
-      loginWay: 1,
       content: '发送验证码',  // 按钮里显示的内容
       totalTime: 60,
       timer: null,
@@ -119,25 +117,17 @@ export default {
       isCodeError: false
     }
   },
-  watch: {
-    loginWay (val) {
-      if (val == 1) {
-        if (localStorage.getItem('remindUserInfo')) {
-          let userInfo = JSON.parse(localStorage.getItem('remindUserInfo'))
-          this.formTab.name = userInfo.name
-          this.formTab.passwords = userInfo.password
-        }
-      }
-    }
-  },
   methods: {
     sendCode () {
-      if (!this.formTab.name) {
+      if (!this.formTab.mobile) {
         return this.$message.warning('手机号不能为空')
       }
       this.countDown()
-      getCode({ mobile: this.formTab.name }).then(res => {
+      sendVerification({ mobile: this.formTab.mobile }).then(res => {
         this.token = res.data.tken
+        this.formTab.token = res.data.tken
+      }).catch(error => {
+        return this.$message.error(error.status.remind)
       })
     },
     countDown () {
@@ -187,10 +177,10 @@ export default {
             localStorage.setItem('uid', res.data.uid)
             localStorage.setItem('userName', res.data.username)
             if (registerType == 2) {
-              this.$router.push('commonts')
+              this.$router.push('/commonts')
             }
             else {
-              this.$router.push('createOrderTaking')
+              this.$router.push('/createOrderTaking')
             }
           }).catch(error => {
             if (error.status.code == 3010) {
@@ -214,7 +204,7 @@ export default {
 }
 </script>
 
-<style >
+<style lang="scss">
 .header {
   width:100%;
   height:49px;
@@ -292,10 +282,21 @@ export default {
   background:#eee;
   border:none;
 }
+ .el-input-group{
+  .el-input__inner {
+    &:focus,&:hover{
+      border:none;
+    }
+  }
+ }
 .register-box .el-input-group__prepend {
   border:none;
   background:#eee;
-  padding: 0 0 0 20px ;
+  padding: 0 0 0 20px;
+  span {
+    opacity:1;
+    display:inline-block;
+  }
 }
 .register-box .error {
   position:absolute;
@@ -305,19 +306,15 @@ export default {
   font-size:12px;
 }
 .register-box .errorInfo {
-    right:0;
-    width:100%;
-    height:20px;
-    top:-16px;
-    text-align:center;
-    line-height:20px;
-    background:rgba(254,42,0,0.1);
-    border-radius:3px;
+  right:0;
+  width:100%;
+  height:20px;
+  top:-16px;
+  text-align:center;
+  line-height:20px;
+  background:rgba(254,42,0,0.1);
+  border-radius:3px;
  }
-.register-box .el-input-group__prepend span {
-   opacity:1;
-   display:inline-block;
-}
 .register-box .inputCode {
   width: 70%!important;
   margin-right:10px;

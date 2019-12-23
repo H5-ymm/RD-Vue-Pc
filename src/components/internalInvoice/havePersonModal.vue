@@ -1,6 +1,6 @@
 <template>
   <el-dialog
-    width="400px"
+    width="500px"
     title
     :visible.sync="dialogTableVisible"
     class="member-dialog"
@@ -9,25 +9,19 @@
     <div class="member-row personal-row">
       <img src="../../assets/img/member/cancel.png" alt class="cancel-icon" @click="handleClose" />
       <section class="member-col1">
-        <p>{{title}}}</p>
+        <p>已领取人</p>
       </section>
       <section class="member-col3">
-        <div class="x-flex-between">
-          <el-input type="text" class="width210" v-model="name"></el-input>
-          <el-button type="primary">查询</el-button>
-        </div>
-        <div class="personal-box">
-          <el-checkbox-group v-model="checkList">
-            <el-checkbox :label="item" v-for="(item,index) in list" :key="index"></el-checkbox>
-          </el-checkbox-group>
-        </div>
+        <ul class="personal-box">
+          <li v-for="(item,index) in list" :key="index" class="x-flex-around">
+            <span class="item-name">{{index+1}}.{{item.name}}</span>
+            <span class="item-time">领取时间：{{item.time}}</span>
+            <el-button type="primary" plain @click="handleCancle(item.id)">取消分配</el-button>
+          </li>
+        </ul>
       </section>
     </div>
-    <div slot="footer" class="dialog-footer x-flex-between">
-      <span class="select-text">
-        已选择
-        <span class="select-num">{{checkList.length}}</span> 项
-      </span>
+    <div slot="footer" class="dialog-footer person-btn">
       <el-button type="primary" @click="submit">确定</el-button>
     </div>
   </el-dialog>
@@ -35,25 +29,36 @@
 <script>
 export default {
   props: {
-    dialogTableVisible: false,
-    title: { type: String, default: '分配跟进人' },
-    personalList: { type: Array, default: [] },
+    dialogTableVisible: false
   },
   data () {
     return {
+      form: {
+        reason: ''
+      },
+      name: '',
       list: [
-        'yyy', 'kkkk'
+        {
+          name: 'tttt',
+          time: '2019-10-20 10:22',
+          status: 0,
+          id: ''
+        }
       ],
-      checkList: [],
-      name: ''
+      ids: []
     }
   },
   methods: {
     handleClose () {
       this.$emit('handleClose')
     },
+    handleCancle (id) {
+      let arr = []
+      arr.push(id)
+      this.ids = [...new Set(arr)]
+    },
     submit () {
-      this.$emit('handleOk', this.checkList)
+      this.$emit('handleOk', this.ids.join(','))
     }
   }
 }
@@ -90,6 +95,12 @@ export default {
         padding: 10px 0 ;
         height: 200px;
         overflow: auto;
+        .item-name{
+          color: #333;
+        }
+        .item-time{
+          color: #6A6A6A;
+        }
       }
     }
     .cancel-icon {
@@ -111,6 +122,9 @@ export default {
     margin-right: 0;
     width: 92%;
     margin: 0 auto;
+    &.person-btn {
+      width: 84%;
+    }
     .select-text {
       font-size:14px;
       color: #6A6A6A;

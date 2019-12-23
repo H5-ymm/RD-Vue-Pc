@@ -111,6 +111,7 @@ export default {
           if (this.personalForm.log) {
             this.imageUrl = getImgUrl(this.personalForm.log)
           }
+          this.personalForm.type = this.$route.query.type
           this.address.push(this.personalForm.provinceid, this.personalForm.cityid, this.personalForm.three_cityid)
         }
       })
