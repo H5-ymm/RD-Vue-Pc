@@ -200,6 +200,32 @@ export default {
               url: '/checkResume'
             }
           ]
+        },
+        {
+          title: '财务管理',
+          icon: 'el-icon-collection-tag',
+          submenu: [
+            {
+              title: '我的账户',
+              url: '/myAccount'
+            },
+            {
+              title: '充值',
+              url: '/deposit'
+            },
+            {
+              title: '提现',
+              url: '/withdraw'
+            },
+            {
+              title: '转账',
+              url: '/transfer'
+            },
+            {
+              title: '交易记录',
+              url: '/tradingRecord'
+            }
+          ]
         }
       ],
       title: ''

@@ -6,7 +6,7 @@
 
 // @import "~element-ui/packages/theme-chalk/src/index";
 .el-table th, .el-table td {
-  padding: 8px 0;
+  padding:3px 0 2px;
 }
 .el-table thead th{
   background: #F2F2F2;
@@ -29,7 +29,7 @@
   }
 }
 .el-button {
-  padding: 11px 20px;
+  padding: 12px 20px;
 }
 .cell {
   .el-button {

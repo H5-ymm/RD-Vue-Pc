@@ -42,7 +42,7 @@
           <el-button type="primary" @click="onSubmit" class="select-btn">重置</el-button>
         </el-form-item>
       </el-form>
-      <div class="member-table">
+      <div class="account-table">
         <el-table
           border
           :data="tableData"

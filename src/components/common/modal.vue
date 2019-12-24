@@ -12,7 +12,7 @@
       <section class="member-col1 dep-col1"></section>
       <section class="member-col3 department-add-col3">
         <p v-html="modalObj.content"></p>
-        <el-radio v-model="radio" label="1">本次登录不在提示</el-radio>
+        <el-radio v-model="radio" label="1" v-if="isShow">本次登录不在提示</el-radio>
       </section>
     </div>
     <div slot="footer" class="dep-footer">
@@ -36,7 +36,7 @@ export default {
   },
   methods: {
     handleClose () {
-      this.$parent.visible1 = false
+      this.$emit('handleClose')
     },
     handleOk () {
       this.$emit('handleOk')

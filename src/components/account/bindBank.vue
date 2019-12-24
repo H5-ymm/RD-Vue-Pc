@@ -13,7 +13,7 @@
     <el-form-item label="身份证号码" required prop="idCard">
       <el-input v-model="formMember.idCard" placeholder="请输入持卡人的身份证号"></el-input>
     </el-form-item>
-    <el-form-item label="银行卡号码" required prop="bankNum">
+    <el-form-item label="银行卡号码" required>
       <el-input v-model="formMember.bankNum" placeholder="请输入您的银行卡号"></el-input>
     </el-form-item>
     <el-form-item label="银行卡类型" required>

@@ -77,7 +77,7 @@
           ></el-input>
           <el-button type="primary" @click="handleSearch" class="select-btn">查询</el-button>
           <p @click="show=!show" class="x-flex-center senior-search-btn">
-            <el-link :type="!show?'primary': ''" :underline="false">高级筛选</el-link>
+            <el-link :type="show?'primary': ''" :underline="false">高级筛选</el-link>
             <i class="el-icon-arrow-down"></i>
           </p>
         </el-form-item>

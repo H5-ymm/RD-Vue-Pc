@@ -43,7 +43,7 @@ export default {
   width: 100%;
   height: 36px;
   border:1px solid #eee;
-   .el-breadcrumb__separator {
+  .el-breadcrumb__separator {
     position: absolute;
     z-index: -22;
   }

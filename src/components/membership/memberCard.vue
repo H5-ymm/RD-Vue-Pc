@@ -87,6 +87,7 @@ export default {
     position: relative;
     &.box-card1{
       padding-right: 20px;
+      border:none;
     }
     &.el-card{
       color: #fff;

@@ -26,6 +26,8 @@ const postJob = resolve => (require(['../components/internalInvoice/postJob.vue'
 
 const collectingInvoice = resolve => (require(['../components/internalInvoice/collectingInvoice.vue'], resolve)) // 领取发单
 const checkResume = resolve => (require(['../components/internalInvoice/checkResume.vue'], resolve)) // 内部审核简历
+
+const transfer = resolve => (require(['../components/finance/transfer.vue'], resolve)) // 内部审核简历
 import Department from '../components/Department.vue'
 import personalForm from '../components/teamMessage/personalForm'  // 个人
 import CompanyForm from '../components/teamMessage/companyForm'   // 企业
@@ -239,6 +241,13 @@ export const teamRouters = [{  // 团队论坛
   path: '/checkResume',  // 内部审核简历
   name: checkResume,
   component: checkResume,
+  meta: {
+    requiresAuth: 1
+  }
+},
+{
+  path: '/transfer',  // 转账
+  component: transfer,
   meta: {
     requiresAuth: 1
   }

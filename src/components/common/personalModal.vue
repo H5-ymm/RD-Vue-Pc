@@ -111,6 +111,9 @@ export default {
     margin-right: 0;
     width: 92%;
     margin: 0 auto;
+    .el-button {
+      padding: 11px 0;
+    }
     .select-text {
       font-size:14px;
       color: #6A6A6A;

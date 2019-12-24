@@ -46,12 +46,14 @@ export default {
   },
   created () {
     let uid = localStorage.getItem('uid')
+    console.log(this.$router)
     getTeamInfo({ uid }).then(res => {
       if (res && res.data) {
         this.teamId = res.data.uid
         this.type = res.data.type
         if (this.type) {
           this.activIndex = this.type == 2 ? 0 : 1
+          // this.$router.replace({ path: this.url, query: { teamId: this.teamId, type: this.type } })
         }
       }
       else {

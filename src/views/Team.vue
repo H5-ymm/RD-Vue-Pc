@@ -37,7 +37,7 @@
             </div>
             <div class="x-flex-start-justify" v-if="type==1">
               <img
-                :src="getImgUrl(baseInfo.logo_url)"
+                :src="baseInfo.logo_url"
                 alt
                 class="team-logo"
                 v-if="baseInfo&&baseInfo.logo_url"
@@ -58,9 +58,7 @@
           <breadcrumb :breadcrumbs="breadcrumb"></breadcrumb>
         </el-header>
         <el-main class="team-main" :class="{'comany-main-page': type==1}">
-          <keep-alive>
-            <router-view class="team-box"></router-view>
-          </keep-alive>
+          <router-view class="team-box"></router-view>
         </el-main>
       </el-container>
     </el-container>
@@ -108,7 +106,7 @@ export default {
       console.log(val)
       if (val == 1) {
         this.aside = 'companyAside'
-        this.height = "90px"
+        this.height = "88px"
         this.getCompanyInfo(this.uid)
       }
       else {
@@ -129,6 +127,9 @@ export default {
     getCompanyInfo (uid) {
       getCompanyDetail({ uid }).then(res => {
         this.baseInfo = res.data || null
+        if (res.data && res.data.logo_url) {
+          this.baseInfo.logo_url = getImgUrl(this.baseInfo.logo_url)
+        }
         sessionStorage.setItem('baseInfo', JSON.stringify(this.baseInfo))
       })
     },

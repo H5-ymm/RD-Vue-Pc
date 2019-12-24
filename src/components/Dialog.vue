@@ -13,7 +13,7 @@
     </div>
     <span slot="footer" class="dialog-footer">
       <el-button @click="handleClose" type="primary" plain>{{modalInfo.closeText}}</el-button>
-      <el-button type="primary" @click="handleCloseOk">{{modalInfo.okText}}</el-button>
+      <el-button type="primary" @click="handleOk">{{modalInfo.okText}}</el-button>
     </span>
   </el-dialog>
 </template>
