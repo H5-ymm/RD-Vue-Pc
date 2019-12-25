@@ -8,7 +8,7 @@
     ref="cascader"
     class="cascader"
     @change="changeData"
-    @active-item-change="handleItemChange"
+    @expand-change="handleItemChange"
   ></el-cascader>
 </template>
 <script>
@@ -39,6 +39,10 @@ export default {
   created () {
     if (!this.address.length) {
       this.getRegion([])
+    }
+    else {
+      this.getRegion(this.address)
+      this.districtList = this.address.map(item => { return item + '' })
     }
   },
   watch: {

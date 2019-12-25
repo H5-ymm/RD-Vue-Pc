@@ -255,6 +255,14 @@ export default {
         }
       }
     }
+    .el-scrollbar__wrap {
+      width: 180px;
+      .text-input {
+        overflow: hidden;
+        border: none;
+        padding: 0 0 0 20px;
+      }
+    }
   }
   .width160 {
     width: 160px!important;
@@ -286,14 +294,6 @@ export default {
       line-height: 37px!important;
       text-align: center;
       border: none!important;
-    }
-  }
-  .el-scrollbar__wrap {
-    width: 180px;
-    .text-input {
-      overflow: hidden;
-      border: none;
-      padding: 0 0 0 20px;
     }
   }
 </style>

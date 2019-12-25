@@ -246,7 +246,7 @@ export default {
     selectMenus (key, keyPath) {
       console.log(key, keyPath)
       this.title = key
-      let arr = [key]
+      let arr = keyPath
       sessionStorage.setItem('menus', JSON.stringify(arr))
     }
   },
@@ -254,12 +254,13 @@ export default {
     routerli () {
       // 对应路由
       let pathStr = this.$route.path.split('/')
-      console.log(pathStr)
+      if (pathStr[1] == 'team') {
+        setTimeout(() => {
+          this.$router.replace('commonts')
+        }, 50)
+      }
       return '/' + pathStr[1]
 
-    },
-    names () {
-      return this.$store.state.user.users
     }
   }
 }

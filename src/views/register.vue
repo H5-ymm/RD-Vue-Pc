@@ -106,11 +106,11 @@
             <div class="grid-content x-flex register-grid-content" ref="bg">
               <img src="../assets/img/rightBg.png" v-if="registerType==1" />
               <img src="../assets/img/timerBg.png" v-if="registerType==2" />
-              <p class="text">
+              <div class="text">
                 已有账户，
-                <a href="login">直接登录</a>
+                <a href="login" class="login-primary">直接登录</a>
                 <img src="../assets/img/loginRight.png" alt class="loginRight" />
-              </p>
+              </div>
             </div>
           </el-col>
         </el-row>
@@ -278,12 +278,13 @@ export default {
           userRegister(this.formTab).then(res => {
             localStorage.setItem('userType', this.registerType)
             localStorage.setItem('token', res.data.token)
-            if (this.registerType == 2) {
-              this.$router.push('commonts')
-            }
-            else {
-              this.$router.push('createOrderTaking')
-            }
+            this.$router.push('team')
+            // if (this.registerType == 2) {
+            //   this.$router.push('commonts')
+            // }
+            // else {
+            //   this.$router.push('createOrderTaking')
+            // }
           }).catch(error => {
             this.$message.error(error.status.remind)
           })
@@ -343,16 +344,6 @@ export default {
 .loads .city-cascader {
   display:block;
 }
-.x-flex {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.x-flex-start-justify{
-  display: flex;
-  justify-content:flex-start;
-  align-items: center;
-}
 .loads .error {
   position:absolute;
   top:18%;
@@ -388,20 +379,17 @@ export default {
   color:#1890FF;
   border-radius:0;
 }
+.login-primary {
+  color:#1890FF;
+}
 .content {
   display: flex;
   justify-content: center;
   align-items: center;
   height:100%;
   width:110%;
-  /* overflow:hidden; 
-  padding: 40px 0;*/
   background: url('../assets/img/bg.png') no-repeat left center;
   background-size:cover;
-}
-.register-form {
-  /* padding: 0 0 40px; */
-  /* padding: 40px 0; */
 }
 .timerContent {
   background: url('../assets/img/comBg.jpg') no-repeat left center;
@@ -414,11 +402,9 @@ export default {
 }
 .loads-box{
   width: 60%;
-  /* height: 86%; */
   background:rgba(255,255,255,1);
   box-shadow:0px 5px 18px 0px rgba(0, 0, 0, 0.15);
   border-radius:5px;
-  /* margin-left:-5%; */
   margin: 40px 0 40px -8%;
 }
 .loads-box .el-input__inner {

@@ -3,7 +3,7 @@
     <!-- <breadcrumb :breadcrumbs="breadcrumb"></breadcrumb> -->
     <div class="team-box x-flex-start">
       <div class="team-box-left">
-        <div class="bg-purple-start">
+        <div class="x-flex-start-justify">
           <el-input
             placeholder="搜索"
             class="team-input"

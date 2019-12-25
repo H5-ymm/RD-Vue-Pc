@@ -1,3 +1,15 @@
+<style lang="scss">
+@import '@/assets/css/formMessage.scss';
+  .teamMessage {
+    .error {
+      position:absolute;
+      top: -20px;
+      left:0;
+      color:#FE2A00;
+      font-size:12px;
+    }
+  }
+</style>
 <template>
   <div class="teamMessage create-orderTaking-view">
     <div class="teamMessage-form-row create-orderTaking">
@@ -5,7 +17,7 @@
         :model="orderTakingForm"
         :rules="rules"
         ref="orderTakingForm"
-        label-width="100px"
+        label-width="110px"
         class="teamMessage-form"
       >
         <el-form-item label="职位名称" prop="name">
@@ -27,7 +39,7 @@
             type="number"
             v-model="orderTakingForm.required_number"
             class="width408"
-            @input="numberChange(arguments[0],orderTakingForm.required_number)"
+            @input="numberChange(arguments[0])"
             :min="2"
             placeholder="请输入申请人姓名"
           ></el-input>
@@ -42,7 +54,7 @@
             placeholder="请填写详细地址"
           ></el-input>
         </el-form-item>
-        <el-form-item label="年龄" prop="desc">
+        <el-form-item label="年龄" required>
           <div class="x-flex-start-justify width408">
             <el-input
               type="number"
@@ -61,28 +73,28 @@
             ></el-input>
           </div>
         </el-form-item>
-        <el-form-item label="性别" prop="sex">
+        <el-form-item label="性别" required>
           <el-radio-group v-model="orderTakingForm.sex">
             <el-radio :label="3">男女不限</el-radio>
             <el-radio :label="1">男</el-radio>
             <el-radio :label="2">女</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="缴纳五险" prop="is_five_risks">
+        <el-form-item label="缴纳五险" prop="is_five_risks" required>
           <el-radio-group v-model="orderTakingForm.is_five_risks">
             <el-radio :label="1">是</el-radio>
             <el-radio :label="2">否</el-radio>
             <el-radio :label="3">试用期后</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="缴纳公积金" prop="desc">
+        <el-form-item label="缴纳公积金" required>
           <el-radio-group v-model="orderTakingForm.is_fund">
             <el-radio :label="1">是</el-radio>
             <el-radio :label="2">否</el-radio>
             <el-radio :label="3">试用期后</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="学历" prop="education" required>
+        <el-form-item label="学历" required>
           <el-select v-model="orderTakingForm.education" class="width408" placeholder="请选择学历">
             <el-option :label="item" :value="index+1" v-for="(item,index) in eduList" :key="index"></el-option>
           </el-select>
@@ -106,7 +118,7 @@
         <el-form-item label="联系电话" required>
           <el-input v-model="orderTakingForm.tel" class="width408" placeholder="请输入联系电话"></el-input>
         </el-form-item>
-        <el-form-item label="邮箱" required>
+        <el-form-item label="邮箱">
           <el-input v-model="orderTakingForm.email" class="width408" placeholder="请输入邮箱"></el-input>
         </el-form-item>
         <el-form-item class="teamMessage-btn">
@@ -123,7 +135,7 @@
 // 企业从账户资料跳转
 import { getConstant } from '@/api/dictionary'
 import districtSelet from './districtSelet'
-import { updateTeamInfo } from '@/api/team'
+import { createInvoice } from '@/api/company'
 import salaryAndRebate from './orderTaking/salaryAndRebate'
 export default {
   components: {
@@ -139,7 +151,8 @@ export default {
         min_age: 16,
         is_five_risks: 1,
         sex: 3,
-        is_fund: 1
+        is_fund: 1,
+        uid: localStorage.getItem('uid')
       },
       imageUrl: '',
       license_img: '',
@@ -160,8 +173,6 @@ export default {
     };
   },
   created () {
-    console.log(this.$route.query)
-    this.orderTakingForm.id = this.$route.query.teamId
     let params = 'edu_type,money_array,job_array'
     this.getList(params)
   },
@@ -184,19 +195,23 @@ export default {
         this.orderTakingForm.name = this.jobName
       }
     },
+    numberChange (val) {
+
+    },
     change (val) {
       this.orderTakingForm.provinceid = val[0]
       this.orderTakingForm.cityid = val[1]
       this.orderTakingForm.three_cityid = val[2]
     },
     submitForm (orderTakingForm) {
-      this.orderTakingForm.landline = this.landlineStart + '-' + this.landlineEnd
       this.$refs[orderTakingForm].validate((valid) => {
         if (valid) {
-          updateTeamInfo(this.orderTakingForm).then(res => {
+          createInvoice(this.orderTakingForm).then(res => {
             if (res.status.code == 200) {
               this.$router.push('userlist')
             }
+          }).catch(error => {
+            this.$message.error(error.status.remind)
           })
         } else {
           return false;
@@ -209,120 +224,4 @@ export default {
   }
 }
 </script>
-<style lang="scss">
-  .teamMessage {
-    padding-bottom: 80px;
-    .teamMessage-form-row {
-      background:#fff;
-      // width: 100%;
-      margin:  0 auto;
-      padding: 20px 6px;
-      border-radius: 10px;
-      &.create-orderTaking {
-        padding: 40px 6px 20px;
-        .el-input__inner,.el-textarea__inner {
-          border-radius:2px!important;
-        }
-        .el-form-item__label {
-          padding: 0 20px 0 0 ;
-        }
-        .teamMessage-btn {
-          padding-bottom: 0;
-        }
-      }
-      .teamMessage-form {
-        width: 50%;
-        margin: 0 auto;
-        font-size: 14px;
-        .width408 {
-          width: 408px;
-        }
-        .width80 {
-          width: 80px;
-        }
-        .width150 {
-          width:150px;
-        }
-        .landline {
-          width:20px;
-          height:1px;
-          background: #6a6a6a;
-          margin: 0 10px;
-        }
-        .landline-tip {
-          position: absolute;
-          top: 0;
-          right: -20px;
-          color: #999999;
-          font-size: 14px;
-        }
-        .el-input__inner {
-          height: 38px;
-          line-height: 38px;
-          border: 1px solid #eee;
-          border-radius: 0;
-        }
-        .team-address {
-          margin-top: 5px;
-        }
-      }
-      .avatar-uploader .el-upload {
-        background: #eee;
-        border-radius: 3px;
-        cursor: pointer;
-        position: relative;
-        overflow: hidden;
-        color: #999999;
-        font-size: 14px;
-        width:91px;
-        height:91px;
-        >p {
-          margin-top: -10px;
-        }
-      }
-      .uploader-card {
-        display: inline-block;
-        margin-right: 20px;
-        .idcard-text  {
-          color:#6A6A6A;
-          text-align: center;
-          font-size: 14px;
-        }
-      }
-      .avatar-uploader .el-upload:hover {
-        border-color: #409EFF;
-      }
-      .avatar-uploader-icon {
-        font-size: 28px;
-        color: #8c939d;
-        text-align: center;
-        color: #999999;
-        font-size: 42px;
-        margin-top: 10px;
-      }
-      .avatar {
-        width:91px;
-        height:91px;
-        display: block;
-      }
-    }
-    .card-uploader-icon {
-      width: 162px;
-      height: 128px;
-    }
-    .idcard-tip {
-      position: absolute;
-      right: -100px;
-      top: 30px;
-      font-size: 14px;
-      color: #999;
-    }
-    .error {
-      position:absolute;
-      top: -20px;
-      left:0;
-      color:#FE2A00;
-      font-size:12px;
-    }
-  }
-</style>
+

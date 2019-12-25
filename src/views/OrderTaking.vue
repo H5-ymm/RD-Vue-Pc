@@ -1,3 +1,8 @@
+
+<style lang="scss">
+ @import '@/assets/css/orderTarking.scss';
+</style>
+
 <template>
   <el-container class="orderTaking" id="header">
     <el-header class="header x-flex-around home" height="50px">
@@ -5,11 +10,11 @@
     </el-header>
     <el-main class="orderTaking-main-content">
       <div class="orderTaking-search">
-        <div class="home-search orderTaking-main-box">
+        <div class="orderTaking-main-box">
           <searchInput @searchQuery="searchQuery"></searchInput>
         </div>
         <div class="orderTaking-search-list">
-          <div class="orderTaking-search-query">
+          <div class="orderTaking-search-query x-flex-start-justify">
             <span class="orderTaking-search-label">地点</span>
             <ul class="orderTaking-search-value">
               <li
@@ -21,7 +26,7 @@
             </ul>
             <el-button type="text" class="orderTaking-more" @click="dialogVisible=true">更多</el-button>
           </div>
-          <div class="orderTaking-search-query">
+          <div class="orderTaking-search-query x-flex-start-justify">
             <span class="orderTaking-search-label">不限</span>
             <ul class="orderTaking-search-value">
               <li
@@ -108,8 +113,8 @@
                 :key="index"
                 :class="{'orderTaking-main-sectionActive':index==0}"
               >
-                <div class="orderTaking-main-section">
-                  <div class="orderTaking-main-row">
+                <div class="orderTaking-main-section x-flex-between">
+                  <div class="orderTaking-main-row orderTaking-main-row1">
                     <ul class="orderTaking-main-item">
                       <li
                         class="job-name"
@@ -137,8 +142,8 @@
                   </div>
                   <div class="orderTaking-main-col">
                     <ul class="orderTaking-main-item">
-                      <li class="company-name bg-purple-start">
-                        <span>{{item.com_name}}</span>
+                      <li class="company-name x-flex-start-justify">
+                        <span>{{item.com_name||'公司名称'}}</span>
                         <img
                           src="../assets/img/noIcon.png"
                           class="orderTaking-icon"
@@ -173,7 +178,7 @@
           <div class="orderTaking-main-col2">
             <div class="bg-purple-light">
               <p class="job-title">看过的接单职位</p>
-              <div>
+              <div v-if="browsingList.length">
                 <ul
                   class="orderTaking-main-item orderTaking-main-history"
                   v-for="(item,index) in browsingList"
@@ -377,405 +382,3 @@ export default {
   }
 }
 </script>
-
-<style lang="scss">
- @import '@/assets/css/home.scss';
-.orderTaking {
-  background: #EEEEEE;
-}
-.orderTaking-header {
-  width: 1200px;
-  margin: 0 auto;
-  display: flex;
-  justify-content: space-between;
-}
-
-.orderTaking-main-content{
-  overflow: hidden;
-  width: 100%;
-  margin: 0 auto;
-  box-sizing: border-box;
-  padding:0;
-}
-.orderTaking-main-content .orderTaking-grid-content {
-  background: #fff;
-  height: 576px;
-}
-.orderTaking-main-box {
-  margin: 0 auto;
-  width: 780px;
-}
-.orderTaking-search-list {
-  margin: 20px auto;
-  width: 1200px;
-}
-.orderTaking-search-list .orderTaking-search-query {
-  display:flex;
-  justify-content: flex-start;
-  align-items: center;
-  font-size:14px;
-  margin-bottom: 10px;
-  border-bottom : 1px solid #EEEEEE;
-  padding-bottom:10px;
-}
-.orderTaking-search-query .orderTaking-search-label {
-  display: inline-block;
-  width: 50px;
-  color:#333333;
-}
-.orderTaking-main-content .orderTaking-search-select .el-input {
-  box-shadow: none;
-  margin-top: -10px;
-}
-.orderTaking-main-content .orderTaking-search-select .el-input__inner {
-  border: none;
-  color: #FE2A00;
-  padding: 6px 0;
-}
-.orderTaking-search-select .el-input__inner::-webkit-input-placeholder {
-  color: #333;
-}
-.orderTaking-more {
-  margin-left: 20px;
-}
-.orderTaking-search-query .orderTaking-search-value {
-  overflow: hidden;
-  width: 92%;
-  // height:20px;
-}
-.orderTaking-search-query .orderTaking-search-value li {
-  padding: 2px 8px;
-  display: inline-block;
-  color: #6A6A6A;
-}
-.orderTaking-search-query .orderTaking-search-value .active {
-  background:rgba(220,238,254,1);
-  border-radius:5px;
-  color: #1890FF;
-}
-.orderTaking-search-select {
-  display: flex;
-  justify-content: space-between;
-  height: 20px;
-}
-.orderTaking-search-select .clear {
-  text-align: right;
-  color: #6A6A6A;
-  width: 200px;
-  font-size: 12px;
-  padding-top: 4px;
-}
-.orderTaking-search-select .el-select {
-  width: 120px;
-  margin-right: 30px;
-}
-.orderTaking-main-list {
-  width: 1200px;
-  margin: 30px auto;
-}
-.orderTaking-main-list .orderTaking-main-section {
-  border-bottom: 1px solid #EEEEEE;
-  height: 112px;
-  margin: 0 20px;
-}
-.orderTaking-main-list .orderTaking-main-sectionActive {
-  background:#F6F9FE;
-}
-.orderTaking-main-item {
-  margin-right: 10px;
-  &:nth-of-type(2) {
-    margin-left: 30px;
-    li {
-      &:nth-of-type(2){
-        text-align: right;
-      }
-       &:nth-of-type(3){
-        margin-left: 10px;
-      }
-    }
-  }
-}
-.orderTaking-main-item .el-tag {
-  margin-right: 4px;
-}
-.orderTaking-main-item li {
-  font-size:12px;
-  color: #6A6A6A;
-  height: 30px;
-  flex: 1;
-  text-align: left;
-}
-.orderTaking-main-item .bg-purple-start .orderTaking-icon {
-  width: 33px;
-  height: 11px;
-  margin: 0 5px;
-}
-.orderTaking-main-item .job-name {
-  font-size:16px;
-  color: #1890FF;
-} 
-.orderTaking-main-item .company-name {
-  font-size:14px;
-  color: #1890FF;
-}
-.orderTaking-main-item .company-name .ctime {
-  font-size: 12px;
-  color: #6A6A6A;
-}
-.orderTaking-main-item  .require-number {
-  color: #FE2A00;
-}
-.orderTaking-main-list .orderTaking-main-row {
-  display: flex;
-  justify-content: space-between;
-  align-items:flex-start;
-  line-height: 30px;
-}
-.orderTaking-main-row .orderTaking-main-col1{
-  width: 906px;
-  background: #fff;
-  margin-right: 14px;
-  /* padding: 0 20px; */
-  border: 1px solid #F6F9FE;
-}
-.orderTaking-main-col {
-  display: flex;
-  justify-content: flex-start;
-  width: 270px;
-}
-.orderTaking-main-row .orderTaking-main-col2{
-  width: 284px;
-}
-.orderTaking-main-col2 .grid-content{
-  border-radius: 0;
-}
-.orderTaking-main-row .bg-purple-light {
-  background: #fff;
-}
-.orderTaking-login {
-  height: 375px;
-  margin-top: 20px;
-}
-.orderTaking-main-history {
-  padding:5px 20px;
-  border-bottom: 1px solid #eee;
-}
-.orderTaking-main-col2 .job-title {
-  border-bottom: 1px solid #eee;
-  font-size: 18px;
-  text-align: center;
-  color: #1890FF;
-  padding: 10px 0;
-}
-.orderTaking-main-content .home-search {
-  display:flex;
-}
-.orderTaking-main-content .orderTaking-search {
-  width:100%;
-  background:#fff;
-  height:176px;
-  padding: 30px 0;
-  box-shadow:0px 1px 13px 0px rgba(4,4,4,0.15);
-}
-.orderTaking-main-content .el-input__prefix {
-  padding:5px 10px;
-  left:10px;
-  top:5px;
-  color:#6A6A6A;
-}
-.orderTaking-main-content .el-input__inner {
-  padding:14px 10px;
-  border-radius: 0;
-  display:inline-block;
-}
-.orderTaking-main-content .el-input--prefix .el-input__inner {
-  padding: 20px 110px;
-}
-.orderTaking-main-section {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-} 
-.home-main-more {
-  width:391px;
-  height:38px;
-  border:1px solid rgba(24,144,255,1);
-  border-radius:5px;
-  margin: 0 auto 10px;
-  color: #1890FF;
-  margin-left: 35%;
-}
-.home-main-more-right {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-}
-.home-main-more-right img {
-  width: 10px;
-  height: 10px;
-}
-.home-box{
-  background: #fff;
-  height: calc(100% - 20px);
-  padding: 10px;
-}
-.home-img-box {
-  height:290px;
-}
-.home-img-box .grid-content {
-  height:290px;
-  margin:22px 0;
-  width:100%;
-}
-.home-img-box .bg-purple-img-right {
-  height:144px;
-  width:100%;
-  background:  url('../assets/img/right.png') no-repeat left center;
-  background-size: cover;
-  margin-bottom:2px;
-}
-.home-img-box .bg-purple-img-right1 {
-  background:  url('../assets/img/right1.png') no-repeat left center;
-  background-size: cover;
-}
-.home-img-box .bg-purple-img {
-  height:290px;
-  width:100%;
-  background:  url('../assets/img/img.jpg') no-repeat left center;
-  background-size: cover;
-}
-.home-img-box .bg-purple-right {
-  margin:22px 0 22px 2px;
-}
-.home-main-title {
-  padding-bottom: 10px;
-  font-size: 16px;
-  /* margin-bottom: 20px; */
-  border-bottom: 1px solid #EEEEEE;
-}
-.home-main-title img {
-  max-width:23px;
-  padding-right:5px;
-}
-.home-main-list {
-  padding:20px 0;
-  /* margin-bottom:20px; */
-  font-size:16px;
-}
-.home-main-list  .home-main-list-title {
-  padding-bottom:5px;
-}
-.home-main-list  .home-list-title-active {
-  color:#FE2A00;
-}
-.home-main-list .el-card__header {
-  /* padding:15px; */
-}
-.home-main-list .el-card__body {
-  padding:10px;
-  font-size:14px;
-}
-.home-main-list .handle-btn {
-  float: right; 
-  padding: 3px 8px; 
-}
-.box-card {
-  height:150px;
-}
-.home-list-clearfix {
-  line-height:30px;
-  font-size:14px;
-}
-.home-list-clearfix-active{
-  color:#1890FF;
-}
-.grid-information-card {
-  background: #fff;
-  display:flex;
-  justify-content:flex-start;
-  align-items:center;
-  height:175px;
-  font-size:16px;
-  padding:0 12px;
-}
-.grid-information-card .grid-information-title {
-  font-size:16px;
-  line-height:30px;
-}
-.grid-information-card .grid-information-img {
-  width:230px;
-  height:145px;
-}
-.grid-information-card .grid-information {
-  width:360px;
-  height:100%;
-  margin-top:30px;
-  padding-left:15px;
-}
-.grid-information-card .grid-information-content {
-  font-size:14px;
-  overflow : hidden;
-  text-overflow: ellipsis;
-  display: -webkit-box;
-  -webkit-line-clamp: 4;
-  -webkit-box-orient: vertical;
-  color:#6A6A6A;
-}
-.footer {
-  background: #fff;
-}
-.home-main-section-footer {
-   width: 1200px;
-   margin:40px auto;
-   font-size:16px;
-}
-.home-footer-box {
-  color:#6A6A6A;
-  line-height:36px;
-}
-.home-footer-box1 {
-  text-align: right;
-}
-.home-footer-box li{
-  font-size:14px;
-}
-.home-footer-box .home-footer-title {
-  font-size:16px;
-  font-weight:bold;
-}
-.home-footer-box1 .home-footer-title{
-  margin-right:30px;
-}
-.home-footer-img {
-  width:142px;
-}
-.fixed {
-  position: fixed;
-  right: 50px;
-  bottom: 36%;
-}
-.fixed li {
-  width:50px;
-  height:50px;
-  background:rgba(255,255,255,1);
-  border:1px solid rgba(238,238,238,1);
-  box-shadow:0px 2px 10px 0px rgba(70,70,70,0.1);
-  border-radius:5px;
-  margin-bottom: 10px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-.fixed .help {
-  background: #1890FF;
-}
-.pagination {
-  text-align: center;
-  padding: 20px;
-}
-/* .el-tooltip__popper.is-dark {
-  color: #333;
-  background: #fff;
-} */
-</style>

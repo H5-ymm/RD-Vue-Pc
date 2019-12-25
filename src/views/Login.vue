@@ -1,7 +1,7 @@
 <template>
   <el-container class="loads register-view">
     <el-header class="header x-flex-around">
-      <div class="bg-purple head-left">
+      <div class="x-flex-between head-left">
         <span class="header-left">人事达</span>
         <a class="welcome">欢迎登录</a>
       </div>
@@ -186,12 +186,13 @@ export default {
             localStorage.setItem('token', res.data.token)
             localStorage.setItem('uid', res.data.uid)
             localStorage.setItem('userName', res.data.username)
-            if (registerType == 2) {
-              this.$router.push('commonts')
-            }
-            else {
-              this.$router.push('createOrderTaking')
-            }
+            this.$router.push('team')
+            // if (registerType == 2) {
+            //   this.$router.push('commonts')
+            // }
+            // else {
+            //   this.$router.push('createOrderTaking')
+            // }
           }).catch(error => {
             if (error.status.code == 3010) {
               this.isShowError = true
@@ -219,9 +220,22 @@ export default {
   width:100%;
   height:49px;
   background:rgba(50,55,62,1);
+  color:#fff;
+  font-size:14px;
 }
 .head-left {
   line-height: 30px;
+}
+.header span{
+  font-weight:bold;
+  color:#1890FF;
+  margin-right:30px;
+}
+.header .welcome {
+  font-size: 18px;
+}
+.header .header-left {
+  font-size:26px;
 }
 .register-view{
   width: 100vw;
@@ -241,11 +255,6 @@ export default {
 .x-flex-center {
   display: flex;
   justify-content: center;
-  align-items: center;
-}
-.x-flex-around {
-  display: flex;
-  justify-content:space-around;
   align-items: center;
 }
 .register-btn {

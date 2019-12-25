@@ -1,6 +1,26 @@
+<style lang="scss">
+.orderTaking-header {
+  width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+}
+.home .header-left{
+  display: inline-block;
+}
+.home .bg-purple .welcome {
+  font-size:14px;
+  margin-left:8px;
+}
+.home-aside{
+  height: 100vh;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+</style>
 <template>
   <div class="orderTaking-header">
-    <div class="bg-purple">
+    <div class="x-flex-between">
       <span class="header-left">人事达</span>
       <ul class="nav">
         <li
@@ -15,7 +35,7 @@
         </li>
       </ul>
     </div>
-    <div class="bg-purple-light bg-purple">
+    <div class="bg-purple-light x-flex-between">
       <span class="home-purple-left" v-if="!userInfo">
         <i class="el-icon-user-solid"></i>
         <a class="welcome" href="login">登录</a>

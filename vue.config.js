@@ -17,17 +17,7 @@ module.exports = {
     host: '127.0.0.1', //真机测试 0.0.0.0
     port: 8081, //配置端口号
     https: false, //是否配置https
-    hotOnly: true, //是否热更新
-    // proxy: { //配置跨域
-    //   '/index.php': {
-    //     target: 'http://tiantianxsg.com:39888/index.php/',
-    //     ws: true,
-    //     changOrigin: true,
-    //     pathRewrite: {
-    //       '^/api': ''
-    //     }
-    //   }
-    // }
+    hotOnly: false, //是否热更新
   },
   chainWebpack: () => { },
   productionSourceMap: true,
@@ -46,11 +36,9 @@ module.exports = {
       }
     },
     // 启用 CSS modules for all css / pre-processor files.
-    modules: false
+    modules: true
   },
   configureWebpack: {
-    // provide the app's title in webpack's name field, so that
-    // it can be accessed in index.html to inject the correct title.
     resolve: {
       alias: {
         '@': resolve('src')

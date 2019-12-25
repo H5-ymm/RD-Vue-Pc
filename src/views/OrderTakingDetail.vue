@@ -1,3 +1,109 @@
+<style lang="scss">
+ @import '@/assets/css/orderTarking.scss';
+ .orderTaking-main-content .orderTaking-detail {
+  height: 200px;
+  width: 100%;
+  background: url('../assets/img/detailsBg.jpg') no-repeat top center;
+  background-size: contain；
+}
+.orderTaking-detail-content {
+   margin: -140px auto 40px;
+   position: relative;
+   z-index: 9;
+}
+.orderTaking-jobDeail {
+   background: #fff;
+   margin: 20px 0;
+   padding:0 20px;
+   height: 148px;
+   line-height: 36px;
+}
+.orderTaking-jobDeail .job-name-top {
+  font-size:28px;
+  font-weight:400;
+}
+.orderTaking-main-col1 .orderTaking-card {
+  margin-top: 20px;
+  background: #fff;
+}
+.orderTaking-jobDeail .job-name-top .job-status{
+  background:#61BC74;
+  color: #fff;
+  font-size: 12px;
+  border-radius:10px;
+  width:62px;
+  height:22px;
+  display: inline-block;
+  text-align: center;
+  line-height: 22px;
+  margin-left: 15px;
+}
+.panel-content {
+  padding: 20px 28px 0;
+}
+.orderTaking-info {
+  color: #6A6A6A;
+  margin-right: 20px;
+  width: 50%;
+}
+.orderTaking-info span{
+  font-size:16px;
+  color: #333;
+  display: inline-block;
+  margin-right: 20px;
+}
+.orderTaking-info span:nth-of-type(1){
+  text-align: right;
+  font-size:14px;
+  width: 100px;
+  margin-left: -30px;
+}
+.orderTaking-jobDeail .orderTarking-btn {
+  width: 298px;
+  padding: 6px 20px;
+}
+.orderTarking-link {
+  margin-left: 5px;
+}
+ .company-detail {
+  background:#fff;
+  min-height:321px;
+  margin: 0 auto 20px;
+  text-align: center;
+  font-size: 14px;
+  color: #6A6A6A;
+  padding: 0 28px 0;
+}
+.company-detail .company-logo {
+  width:82px;
+  height:82px;
+  margin: 20px auto 10px;
+}
+.company-detail .company-name {
+  font-size:16px;
+  text-align: center;
+  font-weight:bold;
+}
+.company-detail .company-profile {
+  text-align: left;
+  line-height: 23px;
+  margin-top: 10px;
+  padding-bottom: 10px;
+}
+.company-detail .company-profile-content {
+  overflow : hidden;
+  text-overflow: ellipsis;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+.company-detail .company-profile>span {
+  color: #999999;
+  font-size: 14px;
+}
+.company-detail .profile-more {
+  margin: 0 5px;
+}
+</style>
 <template>
   <el-container class="orderTaking">
     <el-header class="header x-flex-around home" height="50px" id="header">
@@ -6,9 +112,9 @@
     <el-main class="orderTaking-main-content">
       <div class="orderTaking-detail"></div>
       <div class="orderTaking-main-list orderTaking-detail-content">
-        <div class="bg-purple orderTaking-jobDeail">
+        <div class="x-flex-between orderTaking-jobDeail">
           <div class="orderTaking-jobDeail-left">
-            <p class="job-name-top bg-purple">
+            <p class="job-name-top x-flex-between">
               {{orderTakingDetail.name}}
               <span class="job-status">招聘中</span>
             </p>
@@ -44,7 +150,7 @@
             <div class="grid-content">
               <section class="orderTaking-card">
                 <Panel title="接单详情">
-                  <div slot="content" class="panel-content bg-purple-align-start">
+                  <div slot="content" class="panel-content x-flex-start">
                     <div class="orderTaking-info">
                       <p>
                         <span>需求人数：</span>
@@ -91,7 +197,7 @@
               </section>
               <section class="orderTaking-card">
                 <Panel title="返利详情">
-                  <div slot="content" class="panel-content bg-purple-align-start">
+                  <div slot="content" class="panel-content x-flex-start">
                     <div class="orderTaking-info">
                       <p>
                         <span>返利方式：</span>
@@ -132,8 +238,8 @@
                     :key="index"
                     :class="{'orderTaking-main-sectionActive':index==0}"
                   >
-                    <div class="orderTaking-main-section">
-                      <div class="orderTaking-main-row">
+                    <div class="orderTaking-main-section x-flex-between">
+                      <div class="orderTaking-main-row orderTaking-main-row1">
                         <ul class="orderTaking-main-item">
                           <li class="job-name">
                             <span class="company-name">{{item.name}}</span>
@@ -156,7 +262,7 @@
                       </div>
                       <div class="orderTaking-main-col">
                         <ul class="orderTaking-main-item">
-                          <li class="company-name bg-purple-start">
+                          <li class="company-name x-flex-start-justify">
                             <span>{{item.com_name}}</span>
                             <img
                               src="../assets/img/noIcon.png"
@@ -188,7 +294,7 @@
             <div class="company-detail">
               <img :src="logoUrl" alt class="company-logo" />
               <p class="company-name">{{companyInfo.com_name}}</p>
-              <div class="bg-purple">
+              <div class="x-flex-between">
                 <p class="x-flex-around">
                   <img src="../assets/img/hy.png" alt />
                   <span :underline="false" class="orderTarking-link">{{companyInfo.com_sort}}</span>
@@ -198,7 +304,7 @@
                   <span :underline="false" class="orderTarking-link">{{companyInfo.com_scale}}</span>
                 </p>
               </div>
-              <div class="bg-purple">
+              <div class="x-flex-between">
                 <p class="x-flex-around">
                   <img src="../assets/img/address.png" alt />
                   <span :underline="false" class="orderTarking-link">{{companyInfo.address}}</span>
@@ -211,7 +317,7 @@
                   ref="content"
                   v-html="companyInfo.content+'哈哈哈哈哈哈哈哈哈哈哈剋坎坎坷坷坎坎坷坷'"
                 ></p>
-                <p class="bg-purple-center" @click="showMore()">
+                <p class="x-flex-center" @click="showMore()">
                   <img src="../assets/img/moreDown.png" alt />
                   <span class="profile-more">查看更多</span>
                 </p>
@@ -225,15 +331,15 @@
                   v-for="(item,index) in browsingList"
                   :key="index"
                 >
-                  <li class="bg-purple">
+                  <li class="x-flex-between">
                     <span class="company-name">{{item.name}}</span>
                     <span class="require-number">{{item.required_number}}人</span>
                   </li>
-                  <li class="bg-purple">
+                  <li class="x-flex-between">
                     <span class="require-number">{{getmoneyType(item.money_type)}}薪:</span>
                     <span>{{item.money}}/人/{{getmoneyType(item.money_type)}}</span>
                   </li>
-                  <li class="bg-purple">{{item.com_name}}</li>
+                  <li class="x-flex-between">{{item.com_name}}</li>
                 </ul>
               </div>
             </div>
@@ -454,533 +560,3 @@ export default {
   }
 }
 </script>
-
-<style>
-.home{
-  width: 100%;
-  height: 100vh;
-  overflow: hidden;
-  position: relative;
-  padding: 0 50px;
-}
-.orderTaking {
-  background: #EEEEEE;
-}
-.orderTaking-header {
-  width: 1200px;
-  margin: 0 auto;
-  display: flex;
-  justify-content: space-between;
-}
-.home .header-left{
-  display: inline-block;
-}
-.home .bg-purple .welcome {
-  font-size:14px;
-  margin-left:8px;
-}
-.bg-purple {
-  display: flex;
-  align-items:center;
-  justify-content: space-between;
-}
-.bg-purple-center {
-  display: flex;
-  align-items:center;
-  justify-content: center;
-}
-.bg-purple-align-start {
-  display: flex;
-  align-items:flex-start;
-  justify-content: flex-start;
-}
-.home-aside{
-  height: 100vh;
-  /* overflow: hidden; */
-  overflow-y: scroll;
-  overflow-x: hidden;
-}
-.nav {
-  display: inline-block;
-}
-.nav .nav-item {
-   position: relative;
-   display: inline-block;
-   padding: 15px 10px;
-   font-weight:normal;
-}
-.nav .nav-item.active {
-  color:#1890FF;
-}
-.home .home-purple-left {
-  color: #fff;
-  font-weight:normal;
-}
-.nav .line {
-  width:30px;
-  height:3px;
-  background:#1890FF;
-  position:absolute;
-  left:10px;
-  bottom: 0;
-}
-.divider {
-  color:rgba(255,255,255,0.2);
-  margin-left:8px;
-}
-.orderTaking-main-content{
-  overflow: hidden;
-  width: 100%;
-  margin: 0 auto;
-  box-sizing: border-box;
-  padding:0;
-}
-.orderTaking-main-content .orderTaking-detail {
-  height: 200px;
-  width: 100%;
-  background: url('../assets/img/detailsBg.jpg') no-repeat top center;
-  background-size: contain；
-}
-.orderTaking-main-box {
-  margin: 0 auto;
-  width: 56%;
-}
-.orderTaking-search-list {
-  margin: 20px auto;
-  width: 1200px;
-}
-.orderTaking-search-list .orderTaking-search-query {
-  display:flex;
-  justify-content: flex-start;
-  align-items: center;
-  font-size:14px;
-  margin-bottom: 10px;
-  border-bottom : 1px solid #EEEEEE;
-  padding-bottom:10px;
-}
-.orderTaking-search-query .orderTaking-search-label {
-  display: inline-block;
-  width: 50px;
-  color:#333333;
-}
-.orderTaking-main-content .orderTaking-search-select .el-input {
-  box-shadow: none;
-  margin-top: -10px;
-}
-.orderTaking-main-content .orderTaking-search-select .el-input__inner {
-  border: none;
-  color: #FE2A00;
-  padding: 6px 0;
-}
-.orderTaking-search-select .el-input__inner::-webkit-input-placeholder {
-  color: #333;
-}
-.orderTaking-more {
-  margin-left: 20px;
-}
-.orderTaking-search-query .orderTaking-search-value {
-  overflow: hidden;
-  width: 92%;
-  height:20px;
-}
-.orderTaking-search-query .orderTaking-search-value li {
-  padding: 0 8px;
-  display: inline-block;
-  color: #6A6A6A;
-}
-.orderTaking-search-query .orderTaking-search-value .active {
-  background:rgba(220,238,254,1);
-  border-radius:5px;
-  color: #1890FF;
-}
-.orderTaking-search-select {
-  display: flex;
-  justify-content: space-between;
-  height: 20px;
-}
-.orderTaking-search-select .clear {
-  text-align: right;
-  color: #6A6A6A;
-  width: 200px;
-  font-size: 12px;
-  padding-top: 4px;
-}
-.orderTaking-search-select .el-select {
-  width: 120px;
-  margin-right: 30px;
-}
-.orderTaking-main-list {
-  width: 1200px;
-  margin: 30px auto;
-}
-.orderTaking-detail-content {
-   margin: -140px auto 40px;
-   position: relative;
-   z-index: 9;
-}
-.orderTaking-main-list .orderTaking-main-section {
-  border-bottom: 1px solid #EEEEEE;
-  height: 112px;
-  margin: 0 20px;
-}
-.orderTaking-main-list .orderTaking-main-sectionActive {
-  background:#F6F9FE;
-}
-.orderTaking-main-item {
-  margin-right: 10px;
-}
-.orderTaking-main-item .el-tag {
-  margin-right: 4px;
-}
-.orderTaking-main-item li {
-  font-size:12px;
-  color: #6A6A6A;
-  height: 30px;
-  flex: 1;
-  text-align: left;
-}
-.orderTaking-main-item .bg-purple-start .orderTaking-icon {
-  width: 33px;
-  height: 11px;
-  margin: 0 5px;
-}
-.orderTaking-main-item .job-name {
-  font-size:16px;
-  color: #1890FF;
-} 
-.orderTaking-main-item .company-name {
-  font-size:14px;
-  color: #1890FF;
-}
-.orderTaking-main-item .company-name .ctime {
-  font-size: 12px;
-  color: #6A6A6A;
-}
-.orderTaking-main-item  .require-number {
-  color: #FE2A00;
-}
-.orderTaking-main-list .orderTaking-main-row {
-  display: flex;
-  justify-content: space-between;
-  align-items:flex-start;
-  line-height: 30px;
-}
-.orderTaking-jobDeail {
-   background: #fff;
-   margin: 20px 0;
-   padding:0 20px;
-   height: 148px;
-   line-height: 36px;
-}
-.orderTaking-jobDeail .job-name-top {
-  font-size:28px;
-  font-weight:400;
-}
-.orderTaking-main-col1 .orderTaking-card {
-  margin-top: 20px;
-  background: #fff;
-}
-.orderTaking-jobDeail .job-name-top .job-status{
-  background:#61BC74;
-  color: #fff;
-  font-size: 12px;
-  border-radius:10px;
-  width:62px;
-  height:22px;
-  display: inline-block;
-  text-align: center;
-  line-height: 22px;
-  margin-left: 15px;
-}
-.panel-content {
-  padding: 20px 28px 0;
-}
-.orderTaking-info {
-  color: #6A6A6A;
-  margin-right: 20px;
-  width: 50%;
-}
-.orderTaking-info span{
-  font-size:16px;
-  color: #333;
-  display: inline-block;
-  margin-right: 20px;
-}
-.orderTaking-info span:nth-of-type(1){
-  text-align: right;
-  font-size:14px;
-  width: 100px;
-  margin-left: -30px;
-}
-.orderTaking-jobDeail .orderTarking-btn {
-  width: 298px;
-  padding: 6px 20px;
-}
-.orderTarking-link {
-  margin-left: 5px;
-}
-.orderTaking-main-row .orderTaking-main-col1{
-  width: 906px;
-  background: #fff;
-  margin-right: 14px;
-  border: 1px solid #F6F9FE;
-}
-.orderTaking-main-col {
-  display: flex;
-  justify-content: flex-start;
-  width: 270px;
-}
-.orderTaking-main-row .orderTaking-main-col2{
-  width: 284px;
-}
-.orderTaking-main-history {
-  padding:5px 20px;
-  border-bottom: 1px solid #eee;
-}
-.orderTaking-main-col2 .job-title {
-  border-bottom: 1px solid #eee;
-  font-size: 18px;
-  text-align: center;
-  color: #1890FF;
-  padding: 10px 0;
-}
-.company-detail {
-  /* width:100%; */
-  background:#fff;
-  min-height:321px;
-  margin: 0 auto 20px;
-  text-align: center;
-  font-size: 14px;
-  color: #6A6A6A;
-  padding: 0 28px 0;
-}
-.company-detail .company-logo {
-  width:82px;
-  height:82px;
-  margin: 20px auto 10px;
-}
-.company-detail .company-name {
-  font-size:16px;
-  text-align: center;
-  font-weight:bold;
-}
-.company-detail .company-profile {
-  text-align: left;
-  line-height: 23px;
-  margin-top: 10px;
-  padding-bottom: 10px;
-  /* width: 302px; */
-}
-.company-detail .company-profile-content {
-  overflow : hidden;
-  text-overflow: ellipsis;
-  /* display: -webkit-box; */
-  -webkit-line-clamp: 2;
-  /* font-size: 14px; */
-  -webkit-box-orient: vertical;
-}
-.company-detail .company-profile>span {
-  color: #999999;
-  font-size: 14px;
-}
-.company-detail .profile-more {
-  margin: 0 5px;
-}
-.orderTaking-main-content .home-search {
-  display:flex;
-}
-.orderTaking-main-content .orderTaking-search {
-  width:100%;
-  background:#fff;
-  height:176px;
-  padding: 30px 0;
-  box-shadow:0px 1px 13px 0px rgba(4,4,4,0.15);
-}
-.orderTaking-main-content .el-input__prefix {
-  padding:5px 10px;
-  left:10px;
-  top:5px;
-  color:#6A6A6A;
-}
-.orderTaking-main-content .el-input {
-  box-shadow:0px 1px 6px 0px rgba(88,88,90,0.1);
-}
-.orderTaking-main-content .el-input__inner {
-  padding:14px 10px;
-  border-radius: 0;
-  display:inline-block;
-}
-.orderTaking-main-content .el-input--prefix .el-input__inner {
-  padding: 20px 110px;
-}
-/* .orderTaking-main-content  .search-btn {
-  border-radius:0px 5px 5px 0px;
-  padding: 0 40px;
-  height:39px;
-} */
-.orderTaking-main-section {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-} 
-.home-main-more {
-  width:391px;
-  height:38px;
-  border:1px solid rgba(24,144,255,1);
-  border-radius:5px;
-  margin: 0 auto 10px;
-  color: #1890FF;
-  margin-left: 35%;
-}
-.home-main-more-right {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-}
-.home-main-more-right img {
-  width: 10px;
-  height: 10px;
-}
-.home-box{
-  background: #fff;
-  height: calc(100% - 20px);
-  padding: 10px;
-}
-.home-img-box {
-  height:290px;
-}
-.home-img-box .grid-content {
-  height:290px;
-  margin:22px 0;
-  width:100%;
-}
-.home-img-box .bg-purple-img-right {
-  height:144px;
-  width:100%;
-  background:  url('../assets/img/right.png') no-repeat left center;
-  background-size: cover;
-  margin-bottom:2px;
-}
-.home-img-box .bg-purple-img-right1 {
-  background:  url('../assets/img/right1.png') no-repeat left center;
-  background-size: cover;
-}
-.home-img-box .bg-purple-img {
-  height:290px;
-  width:100%;
-  background:  url('../assets/img/img.jpg') no-repeat left center;
-  background-size: cover;
-}
-.home-img-box .bg-purple-right {
-  margin:22px 0 22px 2px;
-}
-.home-main-title {
-  padding-bottom: 10px;
-  font-size: 16px;
-  /* margin-bottom: 20px; */
-  border-bottom: 1px solid #EEEEEE;
-}
-.home-main-title img {
-  max-width:23px;
-  padding-right:5px;
-}
-.home-main-list {
-  padding:20px 0;
-  /* margin-bottom:20px; */
-  font-size:16px;
-}
-.home-main-list  .home-main-list-title {
-  padding-bottom:5px;
-}
-.home-main-list  .home-list-title-active {
-  color:#FE2A00;
-}
-.home-main-list .el-card__body {
-  padding:10px;
-  font-size:14px;
-}
-.home-main-list .handle-btn {
-  float: right; 
-  padding: 3px 8px; 
-}
-.box-card {
-  height:150px;
-}
-.home-list-clearfix {
-  line-height:30px;
-  font-size:14px;
-}
-.home-list-clearfix-active{
-  color:#1890FF;
-}
-.grid-information-card {
-  background: #fff;
-  display:flex;
-  justify-content:flex-start;
-  align-items:center;
-  height:175px;
-  font-size:16px;
-  padding:0 12px;
-}
-.grid-information-card .grid-information-title {
-  font-size:16px;
-  line-height:30px;
-}
-.grid-information-card .grid-information-img {
-  width:230px;
-  height:145px;
-}
-.grid-information-card .grid-information {
-  width:360px;
-  height:100%;
-  margin-top:30px;
-  padding-left:15px;
-}
-.grid-information-card .grid-information-content {
-  font-size:14px;
-  overflow : hidden;
-  text-overflow: ellipsis;
-  display: -webkit-box;
-  -webkit-line-clamp: 4;
-  -webkit-box-orient: vertical;
-  color:#6A6A6A;
-}
-.footer {
-  background: #fff;
-}
-.home-main-section-footer {
-   width: 1200px;
-   margin:40px auto;
-   font-size:16px;
-}
-.home-footer-box {
-  color:#6A6A6A;
-  line-height:36px;
-}
-.home-footer-box1 {
-  text-align: right;
-}
-.home-footer-box li{
-  font-size:14px;
-}
-.home-footer-box .home-footer-title {
-  font-size:16px;
-  font-weight:bold;
-}
-.home-footer-box1 .home-footer-title{
-  margin-right:30px;
-}
-.home-footer-img {
-  width:142px;
-}
-
-.pagination {
-  text-align: center;
-  padding: 20px;
-}
-/* .el-tooltip__popper.is-dark {
-  color: #333;
-  background: #fff;
-} */
-</style>

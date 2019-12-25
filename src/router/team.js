@@ -28,9 +28,9 @@ const collectingInvoice = resolve => (require(['../components/internalInvoice/co
 const checkResume = resolve => (require(['../components/internalInvoice/checkResume.vue'], resolve)) // 内部审核简历
 
 const transfer = resolve => (require(['../components/finance/transfer.vue'], resolve)) // 内部审核简历
+const CompanyForm = resolve => (require(['../components/teamMessage/teamCompanyForm.vue'], resolve)) // 团队企业
+const personalForm = resolve => (require(['../components/teamMessage/personalForm.vue'], resolve)) // 团队个人
 import Department from '../components/Department.vue'
-import personalForm from '../components/teamMessage/personalForm'  // 个人
-import CompanyForm from '../components/teamMessage/companyForm'   // 企业
 import Userlist from '../components/Userlist.vue'  //全部用户
 import commonts from '../components/commonts.vue'  //评论
 

@@ -8,8 +8,10 @@ const auditionNameList = resolve => (require(['../components/receiptManagement/a
 const commonTable = resolve => (require(['../components/receiptManagement/commonTableList.vue'], resolve))
 const interviewPersonnel = resolve => (require(['../components/receiptManagement/interviewPersonnel.vue'], resolve))
 const checkResume = resolve => (require(['../components/receiptManagement/checkResume.vue'], resolve))
-import CompanyForm from '../components/teamMessage/companyForm'   // 企业
+const CompanyForm = resolve => (require(['../components/teamMessage/companyForm.vue'], resolve))
 const createOrderTaking = resolve => (require(['../components/CeateOrderTaking.vue'], resolve))
+const onJobStaff = resolve => (require(['../components/staffManage/onJobStaff.vue'], resolve)) //在职员工
+
 export const companyRouters = [
   { // 审核发单
     path: '/checkReceipt',
@@ -83,7 +85,7 @@ export const companyRouters = [
       requiresAuth: 2
     }
   },
-  { // 团队个人设置
+  { // 企业信息
     path: '/companyForm',
     name: 'CompanyForm',
     component: CompanyForm,
@@ -98,5 +100,14 @@ export const companyRouters = [
     meta: {
       requiresAuth: 1
     }
+  },
+  {
+    path: '/onJobStaff',  // 新建接单
+    name: onJobStaff,
+    component: onJobStaff,
+    meta: {
+      requiresAuth: 1
+    }
   }
+
 ]

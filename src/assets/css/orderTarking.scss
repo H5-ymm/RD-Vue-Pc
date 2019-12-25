@@ -1,0 +1,205 @@
+@import './home.scss';
+.orderTaking {
+  background: #EEEEEE;
+}
+.orderTaking-main-content{
+  overflow: hidden;
+  width: 100%;
+  margin: 0 auto;
+  box-sizing: border-box;
+  padding:0;
+}
+.orderTaking-main-content .orderTaking-grid-content {
+  background: #fff;
+  height: 576px;
+}
+.orderTaking-main-box {
+  margin: 0 auto;
+  width: 780px;
+}
+.orderTaking-search-list {
+  margin: 20px auto;
+  width: 1200px;
+}
+.orderTaking-search-list .orderTaking-search-query {
+  font-size:14px;
+  margin-bottom: 10px;
+  border-bottom : 1px solid #EEEEEE;
+  padding-bottom:10px;
+}
+.orderTaking-search-query .orderTaking-search-label {
+  display: inline-block;
+  width: 50px;
+  color:#333333;
+}
+.orderTaking-main-content .orderTaking-search-select .el-input {
+  box-shadow: none;
+  margin-top: -10px;
+}
+.orderTaking-main-content .orderTaking-search-select .el-input__inner {
+  border: none;
+  color: #FE2A00;
+  padding: 6px 0;
+}
+.orderTaking-search-select .el-input__inner::-webkit-input-placeholder {
+  color: #333;
+}
+.orderTaking-more {
+  margin-left: 20px;
+}
+.orderTaking-search-query .orderTaking-search-value {
+  overflow: hidden;
+  width: 92%;
+}
+.orderTaking-search-query .orderTaking-search-value li {
+  padding: 2px 8px;
+  display: inline-block;
+  color: #6A6A6A;
+}
+.orderTaking-search-query .orderTaking-search-value .active {
+  background:rgba(220,238,254,1);
+  border-radius:5px;
+  color: #1890FF;
+}
+.orderTaking-search-select {
+  display: flex;
+  justify-content: space-between;
+  height: 20px;
+}
+.orderTaking-search-select .clear {
+  text-align: right;
+  color: #6A6A6A;
+  width: 200px;
+  font-size: 12px;
+  padding-top: 4px;
+}
+.orderTaking-search-select .el-select {
+  width: 120px;
+  margin-right: 30px;
+}
+.orderTaking-main-list {
+  width: 1200px;
+  margin: 30px auto;
+}
+.orderTaking-main-list .orderTaking-main-section {
+  border-bottom: 1px solid #EEEEEE;
+  height: 112px;
+  margin: 0 20px;
+}
+.orderTaking-main-list .orderTaking-main-sectionActive {
+  background:#F6F9FE;
+}
+.orderTaking-main-item {
+  margin-right: 10px;
+  &:nth-of-type(2) {
+    // margin-left: 30px;
+    li {
+      &:nth-of-type(2){
+        text-align: right;
+      }
+       &:nth-of-type(3){
+        margin-left: 10px;
+      }
+    }
+  }
+}
+.orderTaking-main-item .el-tag {
+  margin-right: 4px;
+}
+.orderTaking-main-item li {
+  font-size:12px;
+  color: #6A6A6A;
+  height: 30px;
+  flex: 1;
+  text-align: left;
+}
+.orderTaking-main-item .orderTaking-icon {
+  width: 33px;
+  height: 11px;
+  margin: 0 5px;
+}
+.orderTaking-main-item .job-name {
+  font-size:16px;
+  color: #1890FF;
+} 
+.orderTaking-main-item .company-name {
+  font-size:14px;
+  color: #1890FF;
+}
+.orderTaking-main-item .company-name .ctime {
+  font-size: 12px;
+  color: #6A6A6A;
+}
+.orderTaking-main-item  .require-number {
+  color: #FE2A00;
+}
+.orderTaking-main-list .orderTaking-main-row {
+  display: flex;
+  justify-content: space-between;
+  align-items:flex-start;
+  line-height: 30px;
+  &.orderTaking-main-row1 {
+    width: 270px;
+    margin-right: 10px;
+  }
+}
+.orderTaking-main-row .orderTaking-main-col1{
+  width: 906px;
+  background: #fff;
+  margin-right: 14px;
+  border: 1px solid #F6F9FE;
+}
+.orderTaking-main-col {
+  display: flex;
+  justify-content: flex-start;
+  width: 270px;
+}
+.orderTaking-main-row .orderTaking-main-col2{
+  width: 284px;
+}
+.orderTaking-main-col2 .grid-content{
+  border-radius: 0;
+}
+.orderTaking-main-row .bg-purple-light {
+  background: #fff;
+}
+.orderTaking-login {
+  height: 375px;
+  margin-top: 20px;
+}
+.orderTaking-main-history {
+  padding:5px 20px;
+  border-bottom: 1px solid #eee;
+}
+.orderTaking-main-col2 .job-title {
+  border-bottom: 1px solid #eee;
+  font-size: 18px;
+  text-align: center;
+  color: #1890FF;
+  padding: 10px 0;
+}
+.orderTaking-main-content .orderTaking-search {
+  width:100%;
+  background:#fff;
+  height:176px;
+  padding: 30px 0;
+  box-shadow:0px 1px 13px 0px rgba(4,4,4,0.15);
+}
+.orderTaking-main-content .el-input__prefix {
+  padding:5px 10px;
+  left:10px;
+  top:5px;
+  color:#6A6A6A;
+}
+.orderTaking-main-content .el-input__inner {
+  padding:14px 10px;
+  border-radius: 0;
+  display:inline-block;
+}
+.orderTaking-main-content .el-input--prefix .el-input__inner {
+  padding: 20px 110px;
+}
+.pagination {
+  text-align: center;
+  padding: 20px;
+}

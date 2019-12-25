@@ -1,3 +1,7 @@
+
+<style lang="scss">
+ @import '@/assets/css/home.scss';
+</style>
 <template>
   <el-container>
     <el-header class="header x-flex-around home" height="50px" id="header">
@@ -21,7 +25,7 @@
             </li>
           </ul>
         </div>
-        <div class="bg-purple-light bg-purple">
+        <div class="bg-purple-light x-flex-between">
           <span class="home-purple-left" v-if="!userInfo">
             <i class="el-icon-user-solid"></i>
             <a class="welcome" href="login">登录</a>
@@ -90,7 +94,7 @@
             </el-col>
           </el-row>
           <el-button class="home-main-more" @click="$router.push('OrderTaking')">查看更多</el-button>
-          <div class="home-main-more-right">
+          <div class="home-main-more-right x-flex-end">
             <el-link type="primary" @click="$router.push('OrderTaking')">查看更多</el-link>
             <img src="../assets/img/more.png" alt />
           </div>
@@ -266,6 +270,3 @@ export default {
 }
 </script>
 
-<style lang="scss">
- @import '@/assets/css/home.scss';
-</style>

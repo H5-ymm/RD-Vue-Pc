@@ -142,7 +142,11 @@
           <el-table-column label="跟进人" prop="track_name" align="center" width="100"></el-table-column>
           <el-table-column label="操作" align="center" min-width="200">
             <template slot-scope="scope">
-              <el-button @click="leavingOffice(scope.row)" type="text" size="small">离职</el-button>
+              <el-button
+                @click="$router.push('viewResume?id=' + scope.row.resume_id)"
+                type="text"
+                size="small"
+              >查看简历</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -158,17 +162,10 @@
         :total="total"
       ></el-pagination>
     </div>
-    <confirmDialog
-      :dialogTableVisible="visible"
-      @submit="submit"
-      @handleClose="handleClose"
-      :dialogObj="dialogObj"
-      isShow="true"
-    ></confirmDialog>
     <followUpRecord
       :dialogTableVisible="followUpRecordVisible"
       @submitRecord="submitRecord"
-      @handleClose="followUpRecordVisible=false"
+      @handleClose="followUpRecordVisible=false.resumeId=''"
       :trackList="trackList"
     ></followUpRecord>
   </div>
@@ -177,13 +174,11 @@
 import { incumbencyResumeList, quitUser, exportIncumbencyResume } from '@/api/resume'
 import { moneyTypeList, rewardTypeList, followStatusList } from '../../base/base'
 import followUpRecord from './followUpRecord'
-import confirmDialog from '../common/confirmDialog'
 import districtSelet from '../districtSelet'
 import { getConstant } from '../../api/dictionary'
 export default {
   components: {
     districtSelet,
-    confirmDialog,
     followUpRecord
   },
   filters: {
@@ -205,16 +200,8 @@ export default {
       moneyTypeList,
       rewardTypeList,
       followStatusList,
-      visible: false,
       followUpRecordVisible: false,
-      dialogObj: {
-        title: '离职原因',
-        subTitle: '离职详情',
-        okText: '确认离职',
-        placeholder: '请输入离职详情'
-      },
       tableData: [],
-      currentPage: 1,
       userType: 1,
       formMember: {
         uid: localStorage.getItem('uid'),
@@ -222,10 +209,6 @@ export default {
         page: 1
       },
       total: 0,
-      len: 0,
-      userId: '',
-      form: {},
-      activeIndex: 0,
       jobList: {},
       resumeId: '',
       trackList: [],
@@ -273,9 +256,15 @@ export default {
       this.formMember.provinceid = val[0]
       this.formMember.cityid = val[1]
     },
-    selectStatus (item, index) {
-      this.activeIndex = index
-      this.formMember.status = item.value
+    viewRecord (val) {
+      this.followUpRecordVisible = true
+      this.trackList = val.trackList
+    },
+    submitRecord (val) {
+      this.followUpRecordVisible = false
+    },
+    onSubmit () {
+      this.getList(this.formMember)
     },
     handleSizeChange (val) {
       this.formMember.limit = val
@@ -285,37 +274,6 @@ export default {
       this.formMember.page = val
       this.getList(this.formMember)
     },
-    viewRecord (val) {
-      this.followUpRecordVisible = true
-      this.trackList = val.trackList
-    },
-    submitRecord (val) {
-      this.followUpRecordVisible = false
-    },
-    leavingOffice (val) {
-      this.visible = true
-      this.resumeId = val.id
-    },
-    handleClose () {
-      this.visible = false
-      this.resumeId = ''
-    },
-    submit (val) {
-      let params = {
-        uid: localStorage.getItem('uid'),
-        id: this.resumeId,
-        reason: val.reason
-      }
-      this.visible = false
-      quitUser(params).then(res => {
-        this.resumeId = ''
-        this.getList(this.formMember)
-      })
-    },
-    onSubmit (value) {
-      let params = Object.assign(this.formMember, value)
-      this.getList(params)
-    }
   }
 }
 </script>

@@ -43,7 +43,7 @@
         </div>
         <div class="import-resume-btn">
           <el-button @click="show=false,reason=''">取消</el-button>
-          <el-button type="primary" @click="save">保存</el-button>
+          <el-button type="primary" @click="save">确定导入</el-button>
         </div>
       </section>
     </div>

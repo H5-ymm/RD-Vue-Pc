@@ -1,3 +1,6 @@
+<style lang="scss">
+@import '@/assets/css/salaryRebate.scss';
+</style>
 <template>
   <div class="salary-rebate">
     <el-form-item label="员工薪资" required>
@@ -38,7 +41,8 @@
           <el-option
             :label="item.label"
             :value="item.value"
-            v-for="item in rewardTypeList"
+            v-show="index"
+            v-for="(item,index) in rewardTypeList"
             :key="item.label"
           ></el-option>
         </el-select>
@@ -59,7 +63,11 @@
                 <span class="moneyType">返利总金额</span>
               </template>
             </el-input>
-            <el-input placeholder="请输入" class="width160 text-input" v-model="orderTakingForm.money">
+            <el-input
+              placeholder="请输入"
+              class="width160 text-input"
+              v-model="orderTakingForm.reward_needatime"
+            >
               <template slot="prepend">
                 <span class="moneyType">需入职满</span>
               </template>
@@ -69,7 +77,7 @@
             </el-input>
           </div>
           <el-select
-            v-model="orderTakingForm.reward_money_type"
+            v-model="orderTakingForm.reward_continuous"
             v-else
             class="width160"
             placeholder="请选择"
@@ -90,7 +98,11 @@
         class="x-flex-start width500"
         v-if="orderTakingForm.reward_type==1&&orderTakingForm.reward_money_type==3"
       >
-        <el-input placeholder="请输入" class="width160 text-input" v-model="orderTakingForm.money">
+        <el-input
+          placeholder="请输入"
+          class="width160 text-input"
+          v-model="orderTakingForm.settlement_time"
+        >
           <template slot="prepend">
             <span class="moneyType">次月</span>
           </template>
@@ -110,7 +122,7 @@
             <el-input
               placeholder="请输入"
               class="text-input"
-              v-model="orderTakingForm.settlement_time"
+              v-model="orderTakingForm.reward_needatime"
               @change="changeInput"
             >
               <template slot="prepend">
@@ -130,7 +142,7 @@
         <el-input
           placeholder="请输入"
           class="width160 text-input"
-          v-model="orderTakingForm.money"
+          v-model="orderTakingForm.reward_money"
           v-if="orderTakingForm.reward_money_type"
         >
           <template slot="append">
@@ -138,7 +150,7 @@
           </template>
         </el-input>
         <el-select
-          v-model="orderTakingForm.reward_pay_type"
+          v-model="orderTakingForm.settlement_type"
           class="width160"
           placeholder="结算类型"
           v-if="orderTakingForm.reward_money_type"
@@ -147,7 +159,7 @@
           <el-option :label="`本${rewardType}结算`" :value="2"></el-option>
         </el-select>
         <el-select
-          v-model="orderTakingForm.reward_money_type_value"
+          v-model="orderTakingForm.settlement_time"
           v-if="orderTakingForm.reward_pay_type&&orderTakingForm.reward_money_type==2"
           class="width160"
           placeholder="请选择"
@@ -253,74 +265,3 @@ export default {
   }
 }
 </script>
-<style lang="scss">
-  .salary-rebate {
-    padding-bottom: 20px;
-    .width500 {
-      width: 500px;
-    }
-    .width700 {
-      width: 700px;
-    }
-    .width110 {
-      width: 110px;
-      margin: 0 20px;
-    }
-    .reward_type {
-      margin-bottom: 10px;
-    }
-    .error {
-      top: -16px;
-      &.reward-error {
-        width: 300px;
-        left: 360px;
-        top: -10px;
-        ul {
-          margin-left:5px;
-          font-size:12px;
-          line-height: 20px;
-        }
-      }
-    }
-  }
-  .width160 {
-    width: 160px!important;
-    margin-right: 30px;
-    &.el-select  {
-      >.el-input{
-        width: 160px!important;
-      }
-    }
-    .moneyType {
-      color: #333;
-    }
-    .el-input-group__append,.el-input-group__prepend {   
-      border:none;
-      border-radius: 0;
-      background: none;
-      padding: 0;
-      background-color:none;
-    }
-  }
-  .text-input {
-    padding: 0 10px;
-    box-sizing: border-box;
-    border: 1px solid #eee;
-    height: 38px;
-    .el-input__inner {
-      padding: 0 ;
-      height: 37px!important;
-      line-height: 37px!important;
-      text-align: center;
-      border: none!important;
-    }
-  }
-  .el-scrollbar__wrap {
-    width: 180px;
-    .text-input {
-      overflow: hidden;
-      border: none;
-      padding: 0 0 0 20px;
-    }
-  }
-</style>

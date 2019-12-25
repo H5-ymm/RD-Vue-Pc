@@ -2,21 +2,13 @@ import AccountSettings from '../components/AccountSettings.vue'
 import AccountSafe from '../components/AccountSafe.vue'
 import AccountBank from '../components/AccountBank.vue'
 import PasswordManage from '../components/PasswordManage.vue'
-import CompanyForm from '../components/teamMessage/companyForm'   // 企业
+// import CompanyForm from '../components/teamMessage/companyForm'   // 企业
 import myAccount from '../components/finance/myAccount'
 import deposit from '../components/finance/deposit'
 import withdraw from '../components/finance/withdraw'
 import tradingRecord from '../components/finance/tradingRecord'
 
 export const commonRouters = [
-  { // 团队个人设置
-    path: '/companyForm',
-    name: 'CompanyForm',
-    component: CompanyForm,
-    meta: {
-      requiresAuth: 2
-    }
-  },
   {
     path: '/accountSettings',  //账户设置
     component: AccountSettings,

@@ -17,7 +17,7 @@
           class="width160"
           placeholder="请选择"
         >
-        <el-option :label="item" :value="key" v-for="(item,key) in moneyList" :key="key"></el-option>
+          <el-option :label="item" :value="key" v-for="(item,key) in moneyList" :key="key"></el-option>
         </el-select>
         <el-input
           placeholder="请输入薪资"
@@ -115,6 +115,14 @@ export default {
         }
       }
     }
+    .el-scrollbar__wrap {
+      width: 180px;
+      .text-input {
+        overflow: hidden;
+        border: none;
+        padding: 0 0 0 20px;
+      }
+    }
   }
   .width160 {
     width: 160px!important;
@@ -146,14 +154,6 @@ export default {
       line-height: 37px!important;
       text-align: center;
       border: none!important;
-    }
-  }
-  .el-scrollbar__wrap {
-    width: 180px;
-    .text-input {
-      overflow: hidden;
-      border: none;
-      padding: 0 0 0 20px;
     }
   }
 </style>

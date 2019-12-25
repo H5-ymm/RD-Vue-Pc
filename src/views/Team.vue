@@ -36,12 +36,9 @@
               </el-dropdown>
             </div>
             <div class="x-flex-start-justify" v-if="type==1">
-              <img
-                :src="baseInfo.logo_url"
-                alt
-                class="team-logo"
-                v-if="baseInfo&&baseInfo.logo_url"
-              />
+              <div v-if="baseInfo">
+                <img :src="baseInfo.logo_url" alt class="team-logo" />
+              </div>
               <p class="team-logo no-logo" v-else></p>
               <el-dropdown @command="handleCommand">
                 <span class="el-dropdown-link">
@@ -126,9 +123,11 @@ export default {
     },
     getCompanyInfo (uid) {
       getCompanyDetail({ uid }).then(res => {
-        this.baseInfo = res.data || null
+        this.baseInfo = res.data
+        console.log(res.data)
         if (res.data && res.data.logo_url) {
-          this.baseInfo.logo_url = getImgUrl(this.baseInfo.logo_url)
+          console.log(res.data)
+          this.baseInfo.logo_url = getImgUrl(res.data.logo_url)
         }
         sessionStorage.setItem('baseInfo', JSON.stringify(this.baseInfo))
       })

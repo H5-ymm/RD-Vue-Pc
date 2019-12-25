@@ -6,7 +6,12 @@
       <el-col :span="24">
         <div class="names company-names">人事达</div>
         <div class="company-info">
-          <img src="../assets/img/img1.png" alt class="company-logo" v-if="!baseInfo.logo_url" />
+          <img
+            src="../assets/img/img1.png"
+            alt
+            class="company-logo"
+            v-if="baseInfo&&!baseInfo.logo_url"
+          />
           <img src="../assets/img/img1.png" alt class="company-logo" v-else />
           <p class="company-name">{{baseInfo.com_name}}</p>
         </div>
@@ -126,6 +131,20 @@ export default {
               url: '/tradingRecord'
             },
           ]
+        },
+        {
+          title: '员工管理',
+          icon: 'el-icon-collection-tag',
+          submenu: [
+            {
+              title: '在职员工',
+              url: '/onJobStaff?view=1'
+            },
+            {
+              title: '离职员工',
+              url: '/onJobStaff?view=2'
+            }
+          ]
         }
       ],
       title: '',
@@ -165,7 +184,13 @@ export default {
     routerli () {
       // 对应路由
       let pathStr = this.$route.path.split('/')
-      console.log(pathStr)
+      console.log(pathStr[1])
+      console.log(pathStr[1] == 'team')
+      if (pathStr[1] == 'team') {
+        setTimeout(() => {
+          this.$router.replace('createOrderTaking')
+        }, 100)
+      }
       return '/' + pathStr[1]
 
     },
