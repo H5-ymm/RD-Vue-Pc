@@ -158,11 +158,16 @@
       :trackList="trackList"
       :id="resumeId"
     ></followUpRecord>
-    <leadResumeModal :dialogTableVisible="leadResumeVisible" @handleClose="leadResumeVisible=false"></leadResumeModal>
+    <leadResumeModal
+     @upload="upload" 
+     @download="download"
+    :dialogTableVisible="leadResumeVisible" 
+    @handleClose="leadResumeVisible=false"></leadResumeModal>
   </div>
 </template>
 <script>
-import { getResumeList, addUserResume, selectUserResumeInfo, giveUpResume, exportUserResume } from '@/api/resume'
+import { getResumeList, addUserResume, selectUserResumeInfo, giveUpResume, exportUserResume,
+importUserResume, downloadTestTable } from '@/api/resume'
 import { moneyTypeList, rewardTypeList, payTypeList, weekList } from '../../base/base'
 import resumeModal from './resumeModal'
 import followUpRecord from './followUpRecord'
@@ -284,6 +289,16 @@ export default {
     selectStatus (item, index) {
       this.activeIndex = index
       this.formMember.status = item.value
+    },
+    upload(_file){
+      importUserResume(_file).then(res => {
+        console.log(res)
+      })
+    },
+    download(){
+      downloadTestTable().then(res => {
+        console.log(res)
+      })
     },
     handleSizeChange (val) {
       this.formMember.limit = val

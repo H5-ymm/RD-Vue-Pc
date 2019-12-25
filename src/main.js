@@ -9,8 +9,6 @@ import moment from 'moment'
 import './assets/css/init.css';
 import './assets/css/element-variables.scss';
 // 引入axios
-import axios from './axios'
-Vue.prototype.$http = axios
 Vue.prototype.$moment = moment
 
 Vue.config.productionTip = false

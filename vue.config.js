@@ -36,7 +36,7 @@ module.exports = {
       }
     },
     // 启用 CSS modules for all css / pre-processor files.
-    modules: true
+    modules: false
   },
   configureWebpack: {
     resolve: {

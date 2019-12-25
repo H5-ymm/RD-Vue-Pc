@@ -118,7 +118,8 @@ export function postFormData (url, params) {
 }
 
 export function exportData (url, params) {
-  window.location.href = `${baseURL}${url}${'?' + QS.stringify(params)}`
+  let param = QS.stringify(params)
+  window.location.href = `${baseURL}${url}${'?'}${param}`
 }
 export function upload (params) {
   let file = new FormData()

@@ -13,7 +13,7 @@
             v-if="baseInfo&&!baseInfo.logo_url"
           />
           <img src="../assets/img/img1.png" alt class="company-logo" v-else />
-          <p class="company-name">{{baseInfo.com_name}}</p>
+          <p class="company-name" v-if="baseInfo">{{baseInfo.com_name}}</p>
         </div>
         <el-menu
           class="el-menu-vertical-demo"

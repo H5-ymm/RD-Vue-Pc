@@ -42,7 +42,7 @@
           </el-upload>
         </div>
         <div class="import-resume-btn">
-          <el-button @click="show=false,reason=''">取消</el-button>
+          <el-button @click="handleClose">取消</el-button>
           <el-button type="primary" @click="save">确定导入</el-button>
         </div>
       </section>
@@ -51,19 +51,16 @@
 </template>
 <script>
 import { uploadFile } from '../../api/upload'
-import { importUserResume, downloadTestTable } from '@/api/resume'
 export default {
-  props: ['dialogTableVisible', 'trackList'],
+  props: ['dialogTableVisible'],
   data () {
     return {
-      reason: '',
       list: [],
-      show: false,
       fileList: []
     }
   },
   created () {
-
+     
   },
   methods: {
     upload (params) {
@@ -73,17 +70,11 @@ export default {
         this.$message.error("请上传2M以下的.xlsx文件");
         return false;
       }
-      console.log(_file)
-      importUserResume(_file).then(res => {
-        console.log(res)
-        this.list.push(_file.name)
-      })
-      console.log(this.fileList)
+      this.$emit('upload',_file)
+      this.list.push(_file.name)
     },
     download () {
-      downloadTestTable().then(res => {
-        console.log(res)
-      })
+      this.$emit('download')
     },
     getImg (file) {
       let url = null;
@@ -102,11 +93,8 @@ export default {
     handleClose () {
       this.$emit('handleClose')
     },
-    submitForm () {
-      this.$emit('submitRecord', this.reason)
-    },
     save () {
-      this.show = false
+      this.$emit('handleClose')
     }
   }
 }

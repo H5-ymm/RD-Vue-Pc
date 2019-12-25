@@ -52,7 +52,7 @@
                     </el-radio-group>
                   </el-form-item>
                   <el-form-item label="学历">
-                    <el-select v-model="formMember.education" placeholder="请选择学历" class="width300">
+                    <el-select v-model="formMember.education" value-key="key" placeholder="请选择学历" class="width300">
                       <el-option
                         :label="item"
                         :value="key"
@@ -118,7 +118,7 @@ export default {
         address: '',
         provinceid: '',
         cityid: '',
-        uid: 1,
+        uid: localStorage.getItem('uid'),
       },
       rules: {
         name: [
@@ -150,7 +150,7 @@ export default {
   methods: {
     getInfo () {
       let params = {
-        uid: this.formMember.uid,
+        uid: localStorage.getItem('uid'),
         id: this.staffId
       }
       selectCompanyResumeInfo(params).then(res => {
@@ -163,10 +163,6 @@ export default {
         this.edu_type = res.data.edu_type
       })
     },
-    changeDate (val) {
-      this.formMember.entry_begintime = val[0]
-      this.formMember.entry_endtime = val[1]
-    },
     change (val) {
       this.formMember.provinceid = val[0]
       this.formMember.cityid = val[1]
@@ -177,7 +173,7 @@ export default {
     submitForm () {
       this.$refs['formMember'].validate((valid) => {
         if (valid) {
-          this.formMember.uid = 1
+          this.formMember.uid = localStorage.getItem('uid')
           this.$emit('submitForm', this.formMember)
         } else {
           return false

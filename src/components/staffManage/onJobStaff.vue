@@ -54,18 +54,18 @@
         <div class="table-query x-flex-start">
           <div v-if="viewType==1">
             <el-button @click="staffVisible=true">添加员工</el-button>
-            <el-button @click="handleUser(1,scope.row)">离职</el-button>
+            <el-button @click="handleUser(1,this.staffId)">离职</el-button>
             <el-button @click="leadResumeVisible=true">导入简历</el-button>
-            <el-button @click="handleUser(1,scope.row)">导出简历</el-button>
+            <el-button @click="exportResume">导出简历</el-button>
           </div>
           <div v-if="viewType==2">
-            <el-button @click="handleUser(2,scope.row)">删除</el-button>
+            <el-button @click="handleUser(2,this.staffId)">删除</el-button>
           </div>
           <span class="select-text">
             已选择
             <el-button type="text">{{multipleSelection.length}}&nbsp;</el-button>项
           </span>
-          <el-button type="text" @click="multipleSelection=[]">清空</el-button>
+          <el-button type="text" @click="multipleSelection=[],staffId=''">清空</el-button>
         </div>
         <el-table
           border
@@ -73,11 +73,12 @@
           @sort-change="sortChange"
           ref="multipleTable"
           style="width: 100%"
+           @selection-change="handleSelectionChange"
         >
           <el-table-column type="selection" align="center" width="50"></el-table-column>
           <el-table-column label="姓名" align="center" width="110">
             <template slot-scope="props">
-              <el-button type="text" @click="viewStaffVisible=true">{{props.row.name}}</el-button>
+              <el-button type="text" @click="staffId=props.row.id,viewStaffVisible=true">{{props.row.name}}</el-button>
             </template>
           </el-table-column>
           <el-table-column label="联系电话" prop="mobile" align="center" width="120"></el-table-column>
@@ -140,6 +141,7 @@
       :staffId="staffId"
     ></staffModal>
     <viewStaff
+      :staffId="staffId"
       :dialogTableVisible="viewStaffVisible"
       @handleClose="viewStaffVisible=false,staffId=''"
     ></viewStaff>
@@ -147,7 +149,9 @@
 </template>
 
 <script>
-import { getStaffResumeList, addCompanyResume, editCompanyResumeInfo, exportCompanyResume } from '@/api/staff'
+import { getStaffResumeList,quitCompanyResumeList, 
+addCompanyResume,delCompanyResumeInfo, editCompanyResumeInfo, 
+exportCompanyResume,doQuitCompanyResume,importCompanyResume,uploadsCompanyList } from '@/api/staff'
 import { getConstant } from '@/api/dictionary'
 import modal from '../common/modal'
 import leadResumeModal from '../resumeManage/leadResumeModal'
@@ -168,8 +172,7 @@ export default {
       viewStaffVisible: false,
       tableData: [],
       formMember: {
-        // uid: localStorage.getItem('uid'),
-        uid: 1,
+        uid: localStorage.getItem('uid'),
         limit: 10,
         page: 1
       },
@@ -195,10 +198,20 @@ export default {
   created () {
     // 初始化查询标签数据
     this.viewType = this.$route.query.view
+    this.getList(this.formMember)
     console.log(this.viewType)
     let params = 'edu_type'
-    this.getList(this.formMember)
     this.getData(params)
+  },
+  watch:{
+    $route(to,from) {
+      console.log(to)
+      this.viewType = to.query.view
+      this.getList(this.formMember)
+    }
+  },
+  mounted(){
+   
   },
   methods: {
     getData (filed) {
@@ -208,12 +221,51 @@ export default {
       })
     },
     getList (params) {
-      getStaffResumeList(params).then(res => {
-        const { data } = res
-        this.tableData = data.data
-        console.log(this.tableData)
-        this.total = data.count
+      if (this.viewType==1) {
+        getStaffResumeList(params).then(res => {
+          const { data } = res
+          this.tableData = data.data
+          console.log(this.tableData)
+          this.total = data.count
+        })
+      } else {
+        quitCompanyResumeList(params).then(res => {
+          const { data } = res
+          this.tableData = data.data
+          this.total = data.count
+        })
+      }     
+    },
+    handleSelectionChange (val) {
+      let arr = val.map( item=> {
+        return item.id
       })
+      this.staffId = arr.join(',')
+      console.log(this.staffId)
+    },
+    upload(_file){   
+      importCompanyResume(_file).then(res => {
+        console.log(res)
+      })
+    },
+    download(){
+      this.leadResumeVisible = false
+      uploadsCompanyList().then(res => {
+        console.log(res)
+      })
+    },
+    exportResume () {
+      if (!this.staffId) {
+        return this.$message.warning('请选择简历')
+      }
+      else {
+        let params = {
+          uid: localStorage.getItem('uid'),
+          listId: this.staffId
+        }
+        console.log(params)
+        exportCompanyResume(params)
+      }
     },
     sortChange (column) {
       if (column.order == 'ascending') {
@@ -276,26 +328,26 @@ export default {
       this.dialogTableVisible = false
       let params = {
         uid: localStorage.getItem('uid'),
-        jodId: val.id
+        id: this.staffId
       }
       if (this.overType == 1) {
-        this.handleOverEntry(params)
+        this.handleQuit(params)
       }
       else {
-        this.handelOverAudition(params)
+        this.handelDel(params)
       }
     },
-    // 结束入职
-    handleOverEntry (params) {
-      endEntry(params).then(res => {
+    // 离职
+    handleQuit (params) {
+      doQuitCompanyResume(params).then(res => {
         this.getList(this.formMember)
       }).catch(error => {
         this.$message.error(error.status.remind)
       })
     },
     // 结束面试
-    handelOverAudition (params) {
-      endInterview(params).then(res => {
+    handelDel (params) {
+      delCompanyResumeInfo(params).then(res => {
         this.$message.success('操作成功')
         this.getList(this.formMember)
       }).catch(error => {
