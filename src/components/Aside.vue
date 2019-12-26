@@ -46,6 +46,20 @@ export default {
     return {
       menus: [
         {
+          title: '团队中心',
+          icon: 'el-icon-collection',
+          submenu: [
+            {
+              title: '团队中心',
+              url: '/teamData'
+            },
+            {
+              title: '团队排名',
+              url: '/teamOrder'
+            }
+          ]
+        },
+        {
           title: '团队论坛',
           icon: 'el-icon-collection',
           submenu: [

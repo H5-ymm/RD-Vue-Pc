@@ -159,15 +159,16 @@
       :id="resumeId"
     ></followUpRecord>
     <leadResumeModal
-     @upload="upload" 
-     @download="download"
-    :dialogTableVisible="leadResumeVisible" 
-    @handleClose="leadResumeVisible=false"></leadResumeModal>
+      @exportResume="exportResumeData"
+      @download="download"
+      :dialogTableVisible="leadResumeVisible"
+      @handleClose="leadResumeVisible=false"
+    ></leadResumeModal>
   </div>
 </template>
 <script>
-import { getResumeList, addUserResume, selectUserResumeInfo, giveUpResume, exportUserResume,
-importUserResume, downloadTestTable } from '@/api/resume'
+import {  getResumeList, addUserResume, selectUserResumeInfo, giveUpResume, exportUserResume,
+  importUserResume, downloadTestTable} from '@/api/resume'
 import { moneyTypeList, rewardTypeList, payTypeList, weekList } from '../../base/base'
 import resumeModal from './resumeModal'
 import followUpRecord from './followUpRecord'
@@ -260,13 +261,20 @@ export default {
         this.total = data.count
       })
     },
-    importResume () {
-
+    // 下载模板
+    download () {
+      downloadTestTable()
     },
+    // 导入
+    exportResumeData (file) {
+      this.leadResumeVisible = false
+      importUserResume(file).then(res => {
+        this.getList(this.formMember)
+      })
+    },
+    // 导出
     exportResume () {
       let uid = localStorage.getItem('uid')
-      // let query = new FormData()
-      // query.append('uid', uid)
       exportUserResume(uid)
     },
     sortChange (column) {
@@ -285,20 +293,6 @@ export default {
     change (val) {
       this.formMember.provinceid = val[0]
       this.formMember.cityid = val[1]
-    },
-    selectStatus (item, index) {
-      this.activeIndex = index
-      this.formMember.status = item.value
-    },
-    upload(_file){
-      importUserResume(_file).then(res => {
-        console.log(res)
-      })
-    },
-    download(){
-      downloadTestTable().then(res => {
-        console.log(res)
-      })
     },
     handleSizeChange (val) {
       this.formMember.limit = val
@@ -319,7 +313,6 @@ export default {
     handleEdit (val) {
       this.dialogTableVisible = true
       this.resumeId = val.id
-      console.log(this.resumeId)
     },
     abandoned (val) {
       this.visible = true

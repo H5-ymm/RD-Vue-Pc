@@ -37,7 +37,12 @@
     </el-form-item>
     <el-form-item label="返利模式" class="reward_type" required>
       <div class="x-flex-start width700">
-        <el-select v-model="orderTakingForm.reward_type" class="width160" placeholder="请选择">
+        <el-select
+          v-model="orderTakingForm.reward_type"
+          @change="changeReward"
+          class="width160"
+          placeholder="请选择"
+        >
           <el-option
             :label="item.label"
             :value="item.value"
@@ -94,10 +99,7 @@
       <span class="error el-icon-warning">入职天数为0时，代表入职当天返利</span>
     </el-form-item>
     <el-form-item class="reward_type">
-      <div
-        class="x-flex-start width500"
-        v-if="orderTakingForm.reward_type==1&&orderTakingForm.reward_money_type==3"
-      >
+      <div class="x-flex-start width500" v-if="orderTakingForm.reward_type==1">
         <el-input
           placeholder="请输入"
           class="width160 text-input"
@@ -118,7 +120,7 @@
           placeholder="结算类型"
         >
           <el-option label="长期返利" :value="1"></el-option>
-          <div class="width160" ref="reward" :value="2">
+          <div class="width160 reward-input" ref="reward" :value="2">
             <el-input
               placeholder="请输入"
               class="text-input"
@@ -224,7 +226,17 @@ export default {
   props: ['moneyList'],
   data () {
     return {
-      orderTakingForm: {},
+      orderTakingForm: {
+        money: '',  // 薪资
+        money_type: '', //薪资类型 // （1：月薪，2：日薪，3：时薪）
+        reward_type: '', // 返利类型(1月返 2日返 3时返 4一次性返)
+        reward_money: '', // 返利金额(根据类型修改单位)
+        reward_money_type: '', // 1日2周3月(针对日返和时返) 1长期2持续（针对月返）结算类型 
+        settlement_time: '', // 结算时间(针对月返：次月第XX多少天；)
+        reward_needatime: '', // 需求入职天数/周数/月数(一次性时：0表示当天返)
+        reward_continuous: '', // 持续方式 (天数/周数/月数)
+        settlement_type: '' // 结算方式（1 当月/当周/当日，2 次月/次周/次日）
+      },
       comTypeList: [],
       moneyTypeList,
       rewardTypeList,
@@ -239,13 +251,34 @@ export default {
       return this.orderTakingForm.reward_pay_type == 1 ? '次' : '本'
     },
     rewardType () {
-      console.log(this.orderTakingForm.reward_money_type)
       return this.orderTakingForm.reward_money_type == 1 ? '日' : this.orderTakingForm.reward_money_type == 2 ? '周' : '月'
     }
   },
+  watch: {
+    orderTakingForm: {
+      handler (val, oldName) {
+        for (let key in val) {
+          console.log(val)
+          if (val.reward_type == 1) {
+            if (val[key] != '' && key != 'reward_needatime' && key != 'reward_needatime') {
+              this.$emit('submit', val)
+            }
+          }
+          else {
+            if (val[key] != '') {
+              this.$emit('submit', val)
+            }
+          }
+        }
+      },
+      deep: true
+    }
+  },
   methods: {
-    getTypeFlag () {
-
+    changeReward (val) {
+      if (val == 1) {
+        this.orderTakingForm.settlement_type = 2
+      }
     },
     focusInput () {
       this.rewardTipShow = true

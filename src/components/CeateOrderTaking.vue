@@ -3,10 +3,35 @@
   .teamMessage {
     .error {
       position:absolute;
-      top: -20px;
+      top: -16px;
       left:0;
       color:#FE2A00;
       font-size:12px;
+    }
+    .job_content {
+      border: 1px solid #eee;
+      height: 250px;
+      width: 408px;
+      color: #333;
+      padding-left: 10px;
+      position: relative;
+      padding-bottom: 30px;
+      .job_textarea {
+        width: 320px;
+        min-height: 20px;
+        outline: none;
+      }
+      .content-len {
+        color: #6A6A6A;
+        font-size: 12px;
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        background:rgba(248,248,248,1);
+        border-radius:2px;
+        padding:0 15px;
+        line-height: 30px;
+      }
     }
   }
 </style>
@@ -100,17 +125,40 @@
           </el-select>
         </el-form-item>
         <!-- 薪资和返利模式 -->
-        <salaryAndRebate :moneyList="moneyList"></salaryAndRebate>
+        <salaryAndRebate :moneyList="moneyList" @submit="submitSalary"></salaryAndRebate>
         <!-- 薪资和返利模式 -->
-        <el-form-item label="职位描述" prop="job_content" required>
+        <el-form-item label="职位描述" required>
           <span class="error el-icon-warning">职位描述，最低输入30个字。</span>
-          <el-input
-            type="textarea"
-            class="width408"
-            :autosize="{minRows: 6}"
-            v-model="orderTakingForm.job_content"
-            placeholder="请输入职位描述"
-          ></el-input>
+          <div class="job_content">
+            <div class="x-flex-start">
+              <span>工作内容：</span>
+              <div
+                contenteditable="true"
+                v-html="content"
+                @input="onDivInput($event,'content')"
+                class="job_textarea"
+              ></div>
+            </div>
+            <div class="x-flex-start">
+              <span>职位要求：</span>
+              <div
+                contenteditable="true"
+                @input="onDivInput($event,'jobRequire')"
+                v-html="jobRequire"
+                class="job_textarea"
+              ></div>
+            </div>
+            <div class="x-flex-start">
+              <span>工作时间：</span>
+              <div
+                contenteditable="true"
+                @input="onDivInput($event,'jobTime')"
+                v-html="jobTime"
+                class="job_textarea"
+              ></div>
+            </div>
+            <span class="content-len">{{len}}/1000字</span>
+          </div>
         </el-form-item>
         <el-form-item label="联系人" required>
           <el-input v-model="orderTakingForm.com_name" class="width408" placeholder="请输入联系人姓名"></el-input>
@@ -169,12 +217,20 @@ export default {
       moneyList: [],
       jobList: {},
       eduList: [],
-      jobName: ''
+      jobName: '',
+      content: '',
+      jobRequire: '',
+      jobTime: ''
     };
   },
   created () {
     let params = 'edu_type,money_array,job_array'
     this.getList(params)
+  },
+  computed: {
+    len () {
+      return this.content.length + this.jobRequire.length + this.jobTime.length
+    }
   },
   methods: {
     getList (filed) {
@@ -198,17 +254,30 @@ export default {
     numberChange (val) {
 
     },
+    onDivInput (e, key) {
+      this[key] = e.target.innerHTML
+    },
     change (val) {
       this.orderTakingForm.provinceid = val[0]
       this.orderTakingForm.cityid = val[1]
       this.orderTakingForm.three_cityid = val[2]
     },
+    submitSalary (val) {
+      console.log(val)
+      this.orderTakingForm = Object.assign(this.orderTakingForm, val)
+    },
     submitForm (orderTakingForm) {
+      if (this.content && this.jobRequire && this.jobTime) {
+        this.orderTakingForm.job_content = this.content + this.jobRequire + this.jobTime
+      }
+      else {
+        return this.$message.warning('请输入职位描述')
+      }
       this.$refs[orderTakingForm].validate((valid) => {
         if (valid) {
           createInvoice(this.orderTakingForm).then(res => {
             if (res.status.code == 200) {
-              this.$router.push('userlist')
+              this.$router.push('checkReceipt')
             }
           }).catch(error => {
             this.$message.error(error.status.remind)

@@ -41,6 +41,7 @@
   &.el-select  {
     >.el-input{
       width: 160px!important;
+      margin-right: 0;
     }
   }
   .moneyType {
@@ -65,5 +66,14 @@
     line-height: 37px!important;
     text-align: center;
     border: none!important;
+  }
+}
+.width160 {
+  &.reward-input {
+    margin-right: 0;
+  }
+  .text-input {
+    border: none;
+    border-bottom: 1px solid #eee;
   }
 }

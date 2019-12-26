@@ -30,6 +30,10 @@ const checkResume = resolve => (require(['../components/internalInvoice/checkRes
 const transfer = resolve => (require(['../components/finance/transfer.vue'], resolve)) // 内部审核简历
 const CompanyForm = resolve => (require(['../components/teamMessage/teamCompanyForm.vue'], resolve)) // 团队企业
 const personalForm = resolve => (require(['../components/teamMessage/personalForm.vue'], resolve)) // 团队个人
+const teamOrder = resolve => (require(['../components/teamCenter/teamOrder.vue'], resolve)) // 团队排名
+const logList = resolve => (require(['../components/teamCenter/logList.vue'], resolve)) // 团队日志
+
+const teamData = resolve => (require(['../components/teamCenter/teamData.vue'], resolve)) // 团队中心
 import Department from '../components/Department.vue'
 import Userlist from '../components/Userlist.vue'  //全部用户
 import commonts from '../components/commonts.vue'  //评论
@@ -251,5 +255,28 @@ export const teamRouters = [{  // 团队论坛
   meta: {
     requiresAuth: 1
   }
-}
+},
+{
+  path: '/teamData',  // 团队排名
+  component: teamData,
+  meta: {
+    requiresAuth: 1
+  }
+},
+
+{
+  path: '/teamOrder',  // 团队排名
+  component: teamOrder,
+  meta: {
+    requiresAuth: 1
+  }
+},
+{
+  path: '/logList',  // 日志
+  component: logList,
+  meta: {
+    requiresAuth: 1
+  }
+},
+
 ]

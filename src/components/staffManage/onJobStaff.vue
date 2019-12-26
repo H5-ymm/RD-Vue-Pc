@@ -73,12 +73,15 @@
           @sort-change="sortChange"
           ref="multipleTable"
           style="width: 100%"
-           @selection-change="handleSelectionChange"
+          @selection-change="handleSelectionChange"
         >
           <el-table-column type="selection" align="center" width="50"></el-table-column>
           <el-table-column label="姓名" align="center" width="110">
             <template slot-scope="props">
-              <el-button type="text" @click="staffId=props.row.id,viewStaffVisible=true">{{props.row.name}}</el-button>
+              <el-button
+                type="text"
+                @click="staffId=props.row.id,viewStaffVisible=true"
+              >{{props.row.name}}</el-button>
             </template>
           </el-table-column>
           <el-table-column label="联系电话" prop="mobile" align="center" width="120"></el-table-column>
@@ -133,7 +136,12 @@
       :isShow="isShow"
       @handleClose="dialogTableVisible=false"
     ></modal>
-    <leadResumeModal :dialogTableVisible="leadResumeVisible" @handleClose="leadResumeVisible=false"></leadResumeModal>
+    <leadResumeModal
+      :dialogTableVisible="leadResumeVisible"
+      @download="download"
+      @exportResume="exportResumeData"
+      @handleClose="leadResumeVisible=false"
+    ></leadResumeModal>
     <staffModal
       :dialogTableVisible="staffVisible"
       @handleClose="staffVisible=false"
@@ -149,9 +157,9 @@
 </template>
 
 <script>
-import { getStaffResumeList,quitCompanyResumeList, 
-addCompanyResume,delCompanyResumeInfo, editCompanyResumeInfo, 
-exportCompanyResume,doQuitCompanyResume,importCompanyResume,uploadsCompanyList } from '@/api/staff'
+import {  getStaffResumeList, quitCompanyResumeList,
+  addCompanyResume, delCompanyResumeInfo, editCompanyResumeInfo,
+  exportCompanyResume, doQuitCompanyResume, importCompanyResume, uploadsCompanyList} from '@/api/staff'
 import { getConstant } from '@/api/dictionary'
 import modal from '../common/modal'
 import leadResumeModal from '../resumeManage/leadResumeModal'
@@ -203,15 +211,15 @@ export default {
     let params = 'edu_type'
     this.getData(params)
   },
-  watch:{
-    $route(to,from) {
+  watch: {
+    $route (to, from) {
       console.log(to)
       this.viewType = to.query.view
       this.getList(this.formMember)
     }
   },
-  mounted(){
-   
+  mounted () {
+
   },
   methods: {
     getData (filed) {
@@ -221,7 +229,7 @@ export default {
       })
     },
     getList (params) {
-      if (this.viewType==1) {
+      if (this.viewType == 1) {
         getStaffResumeList(params).then(res => {
           const { data } = res
           this.tableData = data.data
@@ -234,24 +242,23 @@ export default {
           this.tableData = data.data
           this.total = data.count
         })
-      }     
+      }
     },
     handleSelectionChange (val) {
-      let arr = val.map( item=> {
+      let arr = val.map(item => {
         return item.id
       })
       this.staffId = arr.join(',')
       console.log(this.staffId)
     },
-    upload(_file){   
-      importCompanyResume(_file).then(res => {
-        console.log(res)
-      })
+    download () {
+      uploadsCompanyList()
     },
-    download(){
+    exportResumeData (file) {
+      console.log(file)
       this.leadResumeVisible = false
-      uploadsCompanyList().then(res => {
-        console.log(res)
+      importCompanyResume(file).then(res => {
+        this.getList(this.formMember)
       })
     },
     exportResume () {

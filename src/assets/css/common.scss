@@ -8,6 +8,11 @@
   justify-content: flex-start;
   align-items: flex-start;
 }
+.x-flex-start-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
 .x-flex-start-justify {
   display: flex;
   justify-content: flex-start;

@@ -14,10 +14,10 @@
         <p class="import-record-title">仅支持下载模板上传的简历，其他格式可能识别失败</p>
         <ul class="import-resume-box">
           <p class="import-record-thead">表格名称</p>
-          <li v-for="(item,index) in list" :key="index" class="record-item">
+          <li class="record-item" v-if="fileName">
             <div class="record-content x-flex-start-justify">
               <img src="../../assets/img/xlsx.png" alt />
-              <p>{{item}}</p>
+              <p>{{fileName}}</p>
             </div>
           </li>
         </ul>
@@ -43,7 +43,7 @@
         </div>
         <div class="import-resume-btn">
           <el-button @click="handleClose">取消</el-button>
-          <el-button type="primary" @click="save">确定导入</el-button>
+          <el-button type="primary" @click="exportResume">确定导入</el-button>
         </div>
       </section>
     </div>
@@ -55,45 +55,43 @@ export default {
   props: ['dialogTableVisible'],
   data () {
     return {
-      list: [],
-      fileList: []
+      file: {},
+      fileName: '',
+      fileList: [],
+      isUpload: false
     }
   },
   created () {
-     
+    this.isUpload = false
   },
   methods: {
     upload (params) {
+      if (!this.isUpload) {
+        return this.$message.warning('请先导入模板')
+      }
       const _file = params.file;
       const isLt2M = _file.size / 1024 / 1024 < 2;
       if (!isLt2M) {
         this.$message.error("请上传2M以下的.xlsx文件");
         return false;
       }
-      this.$emit('upload',_file)
-      this.list.push(_file.name)
+      this.fileName = _file.name
+      this.file = _file
     },
     download () {
+      this.isUpload = true
       this.$emit('download')
     },
-    getImg (file) {
-      let url = null;
-      if (window.createObjectURL != undefined) {
-        url = window.createObjectURL(_file)
-      } else if (window.URL != undefined) {
-        url = window.URL.createObjectURL(file)
-      } else if (window.webkitURL != undefined) {
-        url = window.webkitURL.createObjectURL(file)
+    exportResume () {
+      if (!this.fileName) {
+        return this.$message.warning('请先上传模板文件')
       }
-      return url;
+      this.$emit('exportResume', this.file)
     },
     changeList (val) {
       console.log(val)
     },
     handleClose () {
-      this.$emit('handleClose')
-    },
-    save () {
       this.$emit('handleClose')
     }
   }
