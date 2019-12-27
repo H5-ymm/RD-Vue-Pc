@@ -1,0 +1,77 @@
+@import './orderTarking.scss';
+.orderTaking-main-list {
+  .information-content{
+   margin: 20px 0;
+   .info-detail-box {
+     width: 94%;
+     margin: 24px auto;
+     .info-detail-header {
+       margin: 0 60px 30px;
+       color: #999;
+       font-size: 12px;
+       .info-title {
+         font-size: 22px;
+         color: #333;
+         margin-bottom: 30px;
+         text-align: center;
+       }
+     }
+     .info-detail-content {
+       border-top: 1px solid #eee;
+       padding: 20px 0;
+       color: #333;
+       font-size: 14px;
+     }
+   }
+   .home-main-title {
+     padding-bottom: 20px;
+   }
+   .panel-content {
+     padding: 20px 28px 20px;
+   }
+   .information-main-col1 {
+     border:none;
+     width: 814px;
+     box-shadow:0px 1px 8px 0px rgba(106,106,106,0.1);
+     &.information-main-col {
+       box-shadow:none;
+     }
+   }
+   .orderTaking-main-col2 {
+     background: #fff;
+     width: 372px;
+   }
+   .info-center-content {
+     padding-top: 10px;
+     .info-center-item {
+       line-height: 30px;
+       .info-center-name  {
+         padding-left: 10px;
+         width: 300px;
+         color: #333;
+         position: relative;
+         &::before{
+           content:'';
+           width:3px;
+           height:16px;
+           background:rgba(238,238,238,1);
+           border-radius:2px;
+           position: absolute;
+           left: 0;
+           top: 8px;
+         }
+       }
+     }
+     .order-num {
+      width:25px;
+      height:25px;
+      background:rgba(238,238,238,1);
+      border-radius:50%;
+      color: #333;
+      line-height: 25px;
+      text-align: center;
+      margin: 5px;
+    }
+   }
+ }
+}

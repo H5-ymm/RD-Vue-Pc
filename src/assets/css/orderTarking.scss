@@ -80,6 +80,11 @@
 .orderTaking-main-list {
   width: 1200px;
   margin: 30px auto;
+  &.orderTaking-detail-content {
+    margin: -140px auto 40px;
+    position: relative;
+    z-index: 9;
+  }
 }
 .orderTaking-main-list .orderTaking-main-section {
   border-bottom: 1px solid #EEEEEE;

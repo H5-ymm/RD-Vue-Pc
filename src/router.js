@@ -11,6 +11,9 @@ const ForgetPassword = resolve => (require(['./views/ForgetPassword.vue'], resol
 const register = resolve => (require(['./views/Register.vue'], resolve)) //登录页
 const OrderTaking = resolve => (require(['./views/OrderTaking.vue'], resolve))
 const OrderTakingDetail = resolve => (require(['./views/OrderTakingDetail.vue'], resolve)) // 接单详情
+const Information = resolve => (require(['./views/Information.vue'], resolve)) // 资讯
+const InformationDetail = resolve => (require(['./views/InformationDetail.vue'], resolve)) //  资讯详情
+
 Vue.use(Router)
 let children = []
 let userType = localStorage.getItem('userType')
@@ -51,6 +54,16 @@ let publiceRouters = [
     path: '/orderTakingDetail',
     name: 'OrderTakingDetail',
     component: OrderTakingDetail
+  },
+  {
+    path: '/information',
+    name: 'Information',
+    component: Information
+  },
+  {
+    path: '/informationDetail',
+    name: 'InformationDetail',
+    component: InformationDetail
   },
   {
     path: '/register',

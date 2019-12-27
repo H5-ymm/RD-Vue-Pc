@@ -34,10 +34,14 @@ const teamOrder = resolve => (require(['../components/teamCenter/teamOrder.vue']
 const logList = resolve => (require(['../components/teamCenter/logList.vue'], resolve)) // 团队日志
 
 const teamData = resolve => (require(['../components/teamCenter/teamData.vue'], resolve)) // 团队中心
-import Department from '../components/Department.vue'
-import Userlist from '../components/Userlist.vue'  //全部用户
-import commonts from '../components/commonts.vue'  //评论
 
+const receiptTable = resolve => (require(['../components/teamReceipt/receiptTable.vue'], resolve)) // 团队中心
+// import Department from '../components/Department.vue'
+// import Userlist from '../components/Userlist.vue'  //全部用户
+// import commonts from '../components/commonts.vue'  //评论
+const Department = resolve => (require(['../components/Department.vue'], resolve)) //部门
+const Userlist = resolve => (require(['../components/Userlist.vue'], resolve)) //全部用户
+const commonts = resolve => (require(['../components/commonts.vue'], resolve)) //评论
 // 团队路由
 export const teamRouters = [{  // 团队论坛
   path: '/commonts',
@@ -274,6 +278,13 @@ export const teamRouters = [{  // 团队论坛
 {
   path: '/logList',  // 日志
   component: logList,
+  meta: {
+    requiresAuth: 1
+  }
+},
+{
+  path: '/receiptTable',  // 日志
+  component: receiptTable,
   meta: {
     requiresAuth: 1
   }

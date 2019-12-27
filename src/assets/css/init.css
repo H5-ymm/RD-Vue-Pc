@@ -49,3 +49,8 @@
       justify-content:space-around;
       align-items: center;
     }
+    .text-line {
+      white-space:nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }

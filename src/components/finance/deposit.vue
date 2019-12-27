@@ -22,7 +22,7 @@
         <div class="team-setting-box">
           <ul :span="6" class="x-flex-start">
             <li
-              v-for="(item,index) in payType"
+              v-for="(item,index) in payTypeList"
               :key="index"
               @click="selectType(index,item)"
               class="grid-content-select"
@@ -62,7 +62,7 @@
     ></modal>
     <Dialog
       :centerDialogVisible="payDialogVisible"
-      :modalObj="modalObj"
+      :modalInfo="modalInfo"
       @handleClose="payDialogVisible=false"
       @handleOk="payDialogVisible=false"
     ></Dialog>
@@ -92,7 +92,7 @@ export default {
         type: ''
       },
       activIndex: 0,
-      payType: [{
+      payTypeList: [{
         imgUrl: require('../../assets/img/myAccount/zfb.png'),
         imgUrl1: require('../../assets/img/myAccount/zfb1.png'),
         type: 2
@@ -116,7 +116,7 @@ export default {
         imgBg: require('../../assets/img/myAccount/paySuccess.png')
       },
       payInfo: {
-        imgBg: require('../../assets/img/qrcode.png'),
+        qrcode: require('../../assets/img/qrcode.png'),
         title: '微信扫一扫即可支付',
         iconUrl: require('../../assets/img/myAccount/wxIcon.png')
       },

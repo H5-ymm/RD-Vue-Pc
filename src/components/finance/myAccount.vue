@@ -5,15 +5,15 @@
     </div>
     <div class="account-table">
       <el-table border :data="tableData" ref="multipleTable" style="width: 100%">
-        <el-table-column label="流水号" prop="depart_name" align="center" width="300"></el-table-column>
-        <el-table-column label="日期" sortable align="center" width="300">
+        <el-table-column label="流水号" prop="depart_name" align="center"></el-table-column>
+        <el-table-column label="日期" sortable align="center">
           <template slot-scope="props">
             <span>{{ props.row.addtime ? $moment.unix(props.row.addtime).format('YYYY-MM-DD HH:mm'): '--'}}</span>
           </template>
         </el-table-column>
-        <el-table-column label="支付类型" prop="mobile" align="center" width="300"></el-table-column>
-        <el-table-column label="待充值金额" prop="num" align="center" width="300"></el-table-column>
-        <el-table-column label="操作" align="center" min-width="300">
+        <el-table-column label="支付类型" prop="mobile" align="center"></el-table-column>
+        <el-table-column label="待充值金额" prop="num" align="center"></el-table-column>
+        <el-table-column label="操作" align="center">
           <template slot-scope="scope">
             <el-button @click="handleTurnover(scope.row)" type="text" size="small">继续充值</el-button>
             <el-button @click="handleDel(scope.row)" type="text" size="small">删除充值</el-button>

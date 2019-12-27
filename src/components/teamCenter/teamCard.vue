@@ -11,7 +11,8 @@
     }
     .team-card-icon {
       width:42px;
-      height:42px;
+      height:22px;
+      padding: 10px 0;
       border-radius:5px;
       box-shadow:2px 3px 10px 0px rgba(222,31,75,0.3);
       margin-right: 20px;
@@ -43,11 +44,15 @@
       margin-top: 5px;
     }
     .team-card-col2 {
+      font-size: 14px;
       color: #6A6A6A;
       line-height: 25px;
       text-align: center;
       .num-color {
         color: #58B44E;
+      }
+      .num-color-red {
+       color: #FE2A00;
       }
     }
   }
@@ -72,7 +77,7 @@
         <div v-if="index!=0" class="team-card-col2">
           <p class="num-color">+12%</p>
           <p class="el-icon-top num-color" v-if="item.top"></p>
-          <p class="el-icon-bottom" v-else></p>
+          <p class="el-icon-bottom num-color-red" v-else></p>
           <p>周同比</p>
         </div>
       </div>

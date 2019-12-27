@@ -6,7 +6,7 @@
 <template>
   <el-container class="orderTaking" id="header">
     <el-header class="header x-flex-around home" height="50px">
-      <headerView></headerView>
+      <headerView :activeIndex="1"></headerView>
     </el-header>
     <el-main class="orderTaking-main-content">
       <div class="orderTaking-search">
@@ -286,7 +286,7 @@ export default {
   methods: {
     windowScroll () {
       let scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
-      if (scrollTop - document.documentElement.clientHeight + 100 >= 0) {
+      if (scrollTop - document.documentElement.clientHeight + 400 >= 0) {
         this.isShow = true
       }
       else {
@@ -378,6 +378,9 @@ export default {
         page: 1
       }
       this.getData(this.params)
+    },
+    destroyed () {
+      window.removeEventListener('scroll', this.windowScroll)
     }
   }
 }

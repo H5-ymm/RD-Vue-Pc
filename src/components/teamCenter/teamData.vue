@@ -1,5 +1,6 @@
 <style lang="scss">
   .team-center-view {
+    padding-bottom:50px;
     .team-center-form {
       padding-top: 20px;
       .width300 {

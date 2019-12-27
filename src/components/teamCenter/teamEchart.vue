@@ -68,6 +68,11 @@ export default {
           icon: 'circle',
           itemWidth: 8,  // 设置宽度
           itemHeight: 8, // 设置高度
+          itemGap: 20,
+          borderRadius: 8,
+          textStyle: {
+            padding: [3, 0, 0, 0]
+          }
         },
         xAxis: {},
         yAxis: {},

@@ -80,6 +80,17 @@ export default {
           ]
         },
         {
+          title: '团队接单',
+          icon: 'el-icon-collection-tag',
+          submenu: [
+            {
+              title: '接单分配',
+              url: '/receiptTable'
+            }
+          ]
+        },
+
+        {
           title: '接单管理',
           icon: 'el-icon-collection-tag',
           submenu: [
@@ -270,7 +281,7 @@ export default {
       let pathStr = this.$route.path.split('/')
       if (pathStr[1] == 'team') {
         setTimeout(() => {
-          this.$router.replace('commonts')
+          this.$router.replace('teamData')
         }, 50)
       }
       return '/' + pathStr[1]

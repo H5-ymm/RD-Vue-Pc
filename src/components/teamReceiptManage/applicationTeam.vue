@@ -75,9 +75,9 @@
           </el-table-column>
           <el-table-column label="操作" align="center" width="150">
             <template slot-scope="scope">
-              <el-button @click="handleDel(scope.row)" type="text" size="small">查看职位</el-button>
-              <el-button @click="handleDel(scope.row)" type="text" size="small">取消申请</el-button>
-              <el-button @click="handleEdit(scope.row)" type="text" size="small">联系客服</el-button>
+              <el-button @click="viewJob(scope.row)" type="text" size="small">查看职位</el-button>
+              <el-button @click="handleCancle(scope.row)" type="text" size="small">取消申请</el-button>
+              <el-button @click="dialogTableVisible=true" type="text" size="small">联系客服</el-button>
               <el-button @click="handleDel(scope.row)" type="text" size="small">删除</el-button>
             </template>
           </el-table-column>
@@ -94,13 +94,20 @@
         :total="total"
       ></el-pagination>
     </div>
+    <viewJob :dialogTableVisible="dialogJobVisible" @handleClose="dialogJobVisible=fasle"></viewJob>
   </div>
 </template>
 
 <script>
-import { getTeamReceiptList } from '../../api/teamReceipt'
+import { getTeamReceiptList, addApply, cancelApply, delApply } from '../../api/teamReceipt'
+import customerService from '../common/customerService'
+import viewJob from '../common/viewJob'
 import { moneyTypeList, rewardTypeList, payTypeList, weekList, applyStatusList } from '../../base/base'
 export default {
+  components: {
+    customerService,
+    viewJob
+  },
   filters: {
     moneyType (val) {
       let obj = moneyTypeList.find(item => {
@@ -121,7 +128,7 @@ export default {
       rewardTypeList,
       applyStatusList,
       dialogTableVisible: false,
-      visible: false,
+      dialogJobVisible: false,
       tableData: [],
       currentPage: 1,
       userType: 1,
@@ -133,6 +140,7 @@ export default {
       total: 0,
       userId: '',
       form: {},
+      jobId: ''
     }
   },
   created () {
@@ -161,13 +169,28 @@ export default {
       this.formMember.page = val
       this.getList(this.formMember)
     },
-    handleEdit (val) {
-      this.dialogTableVisible = true
-      this.userId = val
-      console.log(this.userId)
+    // 查看职位
+    viewJob (val) {
+      this.dialogJobVisible = true
     },
-    handleDel (uid) {
-      loginOutTeam({ uid }).then(res => {
+    handleCancle (val) {
+      let params = {
+        uid: localStorage.getItem('uid'),
+        id: val.id
+      }
+      cancelApply(params).then(res => {
+        this.$message.success('退出成功')
+        this.getList(this.formMember)
+      }).catch(error => {
+        this.$message.error(error.status.remind)
+      })
+    },
+    handleDel (val) {
+      let params = {
+        uid: localStorage.getItem('uid'),
+        id: val.id
+      }
+      delApply(params).then(res => {
         this.$message.success('退出成功')
         this.getList(this.formMember)
       }).catch(error => {

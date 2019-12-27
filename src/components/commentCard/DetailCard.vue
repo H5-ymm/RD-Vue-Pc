@@ -305,6 +305,8 @@ export default {
         this.getCommentList(this.params)
         this.isShow = false
         this.showComment = true
+      }).catch(error => {
+        this.$message.error(error.status.remind)
       })
     },
     // 修改、编辑

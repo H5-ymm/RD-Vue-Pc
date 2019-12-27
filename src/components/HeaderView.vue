@@ -54,9 +54,10 @@
 <script>
 export default {
   name: '',
+  props: ['activeIndex'],
   data () {
     return {
-      activeIndex: 1,
+      // activeIndex: 1,
       menus: [
         {
           title: '首页',
@@ -72,7 +73,7 @@ export default {
         },
         {
           title: '资讯',
-          url: ''
+          url: 'Information'
         }
       ],
       userInfo: null,
@@ -85,8 +86,8 @@ export default {
   },
   methods: {
     switchNav (item, index) {
-      this.activeIndex = index
-      if (index < 2) {
+      // this.activeIndex = index
+      if (index != 2) {
         this.$router.push(item.url)
       }
     }

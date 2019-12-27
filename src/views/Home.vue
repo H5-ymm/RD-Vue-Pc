@@ -108,7 +108,7 @@
               <div class="grid-information-card">
                 <img :src="item.imgUrl" class="grid-information-img" />
                 <div class="grid-information">
-                  <p class="grid-information-title">{{item.title}}</p>
+                  <el-link :underline="false" class="grid-information-title">{{item.title}}</el-link>
                   <p class="grid-information-content">{{item.content}}</p>
                 </div>
               </div>
@@ -117,68 +117,22 @@
         </section>
       </div>
     </el-main>
-    <el-footer height="320px">
-      <section class="home-main-section home-main-section-footer">
-        <el-row :gutter="20" class="footer-main" type="flex" justify="start">
-          <el-col :span="4">
-            <ul class="home-footer-box">
-              <li class="home-footer-title">企业服务</li>
-              <li>公司搜索</li>
-              <li>职位搜索</li>
-              <li>新闻咨讯</li>
-            </ul>
-          </el-col>
-          <el-col :span="10">
-            <ul class="home-footer-box">
-              <li class="home-footer-title">联系方式</li>
-              <li>仁达网络科技(上海)有限公司</li>
-              <li>公司地址：上海市浦东新区金海路2588号1幢A区310室</li>
-              <li>服务热线：021-51991869（9:00-18:00)</li>
-              <li>违法和不良信息举报邮箱：</li>
-            </ul>
-          </el-col>
-          <el-col :span="8" :offset="8">
-            <ul class="home-footer-box home-footer-box1">
-              <li class="home-footer-title">微信公众号</li>
-              <li>
-                <img src="../assets/img/qrcode.png" class="home-footer-img" />
-              </li>
-            </ul>
-          </el-col>
-        </el-row>
-      </section>
-    </el-footer>
-    <ul class="fixed">
-      <li>
-        <a href="#header">
-          <el-tooltip class="item" effect="dark" content="一键置顶" placement="left">
-            <img src="../assets/img/top.png" alt />
-          </el-tooltip>
-        </a>
-      </li>
-      <li>
-        <el-tooltip class="item" effect="dark" content="联系客服" placement="left">
-          <img src="../assets/img/kefu.png" alt />
-        </el-tooltip>
-      </li>
-      <li class="help">
-        <el-tooltip class="item" effect="dark" content="帮助反馈" placement="left">
-          <img src="../assets/img/help.png" alt />
-        </el-tooltip>
-      </li>
-    </ul>
+    <FooterView></FooterView>
+    <AsideBox :isShow="isShow"></AsideBox>
   </el-container>
 </template>
 <script>
 // @ is an alias to /src
-import homeAside from '@/components/Aside' //侧边栏
 import searchInput from '@/components/searchInput'
 import { homeList } from '../api/home'
+import FooterView from '@/components/FooterView'
+import AsideBox from '@/components/AsideBox'
 export default {
   name: 'home',
   components: {
-    homeAside,
-    searchInput
+    FooterView,
+    searchInput,
+    AsideBox
   },
   data () {
     return {
@@ -199,7 +153,7 @@ export default {
         },
         {
           title: '资讯',
-          url: ''
+          url: 'Information'
         }
       ],
       params: {
@@ -218,13 +172,27 @@ export default {
       }],
       list: [],
       userInfo: null,
-      token: ''
+      token: '',
+      isShow: false
     }
   },
   computed: {
 
   },
+  mounted () {
+    window.addEventListener('scroll', this.windowScroll)
+  },
   methods: {
+    windowScroll () {
+      let scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
+      console.log(scrollTop - document.documentElement.clientHeight)
+      if (scrollTop - document.documentElement.clientHeight + 400 >= 0) {
+        this.isShow = true
+      }
+      else {
+        this.isShow = false
+      }
+    },
     switchNav (item, index) {
       this.activeIndex = index
       this.$router.push(item.url)
@@ -266,6 +234,10 @@ export default {
     if (sessionStorage.getItem('userInfo')) {
       this.userInfo = JSON.parse(sessionStorage.getItem('userInfo'))
     }
+  },
+  destroyed () {
+    console.log(2)
+    window.removeEventListener('scroll', this.windowScroll)
   }
 }
 </script>

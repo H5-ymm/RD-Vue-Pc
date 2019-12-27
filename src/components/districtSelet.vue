@@ -37,6 +37,7 @@ export default {
     }
   },
   created () {
+    console.log(this.address)
     if (!this.address.length) {
       this.getRegion([])
     }

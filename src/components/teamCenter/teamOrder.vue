@@ -3,13 +3,6 @@
     background: #fff;
     padding: 20px 15px 0;
     height:90%;
-    .el-col {
-      &:nth-last-of-type(1) {
-        .team-center-content {
-          border-right: none;
-        }
-      }
-    }
   }
 </style>
 <template>

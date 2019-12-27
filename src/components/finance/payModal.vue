@@ -20,12 +20,12 @@
           </p>
         </div>
         <div class="personal-box">
-          <div v-if="payInfo&&payInfo.imgBg" class="qrcode-img">
+          <div v-if="payInfo" class="qrcode-img">
             <p>￥50</p>
-            <img :src="payInfo.imgBg" alt />
+            <img :src="payInfo.qrcode" v-if="payInfo&&payInfo.qrcode" alt />
           </div>
           <p class="x-flex-center">
-            <img :src="payInfo.iconUrl" alt />
+            <img :src="payInfo.iconUrl" v-if="payInfo&&payInfo.iconUrl" alt />
             <span class="pay-title">{{payInfo.title}}</span>
           </p>
           <p>订单编号：5770884354350913</p>

@@ -6,11 +6,6 @@
   background: url('../assets/img/detailsBg.jpg') no-repeat top center;
   background-size: contain；
 }
-.orderTaking-detail-content {
-   margin: -140px auto 40px;
-   position: relative;
-   z-index: 9;
-}
 .orderTaking-jobDeail {
    background: #fff;
    margin: 20px 0;
@@ -107,7 +102,7 @@
 <template>
   <el-container class="orderTaking">
     <el-header class="header x-flex-around home" height="50px" id="header">
-      <headerView></headerView>
+      <headerView :activeIndex="1"></headerView>
     </el-header>
     <el-main class="orderTaking-main-content">
       <div class="orderTaking-detail"></div>
@@ -469,7 +464,7 @@ export default {
     },
     windowScroll () {
       let scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
-      if (scrollTop - document.documentElement.clientHeight - 200 >= 0) {
+      if (scrollTop - document.documentElement.clientHeight + 400 >= 0) {
         this.isShow = true
       }
       else {

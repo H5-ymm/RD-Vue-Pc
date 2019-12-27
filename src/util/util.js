@@ -48,7 +48,7 @@ export const getImg = file => {
 }
 
 export const getImgUrl = url => {
-  return 'http://tiantianxsg.com:39888/index.php/' + url
+  return 'http://tiantianxsg.com:39888/' + url
 }
 
 export const checkEmail = email => {
