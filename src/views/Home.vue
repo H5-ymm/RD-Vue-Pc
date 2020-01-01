@@ -103,7 +103,7 @@
               <img src="../assets/img/more.png" alt />
             </p>
           </div>
-          <el-row>
+          <el-row class="home-main-list">
             <el-col :span="12" v-for="(item, index) in informationList" :key="index">
               <div class="grid-information-card">
                 <img :src="item.imgUrl" class="grid-information-img" />
