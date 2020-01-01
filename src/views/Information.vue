@@ -19,7 +19,8 @@
     }
     .information-main-col1 {
       border:none;
-      width: 814px；
+      width: 814px;
+      background: #fff;
     }
     .orderTaking-main-col2 {
       background: #fff;
@@ -206,6 +207,7 @@ export default {
     }
   },
   mounted () {
+    document.scrollingElement.scrollTop = 0
     window.addEventListener('scroll', this.windowScroll)
   },
   methods: {

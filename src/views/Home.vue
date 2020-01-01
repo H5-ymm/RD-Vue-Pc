@@ -94,21 +94,21 @@
             </el-col>
           </el-row>
           <el-button class="home-main-more" @click="$router.push('OrderTaking')">查看更多</el-button>
-          <div class="home-main-more-right x-flex-end">
-            <el-link type="primary" @click="$router.push('OrderTaking')">查看更多</el-link>
-            <img src="../assets/img/more.png" alt />
-          </div>
         </section>
         <section class="home-main-section">
-          <p class="home-main-title">
-            <img src="../assets/img/icon.png" />资讯
-          </p>
+          <div class="home-main-title x-flex-between">
+             <p> <img src="../assets/img/icon.png" />资讯</p>
+             <p class="x-flex-end">
+              <el-link type="primary" @click="$router.push('information')">查看更多</el-link>
+              <img src="../assets/img/more.png" alt />
+            </p>
+          </div>
           <el-row>
             <el-col :span="12" v-for="(item, index) in informationList" :key="index">
               <div class="grid-information-card">
                 <img :src="item.imgUrl" class="grid-information-img" />
                 <div class="grid-information">
-                  <el-link :underline="false" class="grid-information-title">{{item.title}}</el-link>
+                  <el-link :underline="false" class="grid-information-title" href="informationDetail">{{item.title}}</el-link>
                   <p class="grid-information-content">{{item.content}}</p>
                 </div>
               </div>

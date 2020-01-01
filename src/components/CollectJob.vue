@@ -13,7 +13,7 @@
         label-width="100px"
         label-position="right"
         :model="formMember"
-        class="demo-form-inline"
+        class="demo-form-inline form-item-wrap"
       >
         <el-form-item label="搜索类型：">
           <el-select v-model="formMember.type" class="width120" placeholder="请选择">
@@ -23,16 +23,6 @@
           <el-input v-model="formMember.keyword" class="width300" placeholder="请输入你要搜索的关键字"></el-input>
           <el-button type="primary" @click="handleSearch" class="select-btn">查询</el-button>
         </el-form-item>
-        <!-- <el-form-item label="状态筛选：">
-          <el-button
-            :type="formMember.status==item.value ?'primary':''"
-            v-for="(item,index) in statusList"
-            :key="index"
-            plain
-            @click="selectStatus('status',item)"
-            class="select-status"
-          >{{item.label}}</el-button>
-        </el-form-item>-->
         <el-form-item label="返利模式：">
           <el-button
             :type="formMember.reward_type==item.value ?'primary':''"

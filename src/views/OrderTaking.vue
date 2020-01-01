@@ -21,23 +21,23 @@
                 v-for="(item, index) in cityList"
                 :key="index"
                 @click="querySelect(item.value,'cityid')"
-                :class="{'active': cityid==item.value}"
+                :class="{'active': params.cityid==item.value}"
               >{{item.name}}</li>
             </ul>
             <el-button type="text" class="orderTaking-more" @click="dialogVisible=true">更多</el-button>
           </div>
-          <div class="orderTaking-search-query x-flex-start-justify">
+          <!-- <div class="orderTaking-search-query x-flex-start-justify">
             <span class="orderTaking-search-label">不限</span>
             <ul class="orderTaking-search-value">
               <li
                 v-for="(item, index) in areaList"
                 :key="index"
-                @click="querySelect(item.value,'three_cityid')"
-                :class="{'active': three_cityid==item.value}"
+                @click="querySelect(item.code,'three_cityid')"
+                :class="{'active': params.three_cityid==item.code}"
               >{{item.name}}</li>
             </ul>
-          </div>
-          <div class="orderTaking-search-select">
+          </div> -->
+          <div class="orderTaking-search-select x-flex-between">
             <div class="orderTaking-search-value">
               <el-select
                 v-model="params.money_type"
@@ -261,10 +261,9 @@ export default {
       ],
       params: {
         limit: 20,
-        page: 1
+        page: 1,
+        cityid: ''
       },
-      cityid: '310100',
-      three_cityid: '310101',
       list: [],
       cityList,
       areaList: [],
@@ -281,6 +280,7 @@ export default {
     this.getAreaList(this.code)
   },
   mounted () {
+    document.scrollingElement.scrollTop = 0
     window.addEventListener('scroll', this.windowScroll)
   },
   methods: {
@@ -366,6 +366,7 @@ export default {
     getAreaList (code) {
       getAreasList({ code }).then(res => {
         this.areaList = res.data
+        console.log(this.areaList)
       })
     },
     currentChange (page) {

@@ -75,8 +75,6 @@ export default {
 </script>
 <style lang="scss">
   .my-account-view { 
-    .my-account-header {
-    }
     .account-table {
       background: #fff;
       padding: 30px 16px;

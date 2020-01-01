@@ -1,3 +1,6 @@
+<style lang="scss">
+  @import '@/assets/css/resume.scss';
+</style>
 <template>
   <div class="tables-box billingManagement">
     <div class="table-list">
@@ -190,28 +193,3 @@ export default {
   }
 }
 </script>
-
-<style lang="scss">
-.billingManagement {
-  .demo-form-inline {
-    width: 80%;
-  }
-  .table-list {
-    padding-top: 70px;
-    padding-left: 10px;
-    .select-btn {
-      margin-left: 20px;
-    }
-    .member-table {
-      margin-top: 40px;
-    }
-  }
-  .width300 {
-    width: 300px;
-  }
-  .select-status {
-    margin-right: 10px;
-  }
-}
-
-</style>

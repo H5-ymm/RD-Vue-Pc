@@ -134,7 +134,6 @@ export default {
         }
         .el-form-item__label {
           width: 100%;
-          margin-left: 20px;
         }
         .el-input__inner{
           height:38px;
@@ -143,6 +142,9 @@ export default {
         }
       }
        &.department-add-col3{
+         .el-form-item__label {
+          margin-left: 20px;
+         }
         .el-form-item__content {
           display: block;
         }
