@@ -6,4 +6,6 @@ export const getCompanyInfo = () => post('/index/getConstant', {})
 
 export const createInvoice = data => $post('/enterpriseinvoice/createInvoice', data) // 企业发单
 
-export const addCompanyInfo = data => $post('/company/authenticationCompanyInfo', data) 
+export const addCompanyInfo = data => $post('/company/authenticationCompanyInfo', data)
+
+export const seeTeamInfo = data => $post('/company/seeTeamInfo', data) 

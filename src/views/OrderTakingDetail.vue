@@ -200,25 +200,41 @@
                       </p>
                       <p v-if="orderTakingDetail.reward_type==1">
                         <span>结算时间：</span>
-                        <span>次月第{{orderTakingDetail.settlement_time}}天</span>
+                        <span>次月第{{orderTakingDetail.settlement_time}}号结算</span>
                       </p>
-                      <p v-if="orderTakingDetail.reward_type==2">
+                      <p class="team-info-card-item" v-else>
+                        <span>结算时间：</span>
+                        <span>{{orderTakingDetail.settlement_type==1?'本':'次'}}{{orderTakingDetail.reward_money_type==1?'天':orderTakingDetail.reward_money_type==2?'周': '月'}}{{orderTakingDetail.settlement_time?orderTakingDetail.settlement_time:'第一天'}}</span>
+                      </p>
+                      <p v-if="orderTakingDetail.reward_type==2||orderTakingDetail.reward_type==3">
                         <span>持续时长：</span>
-                        <span>{{orderTakingDetail.reward_money}}/人/{{getmoneyType(orderTakingDetail.money_type)}}</span>
+                        <span>{{orderTakingDetail.settlement_time?orderTakingDetail.settlement_time:'1'}}{{orderTakingDetail.reward_continuous==1?'天':orderTakingDetail.reward_continuous==2?'周': '个月'}}</span>
+                      </p>
+                      <p class="team-info-card-item" v-if="orderTakingDetail.reward_type==4">
+                        <span>需入职满：</span>
+                        <span
+                          v-if="orderTakingDetail.reward_needtime"
+                        >{{orderTakingDetail.reward_needtime}}{{orderTakingDetail.reward_continuous==1?'天':orderTakingDetail.reward_continuous==2?'周': '月'}}</span>
+                        <span
+                          v-else
+                        >当{{orderTakingDetail.reward_continuous==1?'天':orderTakingDetail.reward_continuous==2?'周': '月'}}返利</span>
                       </p>
                     </div>
                     <div class="orderTaking-info">
                       <p>
                         <span>返利金额：</span>
-                        <span>{{orderTakingDetail.reward_money}}</span>
+                        <span>{{orderTakingDetail.reward_money}}元/人/{{rewardMoney}}</span>
                       </p>
                       <p v-if="orderTakingDetail.reward_money_type==1">
                         <span>返利时长：</span>
-                        <span>fff100人</span>
+                        <span v-if="orderTakingDetail.reward_money_type==1">长期返利</span>
+                        <span
+                          v-if="orderTakingDetail.reward_money_type==2"
+                        >持续返利{{orderTakingDetail.settlement_time?orderTakingDetail.settlement_time:'1'}}{{orderTakingDetail.reward_continuous==1?'天':orderTakingDetail.reward_continuous==2?'周': '月'}}</span>
                       </p>
-                      <p v-else>
+                      <p v-if="orderTakingDetail.reward_type==2||orderTakingDetail.reward_type==3">
                         <span>需入职满：</span>
-                        <span>3天</span>
+                        <span>{{orderTakingDetail.reward_needtime?orderTakingDetail.reward_needtime:'1'}}{{orderTakingDetail.reward_continuous==1?'天':orderTakingDetail.reward_continuous==2?'周': '个月'}}</span>
                       </p>
                     </div>
                   </div>
@@ -246,7 +262,7 @@
                         </ul>
                         <ul class="orderTaking-main-item">
                           <li>{{getmoneyType(item.money_type)}}薪: {{item.money}}/人/{{getmoneyType(item.money_type)}}</li>
-                          <li>需求人数：20人</li>
+                          <li>返利：{{item.reward_money_type}}/人/{{getmoneyType(item.money_type)}}</li>
                           <li
                             v-if="item.reward_money_type==3"
                           >持续时间：{{item.reward_money_type==1?'长期返利':'持续返利'}}</li>
@@ -437,7 +453,13 @@ export default {
     }
   },
   computed: {
+    rewardMoney () {
+      if (this.id) {
+        return this.orderTakingDetail.money_type == 1 ? '月' : this.orderTakingDetail.money_type == 2 ? '日' : '时'
+      }
+    },
     logoUrl () {
+      console.log(`http://tiantianxsg.com:39888/` + this.companyInfo.logo_url)
       return `http://tiantianxsg.com:39888/` + this.companyInfo.logo_url
     }
   },

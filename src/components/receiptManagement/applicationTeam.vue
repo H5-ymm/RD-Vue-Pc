@@ -143,8 +143,12 @@
       ></el-pagination>
     </div>
     <customerService :dialogTableVisible="dialogTableVisible"></customerService>
-    <viewJob :dialogTableVisible="dialogJobVisible" @handleClose="dialogJobVisible=fasle"></viewJob>
-    <viewTeam :dialogTableVisible="dialogTeamVisible" @handleClose="dialogTeamVisible=fasle"></viewTeam>
+    <viewJob :dialogTableVisible="dialogJobVisible" :id="id" @handleClose="dialogJobVisible=fasle"></viewJob>
+    <viewTeam
+      :dialogTableVisible="dialogTeamVisible"
+      @handleClose="dialogTeamVisible=fasle"
+      :teamId="teamId"
+    ></viewTeam>
   </div>
 </template>
 
@@ -190,22 +194,19 @@ export default {
       dialogTeamVisible: false,
       dialogJobVisible: false,
       tableData: [],
-      userType: 1,
       formMember: {
         uid: localStorage.getItem('uid'),
         limit: 10,
         page: 1
       },
       total: 0,
-      userId: '',
-      multipleSelection: [],
-      form: {},
-      activeIndex: 0,
       teamTypeList: [
         { label: '全部', value: 0 },
         { label: '个人', value: 2 },
         { label: '企业', value: 1 },
-      ]
+      ],
+      teamId: '',
+      id: ''
     }
   },
   created () {
@@ -220,10 +221,6 @@ export default {
         this.total = data.count
       })
     },
-    selectStatus (item, index) {
-      this.activeIndex = index
-      this.formMember.status = item.value
-    },
     handleSizeChange (val) {
       this.formMember.limit = val
       this.getList(this.formMember)
@@ -233,9 +230,11 @@ export default {
       this.getList(this.formMember)
     },
     viewTeam (val) {
+      this.teamId = val.team_id
       this.dialogTeamVisible = true
     },
     viewJob (val) {
+      this.id = val.id
       this.dialogJobVisible = true
     },
     handleAudit (status, val) {

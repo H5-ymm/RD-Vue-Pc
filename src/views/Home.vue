@@ -64,16 +64,18 @@
             <el-col :span="8" v-for="(item, index) in list" :key="index">
               <el-card class="box-card" shadow="hover">
                 <div slot="header" class="clearfix">
-                  <p class="home-main-list-title" :class="{'home-list-title-active':index==0}">全职拉新</p>
+                  <p
+                    class="home-main-list-title"
+                    @click="$router.push({path:'orderTakingDetail',query:{id:item.id,uid:item.uid}})"
+                    :class="{'home-list-title-active':index==0}"
+                  >{{item.name}}</p>
                   <el-row
                     type="flex"
                     justify="space-between"
                     class="home-list-clearfix home-list-clearfix-active"
                   >
                     <el-col :span="14">
-                      <div
-                        class="bg-purple"
-                      >{{getmoneyType(item.money_type)}}薪: {{item.money}}/人/{{getmoneyType(item.money_type)}}</div>
+                      <div class="bg-purple">{{getmoneyType(item.money_type)}}薪: {{item.money}}元</div>
                     </el-col>
                     <el-col :span="10">
                       <div class="bg-purple-light">需求人数: {{item.required_number}}人</div>
@@ -81,7 +83,9 @@
                   </el-row>
                   <el-row type="flex" justify="space-between" class="home-list-clearfix">
                     <el-col :span="14">
-                      <div class="bg-purple">返利:</div>
+                      <div
+                        class="bg-purple"
+                      >返利:{{item.reward_money_type}}/人/{{getmoneyType(item.money_type)}}</div>
                     </el-col>
                     <el-col :span="10">
                       <div class="bg-purple-light">返利方式: {{getRewardType(item.reward_type)}}</div>
@@ -89,7 +93,13 @@
                   </el-row>
                 </div>
                 {{item.com_name}}
-                <el-button type="primary" size="medium" plain class="handle-btn">接单</el-button>
+                <el-button
+                  type="primary"
+                  @click="handleApply(item)"
+                  size="medium"
+                  plain
+                  class="handle-btn"
+                >接单</el-button>
               </el-card>
             </el-col>
           </el-row>
@@ -125,6 +135,7 @@
 // @ is an alias to /src
 import searchInput from '@/components/searchInput'
 import { homeList } from '../api/home'
+import { addApply } from '@/api/orderTarking'
 import FooterView from '@/components/FooterView'
 import AsideBox from '@/components/AsideBox'
 export default {
@@ -172,7 +183,7 @@ export default {
       }],
       list: [],
       userInfo: null,
-      token: '',
+      token: localStorage.getItem('token'),
       isShow: false
     }
   },
@@ -204,6 +215,22 @@ export default {
         console.log(this.list)
       })
     },
+    handleApply (val) {
+      if (this.token) {
+        let params = {
+          job_id: val.id,
+          uid: val.uid
+        }
+        addApply(params).then(res => {
+          console.log(res)
+        }).catch(error => {
+          this.$message.error(error.status.remind)
+        })
+      }
+      else {
+        this.$router.push('login')
+      }
+    },
     searchQuery (val) {
       let params = Object.assign(val, this.params)
       this.getList(params)
@@ -214,19 +241,19 @@ export default {
     getRewardType (type) {
       let text = ''
       if (type == 1) {
-        text = '按月结算'
+        text = '月返'
       }
       else if (type == 2) {
-        text = '按日结算'
+        text = '日返'
       }
       else if (type == 3) {
-        text = '按周结算'
+        text = '周返'
       }
       else {
         text = '一次性返利'
       }
       return text
-    }
+    },
   },
   created () {
     this.getList(this.params)

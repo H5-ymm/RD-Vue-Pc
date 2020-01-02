@@ -125,13 +125,14 @@
                       <li class="require-number">
                         <span>需求人数：{{item.required_number}}人</span>
                       </li>
-                      <li>返利方式：长期返利</li>
+                      <li>
+                        <span>返利方式：</span>
+                        <span>{{getRewardType(item.reward_type)}}</span>
+                      </li>
                     </ul>
                     <ul class="orderTaking-main-item">
-                      <li
-                        class="require-number"
-                      >{{getmoneyType(item.money_type)}}薪: {{item.money}}/人/{{getmoneyType(item.money_type)}}</li>
-                      <li>返利：20人</li>
+                      <li class="require-number">{{getmoneyType(item.money_type)}}薪: {{item.money}}元</li>
+                      <li>返利：{{item.reward_money_type}}/人/{{getmoneyType(item.money_type)}}</li>
                       <li
                         v-if="item.reward_money_type==3"
                       >持续时间：{{item.reward_money_type==1?'长期返利':'持续返利'}}</li>
@@ -350,13 +351,13 @@ export default {
     getRewardType (type) {
       let text = ''
       if (type == 1) {
-        text = '按月结算'
+        text = '月返'
       }
       else if (type == 2) {
-        text = '按日结算'
+        text = '日返'
       }
       else if (type == 3) {
-        text = '按周结算'
+        text = '周返'
       }
       else {
         text = '一次性返利'

@@ -6,42 +6,48 @@
     class="member-dialog"
     :show-close="false"
   >
-    <div class="member-row team-info-box">
+    <div class="member-row team-info-box" v-if="teamId">
       <img src="../../assets/img/member/cancel.png" alt class="cancel-icon" @click="handleClose" />
       <section class="member-col1">
-        <img src="../../assets/img/member/cancel.png" class="member-col1-comLogo" alt />
-        <P class="member-col1-comName">仁达网络科技团队</P>
-        <p class="member-col1-time">申请日期：20192-20-202</p>
+        <img
+          src="../../assets/img/member/cancel.png"
+          class="member-col1-comLogo"
+          v-if="!teamInfo.log"
+          alt
+        />
+        <img :src="teamInfo.log" class="member-col1-comLogo" alt />
+        <P class="member-col1-comName">{{teamInfo.team_name}}</P>
+        <p class="member-col1-time">申请日期：{{teamInfo.team_name}}</p>
       </section>
       <section class="member-col3">
         <ul class="x-flex-between">
           <li class="team-info-card-row">
             <div class="team-info-card-item">
               <span>团队负责人</span>
-              <span>杨萌萌</span>
+              <span>{{teamInfo.user_name}}</span>
             </div>
             <div class="team-info-card-item">
               <span>团队规模</span>
-              <span>企业</span>
+              <span>{{teamInfo.number}}</span>
             </div>
             <div class="team-info-card-item">
               <span>成功接单</span>
-              <span>2333</span>
+              <span>{{teamInfo.completeInvoiceNum}}</span>
             </div>
             <div class="team-info-card-item">
               <span>已推荐简历</span>
-              <span>1222</span>
+              <span>{{teamInfo.recommendNum}}</span>
             </div>
 
             <div class="team-info-card-item x-flex-start">
               <span>团队地址</span>
-              <span>上海市浦东新区金海路2588号</span>
+              <span>{{teamInfo.address}}</span>
             </div>
           </li>
           <li class="team-info-card-row">
             <div class="team-info-card-item">
               <span>团队性质</span>
-              <span>团队负责人</span>
+              <span>{{teamInfo.type?'企业':'个人'}}</span>
             </div>
             <div class="team-info-card-item">
               <span>注册日期</span>
@@ -49,15 +55,15 @@
             </div>
             <div class="team-info-card-item">
               <span>完成接单</span>
-              <span>10单</span>
+              <span>{{teamInfo.completeInvoiceNum}}</span>
             </div>
             <div class="team-info-card-item">
               <span>已入职简历</span>
-              <span>2000份</span>
+              <span>{{teamInfo.applyNum}}份</span>
             </div>
             <div class="team-info-card-item">
               <span>从事行业</span>
-              <span>制造业</span>
+              <span>{{teamInfo.industry}}</span>
             </div>
           </li>
         </ul>
@@ -65,7 +71,7 @@
           <li class="team-info-card-row team-info-card-row1">
             <div class="team-info-card-item x-flex-start">
               <span>团队介绍</span>
-              <span>团队上到几点水电费暗色调发大师傅暗色调发了发放暗色调发阿道夫阿斯顿发是打发斯蒂芬阿斯顿发斯蒂芬阿斯顿发水电费。</span>
+              <span>{{teamInfo.introduction}}</span>
             </div>
           </li>
         </ul>
@@ -77,13 +83,26 @@
   </el-dialog>
 </template>
 <script>
+import { seeTeamInfo } from '@/api/company'
 export default {
   props: {
-    dialogTableVisible: false
+    dialogTableVisible: false,
+    teamId: ''
   },
   data () {
     return {
-
+      teamInfo: {}
+    }
+  },
+  watch: {
+    teamId (val) {
+      if (val) {
+        seeTeamInfo({ teamId: this.teamId }).then(res => {
+          this.teamInfo = res.data
+        }).catch(error => {
+          this.$message.error(error.status.remind)
+        })
+      }
     }
   },
   methods: {

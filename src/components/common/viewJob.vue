@@ -11,13 +11,15 @@
       <section class="member-col1">
         <div class="member-col1-box x-flex-between">
           <div>
-            <P class="member-col1-jobName">仁达网络科技团队</P>
+            <P class="member-col1-jobName">{{jobInfo.name}}</P>
             <p class="member-col1-text">
-              <span class="member-col1-status">招聘中</span>
+              <span class="member-col1-status">{{jobInfo.job_status}}</span>
               职位类别
             </p>
           </div>
-          <div class="member-col1-text">发布时间：2019-12-01 15:32</div>
+          <div
+            class="member-col1-text"
+          >发布时间：{{$moment.unix(jobInfo.ctime).format('YYYY-MM-DD HH:mm')}}</div>
         </div>
       </section>
       <section class="member-col3">
@@ -27,37 +29,37 @@
             <li class="team-info-card-row">
               <div class="team-info-card-item">
                 <span>需求人数</span>
-                <span>100人</span>
+                <span>{{jobInfo.required_number}}人</span>
               </div>
               <div class="team-info-card-item">
                 <span>年龄</span>
-                <span>2333</span>
+                <span>{{jobInfo.min_age}}-{{jobInfo.max_age}}</span>
               </div>
               <div class="team-info-card-item">
                 <span>性别</span>
-                <span>16-56周岁</span>
+                <span>{{jobInfo.sex==1?'男':'女'}}</span>
               </div>
               <div class="team-info-card-item x-flex-start">
                 <span>工作地址</span>
-                <span>河南-郑州市-金水区</span>
+                <span>{{jobInfo.address}}</span>
               </div>
             </li>
             <li class="team-info-card-row">
               <div class="team-info-card-item">
                 <span>月薪</span>
-                <span>5-6k</span>
+                <span>{{jobInfo.money}}</span>
               </div>
               <div class="team-info-card-item">
                 <span>缴纳五险</span>
-                <span>试用期后</span>
+                <span>{{jobInfo.is_five_risks==1?'是':jobInfo.is_five_risks==2?'否':'试用期后'}}</span>
               </div>
               <div class="team-info-card-item">
                 <span>缴纳公积金</span>
-                <span>是</span>
+                <span>{{jobInfo.is_fund==1?'是':jobInfo.is_fund==2?'否':'试用期后'}}</span>
               </div>
               <div class="team-info-card-item">
                 <span>要求学历</span>
-                <span>高中以下</span>
+                <span>{{jobInfo.education}}</span>
               </div>
             </li>
           </ul>
@@ -68,28 +70,57 @@
             <li class="team-info-card-row">
               <div class="team-info-card-item">
                 <span>返利方式</span>
-                <span>月返</span>
+                <span>{{jobInfo.reward_type==1?'月返':jobInfo.reward_type==2?'日返':'时返'}}</span>
               </div>
-              <div class="team-info-card-item">
+              <div class="team-info-card-item" v-if="jobInfo.reward_type==1">
                 <span>结算时间</span>
-                <span>次月22号结算</span>
+                <span>次月{{jobInfo.reward_continuous}}号结算</span>
+              </div>
+              <div class="team-info-card-item" v-else>
+                <span>结算时间</span>
+                <span>{{jobInfo.settlement_type==1?'本':'次'}}{{jobInfo.reward_money_type==1?'天':jobInfo.reward_money_type==2?'周': '月'}}{{jobInfo.settlement_time?jobInfo.settlement_time:'第一天'}}</span>
+              </div>
+              <div
+                class="team-info-card-item"
+                v-if="jobInfo.reward_type==2||jobInfo.reward_type==3"
+              >
+                <span>持续时长：</span>
+                <span>{{jobInfo.settlement_time}}{{jobInfo.reward_continuous==1?'天':jobInfo.reward_continuous==2?'周': '月'}}{{jobInfo.settlement_time}}</span>
+                <span>入职{{jobInfo.reward_needatime}}</span>
+              </div>
+              <div class="team-info-card-item" v-if="jobInfo.reward_type==4">
+                <span>需入职满：</span>
+                <span
+                  v-if="jobInfo.reward_needatime"
+                >{{jobInfo.reward_needatime}}{{jobInfo.reward_continuous==1?'天':jobInfo.reward_continuous==2?'周': '月'}}</span>
+                <span
+                  v-else
+                >当{{jobInfo.reward_continuous==1?'天':jobInfo.reward_continuous==2?'周': '月'}}返利</span>
               </div>
             </li>
             <li class="team-info-card-row">
               <div class="team-info-card-item">
                 <span>返利金额</span>
-                <span>500元/人/月</span>
+                <span>{{jobInfo.reward_money}}元/人/{{rewardMoney}}</span>
               </div>
-              <div class="team-info-card-item">
+              <div class="team-info-card-item" v-if="jobInfo.reward_type==1">
                 <span>返利时长</span>
-                <span>持续返利2个月</span>
+                <span v-if="jobInfo.reward_money_type==1">长期返利</span>
+                <span v-if="jobInfo.reward_money_type==2">持续返利{{jobInfo.settlement_time}}个月</span>
+              </div>
+              <div
+                class="team-info-card-item"
+                v-if="jobInfo.reward_type==2||jobInfo.reward_type==3"
+              >
+                <span>需入职满：</span>
+                <span>{{jobInfo.reward_needatime}}{{jobInfo.reward_continuous==1?'天':jobInfo.reward_continuous==2?'周': '月'}}</span>
               </div>
             </li>
           </ul>
         </div>
         <div class="member-col3-box">
           <p class="member-col3-title">职位描述</p>
-          <div class="member-col3-detail">团队上到几点水电费暗色调发大师傅暗色调发了发放暗色调发阿道夫阿斯顿发是打发斯蒂芬阿斯顿发斯蒂芬阿斯顿发水电费。</div>
+          <div class="member-col3-detail">{{jobInfo.job_content}}</div>
         </div>
       </section>
     </div>
@@ -99,13 +130,34 @@
   </el-dialog>
 </template>
 <script>
+import { getOrderDetail } from '@/api/orderTarking'
 export default {
   props: {
-    dialogTableVisible: false
+    dialogTableVisible: false,
+    id: ''
   },
   data () {
     return {
+      jobInfo: {}
+    }
+  },
+  created () {
 
+  },
+  computed: {
+    rewardMoney () {
+      if (this.id) {
+        return this.jobInfo.money_type == 1 ? '月' : this.jobInfo.money_type == 2 ? '日' : '时'
+      }
+    }
+  },
+  wacth: {
+    id (val) {
+      if (val) {
+        getOrderDetail({ id: val }).then(res => {
+          this.jobInfo = res.data
+        })
+      }
     }
   },
   methods: {
