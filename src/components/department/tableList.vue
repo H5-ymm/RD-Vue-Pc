@@ -1,19 +1,59 @@
 <template>
   <div class="table">
-    <el-table border :data="tableData" ref="multipleTable" style="width: 100%">
-      <el-table-column label="部门名称" prop="depart_name" align="center" width="150"></el-table-column>
-      <el-table-column label="部门经理" prop="user_name" align="center" width="150"></el-table-column>
-      <el-table-column label="联系电话" prop="mobile" align="center" width="150"></el-table-column>
-      <el-table-column label="部门人数" prop="num" align="center" width="150"></el-table-column>
-      <el-table-column label="添加日期" align="center" width="240">
+    <el-table
+      border
+      :data="tableData"
+      ref="multipleTable"
+      style="width: 100%"
+    >
+      <el-table-column
+        label="部门名称"
+        prop="depart_name"
+        align="center"
+        width="150"
+      ></el-table-column>
+      <el-table-column
+        label="部门经理"
+        prop="user_name"
+        align="center"
+        width="150"
+      ></el-table-column>
+      <el-table-column
+        label="联系电话"
+        prop="mobile"
+        align="center"
+        width="150"
+      ></el-table-column>
+      <el-table-column
+        label="部门人数"
+        prop="num"
+        align="center"
+        width="150"
+      ></el-table-column>
+      <el-table-column
+        label="添加日期"
+        align="center"
+        width="240"
+      >
         <template slot-scope="props">
-          <span>{{ props.row.addtime ? $moment(props.row.addtime).format('YYYY-MM-DD HH:mm'): '--'}}</span>
+          <span>{{ props.row.addtime ? $moment.unix(props.row.addtime).format('YYYY-MM-DD HH:mm'): '--'}}</span>
         </template>
       </el-table-column>
-      <el-table-column label="操作" align="center">
+      <el-table-column
+        label="操作"
+        align="center"
+      >
         <template slot-scope="scope">
-          <el-button @click="handleTurnover(scope.row)" type="text" size="small">人员调整</el-button>
-          <el-button @click="handleDel(scope.row)" type="text" size="small">删除</el-button>
+          <el-button
+            @click="handleTurnover(scope.row)"
+            type="text"
+            size="small"
+          >人员调整</el-button>
+          <el-button
+            @click="handleDel(scope.row)"
+            type="text"
+            size="small"
+          >删除</el-button>
         </template>
       </el-table-column>
     </el-table>

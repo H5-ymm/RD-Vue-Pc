@@ -13,29 +13,61 @@
         class="demo-form-inline"
       >
         <el-form-item label="姓名：">
-          <el-input v-model="formMember.name" class="width300" placeholder="请输入关键字"></el-input>
+          <el-input
+            v-model="formMember.name"
+            class="width300"
+            placeholder="请输入关键字"
+          ></el-input>
         </el-form-item>
         <el-form-item label="联系电话：">
-          <el-input v-model="formMember.name" class="width300" placeholder="请输入联系电话"></el-input>
+          <el-input
+            v-model="formMember.name"
+            class="width300"
+            placeholder="请输入联系电话"
+          ></el-input>
         </el-form-item>
         <el-form-item label="意向岗位：">
-          <el-select v-model="formMember.industry" class="width300" placeholder="请输入意向岗位关键字">
-            <el-option :label="item" :value="key" v-for="(item,key) in jobList" :key="key"></el-option>
+          <el-select
+            v-model="formMember.industry"
+            class="width300"
+            placeholder="请输入意向岗位关键字"
+          >
+            <el-option
+              :label="item"
+              :value="key"
+              v-for="(item,key) in jobList"
+              :key="key"
+            ></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="录入人：">
-          <el-input v-model="formMember.name" class="width300" placeholder="请输入录入人关键字"></el-input>
+          <el-input
+            v-model="formMember.name"
+            class="width300"
+            placeholder="请输入录入人关键字"
+          ></el-input>
         </el-form-item>
         <el-form-item label="意向地区：">
           <div class="width300">
-            <districtSelet @change="change" :placeholder="'请选择意向地区'"></districtSelet>
+            <districtSelet
+              @change="change"
+              :placeholder="'请选择意向地区'"
+            ></districtSelet>
           </div>
         </el-form-item>
         <el-form-item label="跟进人：">
-          <el-input v-model="formMember.name" class="width300" placeholder="请输入跟进人关键字"></el-input>
+          <el-input
+            v-model="formMember.name"
+            class="width300"
+            placeholder="请输入跟进人关键字"
+          ></el-input>
         </el-form-item>
         <el-form-item label="意向工资：">
-          <el-select v-model="formMember.industry" class="width300" placeholder="请选择意向工资">
+          <el-select
+            v-model="formMember.industry"
+            class="width300"
+            placeholder="请选择意向工资"
+          >
             <el-option
               :label="item.label"
               :value="item.value"
@@ -58,8 +90,16 @@
           ></el-date-picker>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="onSubmit" class="select-btn">查询</el-button>
-          <el-button type="primary" @click="resetForm" class="select-btn">重置</el-button>
+          <el-button
+            type="primary"
+            @click="onSubmit"
+            class="select-btn"
+          >查询</el-button>
+          <el-button
+            type="primary"
+            @click="resetForm"
+            class="select-btn"
+          >重置</el-button>
         </el-form-item>
       </el-form>
       <div class="member-table resume-table">
@@ -71,7 +111,10 @@
             已选择
             <el-button type="text">{{multipleSelection.length}}&nbsp;</el-button>项
           </span>
-          <el-button type="text" @click="multipleSelection=[]">清空</el-button>
+          <el-button
+            type="text"
+            @click="multipleSelection=[]"
+          >清空</el-button>
         </div>
         <el-table
           border
@@ -81,21 +124,55 @@
           @sort-change="sortChange"
           @selection-change="handleSelectionChange"
         >
-          <el-table-column type="selection" align="center" width="40"></el-table-column>
-          <el-table-column label="姓名" align="center" width="100">
+          <el-table-column
+            type="selection"
+            align="center"
+            width="40"
+          ></el-table-column>
+          <el-table-column
+            label="姓名"
+            align="center"
+            width="100"
+          >
             <template slot-scope="props">
-              <el-button class="text-line" type="text">{{props.row.name}}</el-button>
+              <el-button
+                class="text-line"
+                type="text"
+              >{{props.row.name}}</el-button>
             </template>
           </el-table-column>
-          <el-table-column label="联系电话" prop="mobile" align="center" width="150"></el-table-column>
-          <el-table-column label="意向岗位" prop="desired_position" align="center" width="150"></el-table-column>
-          <el-table-column label="意向工资" prop="money_m" align="center" width="150"></el-table-column>
-          <el-table-column label="意向城市" align="center" width="150">
+          <el-table-column
+            label="联系电话"
+            prop="mobile"
+            align="center"
+            width="150"
+          ></el-table-column>
+          <el-table-column
+            label="意向岗位"
+            prop="desired_position"
+            align="center"
+            width="150"
+          ></el-table-column>
+          <el-table-column
+            label="意向工资"
+            prop="money_m"
+            align="center"
+            width="150"
+          ></el-table-column>
+          <el-table-column
+            label="意向城市"
+            align="center"
+            width="150"
+          >
             <template slot-scope="props">
               <span type="text">{{props.row.expect_provindeid}}{{props.row.expect_cityid}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="跟进记录" align="center" width="100">
+          <el-table-column
+            label="跟进记录"
+            align="center"
+            width="100"
+          >
             <template slot-scope="props">
               <el-button
                 class="text-line"
@@ -112,18 +189,41 @@
             width="150"
           >
             <template slot-scope="props">
-              <span
-                type="text"
-              >{{props.row.uptime?$moment(props.row.uptime).format('YYYY-MM-DD'):'--'}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="录入人" prop="input_username" align="center" width="100"></el-table-column>
-          <el-table-column label="跟进人" prop="track_name" align="center" width="100"></el-table-column>
-          <el-table-column label="操作" align="center" min-width="200">
+          <el-table-column
+            label="录入人"
+            prop="input_username"
+            align="center"
+            width="100"
+          ></el-table-column>
+          <el-table-column
+            label="跟进人"
+            prop="track_name"
+            align="center"
+            width="100"
+          ></el-table-column>
+          <el-table-column
+            label="操作"
+            align="center"
+            min-width="200"
+          >
             <template slot-scope="scope">
-              <el-button @click="handleEdit(scope.row)" type="text" size="small">编辑简历</el-button>
-              <el-button @click="$router.push('/recommendJob')" type="text" size="small">推荐岗位</el-button>
-              <el-button @click="abandoned(scope.row)" type="text" size="small">放弃用户</el-button>
+              <el-button
+                @click="handleEdit(scope.row)"
+                type="text"
+                size="small"
+              >编辑简历</el-button>
+              <el-button
+                @click="$router.push('/recommendJob')"
+                type="text"
+                size="small"
+              >推荐岗位</el-button>
+              <el-button
+                @click="abandoned(scope.row)"
+                type="text"
+                size="small"
+              >放弃用户</el-button>
             </template>
           </el-table-column>
         </el-table>

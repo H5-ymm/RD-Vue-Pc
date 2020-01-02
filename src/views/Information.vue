@@ -43,7 +43,10 @@
       .grid-information-title {
         font-weight: bold;
         color: #333;
-      }
+          &:hover{
+            color: #1890FF;
+          }
+       }
       .grid-information-btn {
         width:60%;
         float: right;
@@ -81,8 +84,12 @@
 </style>
 <template>
   <el-container class="orderTaking">
-    <el-header class="header x-flex-around home" height="50px" id="header">
-      <headerView :activeIndex="3"></headerView>
+    <el-header
+      class="header x-flex-around home"
+      height="50px"
+      id="header"
+    >
+      <headerView :activeIndex="2"></headerView>
     </el-header>
     <el-main class="orderTaking-main-content">
       <div class="orderTaking-detail info-detail"></div>
@@ -94,21 +101,31 @@
                 <img src="../assets/img/icon.png" />资讯
               </p>
               <el-row>
-                <el-col :span="24" v-for="(item, index) in informationList" :key="index">
+                <el-col
+                  :span="24"
+                  v-for="(item, index) in informationList"
+                  :key="index"
+                >
                   <div class="grid-information-card x-flex-start-justify">
-                    <img :src="item.imgUrl" class="grid-information-img" />
+                    <img
+                      :src="item.image"
+                      class="grid-information-img"
+                    />
                     <div class="grid-information">
-                      <el-link :underline="false" class="grid-information-title">{{item.title}}</el-link>
+                      <el-link
+                        :underline="false"
+                        class="grid-information-title"
+                      >{{item.title}}</el-link>
                       <p class="grid-information-content">
-                        {{item.content}}
+                        <span v-html="item.content"></span>
                         <span class="grid-information-btn">
                           <div class="x-flex-between">
                             <el-link
                               :underline="false"
                               type="primary"
-                              href="informationDetail"
+                              :href="`informationDetail?id=${item.id}&ids=${ids}`"
                             >[查看详情]</el-link>
-                            <span class="grid-information-time">{{item.time}}</span>
+                            <span class="grid-information-time">{{$moment.unix(item.addtime).format('YYYY-MM-DD')}}</span>
                           </div>
                         </span>
                       </p>
@@ -132,17 +149,35 @@
                 <ul class="info-center-content">
                   <li
                     class="x-flex-start-justify info-center-item"
-                    v-for="(item,index) in list"
+                    v-for="(item,index) in hortInquiryList"
                     :key="index"
                   >
                     <div>
-                      <img src="../assets/img/teamCenter/one.png" alt v-if="index==0" />
-                      <img src="../assets/img/teamCenter/two.png" alt v-else-if="index==1" />
-                      <img src="../assets/img/teamCenter/three.png" alt v-else-if="index==2" />
-                      <p v-else class="order-num">{{index+1}}</p>
+                      <img
+                        src="../assets/img/teamCenter/one.png"
+                        alt
+                        v-if="index==0"
+                      />
+                      <img
+                        src="../assets/img/teamCenter/two.png"
+                        alt
+                        v-else-if="index==1"
+                      />
+                      <img
+                        src="../assets/img/teamCenter/three.png"
+                        alt
+                        v-else-if="index==2"
+                      />
+                      <p
+                        v-else
+                        class="order-num"
+                      >{{index+1}}</p>
                     </div>
                     <div>
-                      <p class="order-name text-line" :class="{'active':index<3}">{{item.name}}</p>
+                      <p
+                        class="order-name text-line"
+                        :class="{'active':index<3}"
+                      >{{item.title}}</p>
                     </div>
                   </li>
                 </ul>
@@ -163,6 +198,7 @@ import Panel from '@/components/Panel'
 import AsideBox from '@/components/AsideBox'
 import HeaderView from '@/components/HeaderView'
 import FooterView from '@/components/FooterView'
+import { inquiryList, hortInquiryList } from '@/api/information'
 export default {
   name: 'home',
   components: {
@@ -176,22 +212,9 @@ export default {
     return {
       total: 0,
       activeIndex: 3,
-      informationList: [{
-        imgUrl: require('../assets/img/img1.png'),
-        title: '当代职场人：7成人入职不满3年就跳槽',
-        time: '2019-20-10',
-        content: '近日，前程无忧最新发布的“2019年第四季度求职者跳槽意愿度调查”结果显示：2019年第四季度有明确跳槽意愿的受访者占35.2%，和上个季度比没有太大变化。进入2019年的尾声，大部分职场人本着“拿完年'
-      },
-      {
-        imgUrl: require('../assets/img/img2.png'),
-        title: '大多数90后离职和薪资有关，面试能说吗？',
-        time: '2019-20-10',
-        content: '你是不是也听到过这样的言论，比如“90后太难管了，说两句就要离职”、“现在的90后离职率比80后高多了”……所以，这些宁愿折损“名声”也要离职的90后到底都经历了什么？'
-      }],
+      informationList: [],
       params: {
-        type: '',
-        kew_name: '',
-        limit: 20,
+        limit: 5,
         page: 1
       },
       list: [{
@@ -204,7 +227,13 @@ export default {
         name: '杨萌萌',
       }],
       isShow: false,
+      hortInquiryList: [],
+      ids: []
     }
+  },
+  created () {
+    this.getInfoList(this.params)
+    this.getHortInquiryList()
   },
   mounted () {
     document.scrollingElement.scrollTop = 0
@@ -219,6 +248,26 @@ export default {
       else {
         this.isShow = false
       }
+    },
+    getInfoList (params) {
+      inquiryList(params).then(res => {
+        console.log(res.data.data)
+        this.informationList = res.data.data
+        // console.log(this.informationList)
+        this.ids = this.informationList.map(item => {
+          return item.id
+        })
+      }).catch(error => {
+        this.$message.error(error.status.remind)
+      })
+    },
+    getHortInquiryList () {
+      hortInquiryList().then(res => {
+        console.log(res.data)
+        this.hortInquiryList = res.data
+      }).catch(error => {
+        this.$message.error(error.status.remind)
+      })
     },
     currentChange (page) {
       this.params.page = page

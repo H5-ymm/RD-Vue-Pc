@@ -173,7 +173,7 @@
     padding:0;
   }
   .el-card__body {
-    padding:15px;
+    padding:15px 0;
     font-size:14px;
   }
   .handle-btn {
@@ -202,6 +202,9 @@
 .grid-information-title {
   font-size:16px;
   line-height:30px;
+  &:hover{
+    color: #1890FF;
+  }
 }
 .grid-information-card {
   background: #fff;

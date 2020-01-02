@@ -35,21 +35,47 @@
 <template>
   <div class="team-center-order">
     <div class="x-flex-center team-center-title">
-      <img :src="require(`../../assets/img/teamCenter/orderIcon${orderType}.png`)" alt />
-      <img :src="require(`../../assets/img/teamCenter/text${orderType}.png`)" alt class="text-icon" />
+      <img
+        :src="require(`../../assets/img/teamCenter/orderIcon${orderType}.png`)"
+        alt
+      />
+      <img
+        :src="require(`../../assets/img/teamCenter/text${orderType}.png`)"
+        alt
+        class="text-icon"
+      />
     </div>
     <ul class="team-center-content">
-      <li class="x-flex-between team-center-item" v-for="(item,index) in list" :key="index">
+      <li
+        class="x-flex-between team-center-item"
+        v-for="(item,index) in list"
+        :key="index"
+      >
         <div class="x-flex-between">
           <div class="x-flex-between">
-            <img src="../../assets/img/teamCenter/one.png" alt v-if="index==0" />
-            <img src="../../assets/img/teamCenter/two.png" alt v-else-if="index==1" />
-            <img src="../../assets/img/teamCenter/three.png" alt v-else-if="index==2" />
-            <p v-else class="order-num">{{index+1}}</p>
-            <p class="order-name">{{item.name}}</p>
+            <img
+              src="../../assets/img/teamCenter/one.png"
+              alt
+              v-if="index==0"
+            />
+            <img
+              src="../../assets/img/teamCenter/two.png"
+              alt
+              v-else-if="index==1"
+            />
+            <img
+              src="../../assets/img/teamCenter/three.png"
+              alt
+              v-else-if="index==2"
+            />
+            <p
+              v-else
+              class="order-num"
+            >{{index+1}}</p>
+            <p class="order-name">{{item.user_name}}</p>
           </div>
         </div>
-        <div>{{item.total}}</div>
+        <div>{{item.count?item.count:0}}</div>
       </li>
     </ul>
   </div>

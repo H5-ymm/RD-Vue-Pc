@@ -7,13 +7,17 @@
 </style>
 <template>
   <div class="team-center-section">
-    <orderQuery></orderQuery>
-    <allOrder></allOrder>
+    <orderQuery
+      :timeList="timeList"
+      @selectQuery="selectQuery"
+    ></orderQuery>
+    <allOrder :orderData="orderData"></allOrder>
   </div>
 </template>
 <script>
 import allOrder from './allOrder'
 import orderQuery from './orderQuery'
+import { getrank } from '@/api/teamCenter'
 export default {
   components: {
     orderQuery,
@@ -21,20 +25,34 @@ export default {
   },
   data () {
     return {
-      list: [{
-        name: '杨萌萌',
-        total: 203
-      }, {
-        name: '杨萌萌',
-        total: 203
-      }, {
-        name: '杨萌萌',
-        total: 203
-      }, {
-        name: '杨萌萌',
-        total: 203
-      }]
+      timeList: [
+        { label: '本周', value: 1 },
+        { label: '本月', value: 2 },
+        { label: '季度', value: 3 },
+        { label: '本年', value: 4 }
+      ],
+      parasm: {
+        type: 1,
+        uid: localStorage.getItem('uid')
+      },
+      orderData: {}
     }
-  }
+  },
+  created () {
+    this.getList(this.parasm)
+  },
+  methods: {
+    getList (parasm) {
+      getrank(parasm).then(res => {
+        this.orderData = res.data
+      }).catch(error => {
+        this.$message.error(error.status.remind)
+      })
+    },
+    selectQuery (val) {
+      this.parasm = Object.assign(this.parasm, val)
+      this.getList(this.parasm)
+    }
+  },
 }
 </script>

@@ -4,7 +4,11 @@
 </style>
 <template>
   <el-container>
-    <el-header class="header x-flex-around home" height="50px" id="header">
+    <el-header
+      class="header x-flex-around home"
+      height="50px"
+      id="header"
+    >
       <div class="orderTaking-header">
         <div class="bg-purple">
           <span class="header-left">人事达</span>
@@ -21,20 +25,42 @@
               :class="{'active': activeIndex==index}"
             >
               {{item.title}}
-              <span class="line" v-if="activeIndex==index"></span>
+              <span
+                class="line"
+                v-if="activeIndex==index"
+              ></span>
             </li>
           </ul>
         </div>
         <div class="bg-purple-light x-flex-between">
-          <span class="home-purple-left" v-if="!userInfo">
+          <span
+            class="home-purple-left"
+            v-if="!userInfo"
+          >
             <i class="el-icon-user-solid"></i>
-            <a class="welcome" href="login">登录</a>
+            <a
+              class="welcome"
+              href="login"
+            >登录</a>
             <a class="divider">|</a>
-            <a class="welcome" href="register">注册</a>
+            <a
+              class="welcome"
+              href="register"
+            >注册</a>
           </span>
-          <P class="home-purple-left" v-else>
-            <img :src="userInfo.head_img" alt v-if="userInfo.head_img" />
-            <i class="el-icon-user-solid" v-else></i>&nbsp;
+          <P
+            class="home-purple-left"
+            v-else
+          >
+            <img
+              :src="userInfo.head_img"
+              alt
+              v-if="userInfo.head_img"
+            />
+            <i
+              class="el-icon-user-solid"
+              v-else
+            ></i>&nbsp;
             <span>{{userInfo.user_name?userInfo.user_name:userInfo.mobile}}</span>
           </P>
           <a class="el-icon-phone-outline">&nbsp;021-51991869</a>
@@ -60,10 +86,23 @@
             <img src="../assets/img/icon.png" />
             接单职位
           </p>
-          <el-row :gutter="20" class="home-main-list">
-            <el-col :span="8" v-for="(item, index) in list" :key="index">
-              <el-card class="box-card" shadow="hover">
-                <div slot="header" class="clearfix">
+          <el-row
+            :gutter="20"
+            class="home-main-list"
+          >
+            <el-col
+              :span="8"
+              v-for="(item, index) in list"
+              :key="index"
+            >
+              <el-card
+                class="box-card"
+                shadow="hover"
+              >
+                <div
+                  slot="header"
+                  class="clearfix"
+                >
                   <p
                     class="home-main-list-title"
                     @click="$router.push({path:'orderTakingDetail',query:{id:item.id,uid:item.uid}})"
@@ -81,11 +120,13 @@
                       <div class="bg-purple-light">需求人数: {{item.required_number}}人</div>
                     </el-col>
                   </el-row>
-                  <el-row type="flex" justify="space-between" class="home-list-clearfix">
+                  <el-row
+                    type="flex"
+                    justify="space-between"
+                    class="home-list-clearfix"
+                  >
                     <el-col :span="14">
-                      <div
-                        class="bg-purple"
-                      >返利:{{item.reward_money_type}}/人/{{getmoneyType(item.money_type)}}</div>
+                      <div class="bg-purple">返利:{{item.reward_money_type}}/人/{{getmoneyType(item.money_type)}}</div>
                     </el-col>
                     <el-col :span="10">
                       <div class="bg-purple-light">返利方式: {{getRewardType(item.reward_type)}}</div>
@@ -103,23 +144,46 @@
               </el-card>
             </el-col>
           </el-row>
-          <el-button class="home-main-more" @click="$router.push('OrderTaking')">查看更多</el-button>
+          <el-button
+            class="home-main-more"
+            @click="$router.push('OrderTaking')"
+          >查看更多</el-button>
         </section>
         <section class="home-main-section">
           <div class="home-main-title x-flex-between">
-             <p> <img src="../assets/img/icon.png" />资讯</p>
-             <p class="x-flex-end">
-              <el-link type="primary" @click="$router.push('information')">查看更多</el-link>
-              <img src="../assets/img/more.png" alt />
+            <p> <img src="../assets/img/icon2.png" />资讯</p>
+            <p class="x-flex-end">
+              <el-link
+                type="primary"
+                @click="$router.push('information')"
+              >查看更多</el-link>
+              <img
+                src="../assets/img/more.png"
+                alt
+              />
             </p>
           </div>
           <el-row class="home-main-list">
-            <el-col :span="12" v-for="(item, index) in informationList" :key="index">
+            <el-col
+              :span="12"
+              v-for="(item, index) in informationList"
+              :key="index"
+            >
               <div class="grid-information-card">
-                <img :src="item.imgUrl" class="grid-information-img" />
+                <img
+                  :src="item.image"
+                  class="grid-information-img"
+                />
                 <div class="grid-information">
-                  <el-link :underline="false" class="grid-information-title" href="informationDetail">{{item.title}}</el-link>
-                  <p class="grid-information-content">{{item.content}}</p>
+                  <el-link
+                    :underline="false"
+                    class="grid-information-title"
+                    href="informationDetail"
+                  >{{item.title}}</el-link>
+                  <p
+                    class="grid-information-content"
+                    v-html="item.content"
+                  ></p>
                 </div>
               </div>
             </el-col>
@@ -138,6 +202,7 @@ import { homeList } from '../api/home'
 import { addApply } from '@/api/orderTarking'
 import FooterView from '@/components/FooterView'
 import AsideBox from '@/components/AsideBox'
+import { inquiryList } from '@/api/information'
 export default {
   name: 'home',
   components: {
@@ -159,10 +224,6 @@ export default {
           url: 'orderTaking'
         },
         {
-          title: '拼团',
-          url: ''
-        },
-        {
           title: '资讯',
           url: 'Information'
         }
@@ -171,24 +232,27 @@ export default {
         limit: 20,
         page: 1
       },
-      informationList: [{
-        imgUrl: require('../assets/img/img1.png'),
-        title: '当代职场人：7成人入职不满3年就跳槽',
-        content: '近日，前程无忧最新发布的“2019年第四季度求职者跳槽意愿度调查”结果显示：2019年第四季度有明确跳槽意愿的受访者占35.2%，和上个季度比没有太大变化。进入2019年的尾声，大部分职场人本着“拿完年'
-      },
-      {
-        imgUrl: require('../assets/img/img2.png'),
-        title: '大多数90后离职和薪资有关，面试能说吗？',
-        content: '你是不是也听到过这样的言论，比如“90后太难管了，说两句就要离职”、“现在的90后离职率比80后高多了”……所以，这些宁愿折损“名声”也要离职的90后到底都经历了什么？'
-      }],
+      informationList: [],
       list: [],
       userInfo: null,
       token: localStorage.getItem('token'),
-      isShow: false
+      isShow: false,
+      paramsInfo: {
+        limit: 2,
+        page: 1
+      }
     }
   },
   computed: {
 
+  },
+  created () {
+    this.getList(this.params)
+    this.getInfoList(this.paramsInfo)
+    // this.token = localStorage.getItem('token')
+    if (sessionStorage.getItem('userInfo')) {
+      this.userInfo = JSON.parse(sessionStorage.getItem('userInfo'))
+    }
   },
   mounted () {
     window.addEventListener('scroll', this.windowScroll)
@@ -208,11 +272,20 @@ export default {
       this.activeIndex = index
       this.$router.push(item.url)
     },
+    getInfoList (params) {
+      inquiryList(params).then(res => {
+        this.informationList = res.data.data
+      }).catch(error => {
+        this.$message.error(error.status.remind)
+      })
+    },
     getList (params) {
       homeList(params).then(res => {
         console.log(res)
         this.list = res.data.data.data
         console.log(this.list)
+      }).catch(error => {
+        this.$message.error(error.status.remind)
       })
     },
     handleApply (val) {
@@ -254,13 +327,6 @@ export default {
       }
       return text
     },
-  },
-  created () {
-    this.getList(this.params)
-    // this.token = localStorage.getItem('token')
-    if (sessionStorage.getItem('userInfo')) {
-      this.userInfo = JSON.parse(sessionStorage.getItem('userInfo'))
-    }
   },
   destroyed () {
     console.log(2)

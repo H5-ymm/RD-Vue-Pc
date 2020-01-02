@@ -101,7 +101,11 @@
 </style>
 <template>
   <el-container class="orderTaking">
-    <el-header class="header x-flex-around home" height="50px" id="header">
+    <el-header
+      class="header x-flex-around home"
+      height="50px"
+      id="header"
+    >
       <headerView :activeIndex="1"></headerView>
     </el-header>
     <el-main class="orderTaking-main-content">
@@ -126,11 +130,21 @@
             >申请接单</el-button>
             <div class="x-flex-around">
               <p class="x-flex-around">
-                <img src="../assets/img/collect.png" alt />
-                <el-link :underline="false" class="orderTarking-link" @click="handleCollect">收藏</el-link>
+                <img
+                  src="../assets/img/collect.png"
+                  alt
+                />
+                <el-link
+                  :underline="false"
+                  class="orderTarking-link"
+                  @click="handleCollect"
+                >收藏</el-link>
               </p>
               <p class="x-flex-around">
-                <img src="../assets/img/tip.png" alt />
+                <img
+                  src="../assets/img/tip.png"
+                  alt
+                />
                 <el-link
                   :underline="false"
                   class="orderTarking-link"
@@ -145,7 +159,10 @@
             <div class="grid-content">
               <section class="orderTaking-card">
                 <Panel title="接单详情">
-                  <div slot="content" class="panel-content x-flex-start">
+                  <div
+                    slot="content"
+                    class="panel-content x-flex-start"
+                  >
                     <div class="orderTaking-info">
                       <p>
                         <span>需求人数：</span>
@@ -187,12 +204,19 @@
               </section>
               <section class="orderTaking-card">
                 <Panel title="职位描述">
-                  <div slot="content" class="panel-content" v-html="orderTakingDetail.job_content"></div>
+                  <div
+                    slot="content"
+                    class="panel-content"
+                    v-html="orderTakingDetail.job_content"
+                  ></div>
                 </Panel>
               </section>
               <section class="orderTaking-card">
                 <Panel title="返利详情">
-                  <div slot="content" class="panel-content x-flex-start">
+                  <div
+                    slot="content"
+                    class="panel-content x-flex-start"
+                  >
                     <div class="orderTaking-info">
                       <p>
                         <span>返利方式：</span>
@@ -202,7 +226,10 @@
                         <span>结算时间：</span>
                         <span>次月第{{orderTakingDetail.settlement_time}}号结算</span>
                       </p>
-                      <p class="team-info-card-item" v-else>
+                      <p
+                        class="team-info-card-item"
+                        v-else
+                      >
                         <span>结算时间：</span>
                         <span>{{orderTakingDetail.settlement_type==1?'本':'次'}}{{orderTakingDetail.reward_money_type==1?'天':orderTakingDetail.reward_money_type==2?'周': '月'}}{{orderTakingDetail.settlement_time?orderTakingDetail.settlement_time:'第一天'}}</span>
                       </p>
@@ -210,14 +237,13 @@
                         <span>持续时长：</span>
                         <span>{{orderTakingDetail.settlement_time?orderTakingDetail.settlement_time:'1'}}{{orderTakingDetail.reward_continuous==1?'天':orderTakingDetail.reward_continuous==2?'周': '个月'}}</span>
                       </p>
-                      <p class="team-info-card-item" v-if="orderTakingDetail.reward_type==4">
+                      <p
+                        class="team-info-card-item"
+                        v-if="orderTakingDetail.reward_type==4"
+                      >
                         <span>需入职满：</span>
-                        <span
-                          v-if="orderTakingDetail.reward_needtime"
-                        >{{orderTakingDetail.reward_needtime}}{{orderTakingDetail.reward_continuous==1?'天':orderTakingDetail.reward_continuous==2?'周': '月'}}</span>
-                        <span
-                          v-else
-                        >当{{orderTakingDetail.reward_continuous==1?'天':orderTakingDetail.reward_continuous==2?'周': '月'}}返利</span>
+                        <span v-if="orderTakingDetail.reward_needtime">{{orderTakingDetail.reward_needtime}}{{orderTakingDetail.reward_continuous==1?'天':orderTakingDetail.reward_continuous==2?'周': '月'}}</span>
+                        <span v-else>当{{orderTakingDetail.reward_continuous==1?'天':orderTakingDetail.reward_continuous==2?'周': '月'}}返利</span>
                       </p>
                     </div>
                     <div class="orderTaking-info">
@@ -228,9 +254,7 @@
                       <p v-if="orderTakingDetail.reward_money_type==1">
                         <span>返利时长：</span>
                         <span v-if="orderTakingDetail.reward_money_type==1">长期返利</span>
-                        <span
-                          v-if="orderTakingDetail.reward_money_type==2"
-                        >持续返利{{orderTakingDetail.settlement_time?orderTakingDetail.settlement_time:'1'}}{{orderTakingDetail.reward_continuous==1?'天':orderTakingDetail.reward_continuous==2?'周': '月'}}</span>
+                        <span v-if="orderTakingDetail.reward_money_type==2">持续返利{{orderTakingDetail.settlement_time?orderTakingDetail.settlement_time:'1'}}{{orderTakingDetail.reward_continuous==1?'天':orderTakingDetail.reward_continuous==2?'周': '月'}}</span>
                       </p>
                       <p v-if="orderTakingDetail.reward_type==2||orderTakingDetail.reward_type==3">
                         <span>需入职满：</span>
@@ -263,12 +287,8 @@
                         <ul class="orderTaking-main-item">
                           <li>{{getmoneyType(item.money_type)}}薪: {{item.money}}/人/{{getmoneyType(item.money_type)}}</li>
                           <li>返利：{{item.reward_money_type}}/人/{{getmoneyType(item.money_type)}}</li>
-                          <li
-                            v-if="item.reward_money_type==3"
-                          >持续时间：{{item.reward_money_type==1?'长期返利':'持续返利'}}</li>
-                          <li
-                            v-if="item.reward_money_type!=3&&item.reward_continuous"
-                          >持续时间：{{item.reward_continuous}}{{getmoneyType(item.money_type)}}</li>
+                          <li v-if="item.reward_money_type==3">持续时间：{{item.reward_money_type==1?'长期返利':'持续返利'}}</li>
+                          <li v-if="item.reward_money_type!=3&&item.reward_continuous">持续时间：{{item.reward_continuous}}{{getmoneyType(item.money_type)}}</li>
                         </ul>
                       </div>
                       <div class="orderTaking-main-col">
@@ -281,13 +301,26 @@
                               alt
                               v-if="item.status==2"
                             />
-                            <img src="../assets/img/noIcon.png" alt v-else />
-                            <span class="ctime">{{ $moment(item.ctime).format('HH:mm')}}发布</span>
+                            <img
+                              src="../assets/img/noIcon.png"
+                              alt
+                              v-else
+                            />
+                            <span class="ctime">{{ $moment.unix(item.ctime).format('HH:mm')}}发布</span>
                           </li>
                           <li>
-                            <el-tag size="small" v-if="item.is_fund">五险</el-tag>
-                            <el-tag size="small" v-if="item.is_fund==1">公积金</el-tag>
-                            <el-tag size="small" v-if="item.is_fund==2">试用期过后</el-tag>
+                            <el-tag
+                              size="small"
+                              v-if="item.is_fund"
+                            >五险</el-tag>
+                            <el-tag
+                              size="small"
+                              v-if="item.is_fund==1"
+                            >公积金</el-tag>
+                            <el-tag
+                              size="small"
+                              v-if="item.is_fund==2"
+                            >试用期过后</el-tag>
                           </li>
                           <li>地点：{{item.address}}</li>
                         </ul>
@@ -303,22 +336,44 @@
           </div>
           <div class="orderTaking-main-col2">
             <div class="company-detail">
-              <img :src="logoUrl" alt class="company-logo" />
+              <img
+                :src="logoUrl"
+                alt
+                class="company-logo"
+              />
               <p class="company-name">{{companyInfo.com_name}}</p>
               <div class="x-flex-between">
                 <p class="x-flex-around">
-                  <img src="../assets/img/hy.png" alt />
-                  <span :underline="false" class="orderTarking-link">{{companyInfo.com_sort}}</span>
+                  <img
+                    src="../assets/img/hy.png"
+                    alt
+                  />
+                  <span
+                    :underline="false"
+                    class="orderTarking-link"
+                  >{{companyInfo.com_sort}}</span>
                 </p>
                 <p class="x-flex-around">
-                  <img src="../assets/img/my.png" alt />
-                  <span :underline="false" class="orderTarking-link">{{companyInfo.com_scale}}</span>
+                  <img
+                    src="../assets/img/my.png"
+                    alt
+                  />
+                  <span
+                    :underline="false"
+                    class="orderTarking-link"
+                  >{{companyInfo.com_scale}}</span>
                 </p>
               </div>
               <div class="x-flex-between">
                 <p class="x-flex-around">
-                  <img src="../assets/img/address.png" alt />
-                  <span :underline="false" class="orderTarking-link">{{companyInfo.address}}</span>
+                  <img
+                    src="../assets/img/address.png"
+                    alt
+                  />
+                  <span
+                    :underline="false"
+                    class="orderTarking-link"
+                  >{{companyInfo.address}}</span>
                 </p>
               </div>
               <div class="company-profile">
@@ -328,8 +383,14 @@
                   ref="content"
                   v-html="companyInfo.content+'哈哈哈哈哈哈哈哈哈哈哈剋坎坎坷坷坎坎坷坷'"
                 ></p>
-                <p class="x-flex-center" @click="showMore()">
-                  <img src="../assets/img/moreDown.png" alt />
+                <p
+                  class="x-flex-center"
+                  @click="showMore()"
+                >
+                  <img
+                    src="../assets/img/moreDown.png"
+                    alt
+                  />
                   <span class="profile-more">查看更多</span>
                 </p>
               </div>
@@ -354,7 +415,10 @@
                 </ul>
               </div>
             </div>
-            <div class="orderTaking-login">
+            <div
+              class="orderTaking-login"
+              v-if="isShowLogin"
+            >
               <LoginBox></LoginBox>
             </div>
           </div>
@@ -369,7 +433,11 @@
       @handleClose="handleClose"
       @handleOk="handleOk"
     ></Dialog>
-    <TipDialog :tipDialogVisible="tipDialogVisible"></TipDialog>
+    <TipDialog
+      :tipDialogVisible="tipDialogVisible"
+      @handleClose="tipDialogVisible=false"
+      @submit="submit"
+    ></TipDialog>
   </el-container>
 </template>
 <script>
@@ -383,10 +451,11 @@ import TipDialog from '@/components/TipDialog'
 import AsideBox from '@/components/AsideBox'
 import HeaderView from '@/components/HeaderView'
 import FooterView from '@/components/FooterView'
-import { getOrderDetail, getList } from '../api/orderTarking'
+import { getOrderDetail, getList, addReportInfo, addApply } from '../api/orderTarking'
 import { getCompanyDetail, getCompanyInfo } from '../api/company'
 import { teamCollectionJob } from '../api/collect'
 import { moneyTypeList } from '../base/base'
+import { getImgUrl } from '@/util/util'
 export default {
   name: 'home',
   components: {
@@ -408,24 +477,6 @@ export default {
       total: 0,
       activeIndex: 0,
       keywords: '',
-      menus: [
-        {
-          title: '首页',
-          url: ''
-        },
-        {
-          title: '接单',
-          url: ''
-        },
-        {
-          title: '拼团',
-          url: ''
-        },
-        {
-          title: '资讯',
-          url: ''
-        }
-      ],
       params: {
         type: '',
         kew_name: '',
@@ -449,7 +500,9 @@ export default {
         closeText: '查看收藏',
         imgBg: require('../assets/img/collect1.png')
       },
-      dialogType: 1
+      dialogType: 1,
+      token: localStorage.getItem('token'),
+      isShowLogin: false
     }
   },
   computed: {
@@ -459,8 +512,9 @@ export default {
       }
     },
     logoUrl () {
-      console.log(`http://tiantianxsg.com:39888/` + this.companyInfo.logo_url)
-      return `http://tiantianxsg.com:39888/` + this.companyInfo.logo_url
+      if (this.companyInfo.logo_url) {
+        return getImgUrl(this.companyInfo.logo_url)
+      }
     }
   },
   created () {
@@ -524,11 +578,26 @@ export default {
       })
     },
     applyReceipt () {
-      this.modalInfo = {
-        title: '申请成功！',
-        okText: '查看申请',
-        closeText: '关闭',
-        imgBg: require('../assets/img/success.png')
+      if (this.token) {
+        let params = {
+          job_id: this.orderTakingDetail.id,
+          uid: this.orderTakingDetail.uid
+        }
+        addApply(params).then(res => {
+          this.centerDialogVisible = true
+          this.modalInfo = {
+            title: '申请成功！',
+            okText: '查看申请',
+            closeText: '关闭',
+            imgBg: require('../assets/img/success.png')
+          }
+        }).catch(error => {
+          this.$message.error(error.status.remind)
+        })
+      }
+      else {
+        this.$message.warning('请先登录')
+        this.isShowLogin = true
       }
     },
     // 收藏
@@ -541,6 +610,20 @@ export default {
         this.centerDialogVisible = true
       }).catch(error => {
         this.message.$error(error.status.remind)
+      })
+    },
+    // 举报
+    submit (val) {
+      let parasm = {
+        uid: localStorage.getItem('uid'),
+        jobId: this.orderTakingDetail.id,
+        jobName: this.orderTakingDetail.name
+      }
+      parasm = Object.assign(parasm, val)
+      addReportInfo(parasm).then(res => {
+        this.tipDialogVisible = false
+      }).catch(error => {
+        this.$message.error(error.status.remind)
       })
     },
     handleClose () {

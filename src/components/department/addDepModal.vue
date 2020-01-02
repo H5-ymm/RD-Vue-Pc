@@ -1,7 +1,17 @@
 <template>
-  <el-dialog width="500px" :visible="dialogTableVisible" class="member-dialog" :show-close="false">
+  <el-dialog
+    width="500px"
+    :visible="dialogTableVisible"
+    class="member-dialog"
+    :show-close="false"
+  >
     <div class="member-row">
-      <img src="../../assets/img/member/cancel.png" alt class="cancel-icon" @click="handleClose" />
+      <img
+        src="../../assets/img/member/cancel.png"
+        alt
+        class="cancel-icon"
+        @click="handleClose"
+      />
       <section class="member-col1">
         <p>添加部门</p>
       </section>
@@ -14,11 +24,25 @@
           ref="formMember"
           class="demo-form-inline"
         >
-          <el-form-item label="部门名称" required prop="depart_name">
-            <el-input v-model="formMember.depart_name" placeholder="请输入部门名称"></el-input>
+          <el-form-item
+            label="部门名称"
+            required
+            prop="depart_name"
+          >
+            <el-input
+              v-model="formMember.depart_name"
+              placeholder="请输入部门名称"
+            ></el-input>
           </el-form-item>
-          <el-form-item label="部门经理" required prop="user_id">
-            <el-select v-model="formMember.user_id" placeholder="请选择部门经理">
+          <el-form-item
+            label="部门经理"
+            required
+            prop="user_id"
+          >
+            <el-select
+              v-model="formMember.user_id"
+              placeholder="请选择部门经理"
+            >
               <el-option
                 :label="item.user_name"
                 :value="item.uid"
@@ -31,7 +55,10 @@
       </section>
     </div>
     <div slot="footer">
-      <el-button type="primary" @click="submitForm">确定添加</el-button>
+      <el-button
+        type="primary"
+        @click="submitForm"
+      >确定添加</el-button>
     </div>
   </el-dialog>
 </template>
@@ -105,6 +132,10 @@ export default {
       top: 5px;
       right: 0;
     }
+    .member-col1 {
+      background:#EBF4FB;
+      padding: 21px 0 20px;
+    }
     .member-col2 {
       line-height: 30px;
       margin: 10px auto;
@@ -156,5 +187,5 @@ export default {
     }
   }
 }
- 
+
 </style>

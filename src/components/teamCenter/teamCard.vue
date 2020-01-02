@@ -58,26 +58,49 @@
   }
 </style>
 <template>
-  <el-row :gutter="20" type="flex" justify="space-between">
-    <el-col :span="5" v-for="(item,index) in teamCenterCount" :key="index">
+  <el-row
+    :gutter="20"
+    type="flex"
+    justify="space-between"
+  >
+    <el-col
+      :span="5"
+      v-for="(item,index) in teamCenterCount"
+      :key="index"
+    >
       <div
         class="team-center-card x-flex-start-between"
         @click="select(item, index)"
         :class="{'active':activeIndex==index}"
       >
         <div class="x-flex-start">
-          <div class="team-card-icon" :class="`activeImg${item.id}`">
-            <img :src="require(`../../assets/img/teamCenter/icon${item.id}.png`)" alt />
+          <div
+            class="team-card-icon"
+            :class="`activeImg${item.id}`"
+          >
+            <img
+              :src="require(`../../assets/img/teamCenter/icon${item.id}.png`)"
+              alt
+            />
           </div>
           <div>
             <p>{{cardInfo[item.label]}}</p>
             <p class="team-count">{{item.num}}</p>
           </div>
         </div>
-        <div v-if="index!=0" class="team-card-col2">
+        <div
+          v-if="index!=0"
+          class="team-card-col2"
+        >
           <p class="num-color">+12%</p>
-          <p class="el-icon-top num-color" v-if="item.top"></p>
-          <p class="el-icon-bottom num-color-red" v-else></p>
+          <p
+            class="el-icon-top num-color"
+            v-if="item.top"
+          ></p>
+          <p
+            class="el-icon-bottom num-color-red"
+            v-else
+          ></p>
           <p>周同比</p>
         </div>
       </div>
@@ -132,6 +155,7 @@ export default {
   methods: {
     select (item, index) {
       this.activeIndex = index
+      this.$emit('select', index)
     }
   },
 }

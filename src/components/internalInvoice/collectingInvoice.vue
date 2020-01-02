@@ -61,10 +61,23 @@
         class="internal-invoice-form form-item-wrap"
       >
         <el-form-item label="搜索类型：">
-          <el-select v-model="type" class="width120" placeholder="请选择">
-            <el-option label="职位名称" value="job_name"></el-option>
-            <el-option label="企业名称" value="com_name"></el-option>
-            <el-option label="工作地址" value="address"></el-option>
+          <el-select
+            v-model="type"
+            class="width120"
+            placeholder="请选择"
+          >
+            <el-option
+              label="职位名称"
+              value="job_name"
+            ></el-option>
+            <el-option
+              label="企业名称"
+              value="com_name"
+            ></el-option>
+            <el-option
+              label="工作地址"
+              value="address"
+            ></el-option>
           </el-select>
           <el-input
             v-model="keyword"
@@ -72,14 +85,27 @@
             @change="changeInput"
             placeholder="请输入你要搜索的关键字"
           ></el-input>
-          <el-button type="primary" @click="handleSearch" class="select-btn">查询</el-button>
-          <p @click="show=!show" class="x-flex-center senior-search-btn">
-            <el-link :type="show?'primary': ''" :underline="false">高级筛选</el-link>
+          <el-button
+            type="primary"
+            @click="handleSearch"
+            class="select-btn"
+          >查询</el-button>
+          <p
+            @click="show=!show"
+            class="x-flex-center senior-search-btn"
+          >
+            <el-link
+              :type="show?'primary': ''"
+              :underline="false"
+            >高级筛选</el-link>
             <i class="el-icon-arrow-down"></i>
           </p>
         </el-form-item>
         <el-collapse-transition>
-          <div v-show="show" class="senior-search-box x-flex-start">
+          <div
+            v-show="show"
+            class="senior-search-box x-flex-start"
+          >
             <div>
               <el-form-item label="发布时间：">
                 <el-button
@@ -145,7 +171,10 @@
               </el-form-item>
             </div>
             <div class="up-box">
-              <p @click="show=!show" class="senior-search-btn">
+              <p
+                @click="show=!show"
+                class="senior-search-btn"
+              >
                 <span>收起</span>
                 <i class="el-icon-arrow-up"></i>
               </p>
@@ -178,32 +207,81 @@
         <div class="table-query">
           <el-button @click="$router.push('postJob')">发布岗位</el-button>
         </div>
-        <el-table border :data="tableData" ref="multipleTable" style="width: 100%">
-          <el-table-column label="企业名称" align="center" width="150">
+        <el-table
+          border
+          :data="tableData"
+          ref="multipleTable"
+          style="width: 100%"
+        >
+          <el-table-column
+            label="企业名称"
+            align="center"
+            width="150"
+          >
             <template slot-scope="props">
-              <el-button type="text" @click="handleEdit(props.row)">{{props.row.name}}</el-button>
+              <el-button
+                type="text"
+                @click="handleEdit(props.row)"
+              >{{props.row.name}}</el-button>
             </template>
           </el-table-column>
-          <el-table-column label="岗位名称" prop="name" align="center" width="150"></el-table-column>
-          <el-table-column label="岗位类型" prop="name" align="center" width="110"></el-table-column>
-          <el-table-column label="工作地址" prop="name" align="center" width="110"></el-table-column>
-          <el-table-column label="员工薪资" align="center" width="110">
+          <el-table-column
+            label="岗位名称"
+            prop="name"
+            align="center"
+            width="150"
+          ></el-table-column>
+          <el-table-column
+            label="岗位类型"
+            prop="name"
+            align="center"
+            width="110"
+          ></el-table-column>
+          <el-table-column
+            label="工作地址"
+            prop="name"
+            align="center"
+            width="110"
+          ></el-table-column>
+          <el-table-column
+            label="员工薪资"
+            align="center"
+            width="110"
+          >
             <template slot-scope="props">
               <el-button type="text">{{props.row.money_type | moneyType}}</el-button>
             </template>
           </el-table-column>
-          <el-table-column label="招聘类型" prop="depart_name" align="center" width="110"></el-table-column>
-          <el-table-column label="薪资类型" align="center" width="110">
+          <el-table-column
+            label="招聘类型"
+            prop="depart_name"
+            align="center"
+            width="110"
+          ></el-table-column>
+          <el-table-column
+            label="薪资类型"
+            align="center"
+            width="110"
+          >
             <template slot-scope="props">
               <el-button type="text">{{props.row.reward_type | rewardType}}</el-button>
             </template>
           </el-table-column>
-          <el-table-column label="招聘人数" align="center" width="110">
+          <el-table-column
+            label="招聘人数"
+            align="center"
+            width="110"
+          >
             <template slot-scope="props">
               <span>{{props.row.status==1?"招聘中":'已下架'}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="上架状态" align="center" width="110" v-if="userPosition!=3">
+          <el-table-column
+            label="上架状态"
+            align="center"
+            width="110"
+            v-if="userPosition!=3"
+          >
             <template slot-scope="props">
               <span
                 class="status"
@@ -211,14 +289,26 @@
               >{{props.row.is_up==1?'已上架':'已下架'}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="创建日期" align="center" width="110">
+          <el-table-column
+            label="创建日期"
+            align="center"
+            width="110"
+          >
             <template slot-scope="props">
-              <div>{{props.row.depart_name?$moment(props.row.depart_name).format('YYYY-MM-DD'):'--'}}</div>
+              <div>{{props.row.depart_name?$moment.unix(props.row.depart_name).format('YYYY-MM-DD'):'--'}}</div>
             </template>
           </el-table-column>
-          <el-table-column label="操作" align="center" min-width="150">
+          <el-table-column
+            label="操作"
+            align="center"
+            min-width="150"
+          >
             <template slot-scope="scope">
-              <el-button @click="$router.push('jobDetail')" type="text" size="small">详情</el-button>
+              <el-button
+                @click="$router.push('jobDetail')"
+                type="text"
+                size="small"
+              >详情</el-button>
               <el-button
                 @click="handleApply(scope.row)"
                 v-if="scope.row.is_up==1"

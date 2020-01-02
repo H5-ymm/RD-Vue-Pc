@@ -31,20 +31,42 @@
           :class="{'active': activeIndex==index}"
         >
           {{item.title}}
-          <span class="line" v-if="activeIndex==index"></span>
+          <span
+            class="line"
+            v-if="activeIndex==index"
+          ></span>
         </li>
       </ul>
     </div>
     <div class="bg-purple-light x-flex-between">
-      <span class="home-purple-left" v-if="!userInfo">
+      <span
+        class="home-purple-left"
+        v-if="!userInfo"
+      >
         <i class="el-icon-user-solid"></i>
-        <a class="welcome" href="login">登录</a>
+        <a
+          class="welcome"
+          href="login"
+        >登录</a>
         <a class="divider">|</a>
-        <a class="welcome" href="register">注册</a>
+        <a
+          class="welcome"
+          href="register"
+        >注册</a>
       </span>
-      <P class="home-purple-left" v-else>
-        <img :src="userInfo.head_img" alt v-if="userInfo.head_img" />
-        <i class="el-icon-user-solid" v-else></i>&nbsp;
+      <P
+        class="home-purple-left"
+        v-else
+      >
+        <img
+          :src="userInfo.head_img"
+          alt
+          v-if="userInfo.head_img"
+        />
+        <i
+          class="el-icon-user-solid"
+          v-else
+        ></i>&nbsp;
         <span>{{userInfo.user_name?userInfo.user_name:userInfo.mobile}}</span>
       </P>
       <a class="el-icon-phone-outline">&nbsp;021-51991869</a>
@@ -68,10 +90,6 @@ export default {
           url: 'orderTaking'
         },
         {
-          title: '拼团',
-          url: ''
-        },
-        {
           title: '资讯',
           url: 'Information'
         }
@@ -87,9 +105,7 @@ export default {
   methods: {
     switchNav (item, index) {
       // this.activeIndex = index
-      if (index != 2) {
-        this.$router.push(item.url)
-      }
+      this.$router.push(item.url)
     }
   }
 }

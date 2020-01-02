@@ -10,18 +10,33 @@
 } 
 </style>
 <template>
-  <el-row :gutter="40" class="team-center-row">
+  <el-row
+    :gutter="40"
+    class="team-center-row"
+  >
     <el-col :span="6">
-      <orderTemplate :list="list" orderType="1"></orderTemplate>
+      <orderTemplate
+        :list="orderData.remuse_rank"
+        orderType="1"
+      ></orderTemplate>
     </el-col>
     <el-col :span="6">
-      <orderTemplate :list="list" orderType="2"></orderTemplate>
+      <orderTemplate
+        :list="orderData.put_rank"
+        orderType="2"
+      ></orderTemplate>
     </el-col>
     <el-col :span="6">
-      <orderTemplate :list="list" orderType="3"></orderTemplate>
+      <orderTemplate
+        :list="orderData.getrank_view"
+        orderType="3"
+      ></orderTemplate>
     </el-col>
     <el-col :span="6">
-      <orderTemplate :list="list" orderType="4"></orderTemplate>
+      <orderTemplate
+        :list="orderData.getrank_entry"
+        orderType="4"
+      ></orderTemplate>
     </el-col>
   </el-row>
 </template>
@@ -31,22 +46,13 @@ export default {
   components: {
     orderTemplate
   },
+  props: ['orderData'],
   data () {
     return {
-      list: [{
-        name: '杨萌萌',
-        total: 203
-      }, {
-        name: '杨萌萌',
-        total: 203
-      }, {
-        name: '杨萌萌',
-        total: 203
-      }, {
-        name: '杨萌萌',
-        total: 203
-      }]
     }
+  },
+  created () {
+    console.log(this.orderData)
   }
 }
 </script>

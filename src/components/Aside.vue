@@ -17,7 +17,12 @@
           router
           :default-active="routerli"
         >
-          <el-submenu :index="item.title" class="acts" v-for="(item,index) in menus" :key="index">
+          <el-submenu
+            :index="item.title"
+            class="acts"
+            v-for="(item,index) in menus"
+            :key="index"
+          >
             <template slot="title">
               <i class="el-icon-collection"></i>
               <span>{{item.title}}</span>
@@ -79,17 +84,16 @@ export default {
             }
           ]
         },
-        {
-          title: '团队接单',
-          icon: 'el-icon-collection-tag',
-          submenu: [
-            {
-              title: '接单分配',
-              url: '/receiptTable'
-            }
-          ]
-        },
-
+        // {
+        //   title: '团队接单',
+        //   icon: 'el-icon-collection-tag',
+        //   submenu: [
+        //     {
+        //       title: '接单分配',
+        //       url: '/receiptTable'
+        //     }
+        //   ]
+        // },
         {
           title: '接单管理',
           icon: 'el-icon-collection-tag',
@@ -97,6 +101,10 @@ export default {
             {
               title: '申请接单',
               url: '/teamApplication'
+            },
+            {
+              title: '接单分配',
+              url: '/receiptTable'
             },
             {
               title: '输送人才',

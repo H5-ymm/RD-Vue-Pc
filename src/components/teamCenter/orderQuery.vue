@@ -26,13 +26,14 @@
         v-for="(item,index) in timeList"
         :key="index"
         class="order-time"
-        @click="selectQuery(item.value,'time')"
-        :class="{'active':orderParams.time==item.value}"
+        @click="selectQuery(item.value,'type')"
+        :class="{'active':orderParams.type==item.value}"
       >{{item.label}}</p>
       <el-date-picker
         v-model="date"
         class="daterange"
         type="daterange"
+        @change="changeTime"
         value-format="timestamp"
         value="yyyy-mm-dd"
         range-separator="-"
@@ -44,16 +45,11 @@
 </template>
 <script>
 export default {
+  props: ['timeList'],
   data () {
     return {
-      timeList: [
-        { label: '今日', value: 1 },
-        { label: '本周', value: 2 },
-        { label: '本月', value: 3 },
-        { label: '全年', value: 4 }
-      ],
       orderParams: {
-        time: 1
+        type: 1
       },
       date: []
     }
@@ -61,6 +57,12 @@ export default {
   methods: {
     selectQuery (val, key) {
       this.orderParams[key] = val
+      this.$emit('selectQuery', this.orderParams)
+    },
+    changeTime (val) {
+      this.orderParams.starttime = val[0]
+      this.orderParams.endtime = val[1]
+      this.$emit('selectQuery', this.orderParams)
     }
   },
 }

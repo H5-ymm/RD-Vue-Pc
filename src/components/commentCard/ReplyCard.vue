@@ -1,9 +1,21 @@
 <template>
   <div v-if="showComment">
-    <div class="edit-card-item x-flex-start" v-for="(item,index) in commentList" :key="index">
+    <div
+      class="edit-card-item x-flex-start"
+      v-for="(item,index) in commentList"
+      :key="index"
+    >
       <div class="edit-card-comment-col1">
-        <img src="../../assets/img/img1.png" alt class="head-img" v-if="item.head_img" />
-        <span v-if="!item.head_img" class="head-img">{{item.username}}</span>
+        <img
+          src="../../assets/img/img1.png"
+          alt
+          class="head-img"
+          v-if="item.head_img"
+        />
+        <span
+          v-if="!item.head_img"
+          class="head-img"
+        >{{item.username}}</span>
       </div>
       <div class="edit-card-comment-col2">
         <p>
@@ -11,7 +23,7 @@
           <span>：{{item.content}}</span>
         </p>
         <div class="x-flex-between text-light reply-btn">
-          <span>{{$moment(item.addTime).format('YYYY-MM-DD')}}</span>
+          <span>{{$moment.unix(item.addTime).format('YYYY-MM-DD')}}</span>
           <!-- <p> -->
           <!-- <span v-if="uid==item.user_id" @click="deleteComment(item.id)">删除</span> -->
           <span @click="handleComment(index,item,1)">{{uid==item.user_id?'删除':'评论'}}</span>
@@ -24,7 +36,11 @@
           @cancleComment="cancleComment(1)"
         ></commentInput>
 
-        <section class="edit-card-comment-section" v-for="(val,ind) in item.replyList" :key="ind">
+        <section
+          class="edit-card-comment-section"
+          v-for="(val,ind) in item.replyList"
+          :key="ind"
+        >
           <div class="x-flex-start">
             <div class="edit-card-comment-col2">
               <p>

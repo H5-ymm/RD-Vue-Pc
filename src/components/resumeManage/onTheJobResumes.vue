@@ -13,29 +13,62 @@
         class="demo-form-inline"
       >
         <el-form-item label="姓名：">
-          <el-input v-model="formMember.name" class="width300" placeholder="请输入关键字"></el-input>
+          <el-input
+            v-model="formMember.name"
+            class="width300"
+            placeholder="请输入关键字"
+          ></el-input>
         </el-form-item>
         <el-form-item label="联系电话：">
-          <el-input v-model="formMember.name" class="width300" placeholder="请输入联系电话"></el-input>
+          <el-input
+            v-model="formMember.name"
+            class="width300"
+            placeholder="请输入联系电话"
+          ></el-input>
         </el-form-item>
         <el-form-item label="意向岗位：">
-          <el-select v-model="formMember.industry" class="width300" placeholder="请输入意向岗位关键字">
-            <el-option :label="item" :value="key" v-for="(item,key) in jobList" :key="key"></el-option>
+          <el-select
+            v-model="formMember.industry"
+            class="width300"
+            placeholder="请输入意向岗位关键字"
+          >
+            <el-option
+              :label="item"
+              :value="key"
+              v-for="(item,key) in jobList"
+              :key="key"
+            ></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="录入人：">
-          <el-input v-model="formMember.name" class="width300" placeholder="请输入录入人关键字"></el-input>
+          <el-input
+            v-model="formMember.name"
+            class="width300"
+            placeholder="请输入录入人关键字"
+          ></el-input>
         </el-form-item>
         <el-form-item label="意向地区：">
           <div class="width300">
-            <districtSelet @change="change" :placeholder="'请选择意向地区'" :disabled="true"></districtSelet>
+            <districtSelet
+              @change="change"
+              :placeholder="'请选择意向地区'"
+              :disabled="true"
+            ></districtSelet>
           </div>
         </el-form-item>
         <el-form-item label="跟进人：">
-          <el-input v-model="formMember.name" class="width300" placeholder="请输入跟进人关键字"></el-input>
+          <el-input
+            v-model="formMember.name"
+            class="width300"
+            placeholder="请输入跟进人关键字"
+          ></el-input>
         </el-form-item>
         <el-form-item label="意向工资：">
-          <el-select v-model="formMember.industry" class="width300" placeholder="请选择意向工资">
+          <el-select
+            v-model="formMember.industry"
+            class="width300"
+            placeholder="请选择意向工资"
+          >
             <el-option
               :label="item.label"
               :value="item.value"
@@ -58,8 +91,16 @@
           ></el-date-picker>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="onSubmit" class="select-btn">查询</el-button>
-          <el-button type="primary" @click="onSubmit" class="select-btn">重置</el-button>
+          <el-button
+            type="primary"
+            @click="onSubmit"
+            class="select-btn"
+          >查询</el-button>
+          <el-button
+            type="primary"
+            @click="onSubmit"
+            class="select-btn"
+          >重置</el-button>
         </el-form-item>
       </el-form>
       <div class="member-table resume-table">
@@ -73,8 +114,17 @@
           style="width: 100%"
           @sort-change="sortChange"
         >
-          <el-table-column label="序号" align="center" prop="id" width="40"></el-table-column>
-          <el-table-column label="姓名" align="center" width="100">
+          <el-table-column
+            label="序号"
+            align="center"
+            prop="id"
+            width="40"
+          ></el-table-column>
+          <el-table-column
+            label="姓名"
+            align="center"
+            width="100"
+          >
             <template slot-scope="props">
               <el-button
                 class="text-line"
@@ -83,13 +133,30 @@
               >{{props.row.name}}</el-button>
             </template>
           </el-table-column>
-          <el-table-column label="联系电话" prop="mobile" align="center" width="150"></el-table-column>
-          <el-table-column label="企业名称" align="center" width="150">
+          <el-table-column
+            label="联系电话"
+            prop="mobile"
+            align="center"
+            width="150"
+          ></el-table-column>
+          <el-table-column
+            label="企业名称"
+            align="center"
+            width="150"
+          >
             <template slot-scope="props">
-              <span class="text-line" type="text">{{props.row.name}}</span>
+              <span
+                class="text-line"
+                type="text"
+              >{{props.row.name}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="岗位名称" prop="desired_position" align="center" width="150"></el-table-column>
+          <el-table-column
+            label="岗位名称"
+            prop="desired_position"
+            align="center"
+            width="150"
+          ></el-table-column>
           <el-table-column
             label="报名时间"
             prop="entry_num"
@@ -98,9 +165,7 @@
             width="150"
           >
             <template slot-scope="props">
-              <span
-                type="text"
-              >{{props.row.uptime?$moment(props.row.uptime).format('YYYY-MM-DD'):'--'}}</span>
+              <span type="text">{{props.row.uptime?$moment.unix(props.row.uptime).format('YYYY-MM-DD'):'--'}}</span>
             </template>
           </el-table-column>
           <el-table-column
@@ -111,12 +176,14 @@
             width="150"
           >
             <template slot-scope="props">
-              <span
-                type="text"
-              >{{props.row.uptime?$moment(props.row.uptime).format('YYYY-MM-DD'):'--'}}</span>
+              <span type="text">{{props.row.uptime?$moment.unix(props.row.uptime).format('YYYY-MM-DD'):'--'}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="跟进记录" align="center" width="100">
+          <el-table-column
+            label="跟进记录"
+            align="center"
+            width="100"
+          >
             <template slot-scope="props">
               <el-button
                 class="text-line"
@@ -133,14 +200,26 @@
             width="150"
           >
             <template slot-scope="props">
-              <span
-                type="text"
-              >{{props.row.uptime?$moment(props.row.uptime).format('YYYY-MM-DD'):'--'}}</span>
+              <span type="text">{{props.row.uptime?$moment.unix(props.row.uptime).format('YYYY-MM-DD'):'--'}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="录入人" prop="input_username" align="center" width="100"></el-table-column>
-          <el-table-column label="跟进人" prop="track_name" align="center" width="100"></el-table-column>
-          <el-table-column label="操作" align="center" min-width="200">
+          <el-table-column
+            label="录入人"
+            prop="input_username"
+            align="center"
+            width="100"
+          ></el-table-column>
+          <el-table-column
+            label="跟进人"
+            prop="track_name"
+            align="center"
+            width="100"
+          ></el-table-column>
+          <el-table-column
+            label="操作"
+            align="center"
+            min-width="200"
+          >
             <template slot-scope="scope">
               <el-button
                 @click="$router.push('viewResume?id=' + scope.row.resume_id)"

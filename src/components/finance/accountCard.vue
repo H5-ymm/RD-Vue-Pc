@@ -4,7 +4,11 @@
       <ul class="x-flex-between">
         <li class="x-flex-start-justify my-account-item">
           <div>
-            <img src="../../assets/img/img1.png" class="my-account-head" alt />
+            <img
+              src="../../assets/img/img1.png"
+              class="my-account-head"
+              alt
+            />
           </div>
           <div class="my-account-user">
             <p>王易木</p>
@@ -15,26 +19,48 @@
           <div class="my-account-info">
             <span>账户安全等级</span>
             <span>中</span>
-            <el-link :underline="false" class="text">提升</el-link>
+            <el-link
+              href="accountSafe"
+              :underline="false"
+              class="text"
+            >提升</el-link>
           </div>
           <div class="x-flex-around">
             <div class="account-icon">
-              <img src="../../assets/img/myAccount/icon1.png" alt />
+              <img
+                src="../../assets/img/myAccount/icon1.png"
+                alt
+              />
             </div>
             <div class="account-icon">
-              <img src="../../assets/img/myAccount/icon2.png" alt />
+              <img
+                src="../../assets/img/myAccount/icon2.png"
+                alt
+              />
             </div>
             <div class="account-icon">
-              <img src="../../assets/img/myAccount/icon3.png" alt />
+              <img
+                src="../../assets/img/myAccount/icon3.png"
+                alt
+              />
             </div>
             <div class="account-icon">
-              <img src="../../assets/img/myAccount/icon4.png" alt />
+              <img
+                src="../../assets/img/myAccount/icon4.png"
+                alt
+              />
             </div>
             <div class="account-icon">
-              <img src="../../assets/img/myAccount/icon5.png" alt />
+              <img
+                src="../../assets/img/myAccount/icon5.png"
+                alt
+              />
             </div>
             <div class="account-icon">
-              <img src="../../assets/img/myAccount/icon6.png" alt />
+              <img
+                src="../../assets/img/myAccount/icon6.png"
+                alt
+              />
             </div>
           </div>
         </li>
@@ -46,13 +72,16 @@
           <div class="my-account-money">
             <p>账户余额（元）</p>
             <p class="money">{{showMoney?'100.00':'******'}}</p>
-            <p class="text" @click="showMoney=!showMoney">{{showMoney?'隐藏余额':'显示余额'}}</p>
+            <p
+              class="text"
+              @click="showMoney=!showMoney"
+            >{{showMoney?'隐藏余额':'显示余额'}}</p>
           </div>
         </li>
         <li class="my-account-item">
           <div class="x-flex-around my-account-info">
-            <p>充值</p>
-            <p>提现</p>
+            <p @click="$router.push('deposit')">充值</p>
+            <p @click="$router.push('withdraw')">提现</p>
             <p>查看</p>
           </div>
         </li>
@@ -110,9 +139,12 @@ export default {
           margin-left: 30px;
         }
       }
-      .text {
+      .el-link.el-link--default {
         font-size: 12px;
         color: #999999;
+        &:hover {
+          color: #3699FF;
+        }
       }
       .money {
         color: #FE2A00;

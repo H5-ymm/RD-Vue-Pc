@@ -4,8 +4,14 @@
 </style>
 
 <template>
-  <el-container class="orderTaking" id="header">
-    <el-header class="header x-flex-around home" height="50px">
+  <el-container
+    class="orderTaking"
+    id="header"
+  >
+    <el-header
+      class="header x-flex-around home"
+      height="50px"
+    >
       <headerView :activeIndex="1"></headerView>
     </el-header>
     <el-main class="orderTaking-main-content">
@@ -24,7 +30,11 @@
                 :class="{'active': params.cityid==item.value}"
               >{{item.name}}</li>
             </ul>
-            <el-button type="text" class="orderTaking-more" @click="dialogVisible=true">更多</el-button>
+            <el-button
+              type="text"
+              class="orderTaking-more"
+              @click="dialogVisible=true"
+            >更多</el-button>
           </div>
           <!-- <div class="orderTaking-search-query x-flex-start-justify">
             <span class="orderTaking-search-label">不限</span>
@@ -100,7 +110,10 @@
                 ></el-option>
               </el-select>
             </div>
-            <span class="clear" @click="clearQuery">清空筛选条件</span>
+            <span
+              class="clear"
+              @click="clearQuery"
+            >清空筛选条件</span>
           </div>
         </div>
       </div>
@@ -133,12 +146,8 @@
                     <ul class="orderTaking-main-item">
                       <li class="require-number">{{getmoneyType(item.money_type)}}薪: {{item.money}}元</li>
                       <li>返利：{{item.reward_money_type}}/人/{{getmoneyType(item.money_type)}}</li>
-                      <li
-                        v-if="item.reward_money_type==3"
-                      >持续时间：{{item.reward_money_type==1?'长期返利':'持续返利'}}</li>
-                      <li
-                        v-if="item.reward_money_type!=3&&item.reward_continuous"
-                      >持续时间：{{item.reward_continuous}}{{getmoneyType(item.money_type)}}</li>
+                      <li v-if="item.reward_money_type==3">持续时间：{{item.reward_money_type==1?'长期返利':'持续返利'}}</li>
+                      <li v-if="item.reward_money_type!=3&&item.reward_continuous">持续时间：{{item.reward_continuous}}{{getmoneyType(item.money_type)}}</li>
                     </ul>
                   </div>
                   <div class="orderTaking-main-col">
@@ -151,19 +160,35 @@
                           alt
                           v-if="item.status==2"
                         />
-                        <img src="../assets/img/noIcon.png" alt v-else />
-                        <span class="ctime">{{ $moment(item.ctime).format('HH:mm')}}发布</span>
+                        <img
+                          src="../assets/img/noIcon.png"
+                          alt
+                          v-else
+                        />
+                        <span class="ctime">{{ $moment.unix(item.ctime).format('HH:mm')}}发布</span>
                       </li>
                       <li>
-                        <el-tag size="small" v-if="item.is_fund">五险</el-tag>
-                        <el-tag size="small" v-if="item.is_fund==1">公积金</el-tag>
-                        <el-tag size="small" v-if="item.is_fund==2">试用期过后</el-tag>
+                        <el-tag
+                          size="small"
+                          v-if="item.is_fund"
+                        >五险</el-tag>
+                        <el-tag
+                          size="small"
+                          v-if="item.is_fund==1"
+                        >公积金</el-tag>
+                        <el-tag
+                          size="small"
+                          v-if="item.is_fund==2"
+                        >试用期过后</el-tag>
                       </li>
                       <li>地点：{{item.address}}</li>
                     </ul>
                   </div>
                   <div>
-                    <el-button type="primary" @click="handleApply(item)">立即接单</el-button>
+                    <el-button
+                      type="primary"
+                      @click="handleApply(item)"
+                    >立即接单</el-button>
                   </div>
                 </div>
               </section>
@@ -197,7 +222,10 @@
                 </ul>
               </div>
             </div>
-            <div class="orderTaking-login" v-if="isShowLogin">
+            <div
+              class="orderTaking-login"
+              v-if="isShowLogin"
+            >
               <LoginBox></LoginBox>
             </div>
           </div>
@@ -206,7 +234,11 @@
     </el-main>
     <FooterView></FooterView>
     <AsideBox :isShow="isShow"></AsideBox>
-    <ModalCity :dialogVisible="dialogVisible" @getCityCode="getCityCode" @handleClose="handleClose"></ModalCity>
+    <ModalCity
+      :dialogVisible="dialogVisible"
+      @getCityCode="getCityCode"
+      @handleClose="handleClose"
+    ></ModalCity>
   </el-container>
 </template>
 <script>
@@ -242,24 +274,6 @@ export default {
       rewardList,
       requirePersonList,
       paymentTaxType,
-      menus: [
-        {
-          title: '首页',
-          url: 'home'
-        },
-        {
-          title: '接单',
-          url: 'orderTaking'
-        },
-        {
-          title: '拼团',
-          url: ''
-        },
-        {
-          title: '资讯',
-          url: ''
-        }
-      ],
       params: {
         limit: 20,
         page: 1,

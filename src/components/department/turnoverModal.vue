@@ -6,18 +6,35 @@
     :show-close="false"
   >
     <div class="member-row turnover-row">
-      <img src="../../assets/img/member/cancel.png" alt class="cancel-icon" @click="handleClose" />
+      <img
+        src="../../assets/img/member/cancel.png"
+        alt
+        class="cancel-icon"
+        @click="handleClose"
+      />
       <section class="member-col1">
         <p>人员调整</p>
       </section>
       <div class="member-table turnover-box">
         <div class="memberForm">
-          <el-form :inline="true" :model="formMember" class="demo-form-inline">
+          <el-form
+            :inline="true"
+            :model="formMember"
+            class="demo-form-inline"
+          >
             <el-form-item label="姓名/联系电话：">
-              <el-input v-model="formMember.where" placeholder="请输入你要搜索的关键字" class="width300"></el-input>
+              <el-input
+                v-model="formMember.where"
+                placeholder="请输入你要搜索的关键字"
+                class="width300"
+              ></el-input>
             </el-form-item>
             <el-form-item>
-              <el-button type="primary" @click="querySearch" class="select-btn">搜索</el-button>
+              <el-button
+                type="primary"
+                @click="querySearch"
+                class="select-btn"
+              >搜索</el-button>
             </el-form-item>
             <div class="action-btn x-flex-between">
               <div>
@@ -37,7 +54,11 @@
                   </el-select>
                 </el-form-item>
                 <el-form-item>
-                  <el-select v-model="formMember.gradeId" placeholder="等级" class="width100">
+                  <el-select
+                    v-model="formMember.gradeId"
+                    placeholder="等级"
+                    class="width100"
+                  >
                     <el-option
                       :label="item.grade_name"
                       :value="item.id"
@@ -63,16 +84,44 @@
             style="width: 100%"
             @selection-change="handleSelectionChange"
           >
-            <el-table-column label="序号" type="selection" align="center" width="60"></el-table-column>
-            <el-table-column label="姓名" align="center" prop="user_name" width="150"></el-table-column>
-            <el-table-column label="联系电话" prop="mobile" align="center" width="150"></el-table-column>
-            <el-table-column label="最近登录时间" align="center" width="150">
+            <el-table-column
+              label="序号"
+              type="selection"
+              align="center"
+              width="60"
+            ></el-table-column>
+            <el-table-column
+              label="姓名"
+              align="center"
+              prop="user_name"
+              width="150"
+            ></el-table-column>
+            <el-table-column
+              label="联系电话"
+              prop="mobile"
+              align="center"
+              width="150"
+            ></el-table-column>
+            <el-table-column
+              label="最近登录时间"
+              align="center"
+              width="150"
+            >
               <template slot-scope="props">
-                <span>{{ props.row.loginTime ? $moment(props.row.loginTime).format('YYYY-MM-DD HH:mm'): '--'}}</span>
+                <span>{{ props.row.loginTime ? $moment.unix(props.row.loginTime).format('YYYY-MM-DD HH:mm'): '--'}}</span>
               </template>
             </el-table-column>
-            <el-table-column label="直属上级" prop="superiorName" align="center" width="150"></el-table-column>
-            <el-table-column label="所属部门" align="center" width="150">
+            <el-table-column
+              label="直属上级"
+              prop="superiorName"
+              align="center"
+              width="150"
+            ></el-table-column>
+            <el-table-column
+              label="所属部门"
+              align="center"
+              width="150"
+            >
               <template slot-scope="props">
                 <span v-if="!isEdit">{{ props.row.depart_name}}</span>
                 <el-select
@@ -91,7 +140,11 @@
                 </el-select>
               </template>
             </el-table-column>
-            <el-table-column label="等级" align="center" width="150">
+            <el-table-column
+              label="等级"
+              align="center"
+              width="150"
+            >
               <template slot-scope="props">
                 <span v-if="!isEdit">{{ props.row.grade_name}}</span>
                 <el-select
@@ -110,7 +163,10 @@
                 </el-select>
               </template>
             </el-table-column>
-            <el-table-column label="操作" align="center">
+            <el-table-column
+              label="操作"
+              align="center"
+            >
               <template slot-scope="scope">
                 <el-button
                   @click="handleEdit(scope.row,scope.$index)"
@@ -119,8 +175,15 @@
                   size="small"
                 >调整人员</el-button>
                 <div v-if="isEdit&&activeIndex==scope.$index">
-                  <el-button @click="handleSubmit" type="text" size="small">确认</el-button>
-                  <el-button type="text" size="small">取消</el-button>
+                  <el-button
+                    @click="handleSubmit"
+                    type="text"
+                    size="small"
+                  >确认</el-button>
+                  <el-button
+                    type="text"
+                    size="small"
+                  >取消</el-button>
                 </div>
               </template>
             </el-table-column>
