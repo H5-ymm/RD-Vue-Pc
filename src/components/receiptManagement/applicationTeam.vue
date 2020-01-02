@@ -1,3 +1,6 @@
+<style lang="scss">
+@import '@/assets/css/resume';
+</style>
 <template>
   <div class="tables-box billingManagement">
     <div class="table-list">
@@ -9,16 +12,32 @@
         class="demo-form-inline"
       >
         <el-form-item label="职位名称：">
-          <el-input v-model="formMember.name" class="width300" placeholder="请输入职位名称关键字"></el-input>
+          <el-input
+            v-model="formMember.name"
+            class="width300"
+            placeholder="请输入职位名称关键字"
+          ></el-input>
         </el-form-item>
         <el-form-item label="团队名称：">
-          <el-input v-model="formMember.name" class="width300" placeholder="请输入团队名称关键字"></el-input>
+          <el-input
+            v-model="formMember.name"
+            class="width300"
+            placeholder="请输入团队名称关键字"
+          ></el-input>
         </el-form-item>
         <el-form-item label="团队负责人：">
-          <el-input v-model="formMember.name" class="width300" placeholder="请输入团队负责人姓名"></el-input>
+          <el-input
+            v-model="formMember.name"
+            class="width300"
+            placeholder="请输入团队负责人姓名"
+          ></el-input>
         </el-form-item>
         <el-form-item label="团队性质：">
-          <el-select v-model="formMember.industry" class="width300" placeholder="请选择">
+          <el-select
+            v-model="formMember.industry"
+            class="width300"
+            placeholder="请选择"
+          >
             <el-option
               :label="item.label"
               :value="item.value"
@@ -28,7 +47,11 @@
           </el-select>
         </el-form-item>
         <el-form-item label="状态：">
-          <el-select v-model="formMember.industry" class="width300" placeholder="请选择">
+          <el-select
+            v-model="formMember.industry"
+            class="width300"
+            placeholder="请选择"
+          >
             <el-option
               :label="item.label"
               :value="item.value"
@@ -38,11 +61,19 @@
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="onSubmit" class="select-btn">查询</el-button>
-          <el-button type="primary" @click="onSubmit" class="select-btn">重置</el-button>
+          <el-button
+            type="primary"
+            @click="onSubmit"
+            class="select-btn"
+          >查询</el-button>
+          <el-button
+            type="primary"
+            @click="onSubmit"
+            class="select-btn"
+          >重置</el-button>
         </el-form-item>
       </el-form>
-      <div class="account-table">
+      <div class="member-table">
         <el-table
           border
           :data="tableData"
@@ -50,25 +81,60 @@
           style="width: 100%"
           @selection-change="handleSelectionChange"
         >
-          <el-table-column label="职位名称" align="center" width="150">
+          <el-table-column
+            label="职位名称"
+            align="center"
+            width="150"
+          >
             <template slot-scope="props">
-              <el-button type="text" @click="viewJob(props.row)">{{props.row.name}}</el-button>
+              <el-button
+                type="text"
+                @click="viewJob(props.row)"
+              >{{props.row.name}}</el-button>
             </template>
           </el-table-column>
-          <el-table-column label="团队名称" align="center" width="150">
+          <el-table-column
+            label="团队名称"
+            align="center"
+            width="150"
+          >
             <template slot-scope="props">
               <el-button type="text">{{props.row.money_type | moneyType}}</el-button>
             </template>
           </el-table-column>
-          <el-table-column label="岗位薪资" prop="depart_name" align="center" width="150"></el-table-column>
-          <el-table-column label="团队负责人" align="center" width="150">
+          <el-table-column
+            label="岗位薪资"
+            prop="depart_name"
+            align="center"
+            width="150"
+          ></el-table-column>
+          <el-table-column
+            label="团队负责人"
+            align="center"
+            width="150"
+          >
             <template slot-scope="props">
               <el-button type="text">{{props.row.reward_type | rewardType}}</el-button>
             </template>
           </el-table-column>
-          <el-table-column label="团队性质" prop="reward_money" align="center" width="150"></el-table-column>
-          <el-table-column label="申请日期" prop="entry_num" sortable align="center" width="150"></el-table-column>
-          <el-table-column label="状态" align="center" width="150">
+          <el-table-column
+            label="团队性质"
+            prop="reward_money"
+            align="center"
+            width="150"
+          ></el-table-column>
+          <el-table-column
+            label="申请日期"
+            prop="entry_num"
+            sortable
+            align="center"
+            width="150"
+          ></el-table-column>
+          <el-table-column
+            label="状态"
+            align="center"
+            width="150"
+          >
             <template slot-scope="props">
               <span
                 class="status"
@@ -76,7 +142,11 @@
               >{{props.row.status|statusType}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="操作" align="center" width="150">
+          <el-table-column
+            label="操作"
+            align="center"
+            width="150"
+          >
             <template slot-scope="scope">
               <el-button
                 @click="viewTeam(scope.row)"
@@ -143,7 +213,11 @@
       ></el-pagination>
     </div>
     <customerService :dialogTableVisible="dialogTableVisible"></customerService>
-    <viewJob :dialogTableVisible="dialogJobVisible" :id="id" @handleClose="dialogJobVisible=fasle"></viewJob>
+    <viewJob
+      :dialogTableVisible="dialogJobVisible"
+      :id="id"
+      @handleClose="dialogJobVisible=fasle"
+    ></viewJob>
     <viewTeam
       :dialogTableVisible="dialogTeamVisible"
       @handleClose="dialogTeamVisible=fasle"
@@ -301,28 +375,3 @@ export default {
 }
 </script>
 
-<style lang="scss">
-.billingManagement {
-  .demo-form-inline {
-    width: 80%;
-  }
-  .table-list {
-    padding-top: 70px;
-    padding-left: 10px;
-    .select-btn {
-      margin-left: 20px;
-    }
-    .member-table {
-      margin-top: 40px;
-      padding-left: 20px;
-    }
-  }
-  .width300 {
-    width: 300px;
-  }
-  .select-status {
-    margin-right: 10px;
-  }
-}
-
-</style>

@@ -1,3 +1,6 @@
+<style lang="scss">
+  @import '@/assets/css/resume.scss';
+</style>
 <template>
   <div class="tables-box billingManagement">
     <div class="table-list">
@@ -64,7 +67,7 @@
           <el-button type="primary" @click="onSubmit" class="select-btn">重置</el-button>
         </el-form-item>
       </el-form>
-      <div class="member-table resume-table">
+      <div class="member-table">
         <el-table border :data="tableData" ref="multipleTable" style="width: 100%">
           <el-table-column label="职位名称" align="center" width="150">
             <template slot-scope="props">
@@ -283,7 +286,3 @@ export default {
   }
 }
 </script>
-
-<style lang="scss">
- @import '@/assets/css/resume';
-</style>

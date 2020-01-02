@@ -1,6 +1,6 @@
 <template>
   <el-dialog width="500px" :visible="dialogTableVisible" class="member-dialog" :show-close="false">
-    <div class="member-row">
+    <div class="account-row">
       <img src="../../assets/img/member/cancel.png" alt class="cancel-icon" @click="handleClose" />
       <section class="member-col1">
         <p>{{title}}</p>
@@ -92,45 +92,34 @@ export default {
 </script>
 <style lang="scss">
 .member-dialog{
-  .member-row {
-    .bind-col3 {
-      .account-bind.demo-form-inline {
-        .el-form-item__content {
-          margin-left: 0!important;
-          .bind-input-code {
-            display: inline-block;
-            &.el-input {
-              width: 280px;
-            }
-            .el-input__inner {
-              width: 280px!important;
-            }
-          }
-          .el-radio-group {
-            margin-left: 0;
-          }
-          .el-input__inner {
-            width: 400px!important;
-            border-radius: 3px;
-          }
-          .el-radio__label {
-            float: left;
-            margin-left: 10px;
-          }
-          .el-radio.is-bordered {
-            width: 195px;
-            height: 42px;
-            line-height: 42px;
-          }
-          .el-input,.el-select {     
-            margin-left: 0;
-            border-radius:3px;
-          }
-          .el-input__suffix {
-            right: 10px;
-          }
-        }
-      }
+  box-shadow:0px 1px 43px 0px rgba(51,51,51,0.3);
+  border-radius:5px;
+  .el-dialog__body,.el-dialog__header {
+    padding: 0;
+  }
+  .account-row {
+    width: 100%;
+    margin: 0 auto;
+    text-align: center;
+    color: #333333;
+    padding: 0 0 10px;
+    position: relative;
+    .cancel-icon {
+      position: absolute;
+      top: 5px;
+      right: 0;
+    }
+    .member-col1 {
+      background: #EBF4FB;
+      padding: 18px 0 17px;
+    }
+    .member-col3 {
+      &.bind-col3 {
+        width: 82%;
+        border-top: 1px solid #eee;
+        padding-top: 10px;
+        margin: 0 auto;
+     }
     }
   }
   .code-btn {
@@ -138,7 +127,7 @@ export default {
       background: #fff;
       border: 1px solid #1890ff;
     }
-    padding: 10px 20px;
+    padding: 10px 18px;
     border-radius:3px;
     margin-left: 10px;
   }
@@ -146,7 +135,7 @@ export default {
     padding: 10px 0;
     .el-button {
       border-radius: 3px;
-      margin-right: 30px;
+      margin-right: 12px;
       &.el-button--primary.is-plain {
         &:hover{
           color: #1890ff;

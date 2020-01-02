@@ -18,7 +18,7 @@
   font-weight:400;
 }
 .orderTaking-main-col1 .orderTaking-card {
-  margin-top: 20px;
+  margin-bottom: 20px;
   background: #fff;
 }
 .orderTaking-jobDeail .job-name-top .job-status{

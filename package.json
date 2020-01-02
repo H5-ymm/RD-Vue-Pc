@@ -9,7 +9,7 @@
   "dependencies": {
     "axios": "^0.18.0",
     "core-js": "^2.6.5",
-    "echarts": "^4.5.0",
+    "echarts": "^4.6.0",
     "element-ui": "^2.8.2",
     "emoji-vue": "^0.2.4",
     "mavon-editor": "^2.7.4",

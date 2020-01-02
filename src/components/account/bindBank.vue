@@ -1,3 +1,44 @@
+<style lang="scss">
+  .demo-form-inline {
+    &.account-bind{
+        .el-form-item {
+          text-align: left;
+        }
+        .bind-input-code {
+          overflow: hidden;
+          &.el-input {
+            width: 280px;
+            float: left;
+          }
+          .el-input__inner {
+            width: 280px!important;
+          }
+        }
+        .el-input__inner {
+          width: 400px!important;
+        }
+        .el-radio__label {
+          float: left;
+          margin-left: 10px;
+        }
+        .el-radio.is-bordered {
+          width: 195px;
+          height: 42px;
+          line-height: 42px;
+          padding:0;
+          margin-right: 0;
+          &+.el-radio.is-bordered {
+            margin-left: 10px;
+          }
+        }
+        .el-radio__input {
+          float: right;
+          margin-top: 12px;
+          margin-right: 10px;
+        }
+     }
+  }
+</style>
 <template>
   <el-form
     :model="formMember"
@@ -123,7 +164,7 @@ export default {
       }, 1000)
     },
     handleClose () {
-      this.$parent.visible = false
+      this.$emit('handleClose')
     },
     submitForm () {
       this.$refs['formMember'].validate((valid) => {
@@ -137,5 +178,3 @@ export default {
   }
 }
 </script>
-<style lang="scss">
-</style>

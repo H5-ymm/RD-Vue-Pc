@@ -32,7 +32,7 @@
   }
 }
 .el-button {
-  padding: 12px 20px;
+  padding: 11px 20px;
 }
 .cell {
   .el-button {
@@ -42,4 +42,7 @@
 .el-tooltip__popper.is-light {
   border: 1px solid #eee;
   color: #999;
+}
+.el-form-item {
+  margin-bottom: 10px;
 }

@@ -196,8 +196,8 @@ export default {
 </script>
 <style lang="scss">
   .account-save-view.team-box {
-    height: 100%;
-    overflow: hidden;
+    // height: 100%;
+    // overflow: hidden;
     background: #fff;
     margin-bottom: 100px;
     .account-save-box {

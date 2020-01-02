@@ -13,7 +13,7 @@
         label-width="100px"
         label-position="right"
         :model="formMember"
-        class="demo-form-inline"
+        class="demo-form-inline form-item-wrap"
       >
         <el-form-item label="搜索类型：">
           <el-select v-model="formMember.type" class="width120" placeholder="请选择">

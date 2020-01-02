@@ -302,7 +302,8 @@ export default {
 }
 .el-menu-vertical-demo{
   border: 0px solid #ffffff;
-  height: 100%;
+  height: 100vh;
+  overflow: auto;
 }
 .el-submenu .el-menu-item {
   min-width: 170px;

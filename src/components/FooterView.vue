@@ -10,7 +10,7 @@
             <li>新闻咨讯</li>
           </ul>
         </el-col>
-        <el-col :span="10">
+        <el-col :span="12">
           <ul class="home-footer-box">
             <li class="home-footer-title">联系方式</li>
             <li>仁达网络科技(上海)有限公司</li>
@@ -19,7 +19,7 @@
             <li>违法和不良信息举报邮箱：</li>
           </ul>
         </el-col>
-        <el-col :span="8" :offset="8">
+        <el-col :span="6" :offset="8">
           <ul class="home-footer-box home-footer-box1">
             <li class="home-footer-title">微信公众号</li>
             <li>

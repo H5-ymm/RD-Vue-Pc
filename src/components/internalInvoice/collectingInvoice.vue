@@ -13,9 +13,6 @@
     .el-button {
       padding: 10px;
     }
-    .el-form-item{
-      margin-bottom:10px;
-    }
     .success-color {
       color: #71D875;
     }
@@ -61,7 +58,7 @@
         label-width="96px"
         label-position="right"
         :model="formMember"
-        class="internal-invoice-form"
+        class="internal-invoice-form form-item-wrap"
       >
         <el-form-item label="搜索类型：">
           <el-select v-model="type" class="width120" placeholder="请选择">

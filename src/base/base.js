@@ -36,6 +36,26 @@ export const cityList = [
   {
     name: '武汉',
     value: '420100'
+  },
+  {
+    name: '厦门',
+    value: '420110'
+  },
+  {
+    name: '长沙',
+    value: '420200'
+  },
+  {
+    name: '成都',
+    value: '421100'
+  },
+  {
+    name: '湖南',
+    value: '420100'
+  },
+  {
+    name: '福建',
+    value: '423100'  
   }
 ]
 

@@ -1,3 +1,6 @@
+<style lang="scss">
+  @import '@/assets/css/resume.scss';
+</style>
 <template>
   <div class="tables-box billingManagement">
     <div class="table-list">
@@ -64,7 +67,7 @@
           <el-button type="primary" @click="onSubmit" class="select-btn">重置</el-button>
         </el-form-item>
       </el-form>
-      <div class="member-table resume-table">
+      <div class="member-table">
         <el-table
           border
           :data="tableData"
@@ -262,41 +265,3 @@ export default {
 }
 </script>
 
-<style lang="scss">
-.billingManagement {
-  .demo-form-inline {
-    width: 80%;
-  }
-  .table-list {
-    padding-top: 70px;
-    padding-left: 10px;
-    .select-btn {
-      margin-left: 20px;
-    }
-    .member-table {
-      margin-top: 40px;
-      padding-left: 20px;
-      &.resume-table {
-        margin-top: 0;
-        .select-text {
-          margin-left: 10px;
-        }
-      }
-    }
-    .table-query {
-      margin-bottom:20px;
-    }
-  }
-  .width300 {
-    width: 300px;
-  }
-  .select-status {
-    margin-right: 10px;
-  }
-  .resume-number {
-    font-size:14px;
-    color:#FF1818;
-  }
-}
-
-</style>
