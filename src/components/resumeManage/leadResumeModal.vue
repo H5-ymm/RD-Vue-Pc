@@ -1,10 +1,5 @@
 <template>
-  <el-dialog
-    width="500px"
-    :visible="dialogTableVisible"
-    class="member-dialog record-dialog"
-    :show-close="false"
-  >
+  <el-dialog width="500px" :visible="dialogTableVisible" class="member-dialog record-dialog" :show-close="false">
     <div class="member-row">
       <img src="../../assets/img/member/cancel.png" alt class="cancel-icon" @click="handleClose" />
       <section class="member-col1">
@@ -26,15 +21,7 @@
             <img src="../../assets/img/upload.png" class="download-icon" alt />
             <span>下载模板</span>
           </el-button>
-          <el-upload
-            class="avatar-uploader"
-            action="customize"
-            ref="upload"
-            :show-file-list="false"
-            :file-list="fileList"
-            :http-request="upload"
-            @on-success="changeList"
-          >
+          <el-upload class="avatar-uploader" action="customize" ref="upload" :show-file-list="false" :file-list="fileList" :http-request="upload" @on-success="changeList">
             <el-button size="small" class="handle-btn">
               <img src="../../assets/img/upload.png" alt />
               <span>导入简历</span>
@@ -113,6 +100,10 @@ export default {
   .el-dialog__body,.el-dialog__header {
     padding: 0;
   }
+  .member-col1 {
+    background:#EBF4FB;
+    padding: 21px 0 20px;
+  }
   .member-row {
     width: 100%;
     margin: 0 auto;
@@ -151,8 +142,6 @@ export default {
       }
       .record-item {
         margin-bottom: 10px;
-      }
-      .record-time {
         color: #333;
       }
       .import-record-title {

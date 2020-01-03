@@ -55,25 +55,14 @@
 <template>
   <div class="tables-box billingManagement receipt-manage internal-invoice">
     <div class="table-list">
-      <el-form
-        :inline="true"
-        label-width="96px"
-        label-position="right"
-        :model="formMember"
-        class="internal-invoice-form form-item-wrap"
-      >
+      <el-form :inline="true" label-width="96px" label-position="right" :model="formMember" class="internal-invoice-form form-item-wrap">
         <el-form-item label="搜索类型：">
           <el-select v-model="type" class="width120" placeholder="请选择">
             <el-option label="职位名称" value="job_name"></el-option>
             <el-option label="企业名称" value="com_name"></el-option>
             <el-option label="工作地址" value="address"></el-option>
           </el-select>
-          <el-input
-            v-model="keyword"
-            class="width300"
-            @change="changeInput"
-            placeholder="请输入你要搜索的关键字"
-          ></el-input>
+          <el-input v-model="keyword" class="width300" @change="changeInput" placeholder="请输入你要搜索的关键字"></el-input>
           <el-button type="primary" @click="handleSearch" class="select-btn">查询</el-button>
           <p @click="show=!show" class="x-flex-center senior-search-btn">
             <el-link :type="show?'primary': ''" :underline="false">高级筛选</el-link>
@@ -84,66 +73,24 @@
           <div v-show="show" class="senior-search-box x-flex-start">
             <div>
               <el-form-item label="发布时间：">
-                <el-button
-                  :type="formMember.ctime==item.value ?'primary':''"
-                  v-for="(item,index) in timeStatusList"
-                  :key="index"
-                  plain
-                  @click="selectStatus('ctime',item)"
-                  class="select-status"
-                >{{item.label}}</el-button>
+                <el-button :type="formMember.ctime==item.value ?'primary':''" v-for="(item,index) in timeStatusList" :key="index" plain @click="selectStatus('ctime',item)" class="select-status">{{item.label}}</el-button>
               </el-form-item>
               <el-form-item label="缴纳公积金：">
-                <el-button
-                  :type="formMember.reserve_fund==item.value ?'primary':''"
-                  v-for="(item,index) in statusList"
-                  :key="index"
-                  plain
-                  class="select-status"
-                  @click="selectStatus('reserve_fund',item)"
-                >{{item.label}}</el-button>
+                <el-button :type="formMember.reserve_fund==item.value ?'primary':''" v-for="(item,index) in statusList" :key="index" plain class="select-status" @click="selectStatus('reserve_fund',item)">{{item.label}}</el-button>
               </el-form-item>
               <el-form-item label="返利模式：">
-                <el-button
-                  :type="formMember.reward_type==item.value ?'primary':''"
-                  v-for="(item,index) in rewardTypeList"
-                  :key="index"
-                  plain
-                  @click="selectStatus('reward_type',item)"
-                  class="select-status"
-                >{{item.label}}</el-button>
+                <el-button :type="formMember.reward_type==item.value ?'primary':''" v-for="(item,index) in rewardTypeList" :key="index" plain @click="selectStatus('reward_type',item)" class="select-status">{{item.label}}</el-button>
               </el-form-item>
             </div>
             <div class="senior-search-col2">
               <el-form-item label="缴纳五险：">
-                <el-button
-                  :type="formMember.five_risks==item.value ?'primary':''"
-                  v-for="(item,index) in statusList"
-                  :key="index"
-                  plain
-                  @click="selectStatus('five_risks',item)"
-                  class="select-status"
-                >{{item.label}}</el-button>
+                <el-button :type="formMember.five_risks==item.value ?'primary':''" v-for="(item,index) in statusList" :key="index" plain @click="selectStatus('five_risks',item)" class="select-status">{{item.label}}</el-button>
               </el-form-item>
               <el-form-item label="上架状态：">
-                <el-button
-                  :type="formMember.is_up==item.value ?'primary':''"
-                  v-for="(item,index) in statusList"
-                  :key="index"
-                  plain
-                  @click="selectStatus('is_up',item)"
-                  class="select-status"
-                >{{item.label}}</el-button>
+                <el-button :type="formMember.is_up==item.value ?'primary':''" v-for="(item,index) in statusList" :key="index" plain @click="selectStatus('is_up',item)" class="select-status">{{item.label}}</el-button>
               </el-form-item>
               <el-form-item label="岗位类型：">
-                <el-button
-                  :type="formMember.job_type==item.value ?'primary':''"
-                  v-for="(item,index) in positionStatusList"
-                  :key="index"
-                  plain
-                  @click="selectStatus('job_type',item)"
-                  class="select-status"
-                >{{item.label}}</el-button>
+                <el-button :type="formMember.job_type==item.value ?'primary':''" v-for="(item,index) in positionStatusList" :key="index" plain @click="selectStatus('job_type',item)" class="select-status">{{item.label}}</el-button>
               </el-form-item>
             </div>
             <div class="up-box">
@@ -156,24 +103,10 @@
         </el-collapse-transition>
 
         <el-form-item label="薪资类型：">
-          <el-button
-            :type="formMember.offermoney_type==item.value ?'primary':''"
-            v-for="(item,index) in moneyTypeList"
-            :key="index"
-            plain
-            @click="selectStatus('offermoney_type',item)"
-            class="select-status"
-          >{{item.label}}</el-button>
+          <el-button :type="formMember.offermoney_type==item.value ?'primary':''" v-for="(item,index) in moneyTypeList" :key="index" plain @click="selectStatus('offermoney_type',item)" class="select-status">{{item.label}}</el-button>
         </el-form-item>
         <el-form-item label="招聘类型：">
-          <el-button
-            :type="formMember.moneyType==item.value ?'primary':''"
-            v-for="(item,index) in advertisesList"
-            :key="index"
-            plain
-            @click="selectStatus('moneyType',item)"
-            class="select-status"
-          >{{item.label}}</el-button>
+          <el-button :type="formMember.moneyType==item.value ?'primary':''" v-for="(item,index) in advertisesList" :key="index" plain @click="selectStatus('moneyType',item)" class="select-status">{{item.label}}</el-button>
         </el-form-item>
       </el-form>
       <div class="member-table">
@@ -216,39 +149,27 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column label="面试情况" prop="depart_name" align="center" width="110">
+          <el-table-column label="面试情况" prop="depart_name" align="center" width="200">
             <template slot-scope="props">
               <div>
-                <span class="el-icon-circle-check success-color">{{props.row.view_yes}}</span>
+                <span class="el-icon-circle-check success-color">&nbsp;{{props.row.view_yes}}</span>
                 <el-divider direction="vertical"></el-divider>
-                <span class="el-icon-circle-close fail-color">{{ props.row.view_nopass}}</span>
+                <span class="el-icon-circle-close fail-color">&nbsp;{{ props.row.view_nopass}}</span>
                 <el-divider direction="vertical"></el-divider>
-                <span class="el-icon-remove-outline outline-color">{{props.row.view_no}}</span>
+                <span class="el-icon-remove-outline outline-color">&nbsp;{{props.row.view_no}}</span>
               </div>
             </template>
           </el-table-column>
           <el-table-column label="上架状态" align="center" width="110" v-if="userPosition!=3">
             <template slot-scope="props">
-              <span
-                class="status"
-                :class="`status${props.row.status}`"
-              >{{props.row.status|recommendStatus}}</span>
+              <span class="status" :class="`status${props.row.status}`">{{props.row.status|recommendStatus}}</span>
             </template>
           </el-table-column>
           <el-table-column label="创建日期" prop="depart_name" align="center" width="110"></el-table-column>
           <el-table-column label="已领取人" align="center" width="180" v-if="viewType==2">
             <template slot-scope="scope">
-              <div
-                class="text-line"
-                @click="handleRecepit(2,scope.row)"
-                v-if="(scope.row&&scope.row.uid==uid)||userPosition==3"
-              >
-                <el-button
-                  v-for="(item,index) in scope.row.tolist"
-                  :key="index"
-                  type="text"
-                  size="small"
-                >{{item.name}}</el-button>
+              <div class="text-line" @click="handleRecepit(2,scope.row)" v-if="(scope.row&&scope.row.uid==uid)||userPosition==3">
+                <el-button v-for="(item,index) in scope.row.tolist" :key="index" type="text" size="small">{{item.name}}</el-button>
               </div>
             </template>
           </el-table-column>
@@ -256,77 +177,25 @@
             <template slot-scope="scope">
               <div v-if="viewType==1">
                 <el-button @click="$router.push('jobDetail')" type="text" size="small">详情</el-button>
-                <el-button
-                  @click="handleRecepit(1,scope.row)"
-                  type="text"
-                  v-if="scope.row.is_up==1"
-                  size="small"
-                >分配跟进人</el-button>
-                <el-button
-                  @click="changeJobstatus(0,scope.row)"
-                  type="text"
-                  size="small"
-                  v-if="((scope.row&&scope.row.uid==uid)||userPosition==3)&&scope.row.is_up==1"
-                >下架</el-button>
-                <el-button
-                  @click="changeJobstatus(1,scope.row)"
-                  type="text"
-                  size="small"
-                  v-if="((scope.row&&scope.row.uid==uid)||userPosition==3)&&scope.row.is_up==0"
-                >上架</el-button>
-                <el-button
-                  @click="delJob(scope.row)"
-                  type="text"
-                  size="small"
-                  v-if="(scope.row&&scope.row.uid==uid)||userPosition==3"
-                >删除</el-button>
-                <el-button
-                  @click="$router.push('jobDetail?id='+scope.row.id)"
-                  type="text"
-                  size="small"
-                  v-if="(scope.row&&scope.row.uid==uid)||userPosition==3"
-                >编辑</el-button>
+                <el-button @click="handleRecepit(1,scope.row)" type="text" v-if="scope.row.is_up==1" size="small">分配跟进人</el-button>
+                <el-button @click="changeJobstatus(0,scope.row)" type="text" size="small" v-if="((scope.row&&scope.row.uid==uid)||userPosition==3)&&scope.row.is_up==1">下架</el-button>
+                <el-button @click="changeJobstatus(1,scope.row)" type="text" size="small" v-if="((scope.row&&scope.row.uid==uid)||userPosition==3)&&scope.row.is_up==0">上架</el-button>
+                <el-button @click="delJob(scope.row)" type="text" size="small" v-if="(scope.row&&scope.row.uid==uid)||userPosition==3">删除</el-button>
+                <el-button @click="$router.push('jobDetail?id='+scope.row.id)" type="text" size="small" v-if="(scope.row&&scope.row.uid==uid)||userPosition==3">编辑</el-button>
               </div>
-              <div v-if="userPosition==2">
+              <div v-if="viewType!=1&&userPosition==2">
                 <el-button @click="$router.push('jobDetail')" type="text" size="small">详情</el-button>
-                <el-button
-                  @click="putResume(scope.row)"
-                  v-if="scope.row.is_up==1"
-                  type="text"
-                  size="small"
-                >推荐简历</el-button>
-                <el-button
-                  @click="$router.push('applyResume?view=3')"
-                  type="text"
-                  size="small"
-                >已推荐简历</el-button>
+                <el-button @click="putResume(scope.row)" v-if="scope.row.is_up==1" type="text" size="small">推荐简历</el-button>
+                <el-button @click="$router.push('applyResume?view=3')" type="text" size="small">已推荐简历</el-button>
               </div>
             </template>
           </el-table-column>
         </el-table>
       </div>
-      <el-pagination
-        class="team-pagination"
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :current-page="formMember.page"
-        :page-sizes="[10, 20, 30, 40]"
-        :page-size="formMember.limit"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="total"
-      ></el-pagination>
+      <el-pagination class="team-pagination" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="formMember.page" :page-sizes="[10, 20, 30, 40]" :page-size="formMember.limit" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
     </div>
-    <personalModal
-      :dialogTableVisible="dialogTableVisible"
-      :personalList="personalList"
-      @handleOk="handleOk"
-      @handleClose="dialogTableVisible=false"
-    ></personalModal>
-    <havePersonModal
-      :dialogTableVisible="personVisible"
-      @handleClose="personVisible=false"
-      @handleOk="handleOk"
-    ></havePersonModal>
+    <personalModal :dialogTableVisible="dialogTableVisible" :personalList="personalList" @handleOk="handleOk" @handleClose="dialogTableVisible=false"></personalModal>
+    <havePersonModal :dialogTableVisible="personVisible" @handleClose="personVisible=false" @handleOk="handleOk"></havePersonModal>
   </div>
 </template>
 
@@ -353,7 +222,7 @@ export default {
       })
       return obj ? obj.label : ''
     },
-    recommendStatus () {
+    recommendStatus (val) {
       let obj = recommendStatusList.find(item => {
         return val == item.value
       })

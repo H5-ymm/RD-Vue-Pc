@@ -13,22 +13,13 @@
     <el-main class="login-main">
       <div class="register-content">
         <div class="register-box">
-          <el-form
-            ref="TabForm"
-            :model="formTab"
-            label-width="20"
-            :rules="formTabs"
-            class="form-box"
-          >
+          <el-form ref="TabForm" :model="formTab" label-width="20" :rules="formTabs" class="form-box">
             <div class="x-flex-around register-btn">
               <el-button type="text" :class="loginWay==1?'':'active'" @click="switchLogin(1)">账号登录</el-button>|
               <el-button type="text" :class="loginWay==2?'':'active'" @click="switchLogin(2)">短信登录</el-button>
             </div>
             <el-form-item prop="name" label="手机号">
-              <span
-                class="error errorInfo el-icon-warning"
-                v-if="isShowError"
-              >账号或者密码错误，如遇到问题联系客服，021-51991869</span>
+              <span class="error errorInfo el-icon-warning" v-if="isShowError">账号或者密码错误，如遇到问题联系客服，021-51991869</span>
               <el-input placeholder="请输入11位手机号" v-model="formTab.name">
                 <template slot="prepend">
                   <span>+86</span>
@@ -41,19 +32,8 @@
             </el-form-item>
             <el-form-item label="发送验证码" v-if="loginWay==2">
               <span class="error el-icon-warning" v-if="isCodeError">验证码错误或者已过期</span>
-              <el-input
-                v-model="formTab.code"
-                placeholder="请输入密码"
-                class="inputCode"
-                show-word-limit
-              ></el-input>
-              <el-button
-                type="primary"
-                class="code-btn"
-                plain
-                :class="{disabled: !this.canClick}"
-                @click="sendCode"
-              >{{content}}</el-button>
+              <el-input v-model="formTab.code" placeholder="请输入密码" class="inputCode" show-word-limit></el-input>
+              <el-button type="primary" class="code-btn" plain :class="{disabled: !this.canClick}" @click="sendCode">{{content}}</el-button>
             </el-form-item>
             <el-form-item v-if="loginWay==1">
               <el-checkbox v-model="checked" @change="remind">记住密码</el-checkbox>
@@ -187,12 +167,6 @@ export default {
             localStorage.setItem('uid', res.data.uid)
             localStorage.setItem('userName', res.data.username)
             this.$router.push('team')
-            // if (registerType == 2) {
-            //   this.$router.push('commonts')
-            // }
-            // else {
-            //   this.$router.push('createOrderTaking')
-            // }
           }).catch(error => {
             if (error.status.code == 3010) {
               this.isShowError = true

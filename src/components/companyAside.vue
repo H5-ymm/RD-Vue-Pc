@@ -12,8 +12,16 @@
             class="company-logo"
             v-if="baseInfo&&!baseInfo.logo_url"
           />
-          <img src="../assets/img/img1.png" alt class="company-logo" v-else />
-          <p class="company-name" v-if="baseInfo">{{baseInfo.com_name}}</p>
+          <img
+            src="../assets/img/img1.png"
+            alt
+            class="company-logo"
+            v-else
+          />
+          <p
+            class="company-name"
+            v-if="baseInfo"
+          >{{baseInfo.com_name}}</p>
         </div>
         <el-menu
           class="el-menu-vertical-demo"
@@ -27,7 +35,12 @@
           router
           :default-active="routerli"
         >
-          <el-submenu :index="item.title" class="acts" v-for="(item,index) in menus" :key="index">
+          <el-submenu
+            :index="item.title"
+            class="acts"
+            v-for="(item,index) in menus"
+            :key="index"
+          >
             <template slot="title">
               <i class="el-icon-collection"></i>
               <span>{{item.title}}</span>
@@ -184,13 +197,6 @@ export default {
     routerli () {
       // 对应路由
       let pathStr = this.$route.path.split('/')
-      console.log(pathStr[1])
-      console.log(pathStr[1] == 'team')
-      if (pathStr[1] == 'team') {
-        setTimeout(() => {
-          this.$router.replace('createOrderTaking')
-        }, 100)
-      }
       return '/' + pathStr[1]
 
     },

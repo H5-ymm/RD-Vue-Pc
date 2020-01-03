@@ -11,8 +11,9 @@ const checkResume = resolve => (require(['../components/receiptManagement/checkR
 const CompanyForm = resolve => (require(['../components/teamMessage/companyForm.vue'], resolve))
 const createOrderTaking = resolve => (require(['../components/CeateOrderTaking.vue'], resolve))
 const onJobStaff = resolve => (require(['../components/staffManage/onJobStaff.vue'], resolve)) //在职员工
-
-export const companyRouters = [
+const Team = resolve => (require(['../views/Team.vue'], resolve))
+import { commonRouters } from './index'
+let children = [
   { // 审核发单
     path: '/checkReceipt',
     name: 'checkReceipt',
@@ -109,5 +110,14 @@ export const companyRouters = [
       requiresAuth: 1
     }
   }
-
 ]
+export const companyRouters = {
+  path: '/team',
+  name: 'Team',
+  component: Team,
+  meta: {
+    requiresAuth: 1
+  },
+  redirect: 'createOrderTaking',
+  children: [...children, ...commonRouters]
+}

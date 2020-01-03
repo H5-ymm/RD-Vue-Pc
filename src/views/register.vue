@@ -14,24 +14,10 @@
       <div class="content register-form" :class="{'timerContent':registerType==2}">
         <el-row class="loads-box">
           <el-col :span="12">
-            <el-form
-              :model="formTab"
-              label-width="20"
-              ref="TabForm"
-              :rules="formTabs"
-              class="register-form-box"
-            >
+            <el-form :model="formTab" label-width="20" ref="TabForm" :rules="formTabs" class="register-form-box">
               <div class="x-flex login-btn">
-                <el-button
-                  class="button"
-                  :class="registerType==1?'comRight':'timm-right'"
-                  @click="goRegister(1)"
-                >注册企业</el-button>
-                <el-button
-                  class="button"
-                  :class="registerType==2?'comRight':'timm-right'"
-                  @click="goRegister(2)"
-                >注册团队</el-button>
+                <el-button class="button" :class="registerType==1?'comRight':'timm-right'" @click="goRegister(1)">注册企业</el-button>
+                <el-button class="button" :class="registerType==2?'comRight':'timm-right'" @click="goRegister(2)">注册团队</el-button>
               </div>
               <el-form-item prop="mobile" label="手机号">
                 <el-input v-model="formTab.mobile" placeholder="请输入手机号"></el-input>
@@ -39,27 +25,9 @@
               </el-form-item>
               <el-form-item prop="password" label="密码">
                 <span class="error el-icon-warning passwordSave" v-if="isShowPasword">请输入密码</span>
-                <el-progress
-                  :percentage="40"
-                  :format="format"
-                  class="error progress"
-                  color="#FE2A00"
-                  v-if="formTab.password.length&&formTab.password.length<=6"
-                ></el-progress>
-                <el-progress
-                  :percentage="70"
-                  :format="format"
-                  class="error progress"
-                  color="#FF9938"
-                  v-if="formTab.password.length>6&&formTab.password.length<=10"
-                ></el-progress>
-                <el-progress
-                  :percentage="100"
-                  :format="format"
-                  class="error progress"
-                  color="#58B44E"
-                  v-if="formTab.password.length>10"
-                ></el-progress>
+                <el-progress :percentage="40" :format="format" class="error progress" color="#FE2A00" v-if="formTab.password.length&&formTab.password.length<=6"></el-progress>
+                <el-progress :percentage="70" :format="format" class="error progress" color="#FF9938" v-if="formTab.password.length>6&&formTab.password.length<=10"></el-progress>
+                <el-progress :percentage="100" :format="format" class="error progress" color="#58B44E" v-if="formTab.password.length>10"></el-progress>
                 <el-input v-model="formTab.password" placeholder="请输入密码" show-word-limit></el-input>
               </el-form-item>
               <el-form-item prop="passworded" label="确认密码">
@@ -67,31 +35,17 @@
                 <el-input v-model="formTab.passworded" placeholder="请输入密码" show-word-limit></el-input>
               </el-form-item>
               <el-form-item label="发送验证码">
-                <el-input
-                  v-model="formTab.code"
-                  placeholder="请输入密码"
-                  class="inputCode"
-                  show-word-limit
-                ></el-input>
+                <el-input v-model="formTab.code" placeholder="请输入密码" class="inputCode" show-word-limit></el-input>
                 <el-button type="primary" class="code-btn" @click="sendCode" plain>{{content}}</el-button>
               </el-form-item>
               <el-form-item prop="name" :label="registerType==1?'公司名称':'团队名称'">
-                <span
-                  class="error el-icon-warning"
-                  v-if="isShowName"
-                >请输入{{registerType==1?'公司名称':'团队名称'}}</span>
-                <span
-                  class="error error1 el-icon-warning"
-                  v-if="isShowRe"
-                >该{{registerType==1?'公司名称':'团队名称'}}已被注册，请使用其他{{registerType==1?'公司名称':'团队名称'}}注册</span>
+                <span class="error el-icon-warning" v-if="isShowName">请输入{{registerType==1?'公司名称':'团队名称'}}</span>
+                <span class="error error1 el-icon-warning" v-if="isShowRe">该{{registerType==1?'公司名称':'团队名称'}}已被注册，请使用其他{{registerType==1?'公司名称':'团队名称'}}注册</span>
                 <el-input v-model="formTab.name" placeholder="请输入您要创建的团队名称" show-word-limit></el-input>
               </el-form-item>
               <el-form-item :label="registerType==1?'公司地址':'团队地址'">
                 <districtSelet @change="districtChange"></districtSelet>
-                <span
-                  class="error el-icon-warning"
-                  v-if="isShowCom"
-                >请选择{{registerType==1?'公司地址':'团队地址'}}</span>
+                <span class="error el-icon-warning" v-if="isShowCom">请选择{{registerType==1?'公司地址':'团队地址'}}</span>
               </el-form-item>
               <el-form-item>
                 <el-button type="primary" @click="onSubmit" class="register">注册</el-button>
@@ -450,7 +404,6 @@ export default {
 }
 .grid-content .text {
   text-align:right;
-  width:100%;
   font-size:12px;
   position: absolute;
   bottom: 55px;

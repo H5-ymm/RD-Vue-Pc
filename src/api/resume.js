@@ -6,7 +6,7 @@ export const updateUserResume = data => $post('/resume/updateUserResume', data)
 export const giveUpResume = data => $post('/resume/teamGiveUpResume', data)
 export const importUserResume = data => uploadFile('/resume/importUserResume', data)
 export const exportUserResume = data => postFormData('/resume/exportUserResume', data)
-export const downloadTestTable = () => $get('/uploads/test/testTable.xlsx')
+export const downloadTestTable = () => $get('/testTable.xlsx')
 export const teamRecommendResumeList = data => $post('/teamresume/teamRecommendResumeList', data)
 export const entryResumeList = data => $post('/teamresume/entryTeamRecommendResumeList', data)
 export const addTrackingInfo = data => $post('/teamresume/addTrackingInfo', data) //添加追踪记录

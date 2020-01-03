@@ -41,7 +41,8 @@ module.exports = {
   configureWebpack: {
     resolve: {
       alias: {
-        '@': resolve('src')
+        '@': resolve('src'),
+        'assets': path.resolve(__dirname, '../src/assets'),
       }
     }
   }

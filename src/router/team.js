@@ -35,15 +35,14 @@ const logList = resolve => (require(['../components/teamCenter/logList.vue'], re
 
 const teamData = resolve => (require(['../components/teamCenter/teamData.vue'], resolve)) // 团队中心
 
-const receiptTable = resolve => (require(['../components/teamReceipt/receiptTable.vue'], resolve)) // 团队中心
-// import Department from '../components/Department.vue'
-// import Userlist from '../components/Userlist.vue'  //全部用户
-// import commonts from '../components/commonts.vue'  //评论
+const receiptTable = resolve => (require(['../components/teamReceipt/receiptTable.vue'], resolve)) // 接单分配 只有总经理和经理可看
 const Department = resolve => (require(['../components/Department.vue'], resolve)) //部门
 const Userlist = resolve => (require(['../components/Userlist.vue'], resolve)) //全部用户
 const commonts = resolve => (require(['../components/commonts.vue'], resolve)) //评论
+const Team = resolve => (require(['../views/Team.vue'], resolve))
+import { commonRouters } from './index'
 // 团队路由
-export const teamRouters = [{  // 团队论坛
+let children = [{  // 团队论坛
   path: '/commonts',
   name: 'commonts',
   component: commonts,
@@ -267,7 +266,6 @@ export const teamRouters = [{  // 团队论坛
     requiresAuth: 1
   }
 },
-
 {
   path: '/teamOrder',  // 团队排名
   component: teamOrder,
@@ -289,5 +287,14 @@ export const teamRouters = [{  // 团队论坛
     requiresAuth: 1
   }
 },
-
 ]
+export const teamRouters = {
+  path: '/team',
+  name: 'Team',
+  component: Team,
+  meta: {
+    requiresAuth: 2
+  },
+  redirect: 'teamData',
+  children: [...children, ...commonRouters]
+}

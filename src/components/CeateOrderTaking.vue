@@ -7,15 +7,23 @@
       left:0;
       color:#FE2A00;
       font-size:12px;
+      &.error-job{
+        bottom: 0;
+        top: 95%;
+      }
     }
     .job_content {
       border: 1px solid #eee;
       height: 250px;
-      width: 408px;
+      width: 400px;
       color: #333;
       padding-left: 10px;
       position: relative;
       padding-bottom: 30px;
+      margin-bottom: 30px;
+      .el-input__inner {
+        border: none!important;
+      }
       .job_textarea {
         width: 320px;
         min-height: 20px;
@@ -38,64 +46,30 @@
 <template>
   <div class="teamMessage create-orderTaking-view">
     <div class="teamMessage-form-row create-orderTaking">
-      <el-form
-        :model="orderTakingForm"
-        :rules="rules"
-        ref="orderTakingForm"
-        label-width="110px"
-        class="teamMessage-form"
-      >
+      <el-form :model="orderTakingForm" :rules="rules" ref="orderTakingForm" label-width="110px" class="teamMessage-form">
         <el-form-item label="职位名称" prop="name">
           <el-input v-model="orderTakingForm.name" class="width408" placeholder="请输入职位名称"></el-input>
           <span class="error el-icon-warning">发单：只有团队可以接单，岗位需求人数由团队统一提供，个人无法接取。</span>
         </el-form-item>
         <el-form-item label="职位类别" prop="job_type" required>
-          <el-select
-            v-model="orderTakingForm.job_type"
-            @change="selectJob"
-            class="width408"
-            placeholder="请选择职位类别"
-          >
+          <el-select v-model="orderTakingForm.job_type" @change="selectJob" class="width408" placeholder="请选择职位类别">
             <el-option :label="item" :value="key" v-for="(item,key) in jobList" :key="key"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="需求人数" required>
-          <el-input
-            type="number"
-            v-model="orderTakingForm.required_number"
-            class="width408"
-            @input="numberChange(arguments[0])"
-            :min="2"
-            placeholder="请输入申请人姓名"
-          ></el-input>
+          <el-input type="number" v-model="orderTakingForm.required_number" class="width408" @input="numberChange(arguments[0])" :min="2" placeholder="请输入申请人姓名"></el-input>
         </el-form-item>
         <el-form-item label="工作地址" required>
           <div class="width408">
             <districtSelet @change="change"></districtSelet>
           </div>
-          <el-input
-            v-model="orderTakingForm.address"
-            class="width408 team-address"
-            placeholder="请填写详细地址"
-          ></el-input>
+          <el-input v-model="orderTakingForm.address" class="width408 team-address" placeholder="请填写详细地址"></el-input>
         </el-form-item>
         <el-form-item label="年龄" required>
           <div class="x-flex-start-justify width408">
-            <el-input
-              type="number"
-              class="width80"
-              :min="16"
-              v-model="orderTakingForm.min_age"
-              placeholder="请输入"
-            ></el-input>
+            <el-input type="number" class="width80" :min="16" v-model="orderTakingForm.min_age" placeholder="请输入"></el-input>
             <span class="landline"></span>
-            <el-input
-              type="number"
-              class="width80"
-              :max="45"
-              v-model="orderTakingForm.max_age"
-              placeholder="请输入"
-            ></el-input>
+            <el-input type="number" class="width80" :max="45" v-model="orderTakingForm.max_age" placeholder="请输入"></el-input>
           </div>
         </el-form-item>
         <el-form-item label="性别" required>
@@ -128,10 +102,13 @@
         <salaryAndRebate :moneyList="moneyList" @submit="submitSalary"></salaryAndRebate>
         <!-- 薪资和返利模式 -->
         <el-form-item label="职位描述" required>
-          <span class="error el-icon-warning">职位描述，最低输入30个字。</span>
+          <span class="error el-icon-warning error-job">职位描述，最低输入30个字。</span>
           <div class="job_content">
-            <div class="x-flex-start">
-              <span>工作内容：</span>
+            <div contenteditable="true" v-html="content" @input="onDivInput($event,'content')" class="job_textarea"></div>
+            <!-- <el-input :autosize="{minRows: 5}" v-model="orderTakingForm.content" class="width408" placeholder=""></el-input> -->
+            <!-- <div class="x-flex-start"> -->
+
+            <!-- <span>工作内容：</span>
               <div
                 contenteditable="true"
                 v-html="content"
@@ -156,8 +133,9 @@
                 v-html="jobTime"
                 class="job_textarea"
               ></div>
-            </div>
+            </div> -->
             <span class="content-len">{{len}}/1000字</span>
+            <!-- </div> -->
           </div>
         </el-form-item>
         <el-form-item label="联系人" required>
@@ -218,7 +196,7 @@ export default {
       jobList: {},
       eduList: [],
       jobName: '',
-      content: '',
+      content: '工作内容：</br> 职位要求：</br> 工作时间：',
       jobRequire: '',
       jobTime: ''
     };
@@ -229,7 +207,7 @@ export default {
   },
   computed: {
     len () {
-      return this.content.length + this.jobRequire.length + this.jobTime.length
+      return this.content.length
     }
   },
   methods: {
@@ -255,6 +233,7 @@ export default {
 
     },
     onDivInput (e, key) {
+      console.log(e.target.innerHTML)
       this[key] = e.target.innerHTML
     },
     change (val) {
@@ -267,8 +246,8 @@ export default {
       this.orderTakingForm = Object.assign(this.orderTakingForm, val)
     },
     submitForm (orderTakingForm) {
-      if (this.content && this.jobRequire && this.jobTime) {
-        this.orderTakingForm.job_content = this.content + this.jobRequire + this.jobTime
+      if (this.content) {
+        this.orderTakingForm.job_content = this.content
       }
       else {
         return this.$message.warning('请输入职位描述')

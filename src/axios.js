@@ -104,16 +104,6 @@ export function $post (url, params) {
 }
 export function $get (url) {
   window.location.href = `http://tiantianxsg.com:39888/uploads/test/${url}`
-  // return new Promise((resolve, reject) => {
-
-  //   $axios.get(`http://tiantianxsg.com:39888/uploads/test/${url}`)
-  //     .then(res => {
-  //       resolve(res.data)
-  //     })
-  //     .catch(err => {
-  //       reject(err.data)
-  //     })
-  // });
 }
 export function postFormData (url, params) {
   window.location.href = `${baseURL}${url}?uid=${params}`

@@ -2,11 +2,9 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import { teamRouters } from './router/team'
 import { companyRouters } from './router/company'
-import { commonRouters } from './router/index'
 import About from './views/About.vue'
 const Home = resolve => (require(['./views/Home.vue'], resolve))
 const login = resolve => (require(['./views/Login.vue'], resolve))
-const Team = resolve => (require(['./views/Team.vue'], resolve))
 const ForgetPassword = resolve => (require(['./views/ForgetPassword.vue'], resolve))
 const register = resolve => (require(['./views/Register.vue'], resolve)) //登录页
 const OrderTaking = resolve => (require(['./views/OrderTaking.vue'], resolve))
@@ -15,25 +13,13 @@ const Information = resolve => (require(['./views/Information.vue'], resolve)) /
 const InformationDetail = resolve => (require(['./views/InformationDetail.vue'], resolve)) //  资讯详情
 
 Vue.use(Router)
-let children = []
+let routerList = []
 let userType = localStorage.getItem('userType')
 // 企业和团队路由
-if (userType == 1) {
-  children = [...companyRouters, ...commonRouters]
-}
-else {
-  children = [...teamRouters, ...commonRouters]
-}
 let publiceRouters = [
   {
     path: '/',
     redirect: 'home',
-  },
-  {
-    path: '/team',
-    name: 'Team',
-    component: Team,
-    children: children,
   },
   {
     path: '/about',
@@ -81,25 +67,35 @@ let publiceRouters = [
     component: ForgetPassword
   }
 ]
+if (userType == 1) {
+  routerList.push(companyRouters)
+}
+else {
+  routerList.push(teamRouters)
+}
 let routers = new Router({
   mode: "history",
   base: process.env.BASE_URL,
-  routes: [...publiceRouters]
+  routes: [...publiceRouters, ...routerList]
 })
-// 全部钩子
-// routers.beforeEach((to, from, next) => {
-//   let path = from.path
-//   console.log(path)
-//   console.log(to.path === '/team')
-//   if (to.path === '/team') {
-//     if (userType == 1) {
-//       next({ to: '/commonts' })
-//     } else {
-//       next({ to: '/createOrderTaking' })
-//     }
-//   } else {
-//     next()
+// let router = []
+// console.log(companyRouters)
+// console.log(userType)
+// if (userType == 1) {
+//   router.push(companyRouters)
+// }
+// else if (userType == 2) {
+//   router.push(teamRouters)
+// }
+// else {
+//   router = publiceRouters
+// }
+// routers.addRoutes(router)
+
+// 注册全局钩子用来拦截导航
+// routers.afterEach((to, from) => {
+//   if (to.query.redirect && to.path == '/login') {
+//     window.location.reload();
 //   }
 // })
-// 公出路由
 export default routers

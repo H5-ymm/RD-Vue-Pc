@@ -1,5 +1,5 @@
 .salary-rebate {
-  padding-bottom: 20px;
+  // padding-bottom: 20px;
   .width500 {
     width: 500px;
   }
@@ -12,17 +12,28 @@
   }
   .reward_type {
     margin-bottom: 10px;
+    .width160 {
+      .text-input {
+        &.el-input-group--prepend{ 
+          .el-input__inner {
+            width: 100%!important;
+          }
+        }
+      }
+    }
   }
-  .error {
-    top: -16px;
-    &.reward-error {
-      width: 300px;
-      left: 360px;
-      top: -10px;
-      ul {
-        margin-left:5px;
-        font-size:12px;
-        line-height: 20px;
+  .el-form-item {
+    .error {
+      top: 0;
+      &.reward-error {
+        width: 300px;
+        left: 360px;
+        top: -10px;
+        ul {
+          margin-left:5px;
+          font-size:12px;
+          line-height: 20px;
+        }
       }
     }
   }
@@ -33,6 +44,9 @@
       border: none;
       padding: 0 0 0 20px;
     }
+  }
+  .duration_time {
+    margin-top: 20px;
   }
 }
 .width160 {
@@ -75,5 +89,13 @@
   .text-input {
     border: none;
     border-bottom: 1px solid #eee;
+    .el-input__inner {
+      width: 160px!important;
+    }
+  }
+  &.money_type {
+    .el-input__inner {
+      width: 85px!important;
+    }
   }
 }

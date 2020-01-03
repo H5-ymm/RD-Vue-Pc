@@ -1,6 +1,8 @@
 .teamMessage {
-  padding-bottom: 80px;
+  padding-bottom: 30px;
   &.create-orderTaking-view {
+    margin-bottom: 100px;
+    padding-bottom: 140px;
     .create-orderTaking {
       padding: 50px 6px;
     }
@@ -18,6 +20,7 @@
       background:#fff;
       box-shadow:0px 4px 4px 0px rgba(106,106,106,0.1);
       border-radius:5px;
+      margin-bottom: 20px;
     }
     .teamMessage-form-row {
       background:#fff;

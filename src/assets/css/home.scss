@@ -133,19 +133,31 @@
   .bg-purple-img-right {
     height:144px;
     width:100%;
-    background:  url('../assets/img/right.png') no-repeat left center;
-    background-size: cover;
+    // background:  url('../assets/img/right.png') no-repeat left center;
+    // background-size: cover;
     margin-bottom:2px;
+    >img {
+      height:144px;
+      width:100%;
+    }
   }
   .bg-purple-img-right1 {
-    background:  url('../assets/img/right1.png') no-repeat left center;
-    background-size: cover;
+    >img {
+      height:100%;
+      width:100%;
+    }
+    // background:  url('../assets/img/right1.png') no-repeat left center;
+    // background-size: cover;
   }
   .bg-purple-img {
     height:290px;
     width:100%;
-    background:  url('../assets/img/img.jpg') no-repeat left center;
-    background-size: cover;
+    >img {
+      height:100%;
+      width:100%;
+    }
+    // background:  url('../assets/img/img.jpg') no-repeat left center;
+    // background-size: cover;
   }
   .bg-purple-right {
     margin:22px 0 22px 2px;

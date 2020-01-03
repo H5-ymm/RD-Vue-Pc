@@ -1,9 +1,6 @@
 <template>
   <div>
-    <div
-      id="myChart"
-      :style="{width: '100%', height: '300px'}"
-    ></div>
+    <div id="myChart" :style="{width: '100%', height: '300px'}"></div>
   </div>
 </template>
 <script>
@@ -150,12 +147,10 @@ export default {
         arr[2] = [15, 10, 13, 10, 20, 14, 10, 15, 10, 13, 10, 10]
         arr[3] = [25, 10, 16, 13, 20, 10, 22, 10, 20, 16, 23, 25]
       }
-      console.log(arr)
       return arr
     },
     getData (index) {
       let arr = []
-      console.log(this.getList(this.legendIndex))
       this.legendData.forEach((item, index) => {
         arr[index] = {
           type: 'line',

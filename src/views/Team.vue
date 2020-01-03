@@ -4,18 +4,13 @@
       <el-aside width="210px" class="team-aside">
         <component :is="aside"></component>
       </el-aside>
-      <el-container>
+      <el-container :class="{'comany-team-container': type==1}">
         <el-header :height="height">
           <div class="x-flex-between team-header" :class="{'comany-team-header': type==1}">
             <!-- <i class="el-icon-refresh-right" v-if="type==1"></i> -->
             <el-link :underline="false" href="home" v-if="type==1">首页</el-link>
             <div class="x-flex-start-justify" v-if="type==2">
-              <img
-                :src="getImgUrl(baseInfo.log)"
-                alt
-                class="team-logo"
-                v-if="baseInfo&&baseInfo.log"
-              />
+              <img :src="getImgUrl(baseInfo.log)" alt class="team-logo" v-if="baseInfo&&baseInfo.log" />
               <p class="team-logo no-logo" v-else></p>
               <span>{{baseInfo&&baseInfo.team_name}}</span>
             </div>
@@ -55,7 +50,10 @@
           <breadcrumb :breadcrumbs="breadcrumb"></breadcrumb>
         </el-header>
         <el-main class="team-main" :class="{'comany-main-page': type==1}">
-          <router-view class="team-box"></router-view>
+          <!-- <router-view class="team-box"></router-view> -->
+          <keep-alive>
+            <router-view class="team-box"></router-view>
+          </keep-alive>
         </el-main>
       </el-container>
     </el-container>
@@ -141,7 +139,12 @@ export default {
     handleCommand (val) {
       localStorage.clear('')
       sessionStorage.clear('')
-      this.$router.push('login')
+      this.$router.replace({
+        path: 'login',
+        // 登录成功后跳入浏览的当前页面
+        query: { redirect: 1 }
+      })
+      // this.$router.replace('login')
     }
   },
 }
@@ -149,6 +152,12 @@ export default {
 
 <style scoped lang="scss">
 @import '@/assets/css/common.scss';
+.el-container.is-vertical{
+  // height: 100vh;
+  &.comany-team-container{
+    height: 100vh;
+  }
+}
 .team-main-view{
   width: 100vw;
   height: 100vh;

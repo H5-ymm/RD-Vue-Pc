@@ -84,11 +84,7 @@
 </style>
 <template>
   <el-container class="orderTaking">
-    <el-header
-      class="header x-flex-around home"
-      height="50px"
-      id="header"
-    >
+    <el-header class="header x-flex-around home" height="50px" id="header">
       <headerView :activeIndex="2"></headerView>
     </el-header>
     <el-main class="orderTaking-main-content">
@@ -101,30 +97,16 @@
                 <img src="../assets/img/icon.png" />资讯
               </p>
               <el-row>
-                <el-col
-                  :span="24"
-                  v-for="(item, index) in informationList"
-                  :key="index"
-                >
+                <el-col :span="24" v-for="(item, index) in informationList" :key="index">
                   <div class="grid-information-card x-flex-start-justify">
-                    <img
-                      :src="item.image"
-                      class="grid-information-img"
-                    />
+                    <img :src="item.image" class="grid-information-img" />
                     <div class="grid-information">
-                      <el-link
-                        :underline="false"
-                        class="grid-information-title"
-                      >{{item.title}}</el-link>
+                      <el-link :underline="false" class="grid-information-title">{{item.title}}</el-link>
                       <p class="grid-information-content">
                         <span v-html="item.content"></span>
                         <span class="grid-information-btn">
                           <div class="x-flex-between">
-                            <el-link
-                              :underline="false"
-                              type="primary"
-                              :href="`informationDetail?id=${item.id}&ids=${ids}`"
-                            >[查看详情]</el-link>
+                            <el-link :underline="false" type="primary" :href="`informationDetail?id=${item.id}&ids=${ids}`">[查看详情]</el-link>
                             <span class="grid-information-time">{{$moment.unix(item.addtime).format('YYYY-MM-DD')}}</span>
                           </div>
                         </span>
@@ -134,50 +116,22 @@
                 </el-col>
               </el-row>
             </section>
-            <el-pagination
-              background
-              class="pagination"
-              @current-change="currentChange"
-              layout="prev, pager, next"
-              :total="total"
-            ></el-pagination>
+            <el-pagination background class="pagination" @current-change="currentChange" layout="prev, pager, next" :total="total"></el-pagination>
           </div>
           <div class="orderTaking-main-col2">
             <section class="home-main-section panel-content">
               <p class="home-main-title x-flex-start-justify">热搜排行</p>
               <div class="info-center-order">
                 <ul class="info-center-content">
-                  <li
-                    class="x-flex-start-justify info-center-item"
-                    v-for="(item,index) in hortInquiryList"
-                    :key="index"
-                  >
+                  <li class="x-flex-start-justify info-center-item" v-for="(item,index) in hortInquiryList" :key="index">
                     <div>
-                      <img
-                        src="../assets/img/teamCenter/one.png"
-                        alt
-                        v-if="index==0"
-                      />
-                      <img
-                        src="../assets/img/teamCenter/two.png"
-                        alt
-                        v-else-if="index==1"
-                      />
-                      <img
-                        src="../assets/img/teamCenter/three.png"
-                        alt
-                        v-else-if="index==2"
-                      />
-                      <p
-                        v-else
-                        class="order-num"
-                      >{{index+1}}</p>
+                      <img src="../assets/img/teamCenter/one.png" alt v-if="index==0" />
+                      <img src="../assets/img/teamCenter/two.png" alt v-else-if="index==1" />
+                      <img src="../assets/img/teamCenter/three.png" alt v-else-if="index==2" />
+                      <p v-else class="order-num">{{index+1}}</p>
                     </div>
                     <div>
-                      <p
-                        class="order-name text-line"
-                        :class="{'active':index<3}"
-                      >{{item.title}}</p>
+                      <p class="order-name text-line" :class="{'active':index<3}">{{item.title}}</p>
                     </div>
                   </li>
                 </ul>
@@ -242,7 +196,7 @@ export default {
   methods: {
     windowScroll () {
       let scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
-      if (scrollTop - document.documentElement.clientHeight + 400 >= 0) {
+      if (scrollTop - document.documentElement.clientHeight + 500 >= 0) {
         this.isShow = true
       }
       else {

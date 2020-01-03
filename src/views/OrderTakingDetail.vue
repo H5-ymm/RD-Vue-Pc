@@ -101,11 +101,7 @@
 </style>
 <template>
   <el-container class="orderTaking">
-    <el-header
-      class="header x-flex-around home"
-      height="50px"
-      id="header"
-    >
+    <el-header class="header x-flex-around home" height="50px" id="header">
       <headerView :activeIndex="1"></headerView>
     </el-header>
     <el-main class="orderTaking-main-content">
@@ -121,35 +117,15 @@
             <p>发布时间：2019-12-01 15:32</p>
           </div>
           <div class="orderTaking-jobDeail-right">
-            <el-button
-              type="primary"
-              size="medium"
-              class="orderTarking-btn"
-              @click="applyReceipt"
-              plain
-            >申请接单</el-button>
+            <el-button type="primary" size="medium" class="orderTarking-btn" @click="applyReceipt" plain>申请接单</el-button>
             <div class="x-flex-around">
               <p class="x-flex-around">
-                <img
-                  src="../assets/img/collect.png"
-                  alt
-                />
-                <el-link
-                  :underline="false"
-                  class="orderTarking-link"
-                  @click="handleCollect"
-                >收藏</el-link>
+                <img src="../assets/img/collect.png" alt />
+                <el-link :underline="false" class="orderTarking-link" @click="handleCollect">收藏</el-link>
               </p>
               <p class="x-flex-around">
-                <img
-                  src="../assets/img/tip.png"
-                  alt
-                />
-                <el-link
-                  :underline="false"
-                  class="orderTarking-link"
-                  @click="tipDialogVisible = true"
-                >举报</el-link>
+                <img src="../assets/img/tip.png" alt />
+                <el-link :underline="false" class="orderTarking-link" @click="tipDialogVisible = true">举报</el-link>
               </p>
             </div>
           </div>
@@ -159,10 +135,7 @@
             <div class="grid-content">
               <section class="orderTaking-card">
                 <Panel title="接单详情">
-                  <div
-                    slot="content"
-                    class="panel-content x-flex-start"
-                  >
+                  <div slot="content" class="panel-content x-flex-start">
                     <div class="orderTaking-info">
                       <p>
                         <span>需求人数：</span>
@@ -204,19 +177,12 @@
               </section>
               <section class="orderTaking-card">
                 <Panel title="职位描述">
-                  <div
-                    slot="content"
-                    class="panel-content"
-                    v-html="orderTakingDetail.job_content"
-                  ></div>
+                  <div slot="content" class="panel-content" v-html="orderTakingDetail.job_content"></div>
                 </Panel>
               </section>
               <section class="orderTaking-card">
                 <Panel title="返利详情">
-                  <div
-                    slot="content"
-                    class="panel-content x-flex-start"
-                  >
+                  <div slot="content" class="panel-content x-flex-start">
                     <div class="orderTaking-info">
                       <p>
                         <span>返利方式：</span>
@@ -226,10 +192,7 @@
                         <span>结算时间：</span>
                         <span>次月第{{orderTakingDetail.settlement_time}}号结算</span>
                       </p>
-                      <p
-                        class="team-info-card-item"
-                        v-else
-                      >
+                      <p class="team-info-card-item" v-else>
                         <span>结算时间：</span>
                         <span>{{orderTakingDetail.settlement_type==1?'本':'次'}}{{orderTakingDetail.reward_money_type==1?'天':orderTakingDetail.reward_money_type==2?'周': '月'}}{{orderTakingDetail.settlement_time?orderTakingDetail.settlement_time:'第一天'}}</span>
                       </p>
@@ -237,10 +200,7 @@
                         <span>持续时长：</span>
                         <span>{{orderTakingDetail.settlement_time?orderTakingDetail.settlement_time:'1'}}{{orderTakingDetail.reward_continuous==1?'天':orderTakingDetail.reward_continuous==2?'周': '个月'}}</span>
                       </p>
-                      <p
-                        class="team-info-card-item"
-                        v-if="orderTakingDetail.reward_type==4"
-                      >
+                      <p class="team-info-card-item" v-if="orderTakingDetail.reward_type==4">
                         <span>需入职满：</span>
                         <span v-if="orderTakingDetail.reward_needtime">{{orderTakingDetail.reward_needtime}}{{orderTakingDetail.reward_continuous==1?'天':orderTakingDetail.reward_continuous==2?'周': '月'}}</span>
                         <span v-else>当{{orderTakingDetail.reward_continuous==1?'天':orderTakingDetail.reward_continuous==2?'周': '月'}}返利</span>
@@ -266,13 +226,7 @@
               </section>
               <section class="orderTaking-card">
                 <Panel title="推荐接单">
-                  <section
-                    slot="content"
-                    class="orderTaking-main-card"
-                    v-for="(item,index) in list"
-                    :key="index"
-                    :class="{'orderTaking-main-sectionActive':index==0}"
-                  >
+                  <section slot="content" class="orderTaking-main-card" v-for="(item,index) in list" :key="index" :class="{'orderTaking-main-sectionActive':index==0}">
                     <div class="orderTaking-main-section x-flex-between">
                       <div class="orderTaking-main-row orderTaking-main-row1">
                         <ul class="orderTaking-main-item">
@@ -295,32 +249,14 @@
                         <ul class="orderTaking-main-item">
                           <li class="company-name x-flex-start-justify">
                             <span>{{item.com_name}}</span>
-                            <img
-                              src="../assets/img/noIcon.png"
-                              class="orderTaking-icon"
-                              alt
-                              v-if="item.status==2"
-                            />
-                            <img
-                              src="../assets/img/noIcon.png"
-                              alt
-                              v-else
-                            />
+                            <img src="../assets/img/noIcon.png" class="orderTaking-icon" alt v-if="item.status==2" />
+                            <img src="../assets/img/noIcon.png" alt v-else />
                             <span class="ctime">{{ $moment.unix(item.ctime).format('HH:mm')}}发布</span>
                           </li>
                           <li>
-                            <el-tag
-                              size="small"
-                              v-if="item.is_fund"
-                            >五险</el-tag>
-                            <el-tag
-                              size="small"
-                              v-if="item.is_fund==1"
-                            >公积金</el-tag>
-                            <el-tag
-                              size="small"
-                              v-if="item.is_fund==2"
-                            >试用期过后</el-tag>
+                            <el-tag size="small" v-if="item.is_fund">五险</el-tag>
+                            <el-tag size="small" v-if="item.is_fund==1">公积金</el-tag>
+                            <el-tag size="small" v-if="item.is_fund==2">试用期过后</el-tag>
                           </li>
                           <li>地点：{{item.address}}</li>
                         </ul>
@@ -336,61 +272,29 @@
           </div>
           <div class="orderTaking-main-col2">
             <div class="company-detail">
-              <img
-                :src="logoUrl"
-                alt
-                class="company-logo"
-              />
+              <img :src="logoUrl" alt class="company-logo" />
               <p class="company-name">{{companyInfo.com_name}}</p>
               <div class="x-flex-between">
                 <p class="x-flex-around">
-                  <img
-                    src="../assets/img/hy.png"
-                    alt
-                  />
-                  <span
-                    :underline="false"
-                    class="orderTarking-link"
-                  >{{companyInfo.com_sort}}</span>
+                  <img src="../assets/img/hy.png" alt />
+                  <span :underline="false" class="orderTarking-link">{{companyInfo.com_sort}}</span>
                 </p>
                 <p class="x-flex-around">
-                  <img
-                    src="../assets/img/my.png"
-                    alt
-                  />
-                  <span
-                    :underline="false"
-                    class="orderTarking-link"
-                  >{{companyInfo.com_scale}}</span>
+                  <img src="../assets/img/my.png" alt />
+                  <span :underline="false" class="orderTarking-link">{{companyInfo.com_scale}}</span>
                 </p>
               </div>
               <div class="x-flex-between">
                 <p class="x-flex-around">
-                  <img
-                    src="../assets/img/address.png"
-                    alt
-                  />
-                  <span
-                    :underline="false"
-                    class="orderTarking-link"
-                  >{{companyInfo.address}}</span>
+                  <img src="../assets/img/address.png" alt />
+                  <span :underline="false" class="orderTarking-link">{{companyInfo.address}}</span>
                 </p>
               </div>
               <div class="company-profile">
                 <span>公司简介</span>
-                <p
-                  class="company-profile-content"
-                  ref="content"
-                  v-html="companyInfo.content+'哈哈哈哈哈哈哈哈哈哈哈剋坎坎坷坷坎坎坷坷'"
-                ></p>
-                <p
-                  class="x-flex-center"
-                  @click="showMore()"
-                >
-                  <img
-                    src="../assets/img/moreDown.png"
-                    alt
-                  />
+                <p class="company-profile-content" ref="content" v-html="companyInfo.content+'哈哈哈哈哈哈哈哈哈哈哈剋坎坎坷坷坎坎坷坷'"></p>
+                <p class="x-flex-center" @click="showMore()">
+                  <img src="../assets/img/moreDown.png" alt />
                   <span class="profile-more">查看更多</span>
                 </p>
               </div>
@@ -398,11 +302,7 @@
             <div class="bg-purple-light">
               <p class="job-title">该公司的接单职位</p>
               <div>
-                <ul
-                  class="orderTaking-main-item orderTaking-main-history"
-                  v-for="(item,index) in browsingList"
-                  :key="index"
-                >
+                <ul class="orderTaking-main-item orderTaking-main-history" v-for="(item,index) in browsingList" :key="index">
                   <li class="x-flex-between">
                     <span class="company-name">{{item.name}}</span>
                     <span class="require-number">{{item.required_number}}人</span>
@@ -415,10 +315,7 @@
                 </ul>
               </div>
             </div>
-            <div
-              class="orderTaking-login"
-              v-if="isShowLogin"
-            >
+            <div class="orderTaking-login" v-if="isShowLogin">
               <LoginBox></LoginBox>
             </div>
           </div>
@@ -427,17 +324,8 @@
     </el-main>
     <FooterView></FooterView>
     <AsideBox :isShow="isShow"></AsideBox>
-    <Dialog
-      :centerDialogVisible="centerDialogVisible"
-      :modalInfo="modalInfo"
-      @handleClose="handleClose"
-      @handleOk="handleOk"
-    ></Dialog>
-    <TipDialog
-      :tipDialogVisible="tipDialogVisible"
-      @handleClose="tipDialogVisible=false"
-      @submit="submit"
-    ></TipDialog>
+    <Dialog :centerDialogVisible="centerDialogVisible" :modalInfo="modalInfo" @handleClose="handleClose" @handleOk="handleOk"></Dialog>
+    <TipDialog :tipDialogVisible="tipDialogVisible" @handleClose="tipDialogVisible=false" @submit="submit"></TipDialog>
   </el-container>
 </template>
 <script>
@@ -540,7 +428,7 @@ export default {
     },
     windowScroll () {
       let scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
-      if (scrollTop - document.documentElement.clientHeight + 400 >= 0) {
+      if (scrollTop - document.documentElement.clientHeight + 500 >= 0) {
         this.isShow = true
       }
       else {

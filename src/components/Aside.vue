@@ -287,13 +287,7 @@ export default {
     routerli () {
       // 对应路由
       let pathStr = this.$route.path.split('/')
-      if (pathStr[1] == 'team') {
-        setTimeout(() => {
-          this.$router.replace('teamData')
-        }, 50)
-      }
       return '/' + pathStr[1]
-
     }
   }
 }

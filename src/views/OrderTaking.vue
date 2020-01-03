@@ -4,14 +4,8 @@
 </style>
 
 <template>
-  <el-container
-    class="orderTaking"
-    id="header"
-  >
-    <el-header
-      class="header x-flex-around home"
-      height="50px"
-    >
+  <el-container class="orderTaking" id="header">
+    <el-header class="header x-flex-around home" height="50px">
       <headerView :activeIndex="1"></headerView>
     </el-header>
     <el-main class="orderTaking-main-content">
@@ -23,97 +17,35 @@
           <div class="orderTaking-search-query x-flex-start-justify">
             <span class="orderTaking-search-label">地点</span>
             <ul class="orderTaking-search-value">
-              <li
-                v-for="(item, index) in cityList"
-                :key="index"
-                @click="querySelect(item.value,'cityid')"
-                :class="{'active': params.cityid==item.value}"
-              >{{item.name}}</li>
+              <li v-for="(item, index) in cityList" :key="index" @click="querySelect(item.value,'cityid')" :class="{'active': params.cityid==item.value}">{{item.name}}</li>
             </ul>
-            <el-button
-              type="text"
-              class="orderTaking-more"
-              @click="dialogVisible=true"
-            >更多</el-button>
+            <el-button type="text" class="orderTaking-more" @click="dialogVisible=true">更多</el-button>
           </div>
-          <!-- <div class="orderTaking-search-query x-flex-start-justify">
+          <div class="orderTaking-search-query x-flex-start-justify">
             <span class="orderTaking-search-label">不限</span>
             <ul class="orderTaking-search-value">
-              <li
-                v-for="(item, index) in areaList"
-                :key="index"
-                @click="querySelect(item.code,'three_cityid')"
-                :class="{'active': params.three_cityid==item.code}"
-              >{{item.name}}</li>
+              <li v-for="(item, index) in areaList" :key="index" @click="querySelect(item.code,'three_cityid')" :class="{'active': params.three_cityid==item.code}">{{item.name}}</li>
             </ul>
-          </div> -->
+          </div>
           <div class="orderTaking-search-select x-flex-between">
             <div class="orderTaking-search-value">
-              <el-select
-                v-model="params.money_type"
-                @change="querySelect($event,'money_type')"
-                placeholder="薪资方式"
-              >
-                <el-option
-                  v-for="(item,index) in moneyTypeList"
-                  :key="index"
-                  :label="item.label"
-                  :value="item.value"
-                ></el-option>
+              <el-select v-model="params.money_type" @change="querySelect($event,'money_type')" placeholder="薪资方式">
+                <el-option v-for="(item,index) in moneyTypeList" :key="index" :label="item.label" :value="item.value"></el-option>
               </el-select>
-              <el-select
-                v-model="params.reward_type"
-                @change="querySelect($event,'reward_type')"
-                placeholder="返利方式"
-              >
-                <el-option
-                  v-for="(item,index) in rewardList"
-                  :key="index"
-                  :label="item.label"
-                  :value="item.value"
-                ></el-option>
+              <el-select v-model="params.reward_type" @change="querySelect($event,'reward_type')" placeholder="返利方式">
+                <el-option v-for="(item,index) in rewardList" :key="index" :label="item.label" :value="item.value"></el-option>
               </el-select>
-              <el-select
-                v-model="params.require_number"
-                @change="querySelect($event,'require_number')"
-                placeholder="需求人数"
-              >
-                <el-option
-                  v-for="(item,index) in requirePersonList"
-                  :key="index"
-                  :label="item.label"
-                  :value="item.value"
-                ></el-option>
+              <el-select v-model="params.require_number" @change="querySelect($event,'require_number')" placeholder="需求人数">
+                <el-option v-for="(item,index) in requirePersonList" :key="index" :label="item.label" :value="item.value"></el-option>
               </el-select>
-              <el-select
-                v-model="params.is_five_risks"
-                @change="querySelect($event,'is_five_risks')"
-                placeholder="缴纳五金"
-              >
-                <el-option
-                  v-for="(item,index) in paymentTaxType"
-                  :key="index"
-                  :label="item.label"
-                  :value="item.value"
-                ></el-option>
+              <el-select v-model="params.is_five_risks" @change="querySelect($event,'is_five_risks')" placeholder="缴纳五金">
+                <el-option v-for="(item,index) in paymentTaxType" :key="index" :label="item.label" :value="item.value"></el-option>
               </el-select>
-              <el-select
-                v-model="params.is_fund"
-                @change="querySelect($event,'is_fund')"
-                placeholder="缴纳公积金"
-              >
-                <el-option
-                  v-for="(item,index) in paymentTaxType"
-                  :key="index"
-                  :label="item.label"
-                  :value="item.value"
-                ></el-option>
+              <el-select v-model="params.is_fund" @change="querySelect($event,'is_fund')" placeholder="缴纳公积金">
+                <el-option v-for="(item,index) in paymentTaxType" :key="index" :label="item.label" :value="item.value"></el-option>
               </el-select>
             </div>
-            <span
-              class="clear"
-              @click="clearQuery"
-            >清空筛选条件</span>
+            <span class="clear" @click="clearQuery">清空筛选条件</span>
           </div>
         </div>
       </div>
@@ -121,18 +53,11 @@
         <div class="orderTaking-main-row">
           <div class="orderTaking-main-col1">
             <div class="grid-content orderTaking-grid-content">
-              <section
-                v-for="(item,index) in list"
-                :key="index"
-                :class="{'orderTaking-main-sectionActive':index==0}"
-              >
+              <section v-for="(item,index) in list" :key="index" :class="{'orderTaking-main-sectionActive':index==0}">
                 <div class="orderTaking-main-section x-flex-between">
                   <div class="orderTaking-main-row orderTaking-main-row1">
                     <ul class="orderTaking-main-item">
-                      <li
-                        class="job-name"
-                        @click="$router.push({path:'orderTakingDetail',query:{id:item.id,uid:item.uid}})"
-                      >
+                      <li class="job-name" @click="$router.push({path:'orderTakingDetail',query:{id:item.id,uid:item.uid}})">
                         <span class="company-name">{{item.name}}</span>
                       </li>
                       <li class="require-number">
@@ -154,62 +79,31 @@
                     <ul class="orderTaking-main-item">
                       <li class="company-name x-flex-start-justify">
                         <span>{{item.com_name||'公司名称'}}</span>
-                        <img
-                          src="../assets/img/noIcon.png"
-                          class="orderTaking-icon"
-                          alt
-                          v-if="item.status==2"
-                        />
-                        <img
-                          src="../assets/img/noIcon.png"
-                          alt
-                          v-else
-                        />
+                        <img src="../assets/img/noIcon.png" class="orderTaking-icon" alt v-if="item.status==2" />
+                        <img src="../assets/img/noIcon.png" alt v-else />
                         <span class="ctime">{{ $moment.unix(item.ctime).format('HH:mm')}}发布</span>
                       </li>
                       <li>
-                        <el-tag
-                          size="small"
-                          v-if="item.is_fund"
-                        >五险</el-tag>
-                        <el-tag
-                          size="small"
-                          v-if="item.is_fund==1"
-                        >公积金</el-tag>
-                        <el-tag
-                          size="small"
-                          v-if="item.is_fund==2"
-                        >试用期过后</el-tag>
+                        <el-tag size="small" v-if="item.is_fund">五险</el-tag>
+                        <el-tag size="small" v-if="item.is_fund==1">公积金</el-tag>
+                        <el-tag size="small" v-if="item.is_fund==2">试用期过后</el-tag>
                       </li>
                       <li>地点：{{item.address}}</li>
                     </ul>
                   </div>
                   <div>
-                    <el-button
-                      type="primary"
-                      @click="handleApply(item)"
-                    >立即接单</el-button>
+                    <el-button type="primary" @click="handleApply(item)">立即接单</el-button>
                   </div>
                 </div>
               </section>
             </div>
-            <el-pagination
-              background
-              class="pagination"
-              @current-change="currentChange"
-              layout="prev, pager, next"
-              :total="total"
-            ></el-pagination>
+            <el-pagination background class="pagination" @current-change="currentChange" layout="prev, pager, next" :total="total"></el-pagination>
           </div>
           <div class="orderTaking-main-col2">
             <div class="bg-purple-light">
               <p class="job-title">看过的接单职位</p>
               <div v-if="browsingList.length">
-                <ul
-                  class="orderTaking-main-item orderTaking-main-history"
-                  v-for="(item,index) in browsingList"
-                  :key="index"
-                >
+                <ul class="orderTaking-main-item orderTaking-main-history" v-for="(item,index) in browsingList" :key="index">
                   <li class="x-flex-between">
                     <span class="company-name">{{item.name}}</span>
                     <span class="require-number">{{item.required_number}}人</span>
@@ -222,10 +116,7 @@
                 </ul>
               </div>
             </div>
-            <div
-              class="orderTaking-login"
-              v-if="isShowLogin"
-            >
+            <div class="orderTaking-login" v-if="isShowLogin">
               <LoginBox></LoginBox>
             </div>
           </div>
@@ -234,11 +125,7 @@
     </el-main>
     <FooterView></FooterView>
     <AsideBox :isShow="isShow"></AsideBox>
-    <ModalCity
-      :dialogVisible="dialogVisible"
-      @getCityCode="getCityCode"
-      @handleClose="handleClose"
-    ></ModalCity>
+    <ModalCity :dialogVisible="dialogVisible" @getCityCode="getCityCode" @handleClose="handleClose"></ModalCity>
   </el-container>
 </template>
 <script>
@@ -301,7 +188,7 @@ export default {
   methods: {
     windowScroll () {
       let scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
-      if (scrollTop - document.documentElement.clientHeight + 400 >= 0) {
+      if (scrollTop - document.documentElement.clientHeight + 500 >= 0) {
         this.isShow = true
       }
       else {

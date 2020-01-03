@@ -35,19 +35,19 @@ export const cityList = [
   },
   {
     name: '武汉',
-    value: '420100'
+    value: '430100'
   },
   {
     name: '厦门',
-    value: '420110'
+    value: '350200'
   },
   {
     name: '长沙',
-    value: '420200'
+    value: '430100'
   },
   {
     name: '成都',
-    value: '421100'
+    value: '510100'
   },
   {
     name: '湖南',
@@ -55,7 +55,7 @@ export const cityList = [
   },
   {
     name: '福建',
-    value: '423100'  
+    value: '423100'
   }
 ]
 

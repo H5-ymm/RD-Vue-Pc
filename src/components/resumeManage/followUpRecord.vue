@@ -1,11 +1,5 @@
 <template>
-  <el-dialog
-    width="500px"
-    :visible="dialogTableVisible"
-    center
-    class="member-dialog record-dialog"
-    :show-close="false"
-  >
+  <el-dialog width="500px" :visible="dialogTableVisible" center class="member-dialog record-dialog" :show-close="false">
     <div class="member-row" id="top">
       <img src="../../assets/img/member/cancel.png" alt class="cancel-icon" @click="handleClose" />
       <section class="member-col1">
@@ -45,12 +39,7 @@
         <el-button @click="show=false" type="text" class="transition-close">收起</el-button>
         <div class="record-submit">
           <p>添加跟进记录</p>
-          <el-input
-            type="textarea"
-            :autosize="{ minRows: 4}"
-            placeholder="请输入跟进记录"
-            v-model="reason"
-          ></el-input>
+          <el-input type="textarea" :autosize="{ minRows: 4}" placeholder="请输入跟进记录" v-model="reason"></el-input>
           <div class="resume-btn">
             <el-button @click="show=false,reason=''">取消</el-button>
             <el-button type="primary" @click="save">保存</el-button>
@@ -164,6 +153,10 @@ export default {
   }
   .el-dialog__body,.el-dialog__header {
     padding: 0;
+  }
+  .member-col1 {
+    background:#EBF4FB;
+    padding: 21px 0 20px;
   }
   .member-row {
     width: 100%;

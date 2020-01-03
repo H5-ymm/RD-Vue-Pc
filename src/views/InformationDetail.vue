@@ -3,11 +3,7 @@
 </style>
 <template>
   <el-container class="orderTaking">
-    <el-header
-      class="header x-flex-around home"
-      height="50px"
-      id="header"
-    >
+    <el-header class="header x-flex-around home" height="50px" id="header">
       <headerView :activeIndex="2"></headerView>
     </el-header>
     <el-main class="orderTaking-main-content">
@@ -26,10 +22,7 @@
               </div>
               <div class="info-detail-content">
                 <p v-html="info.content"></p>
-                <img
-                  :src="info.image"
-                  alt=""
-                >
+                <img :src="info.image" alt="">
               </div>
             </section>
           </div>
@@ -38,16 +31,9 @@
               <p class="home-main-title x-flex-start-justify">最新资讯</p>
               <div class="info-center-order">
                 <ul class="info-center-content">
-                  <li
-                    class="x-flex-start-justify info-center-item"
-                    v-for="(item,index) in hortInquiryList"
-                    :key="index"
-                  >
+                  <li class="x-flex-start-justify info-center-item" v-for="(item,index) in hortInquiryList" :key="index">
                     <div class="info-center-name">
-                      <p
-                        class="text-line"
-                        :class="{'active':index<3}"
-                      >{{item.title}}</p>
+                      <p class="text-line" :class="{'active':index<3}">{{item.title}}</p>
                     </div>
                   </li>
                 </ul>
@@ -58,14 +44,8 @@
         <section class="orderTaking-main-row information-content">
           <div class="orderTaking-main-col1 information-main-col1 information-main-col">
             <div class="home-main-section panel-content">
-              <p
-                @click="getInfo(id,1)"
-                v-if="lastTitle"
-              >上一篇：{{lastTitle}}</p>
-              <p
-                @click="getInfo(id,1)"
-                v-if="nextTitle"
-              >下一篇：{{nextTitle}}</p>
+              <p @click="getInfo(id,1)" v-if="lastTitle">上一篇：{{lastTitle}}</p>
+              <p @click="getInfo(id,1)" v-if="nextTitle">下一篇：{{nextTitle}}</p>
             </div>
           </div>
         </section>
@@ -107,7 +87,8 @@ export default {
       hortInquiryList: [],
       lastTitle: '',
       nextTitle: '',
-      page: 0
+      page: 0,
+      isShow: false
     }
   },
   created () {
@@ -123,6 +104,7 @@ export default {
     this.getHortInquiryList()
   },
   mounted () {
+    document.scrollingElement.scrollTop = 0
     window.addEventListener('scroll', this.windowScroll)
   },
   methods: {
@@ -146,8 +128,9 @@ export default {
       })
     },
     windowScroll () {
+
       let scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
-      if (scrollTop - document.documentElement.clientHeight + 400 >= 0) {
+      if (scrollTop > 100) {
         this.isShow = true
       }
       else {

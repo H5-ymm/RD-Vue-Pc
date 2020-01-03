@@ -1,11 +1,5 @@
 <template>
-  <el-dialog
-    width="400px"
-    title
-    :visible.sync="dialogTableVisible"
-    class="member-dialog"
-    :show-close="false"
-  >
+  <el-dialog width="400px" title :visible.sync="dialogTableVisible" class="member-dialog" :show-close="false">
     <div class="member-row personal-row">
       <img src="../../assets/img/member/cancel.png" alt class="cancel-icon" @click="handleClose" />
       <section class="member-col1">
@@ -18,7 +12,7 @@
         </div>
         <div class="personal-box">
           <el-checkbox-group v-model="checkList">
-            <el-checkbox :label="item" v-for="(item,index) in list" :key="index"></el-checkbox>
+            <el-checkbox :label="item" v-for="(item,index) in personalList" :key="index">{{item.user_name}}</el-checkbox>
           </el-checkbox-group>
         </div>
       </section>
