@@ -27,22 +27,15 @@
           ></el-input>
         </el-form-item>
         <el-form-item label="意向岗位：">
-          <el-select
-            v-model="formMember.industry"
+          <el-input
+            v-model="formMember.jobList"
             class="width300"
             placeholder="请输入意向岗位关键字"
-          >
-            <el-option
-              :label="item"
-              :value="key"
-              v-for="(item,key) in jobList"
-              :key="key"
-            ></el-option>
-          </el-select>
+          ></el-input>
         </el-form-item>
         <el-form-item label="录入人：">
           <el-input
-            v-model="formMember.name"
+            v-model="formMember.inputName"
             class="width300"
             placeholder="请输入录入人关键字"
           ></el-input>
@@ -58,14 +51,14 @@
         </el-form-item>
         <el-form-item label="跟进人：">
           <el-input
-            v-model="formMember.name"
+            v-model="formMember.track_name"
             class="width300"
             placeholder="请输入跟进人关键字"
           ></el-input>
         </el-form-item>
         <el-form-item label="意向工资：">
           <el-select
-            v-model="formMember.industry"
+            v-model="formMember.money"
             class="width300"
             placeholder="请选择意向工资"
           >
@@ -98,7 +91,7 @@
           >查询</el-button>
           <el-button
             type="primary"
-            @click="onSubmit"
+            @click="onReset"
             class="select-btn"
           >重置</el-button>
         </el-form-item>
@@ -118,7 +111,7 @@
             label="序号"
             align="center"
             prop="id"
-            width="40"
+            width="50"
           ></el-table-column>
           <el-table-column
             label="姓名"
@@ -148,35 +141,35 @@
               <span
                 class="text-line"
                 type="text"
-              >{{props.row.name}}</span>
+              >{{props.row.com_name}}</span>
             </template>
           </el-table-column>
           <el-table-column
             label="岗位名称"
-            prop="desired_position"
+            prop="job_name"
             align="center"
             width="150"
           ></el-table-column>
           <el-table-column
             label="报名时间"
-            prop="entry_num"
+            prop="jddesc"
             sortable="custom"
             align="center"
             width="150"
           >
             <template slot-scope="props">
-              <span type="text">{{props.row.uptime?$moment.unix(props.row.uptime).format('YYYY-MM-DD'):'--'}}</span>
+              <span type="text">{{props.row.addtime?$moment.unix(props.row.addtime).format('YYYY-MM-DD'):'--'}}</span>
             </template>
           </el-table-column>
           <el-table-column
             label="入职时间"
-            prop="entry_num"
+            prop="msdesc"
             sortable="custom"
             align="center"
             width="150"
           >
             <template slot-scope="props">
-              <span type="text">{{props.row.uptime?$moment.unix(props.row.uptime).format('YYYY-MM-DD'):'--'}}</span>
+              <span type="text">{{props.row.addtime?$moment.unix(props.row.addtime).format('YYYY-MM-DD'):'--'}}</span>
             </template>
           </el-table-column>
           <el-table-column
@@ -291,7 +284,8 @@ export default {
       jobList: {},
       resumeId: '',
       trackList: [],
-      timeList: []
+      timeList: [],
+      address: []
     }
   },
   created () {
@@ -324,10 +318,10 @@ export default {
     },
     sortChange (column) {
       if (column.order == 'ascending') {
-        this.formMember.timeDesc = 'asc'
+        this.formMember[column.prop] = 'asc'
       }
       else {
-        this.formMember.timeDesc = 'desc'
+        this.formMember[column.prop] = 'desc'
       }
       this.getList(this.formMember)
     },
@@ -353,6 +347,15 @@ export default {
       this.formMember.page = val
       this.getList(this.formMember)
     },
+    onReset() {
+      this.formMember= {
+        uid: localStorage.getItem('uid'),
+        limit: 10,
+        page: 1
+      }
+      this.timeList = []
+      this.getList(this.formMember)
+    }
   }
 }
 </script>

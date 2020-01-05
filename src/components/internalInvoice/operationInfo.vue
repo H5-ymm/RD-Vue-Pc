@@ -4,7 +4,6 @@
       <section class="resume-col3">
         <el-form
           :model="formMember"
-          :rules="rules"
           ref="formMember"
           class="demo-form-inline"
           label-position="right"
@@ -58,8 +57,11 @@
                     <el-radio :label="1" border>是</el-radio>
                     <el-radio :label="2" border>否</el-radio>
                   </el-radio-group>
-                  <div class="x-flex-between select-people-box" @click="selectPerson">
-                    <p class="select-people-text">请选择指定招聘者</p>
+                  <div class="x-flex-between select-people-box" v-if="formMember.is_assign==1" @click="selectPerson">
+                    <p class="select-people-text" v-if="!list.length">请选择指定招聘者</p>
+                    <p v-else class="select-people-text">
+                      <span v-for="(item,index) in list" :key="index">{{item.user_name}}</span>
+                    </p>
                     <img src="../../assets/img/receipt/people.png" alt />
                   </div>
                 </el-form-item>
@@ -92,11 +94,13 @@ export default {
     return {
       dialogTableVisible: false,
       formMember: {
-        job_type: 1
+        job_type: 1,
+        is_assign:1
       },
       assignUids: '',
       meetingTime: '',
-      personalList: []
+      personalList: [],
+      list: []
     }
   },
   created () {
@@ -104,18 +108,23 @@ export default {
   methods: {
     selectPerson () {
       let uid = localStorage.getItem('uid')
-      getTeamManage(uid).then(res => {
+      getTeamManage({uid}).then(res => {
         this.personalList = res.data
         this.dialogTableVisible = true
       }).catch(error => {
         this.$message.error(error.status.remind)
       })
     },
-    handleClose () {
-      this.$parent.dialogTableVisible = false
+    handleOk (val) { 
+      this.list = val
+      let arr = val.map(item=>{
+        return item.uid
+      }) 
+      this.formMember.assign_uids = arr.join(',')
+      this.dialogTableVisible = false
     },
-    handleOk (val) { },
     submitForm () {
+      console.log(this.formMember)
       this.$emit('submitForm', this.formMember)
     }
   }
@@ -208,6 +217,9 @@ export default {
     border-radius: 3px;
     .select-people-text {
       color: #999999;
+      span {
+        margin-right: 5px;
+      }
     }
   }
   .resume-footer-btn {

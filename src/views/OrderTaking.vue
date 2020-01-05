@@ -230,7 +230,7 @@ export default {
       if (this.token) {
         let params = {
           job_id: val.id,
-          uid: val.uid
+          uid: localStorage.getItem('uid')
         }
         addApply(params).then(res => {
           console.log(res)
@@ -281,10 +281,10 @@ export default {
         page: 1
       }
       this.getData(this.params)
-    },
-    destroyed () {
-      window.removeEventListener('scroll', this.windowScroll)
     }
+  },
+   destroyed () {
+    window.removeEventListener('scroll', this.windowScroll)
   }
 }
 </script>

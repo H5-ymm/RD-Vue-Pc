@@ -5,7 +5,6 @@
       <section class="resume-col3">
         <el-form
           :model="formMember"
-          :rules="rules"
           ref="formMember"
           class="demo-form-inline"
           label-position="right"
@@ -21,9 +20,11 @@
                     <el-radio :label="2" border>普通招聘</el-radio>
                   </el-radio-group>
                 </el-form-item>
-                <div v-if="formMember.type==1">
-                  <rewardType></rewardType>
-                </div>
+                <el-form-item>
+                  <div v-if="formMember.type==1">
+                    <rewardType @submit="submit"></rewardType>
+                  </div>
+                 </el-form-item>
               </div>
             </div>
           </section>
@@ -56,9 +57,6 @@ export default {
   },
   created () {
     let params = 'edu_type,money_array'
-    for (let i = 16; i < 46; i++) {
-      this.ageList.push(i)
-    }
     this.getList(params)
   },
   methods: {
@@ -81,6 +79,10 @@ export default {
     },
     handleClose () {
       this.$parent.dialogTableVisible = false
+    },
+    submit(val){
+      console.log(val)
+      this.formMember = Object.assign(this.formMember,val)
     },
     submitForm () {
       this.$emit('submitForm', this.formMember)

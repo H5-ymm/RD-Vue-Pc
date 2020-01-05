@@ -1,9 +1,12 @@
+<style lang="scss">
+@import '@/assets/css/resume';
+</style>
 <template>
-  <div class="tables-box billingManagement">
+  <div class="tables-box billingManagement ">
     <div>
       <ul class="x-flex-start tab-box">
         <li :class="{'tab-active':tabIndex==0}" @click="tabIndex=0">
-          <p>团队接单</p>
+          <p>内部发单</p>
           <img src="../../assets/img/icon6.png" v-if="tabIndex==0" alt />
         </li>
         <li :class="{'tab-active':tabIndex==1}" @click="tabIndex=1">
@@ -12,13 +15,13 @@
         </li>
       </ul>
     </div>
-    <div class="table-list resume-list">
+    <div class="table-list">
       <el-form
         :inline="true"
         label-width="120px"
         label-position="right"
         :model="formMember"
-        class="demo-form-inline"
+        class="demo-form-inline form-item-wrap"
       >
         <el-form-item label="企业/岗位名称：">
           <el-input v-model="formMember.name" class="width300" placeholder="请输入职位名称关键字"></el-input>
@@ -35,9 +38,9 @@
           >{{item.label}}</el-button>
         </el-form-item>
       </el-form>
-      <div class="member-table resume-table">
+      <div class="member-table resume-table resume-table1">
         <div class="table-query">
-          <el-button>批量推荐</el-button>
+          <el-button @click="handleApply(resumeId)">批量推荐</el-button>
           <span class="select-text">
             已选择
             <el-button type="text">{{multipleSelection.length}}&nbsp;</el-button>项
@@ -54,37 +57,43 @@
           <el-table-column type="selection" align="center" width="60"></el-table-column>
           <el-table-column label="企业名称" align="center" width="150">
             <template slot-scope="props">
-              <el-button type="text" @click="handleEdit(props.row)">{{props.row.name}}</el-button>
+              <el-button type="text" @click="handleEdit(props.row)">{{props.row.company_name}}</el-button>
             </template>
           </el-table-column>
           <el-table-column label="岗位名称" align="center" width="120">
             <template slot-scope="props">
-              <el-button type="text">{{props.row.money_type | moneyType}}</el-button>
+              <el-button type="text">{{props.row.job_name}}</el-button>
             </template>
           </el-table-column>
-          <el-table-column label="返利模式" prop="depart_name" align="center" width="120"></el-table-column>
+          <!-- <el-table-column label="返利模式" prop="offermoney_type" align="center" width="120"></el-table-column> -->
+          <el-table-column label="薪资类型" align="center" width="100">
+            <template slot-scope="props">
+              <el-button type="text">{{props.row.offermoney_type | moneyType}}</el-button>
+            </template>
+          </el-table-column>
           <el-table-column label="工资" align="center" width="100">
             <template slot-scope="props">
-              <el-button type="text">{{props.row.reward_type | rewardType}}</el-button>
+              <el-button type="text">{{props.row.offermoney || 0}}</el-button>
             </template>
           </el-table-column>
-          <el-table-column label="接单状态" prop="reward_money" align="center" width="120"></el-table-column>
+          <el-table-column label="接单状态" align="center" width="120">
+             <template slot-scope="props">
+              <span class="status" :class="{'status3':props.row.is_up !=1}">{{props.row.is_up ==1 ? '进行中': '已下架'}}</span>
+            </template>
+          </el-table-column>
           <el-table-column label="岗位匹配度" prop="entry_num" align="center" width="150">
+            <template slot-scope="props">
+               <el-rate v-model="value1"></el-rate>
+            </template>
+          </el-table-column>
+          <el-table-column label="岗位匹配项" align="center" min-width="180" >
             <template slot-scope="props">
               <jobMate :statusObj="props.row"></jobMate>
             </template>
           </el-table-column>
-          <el-table-column label="岗位匹配项" align="center" width="150">
-            <template slot-scope="props">
-              <span
-                class="status"
-                :class="{'active-status':props.row.status==1}"
-              >{{props.row.status==1?"正常":'锁定'}}</span>
-            </template>
-          </el-table-column>
           <el-table-column label="操作" align="center" min-width="120">
             <template slot-scope="scope">
-              <el-button @click="handleApply(scope.row)" type="text" size="small">推荐岗位</el-button>
+              <el-button @click="handleApply(scope.row.id)" type="text" size="small">推荐岗位</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -105,6 +114,7 @@
 
 <script>
 import { getResumeList, addUserResume } from '@/api/resume'
+import { getJoblist,addPut } from '@/api/internalInvoice'
 import { moneyTypeList, rewardTypeList, payTypeList, weekList } from '@/base/base'
 import { recommendTeamUserJob } from '@/api/collect'
 import jobMate from './jobMate'
@@ -117,6 +127,7 @@ export default {
       let obj = moneyTypeList.find(item => {
         return val == item.value
       })
+      console.log(obj)
       return obj ? obj.label : '--'
     },
     rewardType (val) {
@@ -139,29 +150,31 @@ export default {
         page: 1
       },
       total: 0,
-      len: 0,
-      userId: '',
       multipleSelection: [],
-      form: {},
       statusList: [
         { label: '全部', value: 0 },
         { label: '进行中', value: 1 },
         { label: '已下架', value: 2 }
       ],
       activeIndex: 0,
-      tabIndex: 0
+      tabIndex: 0,
+      value1:5,
+      jobId: '',
+      resumeId:''
     }
   },
   created () {
-    // 初始化查询标签数据
+    this.jobId = this.$route.query.id
+    console.log(this.jobId )
     this.getList(this.formMember)
   },
   methods: {
     getList (params) {
-      getResumeList(params).then(res => {
+      getJoblist(params).then(res => {
         const { data } = res
         this.tableData = data.data
-        this.total = data.count
+        console.log(res)
+        this.total = res.data.count
       })
     },
     selectStatus (item, index) {
@@ -176,14 +189,16 @@ export default {
       this.formMember.page = val
       this.getList(this.formMember)
     },
-    handleApply (val) {
-      let params = {
-        jobId: val.jobId,
-        id: val.id,
-        uid: localStorage.getItem('uid'),
-        collectId: val.id
+    handleApply (resumeId) {
+      if (!resumeId) {
+        return this.$message.warning('请选择组员')
       }
-      teamcollection(params).then(res => {
+      let params = {
+        job_id: this.jobId,
+        resume_id: resumeId,
+        uid: localStorage.getItem('uid')
+      }
+      addPut(params).then(res => {
         this.dialogTableVisible = true
         this.getList(this.formMember)
       }).catch(error => {
@@ -191,7 +206,10 @@ export default {
       })
     },
     handleSelectionChange (val) {
-      this.len = val
+      let arr = val.map(item => {
+        return item.uid
+      })
+      this.resumeId = arr.join(',')
     },
     onSubmit () {
       this.getList(this.formMember)
@@ -202,9 +220,6 @@ export default {
 
 <style lang="scss">
 .billingManagement {
-  .demo-form-inline {
-    width: 80%;
-  }
   .tab-box {
     margin: 10px 0 25px;
     >li {

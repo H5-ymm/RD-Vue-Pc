@@ -166,6 +166,7 @@
             <el-table-column
               label="操作"
               align="center"
+              min-width="160"
             >
               <template slot-scope="scope">
                 <el-button
@@ -181,6 +182,7 @@
                     size="small"
                   >确认</el-button>
                   <el-button
+                    @click="handleCloseEdit"
                     type="text"
                     size="small"
                   >取消</el-button>
@@ -263,6 +265,7 @@ export default {
     getList (params) {
       adjustmentList(params).then(res => {
         this.tableData = res.data.data
+        this.total = res.data.count
       })
     },
     handleSizeChange (val) {
@@ -281,7 +284,12 @@ export default {
       // this.teamId = row.uid
       // this.$emit('handleEdit', row.uid)
     },
+    handleCloseEdit(){
+      this.activeIndex = -1
+      this.isEdit = false
+    },
     handleSubmit () {
+      console.log(this.grade_id)
       let params = {
         userId: this.depInfo.uid,
         gradeId: this.grade_id

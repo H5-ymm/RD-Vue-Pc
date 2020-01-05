@@ -176,6 +176,13 @@ export const timeStatusList = [
   { label: '最近一个月', value: 5 }
 ]
 
+export const entryStatusList1 = [
+  { label: '待审核', value: 0 },
+  { label: '已通过', value: 1 },
+  { label: '已拒绝', value: 2 },
+  { label: '未参加', value: 3 },
+  { label: '放弃面试', value: 4 }
+]
 export const positionStatusList = [
   { label: '全部', value: 0 },
   { label: '高薪返利', value: 1 },

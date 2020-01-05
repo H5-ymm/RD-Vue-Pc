@@ -1,14 +1,25 @@
 <style lang="scss">
   @import '@/assets/css/resume.scss';
-  .error {
-    color: #FE2A00;
-    font-size: 12px;
-    margin: 20px 0 -15px;
-    display: block;
+  .internal-invoice {
+    .error {
+      color: #FE2A00;
+      font-size: 12px;
+      margin: 20px 0 -15px;
+      display: block;
+    }
+    .success-color {
+      color: #71D875;
+    }
+    .fail-color{
+      color: #FF0000;
+    }
+    .outline-color {
+      color: #999999;
+    }
   }
 </style>
 <template>
-  <div class="tables-box billingManagement receipt-manage">
+  <div class="tables-box billingManagement receipt-manage internal-invoice">
     <div class="table-list">
       <el-form
         :inline="true"
@@ -31,10 +42,10 @@
           </el-select>
         </el-form-item>
         <el-form-item label="企业名称：">
-          <el-input v-model="formMember.team_name" class="width300" placeholder="请输入企业名称关键字"></el-input>
+          <el-input v-model="formMember.com_name" class="width300" placeholder="请输入企业名称关键字"></el-input>
         </el-form-item>
         <el-form-item label="薪资类型：">
-          <el-select v-model="formMember.money_type" class="width300" placeholder="请选择薪资模式">
+          <el-select v-model="formMember.offermoney_type" class="width300" placeholder="请选择薪资模式">
             <el-option
               :label="item.label"
               :value="item.value"
@@ -44,7 +55,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="招聘类型：">
-          <el-select v-model="formMember.money_type" class="width300" placeholder="请选择返利模式">
+          <el-select v-model="formMember.job_type" class="width300" placeholder="请选择返利模式">
             <el-option
               :label="item.label"
               :value="item.value"
@@ -54,7 +65,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="发单状态：">
-          <el-select v-model="formMember.status" class="width300" placeholder="请选择">
+          <el-select v-model="formMember.is_up" class="width300" placeholder="请选择">
             <el-option
               :label="item.label"
               :value="item.value"
@@ -80,7 +91,7 @@
       </el-form>
       <div class="member-table">
         <div class="table-query">
-          <el-button @click="$router.push('postJob')">导出简历</el-button>
+          <el-button>导出简历</el-button>
           <span class="select-text">
             已选择
             <el-button type="text">{{multipleSelection.length}}&nbsp;</el-button>项
@@ -90,9 +101,9 @@
         </div>
         <el-table border :data="tableData" ref="multipleTable" style="width: 100%">
           <el-table-column type="selection" align="center" width="50"></el-table-column>
-          <el-table-column label="发单状态" align="center" width="150">
+          <el-table-column label="发单状态" align="center" min-width="160">
             <template slot-scope="props">
-              <el-select v-model="formMember.status" class="width300" placeholder="请选择">
+              <el-select v-model="formMember.status" class="width150" placeholder="请选择">
                 <el-option
                   :label="item.label"
                   :value="item.value"
@@ -103,49 +114,41 @@
               </el-select>
             </template>
           </el-table-column>
-          <el-table-column label="企业名称" align="center" width="150">
-            <template slot-scope="props">
-              <el-button type="text" @click="handleEdit(props.row)">{{props.row.name}}</el-button>
-            </template>
+          <el-table-column label="企业名称" prop="company_name" align="center" width="150"> </el-table-column>
+          <el-table-column label="岗位名称" prop="job_name" align="center" width="150"></el-table-column>
+          <el-table-column label="岗位类型" align="center" width="110">
+           <template slot-scope="props">
+              <span>{{props.row.jobType | jobType}}</span>
+            </template>  
           </el-table-column>
-          <el-table-column label="岗位名称" prop="name" align="center" width="150"></el-table-column>
-          <el-table-column label="岗位类型" prop="name" align="center" width="110"></el-table-column>
-          <el-table-column label="工作地址" prop="name" align="center" width="110"></el-table-column>
+          <el-table-column label="工作地址" prop="address" align="center" width="110"></el-table-column>
           <el-table-column label="员工薪资" align="center" width="110">
             <template slot-scope="props">
-              <el-button type="text">{{props.row.money_type | moneyType}}</el-button>
+              <span>{{props.row.offermoney}}元/{{props.row.offermoney_type==1?'月':props.row.offermoney_type==2?'日':'时'}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="招聘类型" prop="depart_name" align="center" width="110"></el-table-column>
+          <el-table-column label="招聘类型" prop="type" align="center" width="110"></el-table-column>
           <el-table-column label="薪资类型" align="center" width="110">
             <template slot-scope="props">
-              <el-button type="text">{{props.row.reward_type | rewardType}}</el-button>
+              <span>{{props.row.offermoney_type | moneyType}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="招聘人数" prop="put_num" align="center" width="110"></el-table-column>
-          <el-table-column label="报名人数" prop="depart_name" align="center" width="110">
-            <template slot-scope="props">
-              <div>
-                <span class="el-icon-circle-check success-color">
-                  {{
-                  props.row.view_dcl}}
-                </span>
-              </div>
-            </template>
+          <el-table-column label="招聘人数" prop="number" align="center" width="110"></el-table-column>
+          <el-table-column label="报名人数" prop="view_dcl" align="center" width="110">
           </el-table-column>
-          <el-table-column label="面试人数" prop="depart_name" align="center" width="110">
+          <el-table-column label="面试人数" align="center" min-width="110">
             <template slot-scope="props">
               <div>
                 {{
                 props.row.view_num}}
                 <span class="fail-color">
-                  {{
-                  props.row.view_dcl}}
+                 (待处理{{
+                  props.row.view_dcl}})
                 </span>
               </div>
             </template>
           </el-table-column>
-          <el-table-column label="面试情况" prop="depart_name" align="center" width="110">
+          <el-table-column label="面试情况" prop="depart_name" align="center" min-width="150">
             <template slot-scope="props">
               <div>
                 <span class="el-icon-circle-check success-color">
@@ -165,15 +168,15 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column label="上架状态" align="center" width="110" v-if="userPosition!=3">
+          <el-table-column label="上架状态" align="center" width="110" v-if="userPosition!=1">
             <template slot-scope="props">
               <span
                 class="status"
-                :class="`status${props.row.status}`"
-              >{{props.row.status|recommendStatus}}</span>
+                :class="`status${props.row.is_up}`"
+              >{{props.row.is_up==1?'招聘中':'已下架'}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="创建日期" prop="depart_name" align="center" width="110"></el-table-column>
+          <el-table-column label="创建日期" prop="ctime" align="center" width="170"></el-table-column>
           <el-table-column label="操作" align="center" min-width="150">
             <template slot-scope="scope">
               <el-button
@@ -219,19 +222,25 @@ export default {
       let obj = moneyTypeList.find(item => {
         return val == item.value
       })
-      return obj.label
+      return  obj?obj.label:'--'
     },
     rewardType (val) {
       let obj = rewardTypeList.find(item => {
         return val == item.value
       })
-      return obj.label
+      return  obj?obj.label:'--'
     },
     recommendStatus () {
       let obj = recommendStatusList.find(item => {
         return val == item.value
       })
-      return obj.label
+      return obj?obj.label:'--'
+    },
+    jobType(val){
+      let obj = positionStatusList.find(item => {
+        return val == item.value
+      })
+      return obj? obj.label: '-'    
     }
   },
   data () {
@@ -270,7 +279,7 @@ export default {
         okText: '查看申请',
         closeText: '继续浏览'
       },
-      userPosition: 1, // 1 成员，2经理，3 总经理
+      userPosition: sessionStorage.getItem('userPosition'), // 1 总经理，2经理，3 成员
       show: false,
       keyword: '',
       multipleSelection: [],

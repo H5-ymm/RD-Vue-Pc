@@ -1,5 +1,11 @@
 <style lang="scss">
 @import '@/assets/css/resume';
+ .error {
+    color: #FE2A00;
+    font-size: 12px;
+    margin: 20px 0 -15px;
+    display: block;
+  }
 </style>
 <template>
   <div class="tables-box billingManagement receipt-manage">
@@ -50,26 +56,30 @@
           @selection-change="handleSelectionChange"
         >
           <el-table-column type="selection" align="center" width="50"></el-table-column>
-          <el-table-column label="姓名" align="center" width="110">
-            <template slot-scope="props">
-              <el-button type="text">{{props.row.name}}</el-button>
+          <el-table-column label="姓名" align="center" prop="name" width="110">
+          </el-table-column>
+          <el-table-column label="年龄" align="center" prop="age" width="110">
+          </el-table-column>
+          <el-table-column label="性别" align="center" width="110">
+             <template slot-scope="props">
+              <span>{{props.row.sex==1?'男':'女'}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="年龄" align="center" width="110">
-            <template slot-scope="props">
-              <el-button type="text">{{props.row.money_type | moneyType}}</el-button>
+          <el-table-column label="学历" align="center" width="110" prop="education">
+          </el-table-column>
+          <el-table-column label="住址" prop="reward_money" align="center" width="110">
+             <template slot-scope="props">
+              <span>{{props.row.province}}{{props.row.city}}{{props.row.address}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="性别" prop="depart_name" align="center" width="110"></el-table-column>
-          <el-table-column label="学历" align="center" width="110">
+          <el-table-column label="推荐时间" prop="addtime" align="center" width="180"></el-table-column>
+          <el-table-column :label="lable" align="center" width="110">
             <template slot-scope="props">
-              <el-button type="text">{{props.row.reward_type | rewardType}}</el-button>
+              <span class="status" :class="`status${props.row.status}`" v-if="formMember.job_status==1">{{props.row.status==1?'待审核':props.row.status==2?'通过':'未通过'}}</span>
+              <span class="status" :class="`status${props.row.status}`" v-if="formMember.job_status==2">{{props.row.status | entryStatus}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="住址" prop="reward_money" align="center" width="110"></el-table-column>
-          <el-table-column label="推荐时间" prop="entry_num" align="center" width="180"></el-table-column>
-          <el-table-column :label="lable" prop="entry_num" align="center" width="110"></el-table-column>
-          <el-table-column label="操作" align="center">
+          <el-table-column label="操作" align="center" min-width="160">
             <template slot-scope="scope">
               <div v-if="formMember.job_status==1">
                 <el-button @click="handlResume(1,scope.row)" type="text" size="small">通过</el-button>
@@ -114,14 +124,22 @@
 </template>
 
 <script>
-import { getPutresume, entrantResult, auditRemuse, entrantResult, checkPutresume } from '../../api/internalInvoice'
+import { getPutresume, auditRemuse, entrantResult, checkPutresume } from '../../api/internalInvoice'
+import { entryStatusList1 } from '@/base/base'
 import modal from '../common/modal'
 export default {
   components: {
     modal
   },
+  entryStatus (val) {
+    let obj = entryStatusList1.find(item => {
+      return val == item.value
+    })
+    return obj ? obj.label : ''
+  },
   data () {
     return {
+      entryStatusList1,
       dialogTableVisible: false,
       tableData: [],
       formMember: {
@@ -157,7 +175,7 @@ export default {
   created () {
     // 初始化查询标签数据
     this.jodId = this.$route.query.jobId
-    this.formMember.job_id = this.$route.query.id
+    this.formMember.job_id = this.jodId
     this.getList(this.formMember)
   },
   methods: {
@@ -187,7 +205,7 @@ export default {
         return this.$message.warning('请选择简历')
       }
       this.status = status
-      this.resumeId = val.resumeId
+      this.resumeId = val.resume_id
       this.jobId = val.id
       if (val && this.multipleSelection.length) {
         this.dialogTableVisible = true
@@ -245,7 +263,7 @@ export default {
         return item.id
       })
       let arr2 = val.map(item => {
-        return itm.resumeId
+        return item.resume_id
       })
       this.jobId = arr.join(',')
       this.resumeId = arr2.join(',')

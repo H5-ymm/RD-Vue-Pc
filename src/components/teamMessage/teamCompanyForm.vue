@@ -157,7 +157,6 @@ export default {
     }
     this.companyForm.companyName = compnayInfo.com_name
     this.address = [compnayInfo.provinceid, compnayInfo.cityid, compnayInfo.three_cityid]
-    console.log(this.address)
     let params = 'com_type,com_scale,job_array'
     this.getList(params)
   },

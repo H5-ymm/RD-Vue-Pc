@@ -20,11 +20,9 @@
     padding-top: 70px;
     padding-left: 10px;
   }
-  &.receipt-manage {
-    .form-item-wrap {
-      .el-form-item {
-        display: block;
-      }
+  .form-item-wrap {
+    .el-form-item {
+      display: block;
     }
   }
   .table-list {
@@ -46,6 +44,9 @@
       padding-left: 20px;
       &.resume-table {
         margin-top: 10px;
+        &.resume-table1 {
+          padding-left: 0;
+        }
         .select-text {
           margin-left: 10px;
         }
@@ -67,5 +68,24 @@
   .resume-number {
     font-size:14px;
     color:#FF1818;
+  }
+  .status {
+    position: relative;
+    margin-left: 10px;
+    &::before{
+      position: absolute;
+      content: "";
+      width:6px;
+      height: 6px;
+      border-radius: 50%;
+      top: 7px;
+      left: -20px;
+      background: #71D875;
+    }
+    &.status3{
+      &::before{
+        background:  #333333;
+      }   
+    }
   }
 }

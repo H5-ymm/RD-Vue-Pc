@@ -153,10 +153,7 @@ export default {
 <style scoped lang="scss">
 @import '@/assets/css/common.scss';
 .el-container.is-vertical{
-  // height: 100vh;
-  &.comany-team-container{
-    height: 100vh;
-  }
+  height: 100vh;
 }
 .team-main-view{
   width: 100vw;

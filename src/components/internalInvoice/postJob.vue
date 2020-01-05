@@ -47,6 +47,7 @@
         <p class="x-flex-center">
           团队接单
           <span v-if="tabIndex!=0" class="el-icon-circle-check has-info-icon">已完善</span>
+          <!-- <span v-if="tabIndex!=0" class="el-icon-warning no-info-icon">未填写</span> -->
         </p>
         <img src="../../assets/img/icon6.png" v-if="tabIndex==0" alt />
       </li>
@@ -67,7 +68,7 @@
     </ul>
     <div>
       <keep-alive>
-        <component :is="comName"></component>
+        <component :is="comName" @submitForm="submitForm"></component>
       </keep-alive>
     </div>
   </div>
@@ -75,9 +76,8 @@
 <script>
 import baseInfo from './baseInfo'
 import rewardRule from './rewardRule'
-
+import { setjobtouser } from '@/api/internalInvoice'
 import operationInfo from './operationInfo'
-import { watch } from 'fs';
 
 export default {
   components:{
@@ -88,7 +88,13 @@ export default {
   data() {
     return {
       tabIndex:0,
-      comName: 'baseInfo'
+      comName: 'baseInfo',
+      formInfo: {
+        job_name:'',
+        number:'',
+        uid: localStorage.getItem('uid'),
+        is_up: 1
+      }
     }
   },
   watch:{
@@ -104,6 +110,20 @@ export default {
       }
     }
   },
+  methods:{
+    submitForm(val) {
+      if (this.tabIndex < 2) {
+        this.tabIndex = this.tabIndex + 1
+      }
+      this.formInfo = Object.assign(this.formInfo,val)
+      console.log(this.formInfo)
+      if (this.comName == 'operationInfo') {
+        setjobtouser(this.formInfo).then(res => {
+          console.log(res)
+        })
+      }
+    }
+  }
 }
 </script>
 

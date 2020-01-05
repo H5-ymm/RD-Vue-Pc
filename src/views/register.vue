@@ -74,12 +74,13 @@
 </template>
 
 <script>
-import { userRegister, getCode } from '../api/login'
-import districtSelet from '../components/districtSelet'
+import { userRegister, getCode } from '@/api/login'
+import districtSelet from '@/components/districtSelet'
 export default {
   components: {
     districtSelet
   },
+  name:'register',
   data () {
     let validatereg = (rule, value, callback) => {   //验证用户名是否合法
       let reg = /^1[3456789]\d{9}$/;
@@ -232,13 +233,14 @@ export default {
           userRegister(this.formTab).then(res => {
             localStorage.setItem('userType', this.registerType)
             localStorage.setItem('token', res.data.token)
-            this.$router.push('team')
-            // if (this.registerType == 2) {
-            //   this.$router.push('commonts')
-            // }
-            // else {
-            //   this.$router.push('createOrderTaking')
-            // }
+            // this.$router.push('team')
+            
+            if (res.data.type==1) {
+             this.$router.push('createOrderTaking')
+            }
+            else {
+             this.$router.push('teamData')
+            }
           }).catch(error => {
             this.$message.error(error.status.remind)
           })
@@ -258,7 +260,7 @@ export default {
 }
 </script>
 
-<style >
+<style lang="scss">
 .header {
   width:100%;
   height:49px;

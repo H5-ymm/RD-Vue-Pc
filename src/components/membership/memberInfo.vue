@@ -4,7 +4,8 @@
       <img src="../../assets/img/member/cancel.png" alt class="cancel-icon" @click="handleClose" />
       <section class="member-col1">
         <div class="head-box">
-          <img src="../../assets/img/img1.png" class="head" alt />
+          <img src="../../assets/img/headIcon3.png" class="head" alt  v-if="!formMember.log"/>
+          <img :src="getImgUrl(formMember.log)" alt="" v-else>
         </div>
         <p>{{formMember.user_name}}</p>
       </section>
@@ -46,7 +47,7 @@
           <p>{{formMember.status == 1 ? '正常': '锁定'}}</p>
         </div>
       </section>
-      <section class="member-col3">
+      <section class="member-col3" v-if="userPosition!=3">
         <el-form :model="formMember" class="demo-form-inline" label-width="90px">
           <el-form-item label="部门">
             <el-select placeholder="请选择" v-model="depId" @change="selectDep">
@@ -78,20 +79,7 @@
             <el-input type="textarea" v-model="formMember.remark" placeholder="请输入锁定说明（必填）"></el-input>
           </el-form-item>
           <el-form-item label="认证信息">
-            <div class="x-flex-start-justify member-status">
-              <img src="../../assets/img/member/phone.png" v-if="formMember.mobile" alt />
-              <img src="../../assets/img/member/phone1.png" v-else alt />
-              <img src="../../assets/img/member/IDCard.png" alt v-if="formMember.idcard_status" />
-              <img src="../../assets/img/member/IDCard1.png" alt v-else />
-              <img src="../../assets/img/member/zfb.png" alt v-if="formMember.alipay_status" />
-              <img src="../../assets/img/member/zfb1.png" alt v-else />
-              <img src="../../assets/img/member/wx.png" alt v-if="formMember.wx_status" />
-              <img src="../../assets/img/member/wx1.png" alt v-else />
-              <img src="../../assets/img/member/card.png" alt v-if="formMember.bank_status" />
-              <img src="../../assets/img/member/card1.png" alt v-else />
-              <img src="../../assets/img/member/email.png" alt v-if="formMember.email_status" />
-              <img src="../../assets/img/member/email1.png" alt v-else />
-            </div>
+            <memberTooltip :formMember="formMember"></memberTooltip>
           </el-form-item>
         </el-form>
       </section>
@@ -108,14 +96,20 @@
 // 总经理可以编辑部门 职称 状态
 import { seeTeamUserInfo, departmentRoleList } from '../../api/team'
 import { getConstant } from '../../api/dictionary'
+import memberTooltip from './memberTooltip'
+import { getImgUrl } from '@/util/util'
 export default {
   props: ['dialogTableVisible', 'memberInfo', 'memberType', 'userId'],
+  components: {
+    memberTooltip
+  },
   data () {
     return {
       formMember: {},
       jobList: [],
       depList: [],
-      depId: ''
+      depId: '',
+      userPosition:sessionStorage.getItem('userPosition')
     }
   },
   created () {
@@ -129,6 +123,7 @@ export default {
     }
   },
   methods: {
+    getImgUrl,
     getInfo (id) {
       let params = {
         userId: id,
@@ -221,7 +216,7 @@ export default {
       .head {  
         width: 88px;
         height: 88px;
-        border-radius: 50%;
+        border-radius: 100%;
       }
     }
     .member-col2 {

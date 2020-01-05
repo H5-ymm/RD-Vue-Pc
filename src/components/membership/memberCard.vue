@@ -3,22 +3,22 @@
     <el-col :span="6" v-for="(item,key) in userLabel" :key="key">
       <el-card class="box-card box-card1" :class="key">
         <p>{{item}}</p>
-        <p>{{userLabel1[key]}}</p>
+        <p>{{teamInfo[key]}}</p>
         <img src="../../assets/img/cardBg1.png" alt class="cardBg" v-if="key=='name'" />
-        <img src="../../assets/img/cardBg2.png" alt class="cardBg" v-if="key=='number'" />
-        <img src="../../assets/img/cardBg3.png" alt class="cardBg" v-if="key=='total'&&!userType" />
+        <img src="../../assets/img/cardBg2.png" alt class="cardBg" v-if="key=='num'" />
+        <img src="../../assets/img/cardBg3.png" alt class="cardBg" v-if="key=='resumeNum'&&userPosition==1" />
         <img
           src="../../assets/img/cardBg4.png"
           alt
           class="cardBg"
-          v-if="key=='jobStatus'&&!userType"
+          v-if="key=='entryNum'&&userPosition==1"
         />
-        <img src="../../assets/img/cardBg5.png" alt class="cardBg" v-if="key=='total'&&userType" />
+        <img src="../../assets/img/cardBg5.png" alt class="cardBg" v-if="key=='resumeNum'&&userPosition!=1" />
         <img
           src="../../assets/img/cardBg6.png"
           alt
           class="cardBg"
-          v-if="key=='jobStatus'&&userType"
+          v-if="key=='entryNum'&&userPosition!=1"
         />
       </el-card>
     </el-col>
@@ -27,40 +27,36 @@
 <script>
 import { getTeamInfo } from '../../api/team'
 export default {
-  props: ['userType', 'userInfo'],
+  props: ['userType', 'teamInfo'],
   data () {
     return {
-      userLabel1: {
-        name: '天天向上',
-        number: '444',
-        total: '22',
-        jobStatus: '22'
-      }
+      userPosition:sessionStorage.getItem('userPosition')
     }
   },
   computed: {
     userLabel () {
       let obj = {}
-      if (this.userType) {
+      if (this.userPosition==1) {
         obj = {
           name: '团队名称',
-          number: '团队成员',
-          total: '简历总数',
-          jobStatus: '已入职'
+          num: '团队成员',
+          resumeNum: '简历总数',
+          entryNum: '已入职'
         }
       }
       else {
         obj = {
           name: '团队名称',
-          number: '招聘部',
-          total: '简历总数',
-          jobStatus: '已入职'
+          num: '招聘部',
+          resumeNum: '简历总数',
+          entryNum: '已入职'
         }
       }
       return obj
     }
   },
   created () {
+    console.log(this.teamInfo)
     let uid = localStorage.getItem('uid')
     getTeamInfo({ uid }).then(res => {
       if (res && res.data) {
@@ -95,13 +91,13 @@ export default {
     &.name {
       background:linear-gradient(150deg,#7F80FE,#729EFE);
     }
-    &.number {
+    &.num {
       background:linear-gradient(117deg,rgba(255,110,115,1),rgba(255,116,145,1));
     }
-    &.total {
+    &.resumeNum {
       background:linear-gradient(117deg,rgba(255,146,100,1),rgba(255,176,100,1));
     }
-    &.jobStatus {
+    &.entryNum {
       background:linear-gradient(117deg,rgba(166,91,251,1),rgba(189,94,255,1));
     }
   }

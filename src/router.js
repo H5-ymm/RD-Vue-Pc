@@ -3,10 +3,11 @@ import Router from 'vue-router'
 import { teamRouters } from './router/team'
 import { companyRouters } from './router/company'
 import About from './views/About.vue'
+import store from './store'
 const Home = resolve => (require(['./views/Home.vue'], resolve))
 const login = resolve => (require(['./views/Login.vue'], resolve))
 const ForgetPassword = resolve => (require(['./views/ForgetPassword.vue'], resolve))
-const register = resolve => (require(['./views/Register.vue'], resolve)) //登录页
+const register = resolve => (require(['./views/register.vue'], resolve)) // 注册页
 const OrderTaking = resolve => (require(['./views/OrderTaking.vue'], resolve))
 const OrderTakingDetail = resolve => (require(['./views/OrderTakingDetail.vue'], resolve)) // 接单详情
 const Information = resolve => (require(['./views/Information.vue'], resolve)) // 资讯
@@ -52,14 +53,14 @@ let publiceRouters = [
     component: InformationDetail
   },
   {
-    path: '/register',
-    name: 'register',
-    component: register
-  },
-  {
     path: '/login',
     name: 'login',
     component: login
+  },
+  {
+    path: '/register',
+    name: 'register',
+    component: register
   },
   {
     path: '/forgetPassword',
@@ -67,35 +68,22 @@ let publiceRouters = [
     component: ForgetPassword
   }
 ]
-if (userType == 1) {
-  routerList.push(companyRouters)
-}
-else {
-  routerList.push(teamRouters)
-}
+// if (userType == 1) {
+//   routerList.push(companyRouters)
+// }
+// else {
+//   routerList.push(teamRouters)
+// }
 let routers = new Router({
   mode: "history",
   base: process.env.BASE_URL,
-  routes: [...publiceRouters, ...routerList]
+  routes: [...publiceRouters]
 })
-// let router = []
-// console.log(companyRouters)
-// console.log(userType)
-// if (userType == 1) {
-//   router.push(companyRouters)
-// }
-// else if (userType == 2) {
-//   router.push(teamRouters)
-// }
-// else {
-//   router = publiceRouters
-// }
-// routers.addRoutes(router)
-
+let router = []
+router.push(companyRouters)
+router.push(teamRouters)
+// 4.将生成好的路由addRoutes
+routers.addRoutes(router)
 // 注册全局钩子用来拦截导航
-// routers.afterEach((to, from) => {
-//   if (to.query.redirect && to.path == '/login') {
-//     window.location.reload();
-//   }
-// })
+
 export default routers

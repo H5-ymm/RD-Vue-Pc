@@ -50,7 +50,7 @@
                   <el-date-picker
                     class="width406"
                     format="yyyy-MM-dd"
-                    value-format="yyyy-MM-dd"
+                    value-format="timestamp"
                     v-model="formMember.offtime"
                     type="date"
                     placeholder="选择日期"
@@ -66,7 +66,7 @@
             </p>
             <div class="x-flex-between-start resume-card-row">
               <div class="resume-card-item">
-                <moneyType></moneyType>
+                <moneyType @submit="submit"></moneyType>
                 <el-form-item label="福利说明">
                   <el-input
                     v-model="formMember.welfare_statement"
@@ -203,12 +203,8 @@ export default {
         age_min: 16,
         age_max: 45,
         sex: 0,
-        name: '',
-        mobile: '',
-        education: '',
+        job_name: '',
         address: '',
-        provinceid: '',
-        cityid: '',
         uid: localStorage.getItem('uid'),
       },
       rules: {
@@ -265,8 +261,8 @@ export default {
         return false;
       }
       uploadFile(_file).then(res => {
-        this.license_img = getImg(_file)
-        this.companyForm.license_img = res.data.url
+        this.imageUrl = getImg(_file)
+        this.formMember.company_logo = res.data.url
       })
     },
     getList (filed) {
@@ -282,6 +278,10 @@ export default {
     change (val) {
       this.formMember.provinceid = val[0]
       this.formMember.cityid = val[1]
+    },
+    submit(val) {
+      console.log(val)
+      this.formMember = Object.assign(this.formMember,val)
     },
     changeExpect (val) {
       this.formMember.expect_provindeid = val[0]
@@ -318,6 +318,7 @@ export default {
     padding: 0 0 10px;
     .el-form-item{
       display: block;
+      margin-bottom: 22px;
     }
     .width406 {
       width: 406px;

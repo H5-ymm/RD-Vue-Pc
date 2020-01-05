@@ -1,10 +1,10 @@
 <template>
   <div class="member-table">
     <div class="action-btn x-flex-between">
-      <div>
+      <div v-if="userPosition!=3">
         <el-button type="primary" icon="el-icon-plus" @click="addMember">添加</el-button>
-        <el-button>删除</el-button>
-        <el-button>锁定</el-button>
+        <el-button @click="handleDel(uid)">删除</el-button>
+        <!-- <el-button>锁定</el-button> -->
         <span class="select-text">
           已选择
           <el-button type="text">{{multipleSelection.length}}&nbsp;</el-button>项
@@ -20,7 +20,7 @@
         <el-table-column label="序号" type="selection" align="center" width="60"></el-table-column>
         <el-table-column label="姓名" align="center" width="150">
           <template slot-scope="props">
-            <el-button type="text" @click="handleEdit(props.row)">{{props.row.user_name}}</el-button>
+            <el-button type="text" @click="handleEdit(props.row.uid)">{{props.row.user_name}}</el-button>
           </template>
         </el-table-column>
         <el-table-column label="联系电话" prop="mobile" align="center" width="150"></el-table-column>
@@ -41,8 +41,13 @@
         </el-table-column>
         <el-table-column label="操作" align="center" width="150">
           <template slot-scope="scope">
-            <el-button @click="handleEdit(scope.row)" type="text" size="small">编辑</el-button>
-            <el-button @click="handleDel(scope.row)" type="text" size="small">删除</el-button>
+            <div v-if="userPosition!=3">
+              <el-button @click="handleEdit(scope.row.uid)" type="text" size="small">编辑</el-button>
+              <el-button @click="handleDel(scope.row.uid)" type="text" size="small">删除</el-button>
+            </div>
+            <div v-if="userPosition==3">
+              <el-button @click="handleEdit(scope.row.uid)" type="text" size="small">查看</el-button>
+            </div>
           </template>
         </el-table-column>
       </el-table>
@@ -61,26 +66,35 @@ export default {
     return {
       memberInfo: {},
       teamId: '',
-      multipleSelection: []
+      multipleSelection: [],
+      userPosition:sessionStorage.getItem('userPosition'),
+      uid: ''
     }
   },
   methods: {
     addMember () {
       this.$emit('addMember')
     },
-    handleEdit (row) {
-      // this.memberInfo = row
-      // this.teamId = row.uid
-      this.$emit('handleEdit', row.uid)
+    handleEdit (val) {
+      if (!val) {
+        return this.$message.warning('请选择组员')
+      }
+      this.$emit('handleEdit', val)
     },
     handleSelectionChange (val) {
       this.multipleSelection = val;
+      let arr = val.map(item => {
+        return item.uid
+      })
+      this.uid = arr.join(',')
+      console.log(this.uid )
       this.$emit('handleSelectionChange', this.multipleSelection.length)
     },
-    handleDel (row) {
-      // this.memberInfo = row
-      // this.teamId = row.uid
-      this.$emit('handleDel', row.uid)
+    handleDel (val) {
+      if (!val) {
+        return this.$message.warning('请选择组员')
+      }
+      this.$emit('handleDel', val)
     },
     dismissTeam () {
       this.$emit('dismissTeam')

@@ -84,16 +84,6 @@ export default {
             }
           ]
         },
-        // {
-        //   title: '团队接单',
-        //   icon: 'el-icon-collection-tag',
-        //   submenu: [
-        //     {
-        //       title: '接单分配',
-        //       url: '/receiptTable'
-        //     }
-        //   ]
-        // },
         {
           title: '接单管理',
           icon: 'el-icon-collection-tag',
@@ -118,20 +108,6 @@ export default {
               title: '入职名单',
               url: '/teamEntryList'
             },
-          ]
-        },
-        {
-          title: '团队设置',
-          icon: 'el-icon-collection-tag',
-          submenu: [
-            {
-              title: '团队信息',
-              url: '/teamSetting'
-            },
-            {
-              title: '部门管理',
-              url: '/department'
-            }
           ]
         },
         {
@@ -208,33 +184,6 @@ export default {
           ]
         },
         {
-          title: '内部发单',
-          icon: 'el-icon-collection-tag',
-          submenu: [
-
-            {
-              title: '管理内部职位',
-              url: '/publishJobList?view=1'
-            },
-            {
-              title: '已发布职位',
-              url: '/publishJobList?view=2'
-            },
-            {
-              title: '已推荐简历',
-              url: '/applyResume?view=3'
-            },
-            {
-              title: '领取发单',
-              url: '/collectingInvoice'
-            },
-            {
-              title: '内部审核简历',
-              url: '/checkResume'
-            }
-          ]
-        },
-        {
           title: '财务管理',
           icon: 'el-icon-collection-tag',
           submenu: [
@@ -261,7 +210,58 @@ export default {
           ]
         }
       ],
-      title: ''
+      title: '',
+      root: {
+          title: '团队设置',
+          icon: 'el-icon-collection-tag',
+          submenu: [
+            {
+              title: '团队信息',
+              url: '/teamSetting'
+            },
+            {
+              title: '部门管理',
+              url: '/department'
+            }
+          ]
+        },
+        receipt: {
+          title: '内部发单',
+          icon: 'el-icon-collection-tag',
+          submenu: [
+
+            {
+              title: '管理内部职位',
+              url: '/publishJobList?view=1'
+            },
+            {
+              title: '已发布职位',
+              url: '/publishJobList?view=2'
+            },
+            {
+              title: '已推荐简历',
+              url: '/applyResume?view=3'
+            },
+            {
+              title: '领取发单',
+              url: '/collectingInvoice'
+            },
+            {
+              title: '内部审核简历',
+              url: '/checkResume'
+            }
+          ]
+        },
+    }
+  },
+  created(){
+    let userPosition = sessionStorage.getItem('userPosition')
+    if (userPosition==1) {
+      this.menus.splice(4, 0, this.root)
+      this.menus.splice(9,0,this.receipt)
+    }
+    if (userPosition==2)  {
+      this.menus.splice(8,0,this.receipt)
     }
   },
   methods: {

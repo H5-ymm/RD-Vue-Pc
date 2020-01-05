@@ -106,7 +106,7 @@
           <el-button :type="formMember.offermoney_type==item.value ?'primary':''" v-for="(item,index) in moneyTypeList" :key="index" plain @click="selectStatus('offermoney_type',item)" class="select-status">{{item.label}}</el-button>
         </el-form-item>
         <el-form-item label="招聘类型：">
-          <el-button :type="formMember.moneyType==item.value ?'primary':''" v-for="(item,index) in advertisesList" :key="index" plain @click="selectStatus('moneyType',item)" class="select-status">{{item.label}}</el-button>
+          <el-button :type="formMember.type==item.value ?'primary':''" v-for="(item,index) in advertisesList" :key="index" plain @click="selectStatus('moneyType',item)" class="select-status">{{item.label}}</el-button>
         </el-form-item>
       </el-form>
       <div class="member-table">
@@ -114,38 +114,38 @@
           <el-button @click="$router.push('postJob')">发布岗位</el-button>
         </div>
         <el-table border :data="tableData" ref="multipleTable" style="width: 100%">
-          <el-table-column label="企业名称" align="center" width="150">
-            <template slot-scope="props">
-              <el-button type="text" @click="handleEdit(props.row)">{{props.row.company_name}}</el-button>
-            </template>
-          </el-table-column>
+          <el-table-column label="企业名称" prop="company_name" align="center" width="150"></el-table-column>
           <el-table-column label="岗位名称" prop="job_name" align="center" width="150"></el-table-column>
-          <el-table-column label="岗位类型" prop="name" align="center" width="110"></el-table-column>
-          <el-table-column label="工作地址" prop="name" align="center" width="110"></el-table-column>
+          <el-table-column label="岗位类型" align="center" width="110">
+            <template slot-scope="props">
+              <span>{{props.row.jobType | jobType}}</span>
+            </template> 
+          </el-table-column>
+          <el-table-column label="工作地址" prop="address" align="center" width="110"></el-table-column>
           <el-table-column label="员工薪资" align="center" width="110">
             <template slot-scope="props">
-              <el-button type="text">{{props.row.money_type | moneyType}}</el-button>
+              <span>{{props.row.offermoney}}元/{{props.row.offermoney_type==1?'月':props.row.offermoney_type==2?'日':'时'}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="招聘类型" prop="depart_name" align="center" width="110"></el-table-column>
+          <el-table-column label="招聘类型" prop="type" align="center" width="110"></el-table-column>
           <el-table-column label="薪资类型" align="center" width="110">
             <template slot-scope="props">
-              <el-button type="text">{{props.row.reward_type | rewardType}}</el-button>
+              <span>{{props.row.offermoney_type | moneyType}}</span>
             </template>
           </el-table-column>
           <el-table-column label="招聘人数" prop="put_num" align="center" width="110"></el-table-column>
-          <el-table-column label="报名人数" prop="depart_name" align="center" width="110">
+          <el-table-column label="报名人数" prop="view_dcl" align="center" width="110">
             <template slot-scope="props">
-              <div>
-                <span class="el-icon-circle-check success-color">{{props.row.view_dcl}}</span>
-              </div>
+              <span >{{props.row.view_dcl}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="面试人数" prop="depart_name" align="center" width="110">
+          <el-table-column label="面试人数" align="center" width="110">
             <template slot-scope="props">
               <div>
                 {{props.row.view_num}}
-                <span class="fail-color">{{ props.row.view_dcl}}</span>
+                <span class="fail-color"> 
+                  (待处理{{
+                  props.row.view_dcl}})</span>
               </div>
             </template>
           </el-table-column>
@@ -160,12 +160,12 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column label="上架状态" align="center" width="110" v-if="userPosition!=3">
+          <el-table-column label="上架状态" align="center" width="110" v-if="userPosition!=1">
             <template slot-scope="props">
               <span class="status" :class="`status${props.row.status}`">{{props.row.status|recommendStatus}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="创建日期" prop="depart_name" align="center" width="110"></el-table-column>
+          <el-table-column label="创建日期" prop="ctime" align="center" width="180"></el-table-column>
           <el-table-column label="已领取人" align="center" width="180" v-if="viewType==2">
             <template slot-scope="scope">
               <div class="text-line" @click="handleRecepit(2,scope.row)" v-if="(scope.row&&scope.row.uid==uid)||userPosition==3">
@@ -178,12 +178,12 @@
               <div v-if="viewType==1">
                 <el-button @click="$router.push('jobDetail')" type="text" size="small">详情</el-button>
                 <el-button @click="handleRecepit(1,scope.row)" type="text" v-if="scope.row.is_up==1" size="small">分配跟进人</el-button>
-                <el-button @click="changeJobstatus(0,scope.row)" type="text" size="small" v-if="((scope.row&&scope.row.uid==uid)||userPosition==3)&&scope.row.is_up==1">下架</el-button>
-                <el-button @click="changeJobstatus(1,scope.row)" type="text" size="small" v-if="((scope.row&&scope.row.uid==uid)||userPosition==3)&&scope.row.is_up==0">上架</el-button>
-                <el-button @click="delJob(scope.row)" type="text" size="small" v-if="(scope.row&&scope.row.uid==uid)||userPosition==3">删除</el-button>
-                <el-button @click="$router.push('jobDetail?id='+scope.row.id)" type="text" size="small" v-if="(scope.row&&scope.row.uid==uid)||userPosition==3">编辑</el-button>
+                <el-button @click="changeJobstatus(0,scope.row)" type="text" size="small" v-if="((scope.row&&scope.row.uid==uid)||userPosition==1)&&scope.row.is_up==1">下架</el-button>
+                <el-button @click="changeJobstatus(1,scope.row)" type="text" size="small" v-if="((scope.row&&scope.row.uid==uid)||userPosition==1)&&scope.row.is_up==0">上架</el-button>
+                <el-button @click="delJob(scope.row)" type="text" size="small" v-if="(scope.row&&scope.row.uid==uid)||userPosition==1">删除</el-button>
+                <el-button @click="$router.push('jobDetail?id='+scope.row.id)" type="text" size="small" v-if="(scope.row&&scope.row.uid==uid)||userPosition==1">编辑</el-button>
               </div>
-              <div v-if="viewType!=1&&userPosition==2">
+              <div v-if="viewType!=1">
                 <el-button @click="$router.push('jobDetail')" type="text" size="small">详情</el-button>
                 <el-button @click="putResume(scope.row)" v-if="scope.row.is_up==1" type="text" size="small">推荐简历</el-button>
                 <el-button @click="$router.push('applyResume?view=3')" type="text" size="small">已推荐简历</el-button>
@@ -227,6 +227,12 @@ export default {
         return val == item.value
       })
       return obj ? obj.label : ''
+    },
+    jobType(val){
+      let obj = positionStatusList.find(item => {
+        return val == item.value
+      })
+      return obj? obj.label: '-'    
     }
   },
   data () {
@@ -268,7 +274,7 @@ export default {
         { label: '返利招聘', value: 1 },
         { label: '普通招聘', value: 2 }
       ],
-      userPosition: 2, // 1 成员，2经理，3 总经理
+      userPosition: sessionStorage.getItem('userPosition'), // 1 总经理，2经理，3 成员
       keyword: '',
       viewType: '',
       show: false,
@@ -388,7 +394,7 @@ export default {
     },
     // 分配跟进人
     setAssigned (params) {
-      setjobtouser(params).then(res => {
+      (params).then(res => {
         this.dialogTableVisible = true
         this.getList(this.formMember)
       }).catch(error => {

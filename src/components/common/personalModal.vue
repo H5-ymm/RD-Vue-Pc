@@ -3,7 +3,7 @@
     <div class="member-row personal-row">
       <img src="../../assets/img/member/cancel.png" alt class="cancel-icon" @click="handleClose" />
       <section class="member-col1">
-        <p>{{title}}}</p>
+        <p>{{title}}</p>
       </section>
       <section class="member-col3">
         <div class="x-flex-between">
@@ -90,6 +90,10 @@ export default {
       position: absolute;
       top: 5px;
       right: 0;
+    }
+    .member-col1 {
+      background:#EBF4FB;
+      padding: 21px 0 20px;
     }
     .member-col3 {
       width: 82%;

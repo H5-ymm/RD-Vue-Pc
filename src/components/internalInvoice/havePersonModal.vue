@@ -7,10 +7,10 @@
       </section>
       <section class="member-col3">
         <ul class="personal-box">
-          <li v-for="(item,index) in list" :key="index" class="x-flex-around">
-            <span class="item-name">{{index+1}}.{{item.name}}</span>
-            <span class="item-time">领取时间：{{item.time}}</span>
-            <el-button type="primary" plain @click="handleCancle(item.id)">取消分配</el-button>
+          <li v-for="(item,index) in hasPersonList" :key="index" class="x-flex-around">
+            <span class="item-name">{{index+1}}.{{item.user_name}}</span>
+            <span class="item-time">领取时间：{{$moment(item.ctime).format('YYYY-MM-DD HH:mm')}}</span>
+            <el-button type="primary" plain @click="handleCancle(item.touid)">取消分配</el-button>
           </li>
         </ul>
       </section>

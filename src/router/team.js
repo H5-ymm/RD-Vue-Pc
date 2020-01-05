@@ -27,7 +27,8 @@ const postJob = resolve => (require(['../components/internalInvoice/postJob.vue'
 const collectingInvoice = resolve => (require(['../components/internalInvoice/collectingInvoice.vue'], resolve)) // 领取发单
 const checkResume = resolve => (require(['../components/internalInvoice/checkResume.vue'], resolve)) // 内部审核简历
 
-const transfer = resolve => (require(['../components/finance/transfer.vue'], resolve)) // 内部审核简历
+const resumeList = resolve => (require(['../components/internalInvoice/resumeList.vue'], resolve)) // 内部审核简历
+const transfer = resolve => (require(['../components/finance/transfer.vue'], resolve)) // 
 const CompanyForm = resolve => (require(['../components/teamMessage/teamCompanyForm.vue'], resolve)) // 团队企业
 const personalForm = resolve => (require(['../components/teamMessage/personalForm.vue'], resolve)) // 团队个人
 const teamOrder = resolve => (require(['../components/teamCenter/teamOrder.vue'], resolve)) // 团队排名
@@ -107,38 +108,6 @@ let children = [{  // 团队论坛
     requiresAuth: 2
   }
 },
-{ // 团队设置
-  path: '/teamSetting',
-  name: 'TeamSetting',
-  component: TeamSetting,
-  meta: {
-    requiresAuth: 2
-  }
-},
-{ // 团队企业设置
-  path: '/personalForm',
-  name: 'personalForm',
-  component: personalForm,
-  meta: {
-    requiresAuth: 2
-  }
-},
-{ // 团队个人设置
-  path: '/companyForm',
-  name: 'CompanyForm',
-  component: CompanyForm,
-  meta: {
-    requiresAuth: 2
-  }
-},
-{ // 部门列表
-  path: '/department',
-  name: 'Department',
-  component: Department,
-  meta: {
-    requiresAuth: 2
-  }
-},
 { // 部门列表
   path: '/accountSettings',
   name: 'AccountSettings',
@@ -211,47 +180,6 @@ let children = [{  // 团队论坛
     requiresAuth: 1
   }
 },
-// 成员无法查看
-{
-  path: '/publishJobList',  // 内部发单
-  name: publishJobList,
-  component: publishJobList,
-  meta: {
-    requiresAuth: 1
-  }
-},
-{
-  path: '/jobDetail',  // 内部发单详情
-  name: jobDetail,
-  component: jobDetail,
-  meta: {
-    requiresAuth: 1
-  }
-},
-{
-  path: '/postJob',  // 发布岗位
-  name: postJob,
-  component: postJob,
-  meta: {
-    requiresAuth: 1
-  }
-},
-{
-  path: '/collectingInvoice',  // 领取发单
-  name: collectingInvoice,
-  component: collectingInvoice,
-  meta: {
-    requiresAuth: 1
-  }
-},
-{
-  path: '/checkResume',  // 内部审核简历
-  name: checkResume,
-  component: checkResume,
-  meta: {
-    requiresAuth: 1
-  }
-},
 {
   path: '/transfer',  // 转账
   component: transfer,
@@ -286,8 +214,101 @@ let children = [{  // 团队论坛
   meta: {
     requiresAuth: 1
   }
-},
+}
 ]
+
+let userPosition =  sessionStorage.getItem('userPosition')// 1 总经理，2经理，3 成员
+let rootList = [
+  { // 团队设置
+    path: '/teamSetting',
+    name: 'TeamSetting',
+    component: TeamSetting,
+    meta: {
+      requiresAuth: 2
+    }
+  },
+  { // 团队企业设置
+    path: '/personalForm',
+    name: 'personalForm',
+    component: personalForm,
+    meta: {
+      requiresAuth: 2
+    }
+  },
+  { // 团队个人设置
+    path: '/companyForm',
+    name: 'CompanyForm',
+    component: CompanyForm,
+    meta: {
+      requiresAuth: 2
+    }
+  },
+  { // 部门列表
+    path: '/department',
+    name: 'Department',
+    component: Department,
+    meta: {
+      requiresAuth: 2
+    }
+  },
+]
+let receiptList = [
+  {
+    path: '/publishJobList',  // 内部发单
+    name: publishJobList,
+    component: publishJobList,
+    meta: {
+      requiresAuth: 1
+    }
+  },
+  {
+    path: '/jobDetail',  // 内部发单详情
+    name: jobDetail,
+    component: jobDetail,
+    meta: {
+      requiresAuth: 1
+    }
+  },
+  {
+    path: '/postJob',  // 发布岗位
+    name: postJob,
+    component: postJob,
+    meta: {
+      requiresAuth: 1
+    }
+  },
+  {
+    path: '/collectingInvoice',  // 领取发单
+    name: collectingInvoice,
+    component: collectingInvoice,
+    meta: {
+      requiresAuth: 1
+    }
+  },
+  {
+    path: '/checkResume',  // 内部审核简历
+    name: checkResume,
+    component: checkResume,
+    meta: {
+      requiresAuth: 1
+    }
+  },
+  {
+    path: '/resumeList',  // 内部审核简历
+    name: resumeList,
+    component: resumeList,
+    meta: {
+      requiresAuth: 1
+    }
+  },
+  
+]
+if (userPosition==1) {
+  children = [...children,...rootList,...receiptList]
+}
+if (userPosition==2) {
+  children = [...children,...receiptList]
+}
 export const teamRouters = {
   path: '/team',
   name: 'Team',

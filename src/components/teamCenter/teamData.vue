@@ -3,6 +3,9 @@
     padding-bottom:50px;
     .team-center-form {
       padding-top: 20px;
+      .el-select {
+        margin-right: 10px;
+      }
       .width300 {
         width: 300px;
       }
@@ -34,7 +37,7 @@
                 v-model="formMember.industry"
                 class="width120"
                 placeholder="部门"
-                v-if="userPosition==3"
+                v-if="userPosition==1"
               >
                 <el-option
                   :label="item.label"
@@ -146,7 +149,7 @@ export default {
       activeIndex: 0,
       legendIndex: 1,
       limit: 10,
-      userPosition: 1 // 1 成员，2经理，3 总经理
+      userPosition: sessionStorage.getItem('userPosition'), // 1 总经理，2经理，3 成员
     }
   },
   created () {

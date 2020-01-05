@@ -13,15 +13,6 @@
     .el-button {
       padding: 10px;
     }
-    .success-color {
-      color: #71D875;
-    }
-    .fail-color{
-      color: #FF0000;
-    }
-    .outline-color {
-      color: #999999;
-    }
   }
   .width120 {
     width: 120px;
@@ -217,29 +208,27 @@
             label="企业名称"
             align="center"
             width="150"
+            prop="company_name"
           >
-            <template slot-scope="props">
-              <el-button
-                type="text"
-                @click="handleEdit(props.row)"
-              >{{props.row.name}}</el-button>
-            </template>
           </el-table-column>
           <el-table-column
             label="岗位名称"
-            prop="name"
+            prop="job_name"
             align="center"
             width="150"
           ></el-table-column>
           <el-table-column
             label="岗位类型"
-            prop="name"
             align="center"
             width="110"
-          ></el-table-column>
+          >
+           <template slot-scope="props">
+              <span>{{props.row.jobType | jobType}}</span>
+            </template>  
+          </el-table-column>
           <el-table-column
             label="工作地址"
-            prop="name"
+            prop="address"
             align="center"
             width="110"
           ></el-table-column>
@@ -248,54 +237,55 @@
             align="center"
             width="110"
           >
-            <template slot-scope="props">
-              <el-button type="text">{{props.row.money_type | moneyType}}</el-button>
+           <template slot-scope="props">
+              <span>{{props.row.offermoney}}元/{{props.row.offermoney_type==1?'月':props.row.offermoney_type==2?'日':'时'}}</span>
             </template>
           </el-table-column>
           <el-table-column
             label="招聘类型"
-            prop="depart_name"
             align="center"
             width="110"
-          ></el-table-column>
+          >
+           <template slot-scope="props">
+              <span>{{props.row.type}}</span>
+            </template>
+            </el-table-column>
           <el-table-column
             label="薪资类型"
             align="center"
             width="110"
           >
             <template slot-scope="props">
-              <el-button type="text">{{props.row.reward_type | rewardType}}</el-button>
+              <span>{{props.row.offermoney_type | moneyType}}</span>
             </template>
           </el-table-column>
           <el-table-column
             label="招聘人数"
             align="center"
             width="110"
+            prop="number"
           >
-            <template slot-scope="props">
-              <span>{{props.row.status==1?"招聘中":'已下架'}}</span>
-            </template>
           </el-table-column>
           <el-table-column
             label="上架状态"
             align="center"
             width="110"
-            v-if="userPosition!=3"
+            v-if="userPosition!=1"
           >
             <template slot-scope="props">
               <span
                 class="status"
                 :class="`status${props.row.is_up}`"
-              >{{props.row.is_up==1?'已上架':'已下架'}}</span>
+              >{{props.row.is_up==1?'招聘中':'已下架'}}</span>
             </template>
           </el-table-column>
           <el-table-column
             label="创建日期"
             align="center"
-            width="110"
+            width="170"
           >
             <template slot-scope="props">
-              <div>{{props.row.depart_name?$moment.unix(props.row.depart_name).format('YYYY-MM-DD'):'--'}}</div>
+              <div>{{props.row.ctime?props.row.ctime:'--'}}</div>
             </template>
           </el-table-column>
           <el-table-column
@@ -353,19 +343,20 @@ export default {
       let obj = moneyTypeList.find(item => {
         return val == item.value
       })
-      return obj.label
+      return obj? obj.label: '-'
     },
-    rewardType (val) {
-      let obj = rewardTypeList.find(item => {
-        return val == item.value
-      })
-      return obj.label
-    },
-    recommendStatus () {
+    recommendStatus (val) {
       let obj = recommendStatusList.find(item => {
         return val == item.value
       })
-      return obj.label
+      return obj? obj.label: '-'
+    },
+    jobType(val){
+      let obj = positionStatusList.find(item => {
+        return val == item.value
+      })
+      return obj? obj.label: '-'
+      
     }
   },
   data () {
@@ -411,7 +402,7 @@ export default {
         okText: '查看申请',
         closeText: '继续浏览'
       },
-      userPosition: 1, // 1 成员，2经理，3 总经理
+      userPosition: sessionStorage.getItem('userPosition'), // 1 总经理，2经理，3 成员
       show: false,
       keyword: ''
     }

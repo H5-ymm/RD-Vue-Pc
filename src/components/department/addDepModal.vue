@@ -173,9 +173,9 @@ export default {
         }
       }
        &.department-add-col3{
-         .el-form-item__label {
-          margin-left: 20px;
-         }
+        //  .el-form-item__label {
+        //   margin-left: 20px;
+        //  }
         .el-form-item__content {
           display: block;
         }

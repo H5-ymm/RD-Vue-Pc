@@ -19,7 +19,7 @@
           </div>
           <div
             class="member-col1-text"
-          >发布时间：{{$moment.unix(jobInfo.ctime).format('YYYY-MM-DD HH:mm')}}</div>
+          >发布时间：{{jobInfo.ctime?$moment.unix(jobInfo.ctime).format('YYYY-MM-DD HH:mm'):'--'}}</div>
         </div>
       </section>
       <section class="member-col3">
@@ -155,6 +155,7 @@ export default {
     id (val) {
       if (val) {
         getOrderDetail({ id: val }).then(res => {
+          console.log(res)
           this.jobInfo = res.data
         })
       }
@@ -174,6 +175,10 @@ export default {
   border-radius:5px;
   .el-dialog__body,.el-dialog__header {
     padding: 0;
+  }
+  .member-col1 {
+    background:#EBF4FB;
+    padding: 21px 0 20px;
   }
   .member-row {
     width: 100%;

@@ -22,7 +22,7 @@
         </el-form-item>
         <el-form-item label="联系电话：">
           <el-input
-            v-model="formMember.name"
+            v-model="formMember.mobile"
             class="width300"
             placeholder="请输入联系电话"
           ></el-input>
@@ -99,7 +99,7 @@
           >查询</el-button>
           <el-button
             type="primary"
-            @click="onSubmit"
+            @click="onReset"
             class="select-btn"
           >重置</el-button>
         </el-form-item>
@@ -506,6 +506,14 @@ export default {
     onSubmit (value) {
       let params = Object.assign(this.formMember, value)
       this.getList(params)
+    },
+    onReset() {
+      this.formMember= {
+        uid: localStorage.getItem('uid'),
+        limit: 10,
+        page: 1
+      }
+      this.getList(this.formMember)
     }
   }
 }

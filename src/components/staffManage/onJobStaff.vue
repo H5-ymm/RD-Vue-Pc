@@ -35,7 +35,8 @@
         <el-form-item label="入职时间：">
           <el-date-picker
             class="width300"
-            v-model="formMember.date"
+            @change="changeDate"
+            v-model="timeList"
             type="daterange"
             range-separator="-"
             start-placeholder="开始日期"
@@ -47,7 +48,7 @@
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="onSubmit" class="select-btn">查询</el-button>
-          <el-button type="primary" @click="onSubmit" class="select-btn">重置</el-button>
+          <el-button type="primary" @click="reset" class="select-btn">重置</el-button>
         </el-form-item>
       </el-form>
       <div class="member-table resume-table">
@@ -200,7 +201,8 @@ export default {
         { lable: '男', value: 1 },
         { lable: '女', value: 2 },
       ],
-      staffId: ''
+      staffId: '',
+      timeList: []
     }
   },
   created () {
@@ -243,6 +245,10 @@ export default {
           this.total = data.count
         })
       }
+    },
+    changeDate(val){
+      this.formMember.beginTime = val[0]
+      this.formMember.endTime = val[1]
     },
     handleSelectionChange (val) {
       let arr = val.map(item => {
@@ -362,6 +368,15 @@ export default {
       })
     },
     onSubmit () {
+      this.getList(this.formMember)
+    },
+    reset() {
+      this.formMember = {
+        uid: localStorage.getItem('uid'),
+        limit: 10,
+        page: 1
+      }
+      this.timeList = []
       this.getList(this.formMember)
     }
   }

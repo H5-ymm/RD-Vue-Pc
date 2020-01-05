@@ -55,6 +55,7 @@
 </template>
 <script>
 import { goLogin, getCode, userRegister } from '../api/login'
+import { setTimeout } from 'timers';
 export default {
   data () {
     let validatereg = function (rule, value, callback) {   //验证用户名是否合法
@@ -109,6 +110,20 @@ export default {
         }
       }
     }
+  },
+  // beforeRouteEnter(to, from, next){
+  //  if (to.path=='/login'&&to.query.redirect) {
+  //   setTimeout(()=>{
+  //     window.location.reload()
+  //   },100)
+  //   next()
+  //  }
+  //  else {
+  //    next()
+  //  }
+  // },
+  mounted:function(){
+    // window.location.reload()
   },
   methods: {
     sendCode () {
@@ -166,7 +181,15 @@ export default {
             localStorage.setItem('token', res.data.token)
             localStorage.setItem('uid', res.data.uid)
             localStorage.setItem('userName', res.data.username)
-            this.$router.push('team')
+            // 登录人身份
+            sessionStorage.setItem('userPosition',res.data.gradeNum)
+            
+            if (res.data.type==1) {
+             this.$router.push('createOrderTaking')
+            }
+            else {
+             this.$router.push('teamData')
+            }
           }).catch(error => {
             if (error.status.code == 3010) {
               this.isShowError = true

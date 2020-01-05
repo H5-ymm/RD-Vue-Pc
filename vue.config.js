@@ -14,7 +14,7 @@ module.exports = {
   assetsDir: 'assets',
   devServer: {
     open: false,  //是否自动在浏览器打开
-    host: '127.0.0.1', //真机测试 0.0.0.0
+    host: '0.0.0.0', //真机测试 0.0.0.0
     port: 8081, //配置端口号
     https: false, //是否配置https
     hotOnly: false, //是否热更新
@@ -42,7 +42,6 @@ module.exports = {
     resolve: {
       alias: {
         '@': resolve('src'),
-        'assets': path.resolve(__dirname, '../src/assets'),
       }
     }
   }

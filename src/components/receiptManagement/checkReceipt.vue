@@ -10,7 +10,7 @@
         label-width="100px"
         label-position="right"
         :model="formMember"
-        class="demo-form-inline"
+        class="demo-form-inline form-item-wrap"
       >
         <el-form-item label="职位名称：">
           <el-input v-model="formMember.name" class="width300" placeholder="请输入职位名称关键字"></el-input>
@@ -33,6 +33,7 @@
           :data="tableData"
           ref="multipleTable"
           style="width: 100%"
+          @sort-change="sortChange"
           @selection-change="handleSelectionChange"
         >
           <el-table-column label="职位名称" align="center" width="150">
@@ -42,17 +43,21 @@
           </el-table-column>
           <el-table-column label="薪资类型" align="center" width="150">
             <template slot-scope="props">
-              <el-button type="text">{{props.row.money_type | moneyType}}</el-button>
+              <span>{{props.row.money_type | moneyType}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="岗位薪资" prop="depart_name" align="center" width="150"></el-table-column>
+          <el-table-column label="岗位薪资" prop="money" align="center" width="150"></el-table-column>
           <el-table-column label="返利类型" align="center" width="150">
             <template slot-scope="props">
-              <el-button type="text">{{props.row.reward_type | rewardType}}</el-button>
+              <span>{{props.row.reward_type | rewardType}}</span>
             </template>
           </el-table-column>
           <el-table-column label="返利金额" prop="reward_money" align="center" width="150"></el-table-column>
-          <el-table-column label="发布日期" prop="entry_num" sortable align="center" width="150"></el-table-column>
+          <el-table-column label="发布日期" prop="desc"  sortable="custom" align="center" width="150">
+             <template slot-scope="props">
+              <span>{{props.row.ctime?$moment.unix(props.row.ctime).format('YYYY-MM-DD HH:mm'):'--'}}</span>
+            </template>
+          </el-table-column>
           <el-table-column label="状态" align="center" width="150">
             <template slot-scope="props">
               <span
@@ -63,12 +68,12 @@
           </el-table-column>
           <el-table-column label="操作" align="center" width="150">
             <template slot-scope="scope">
-              <el-button
+              <!-- <el-button
                 @click="handleEdit(scope.row)"
                 type="text"
                 v-if="scope.row.status==1"
                 size="small"
-              >修改</el-button>
+              >修改</el-button> -->
               <el-button
                 @click="handleRecceipt(scope.row)"
                 type="text"
@@ -76,7 +81,7 @@
                 size="small"
               >删除</el-button>
               <el-button
-                @click="handleEdit(scope.row)"
+                @click="viewJob(scope.row)"
                 type="text"
                 v-if="scope.row.status==4"
                 size="small"
@@ -108,7 +113,7 @@
         :total="total"
       ></el-pagination>
     </div>
-    <viewJob :dialogTableVisible="dialogJobVisible" @handleClose="dialogJobVisible=fasle"></viewJob>
+    <viewJob :dialogTableVisible="dialogJobVisible" :id="id" @handleClose="dialogJobVisible=fasle"></viewJob>
   </div>
 </template>
 
@@ -160,8 +165,8 @@ export default {
       len: 0,
       userId: '',
       multipleSelection: [],
-      form: {},
-      activeIndex: 0
+      activeIndex: 0,
+      id:''
     }
   },
   created () {
@@ -175,6 +180,15 @@ export default {
         this.tableData = data.data
         this.total = data.count
       })
+    },
+    sortChange (column) {
+      if (column.order == 'ascending') {
+        this.formMember[column.prop] = 'asc'
+      }
+      else {
+        this.formMember[column.prop]= 'desc'
+      }
+      this.getList(this.formMember)
     },
     statusType (val) {
       let obj = this.statusList.find(item => {
@@ -198,6 +212,7 @@ export default {
 
     },
     viewJob (val) {
+      this.id = val.id
       this.dialogJobVisible = true
     },
     handleDel (uid) {

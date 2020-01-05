@@ -53,13 +53,13 @@
             class="select-status"
           >{{item.label}}</el-button>
         </el-form-item>
-        <el-form-item label="推荐状态：" v-if="userPosition!=3">
+        <el-form-item label="推荐状态：" v-if="userPosition==2">
           <el-button
-            :type="formMember.moneyType==item.value ?'primary':''"
+            :type="status==item.value ?'primary':''"
             v-for="(item,index) in recommendStatusList"
             :key="index"
             plain
-            @click="selectStatus('moneyType',item)"
+            @click="selectStatus('status',item)"
             class="select-status"
           >{{item.label}}</el-button>
         </el-form-item>
@@ -90,7 +90,7 @@
               <span>{{props.row.status==1?"招聘中":'已下架'}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="推荐状态" align="center" width="110" v-if="userPosition!=3">
+          <el-table-column label="推荐状态" align="center" width="110" v-if="userPosition!=1">
             <template slot-scope="props">
               <span
                 class="status"
@@ -102,13 +102,13 @@
             <template slot-scope="scope">
               <el-button
                 @click="handleRecommend(scope.row)"
-                v-if="scope.row.status==1&&scope.row.jobStatus==1&&userPosition==1"
+                v-if="scope.row.status==1&&scope.row.jobStatus==1&&userPosition==3"
                 type="text"
                 size="small"
               >推荐接单</el-button>
               <el-button
                 @click="handleApply(scope.row)"
-                v-if="scope.row.jobStatus==1&&userPosition!=1"
+                v-if="scope.row.jobStatus==1&&userPosition!=3"
                 type="text"
                 size="small"
               >申请接单</el-button>
@@ -181,8 +181,8 @@ export default {
         jobStatus: 0,
         moneyType: 0,
         reward_type: 0,
-        status: -1
       },
+      status: -1,
       total: 0,
       jobStatusList: [
         { label: '全部', value: 0 },
@@ -194,7 +194,7 @@ export default {
         okText: '查看申请',
         closeText: '继续浏览'
       },
-      userPosition: 1 // 1 成员，2经理，3 总经理
+      userPosition: sessionStorage.getItem('userPosition')// 1 总经理，2经理，3 成员
     }
   },
   created () {
@@ -208,10 +208,16 @@ export default {
         this.tableData = data.data
         this.total = data.count
       }).catch(error => {
-        this.$message.error(error.status.remind)
+        console.log(error)
+        if (error) {
+          this.$message.error(error.status.remind)
+        }     
       })
     },
     selectStatus (key, item) {
+      if (key=='status') {
+        this.status = item.value
+      }
       this.formMember[key] = item.value
     },
     handleSizeChange (val) {
@@ -232,6 +238,7 @@ export default {
         this.dialogTableVisible = true
         this.getList(this.formMember)
       }).catch(error => {
+        console.log(error)
         this.$message.error(error.status.remind)
       })
     },

@@ -2,7 +2,7 @@
   <div class="salary-rebate">
     <el-form-item label="综合薪资">
       <div>
-        <el-select v-model="orderTakingForm.money_type" class="width160" placeholder="请选择">
+        <el-select v-model="orderTakingForm.offermoney_type" class="width160" placeholder="请选择">
           <el-option
             :label="item.label"
             :value="item.value"
@@ -12,8 +12,8 @@
           ></el-option>
         </el-select>
         <el-select
-          v-model="orderTakingForm.money"
-          v-if="orderTakingForm.money_type==1"
+          v-model="orderTakingForm.offermoney"
+          v-if="orderTakingForm.offermoney_type==1"
           class="width160"
           placeholder="请选择"
         >
@@ -21,13 +21,13 @@
         </el-select>
         <el-input
           placeholder="请输入薪资"
-          v-if="orderTakingForm.money_type&&orderTakingForm.money_type!=1"
+          v-if="orderTakingForm.offermoney_type&&orderTakingForm.offermoney_type!=1"
           class="width160 text-input"
-          v-model="orderTakingForm.money"
+          v-model="orderTakingForm.offermoney"
         >
           <template slot="append">
-            <span class="moneyType" v-if="orderTakingForm.money_type==2">元/人/日</span>
-            <span class="moneyType" v-if="orderTakingForm.money_type==3">元/人/时</span>
+            <span class="moneyType" v-if="orderTakingForm.offermoney_type==2">元/人/日</span>
+            <span class="moneyType" v-if="orderTakingForm.offermoney_type==3">元/人/时</span>
           </template>
         </el-input>
       </div>
@@ -36,8 +36,8 @@
 </template>
 <script>
 import { moneyTypeList, rewardTypeList, payTypeList, weekList } from '../../base/base'
+import { getConstant } from '@/api/dictionary'
 export default {
-  props: ['moneyList'],
   data () {
     return {
       orderTakingForm: {
@@ -49,7 +49,8 @@ export default {
       payTypeList,
       weekList,
       reward_money_type: '',
-      rewardTipShow: false
+      rewardTipShow: false,
+      moneyList: []
     }
   },
   computed: {
@@ -57,13 +58,31 @@ export default {
       return this.orderTakingForm.reward_pay_type == 1 ? '次' : '本'
     },
     rewardType () {
-      console.log(this.orderTakingForm.reward_money_type)
       return this.orderTakingForm.reward_money_type == 1 ? '日' : this.orderTakingForm.reward_money_type == 2 ? '周' : '月'
     }
   },
+  watch: {
+    orderTakingForm: {
+      handler (val, oldName) {
+        for (let key in val) {
+         if (val[key] != '') {
+            this.$emit('submit', val)
+          }
+        }
+      },
+      deep: true
+    }
+  },
+  created () {
+    let params = 'money_array'
+    this.getList(params)
+  },
   methods: {
-    getTypeFlag () {
-
+    getList (filed) {
+      getConstant({ filed }).then(res => {
+        const { money_array } = res.data
+        this.moneyList = money_array
+      })
     },
     focusInput () {
       this.rewardTipShow = true

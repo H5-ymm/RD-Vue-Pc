@@ -21,7 +21,7 @@
         </el-form-item>
         <el-form-item label="联系电话：">
           <el-input
-            v-model="formMember.name"
+            v-model="formMember.mobile"
             class="width300"
             placeholder="请输入联系电话"
           ></el-input>
@@ -41,7 +41,7 @@
           v-if="viewType==3"
         >
           <el-input
-            v-model="formMember.name"
+            v-model="formMember.job"
             class="width300"
             placeholder="请输入岗位名称"
           ></el-input>
@@ -50,22 +50,15 @@
           label="意向岗位："
           v-if="viewType!=3"
         >
-          <el-select
-            v-model="formMember.industry"
+          <el-input
+            v-model="formMember.job"
             class="width300"
             placeholder="请输入意向岗位关键字"
-          >
-            <el-option
-              :label="item"
-              :value="key"
-              v-for="(item,key) in jobList"
-              :key="key"
-            ></el-option>
-          </el-select>
+          ></el-input>
         </el-form-item>
         <el-form-item label="录入人：">
           <el-input
-            v-model="formMember.name"
+            v-model="formMember.inputName"
             class="width300"
             placeholder="请输入录入人关键字"
           ></el-input>
@@ -84,7 +77,7 @@
         </el-form-item>
         <el-form-item label="跟进人：">
           <el-input
-            v-model="formMember.name"
+            v-model="formMember.inputName"
             class="width300"
             placeholder="请输入跟进人关键字"
           ></el-input>
@@ -94,7 +87,7 @@
           v-if="viewType!=3"
         >
           <el-select
-            v-model="formMember.industry"
+            v-model="formMember.money"
             class="width300"
             placeholder="请选择意向工资"
           >
@@ -124,7 +117,7 @@
           v-if="viewType!=3"
         >
           <el-select
-            v-model="formMember.industry"
+            v-model="formMember.status"
             class="width300"
             placeholder="请选择报名状态"
           >
@@ -144,7 +137,7 @@
           >查询</el-button>
           <el-button
             type="primary"
-            @click="onSubmit"
+            @click="onReset"
             class="select-btn"
           >重置</el-button>
         </el-form-item>
@@ -197,24 +190,24 @@
               <span
                 class="text-line"
                 type="text"
-              >{{props.row.name}}</span>
+              >{{props.row.com_name}}</span>
             </template>
           </el-table-column>
           <el-table-column
             label="岗位名称"
-            prop="desired_position"
+            prop="job_name"
             align="center"
             width="150"
           ></el-table-column>
           <el-table-column
-            label="报名时间"
-            prop="entry_num"
+            :label="labelTime"
             sortable="custom"
+            prop="jddesc"
             align="center"
             width="150"
           >
             <template slot-scope="props">
-              <span type="text">{{props.row.uptime?$moment.unix(props.row.uptime).format('YYYY-MM-DD'):'--'}}</span>
+              <span type="text">{{props.row.addtime?$moment.unix(props.row.addtime).format('YYYY-MM-DD'):'--'}}</span>
             </template>
           </el-table-column>
           <el-table-column
@@ -238,7 +231,7 @@
           </el-table-column>
           <el-table-column
             label="跟进时间"
-            prop="entry_num"
+            prop="msdesc"
             sortable="custom"
             align="center"
             width="150"
@@ -439,7 +432,7 @@ export default {
       return this.viewType == 1 ? '报名状态' : '入职状态'
     },
     labelTime () {
-      return this.viewType == 3 ? '报名时间' : '跟进时间'
+      return this.viewType == 1 ? '报名时间' : '入职时间'
     }
   },
   methods: {
@@ -453,14 +446,14 @@ export default {
       if (this.viewType == 1) {
         teamRecommendResumeList(params).then(res => {
           const { data } = res
-          this.tableData = data.data
+          this.tableData = data.data || []
           this.total = data.count
         })
       }
       else {
         entryResumeList(params).then(res => {
           const { data } = res
-          this.tableData = data.data
+          this.tableData = data.data || []
           this.total = data.count
         })
       }
@@ -468,24 +461,24 @@ export default {
     changeDate (val) {
       this.formMember.beginTime = val[0]
       this.formMember.endTime = val[1]
-    },
-    importResume () {
-
+      // this.getList(this.formMember)
     },
     exportResume () {
+      if (!this.tableData.length) {
+        return this.$message.warning('没有数据导出')
+      }
       let uid = localStorage.getItem('uid')
-      let query = new FormData()
-      query.append('uid', uid)
-      exportUserResume({ uid }).then(res => {
-        console.log(res)
-      })
+      // let query = new FormData()
+      // query.append('uid', uid)
+      exportUserResume(uid)
     },
     sortChange (column) {
+      console.log(column)
       if (column.order == 'ascending') {
-        this.formMember.timeDesc = 'asc'
+        this.formMember[column.prop] = 'asc'
       }
       else {
-        this.formMember.timeDesc = 'desc'
+        this.formMember[column.prop]  = 'desc'
       }
       this.getList(this.formMember)
     },
@@ -573,6 +566,14 @@ export default {
           this.$message.error(error.status.remind)
         })
       }
+    },
+    onReset() {
+      this.formMember= {
+        uid: localStorage.getItem('uid'),
+        limit: 10,
+        page: 1
+      }
+      this.getList(this.formMember)
     }
   }
 }

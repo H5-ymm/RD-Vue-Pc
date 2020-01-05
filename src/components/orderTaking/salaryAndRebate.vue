@@ -165,7 +165,7 @@ export default {
       handler (val, oldName) {
         for (let key in val) {
           if (val.reward_type == 1) {
-            if (val[key] != '' && key != 'reward_needatime' && key != 'reward_needatime') {
+            if (val[key] != '' && key != 'reward_needtime' && key != 'duration_time') {
               this.$emit('submit', val)
             }
           }

@@ -1,6 +1,6 @@
 <template>
   <div class="tables-box">
-    <memberCard :userType="userType"></memberCard>
+    <memberCard :userType="userType" :teamInfo="teamInfo"></memberCard>
     <div class="table-list">
       <memberQuery @onSubmit="onSubmit"></memberQuery>
       <memberTable
@@ -63,7 +63,8 @@ export default {
       },
       total: 0,
       len: 0,
-      userId: ''
+      userId: '',
+      teamInfo: {}
     }
   },
   created () {
@@ -85,11 +86,13 @@ export default {
         const { data } = res
         this.tableData = data.data
         this.total = data.count
+        this.teamInfo = data.teamInfo
+        console.log(data)
       })
     },
     handleEdit (val) {
-      this.dialogTableVisible = true
       this.userId = val
+      this.dialogTableVisible = true
       console.log(this.userId)
     },
     handleDel (uid) {

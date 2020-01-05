@@ -5,7 +5,7 @@ export const addPut = data => $post('/teamselfjob/add_put', data) // 推送简�
 export const getTomember = data => $post('/teamselfjob/getTomember', data) // 获取跟进人列表
 export const getassignlist = data => $post('/teamselfjob/getassignlist', data) // 获取指定人列表
 export const getPutresume = data => $post('/teamselfjob/get_putresume', data) // 根据发单状态获取简历列表
-
+export const putResumelist = data => $post('/teamselfjob/put_resumelist', data) // 获取未被推荐的简历列表
 
 export const addjob = data => $post('/teamselfjob/addjob', data) // 新增发单信息
 export const savejob = data => $post('/teamselfjob/savejob', data) // 修改职位信息

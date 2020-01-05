@@ -466,10 +466,11 @@ export default {
       })
     },
     applyReceipt () {
+      this.dialogType = 1
       if (this.token) {
         let params = {
           job_id: this.orderTakingDetail.id,
-          uid: this.orderTakingDetail.uid
+          uid: localStorage.getItem('uid')
         }
         addApply(params).then(res => {
           this.centerDialogVisible = true
@@ -490,8 +491,9 @@ export default {
     },
     // 收藏
     handleCollect () {
+      this.dialogType = 2
       let params = {
-        uid: this.orderTakingDetail.uid,
+        uid: localStorage.getItem('uid'),
         jobId: this.orderTakingDetail.id
       }
       teamCollectionJob(params).then(res => {
@@ -517,7 +519,7 @@ export default {
     handleClose () {
       this.centerDialogVisible = false
       if (this.dialogType == 2) {
-        this.$router.push('CollectJob')
+        this.$router.push('collectJob')
       }
     },
     handleOk () {

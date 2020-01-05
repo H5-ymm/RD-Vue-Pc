@@ -81,7 +81,7 @@
                 <el-button @click="handleRecepit(1,scope.row)" type="text" size="small">取消申请</el-button>
                 <!-- <el-button @click="dialogVisible=true" type="text" size="small">删除职位</el-button> -->
               </div>
-              <div v-if="userPosition==3">
+              <div v-if="userPosition==1">
                 <el-button @click="viewJob(scope.row)" type="text" v-if="!scope.row.dsh" size="small">查看职位</el-button>
                 <el-button @click="dialogTableVisible=true" v-if="!scope.row.dsh" type="text" size="small">分配接单</el-button>
                 <el-button @click="handleEdit(1,scope.row)" type="text" v-if="scope.row.dsh" size="small">同意</el-button>
@@ -94,7 +94,7 @@
       <el-pagination class="team-pagination" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="formMember.page" :page-sizes="[10, 20, 30, 40]" :page-size="formMember.limit" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
     </div>
     <viewJob :dialogTableVisible="dialogJobVisible" @handleClose="dialogJobVisible=fasle"></viewJob>
-    <personalModal :dialogTableVisible="dialogTableVisible" :personalList="personalList" @handleOk="handleOk" :title="userPosition==2?'分配组员':userPosition==3?'分配接单':''" @handleClose="dialogTableVisible=false"></personalModal>
+    <personalModal :dialogTableVisible="dialogTableVisible" :personalList="personalList" @handleOk="handleOk" :title="userPosition==2?'分配组员':userPosition==1?'分配接单':''" @handleClose="dialogTableVisible=false"></personalModal>
     <havePersonModal :dialogTableVisible="personVisible" :hasPersonList="hasPersonList" @handleClose="personVisible=false" @handleOk="handleOkPerson"></havePersonModal>
     <modal :dialogTableVisible="dialogVisible" @handleOk="handleOk" :modalObj="modalObj" @handleClose="dialogVisible=false"></modal>
   </div>
@@ -151,7 +151,7 @@ export default {
         { label: '等待入职名单', value: 2 },
         { label: '完成入职名单', value: 3 }
       ],
-      userPosition: 2, // 1 成员，2经理，3 总经理
+      userPosition: sessionStorage.getItem('userPosition'), // 1 总经理，2经理，3 成员
       handleStatus: 0,
       modalObj: {
         content: '你确定要删除职位吗？',

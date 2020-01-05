@@ -156,10 +156,9 @@ export default {
         }
       });
     },
-    resetForm (personalForm) {
-      this.$refs[personalForm].resetFields();
-    },
-    handleAvatarSuccess () { }
+    resetForm () {
+      this.getInfo(this.personalForm.id)
+    }
   }
 }
 </script>

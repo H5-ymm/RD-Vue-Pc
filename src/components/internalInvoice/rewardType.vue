@@ -1,34 +1,75 @@
+<style lang="scss">
+@import '@/assets/css/salaryRebate.scss';
+.salary-rebate  {
+  &.job-salary-rebate {
+    // margin-left: 96px;
+    .reward_type {
+      margin-left: 100px;
+    }
+    .el-form-item__content {
+      width: 70%;
+    }
+    .width198 {
+      width: 198px!important;
+      margin-right: 10px;
+      &.el-select > .el-input {
+        width: 198px!important;
+      }
+    }
+    .width110 {
+      width: 110px!important;
+      margin: 0 20px;
+    }
+    .el-scrollbar__wrap {
+        width: 180px;
+        .text-input {
+          overflow: hidden;
+          border: none;
+          padding: 0 0 0 20px;
+        }
+      }
+    }
+    .el-form-item  {
+      .error {
+        position:absolute;
+        top: 0;
+        left:0;
+        color:#FE2A00;
+        font-size:12px;
+        &.reward-error {
+          width: 300px;
+          left: 420px;
+          top: 0;
+          ul {
+            margin-left:5px;
+            font-size:12px;
+            line-height: 20px;
+          }
+        }
+      }
+    }
+  }
+</style>
 <template>
-  <div class="salary-rebate">
-    <el-form-item label="返利模式" class="reward_type">
-      <div class="x-flex-start">
-        <el-select v-model="orderTakingForm.reward_type" class="width160" placeholder="请选择">
-          <el-option
-            :label="item.label"
-            :value="item.value"
-            v-show="index"
-            v-for="(item, index) in rewardTypeList"
-            :key="item.label"
-          ></el-option>
+  <div class="salary-rebate job-salary-rebate">
+    <el-form-item label="返利模式">
+      <div class="x-flex-start width700">
+        <el-select v-model="orderTakingForm.reward_type" @change="changeReward" class="width160 width198" placeholder="请选择">
+          <el-option :label="item.label" :value="item.value" v-show="index" v-for="(item,index) in rewardTypeList" :key="item.label"></el-option>
         </el-select>
         <div v-if="orderTakingForm.reward_type">
-          <el-input
-            placeholder="请输入金额"
-            v-if="orderTakingForm.reward_type==1"
-            class="width160 text-input"
-            v-model="orderTakingForm.reward_money"
-          >
+          <el-input placeholder="请输入金额" v-if="orderTakingForm.reward_type==1" class="width160 width198 text-input" v-model="orderTakingForm.reward_money">
             <template slot="append">
               <span class="moneyType">元/人/月</span>
             </template>
           </el-input>
           <div v-else-if="orderTakingForm.reward_type==4">
-            <el-input placeholder="请输入" class="width160 text-input" v-model="orderTakingForm.money">
+            <el-input placeholder="请输入" class="width160 width198 text-input" v-model="orderTakingForm.reward_money">
               <template slot="prepend">
                 <span class="moneyType">返利总金额</span>
               </template>
             </el-input>
-            <el-input placeholder="请输入" class="width160 text-input" v-model="orderTakingForm.money">
+            <el-input placeholder="请输入" class="width160 width198 text-input" v-model="orderTakingForm.reward_needatime">
               <template slot="prepend">
                 <span class="moneyType">需入职满</span>
               </template>
@@ -37,29 +78,15 @@
               </template>
             </el-input>
           </div>
-          <el-select
-            v-model="orderTakingForm.reward_money_type"
-            v-else
-            class="width160"
-            placeholder="请选择"
-          >
-            <el-option
-              :label="item.label"
-              :value="item.value"
-              v-for="item in payTypeList"
-              :key="item.label"
-            ></el-option>
+          <el-select v-model="orderTakingForm.reward_money_type" v-else class="width160 width198" placeholder="请选择">
+            <el-option :label="item.label" :value="item.value" v-for="item in payTypeList" :key="item.label"></el-option>
           </el-select>
         </div>
       </div>
-      <span class="error el-icon-warning">入职天数为0时，代表入职当天返利</span>
     </el-form-item>
     <el-form-item class="reward_type">
-      <div
-        class="x-flex-start width500"
-        v-if="orderTakingForm.reward_type==1&&orderTakingForm.reward_money_type==3"
-      >
-        <el-input placeholder="请输入" class="width160 text-input" v-model="orderTakingForm.money">
+      <div class="x-flex-start width500" v-if="orderTakingForm.reward_type==1">
+        <el-input placeholder="请输入" class="width160 width198 text-input" v-model="orderTakingForm.settlement_time">
           <template slot="prepend">
             <span class="moneyType">次月</span>
           </template>
@@ -67,21 +94,10 @@
             <span class="moneyType">号结算</span>
           </template>
         </el-input>
-        <el-select
-          v-model="orderTakingForm.reward_money_type"
-          @blur="blurInput"
-          @change="changePayType"
-          class="width160"
-          placeholder="结算类型"
-        >
+        <el-select v-model="orderTakingForm.reward_money_type" @blur="blurInput" @change="changePayType" class="width160 width198" placeholder="结算类型">
           <el-option label="长期返利" :value="1"></el-option>
-          <div class="width160" ref="reward" :value="2">
-            <el-input
-              placeholder="请输入"
-              class="text-input"
-              v-model="orderTakingForm.settlement_time"
-              @change="changeInput"
-            >
+          <div class="width160 width198 reward-input" ref="reward" :value="2">
+            <el-input placeholder="请输入" class="text-input width110" v-model="orderTakingForm.reward_needatime" @change="changeInput">
               <template slot="prepend">
                 <span class="moneyType">持续返利</span>
               </template>
@@ -92,55 +108,24 @@
           </div>
         </el-select>
       </div>
-      <div
-        class="x-flex-start width700"
-        v-if="orderTakingForm.reward_type!=1&&orderTakingForm.reward_type!=4"
-      >
-        <el-input
-          placeholder="请输入"
-          class="width160 text-input"
-          v-model="orderTakingForm.money"
-          v-if="orderTakingForm.reward_money_type"
-        >
+      <div class="x-flex-start width700" v-if="orderTakingForm.reward_type!=1&&orderTakingForm.reward_type!=4">
+        <el-input placeholder="请输入" class="width160 width198 text-input" v-model="orderTakingForm.reward_money" v-if="orderTakingForm.reward_money_type">
           <template slot="append">
             <span class="moneyType">元/人/{{rewardType}}</span>
           </template>
         </el-input>
-        <el-select
-          v-model="orderTakingForm.reward_pay_type"
-          class="width160"
-          placeholder="结算类型"
-          v-if="orderTakingForm.reward_money_type"
-        >
+        <el-select v-model="orderTakingForm.settlement_type" class="width160 width198" placeholder="结算类型" v-if="orderTakingForm.reward_money_type">
           <el-option :label="`次${rewardType}结算`" :value="1"></el-option>
           <el-option :label="`本${rewardType}结算`" :value="2"></el-option>
         </el-select>
-        <el-select
-          v-model="orderTakingForm.reward_money_type_value"
-          v-if="orderTakingForm.reward_pay_type&&orderTakingForm.reward_money_type==2"
-          class="width160"
-          placeholder="请选择"
-        >
-          <el-option
-            :label="`${payType}${item.label}`"
-            :value="item.value"
-            v-for="item in weekList"
-            :key="item.label"
-          ></el-option>
+        <el-select v-model="orderTakingForm.settlement_time" v-if="orderTakingForm.reward_money_type==2&&orderTakingForm.settlement_type" class="width160 width198" placeholder="请选择">
+          <el-option :label="`${payType}${item.label}`" :value="item.value" v-for="item in weekList" :key="item.label"></el-option>
         </el-select>
       </div>
     </el-form-item>
-    <el-form-item
-      class="reward_type"
-      v-if="(orderTakingForm.reward_type==2||orderTakingForm.reward_type==3)&&orderTakingForm.reward_money_type"
-    >
-      <div class="x-flex-start-justify width500">
-        <el-input
-          placeholder="请输入"
-          @focus="focusInput"
-          class="width160 text-input"
-          v-model="orderTakingForm.reward_duration"
-        >
+    <el-form-item class="reward_type" label-width="96px"  v-if="(orderTakingForm.reward_type==2||orderTakingForm.reward_type==3)&&orderTakingForm.reward_money_type">
+      <div class="x-flex-start-justify width500 duration_time">
+        <el-input placeholder="请输入" @focus="focusInput" class="width160 width198 text-input" v-model="orderTakingForm.duration_time">
           <template slot="prepend">
             <span class="moneyType">持续</span>
           </template>
@@ -148,12 +133,7 @@
             <span class="moneyType">{{rewardType}}</span>
           </template>
         </el-input>
-        <el-input
-          placeholder="请输入"
-          class="width160 text-input"
-          @focus="focusInput"
-          v-model="orderTakingForm.reward_duration"
-        >
+        <el-input placeholder="请输入" class="width160 width198 text-input" @focus="focusInput" v-model="orderTakingForm.reward_needtime">
           <template slot="prepend">
             <span class="moneyType">需入职满</span>
           </template>
@@ -161,6 +141,7 @@
             <span class="moneyType">{{rewardType}}</span>
           </template>
         </el-input>
+        <span class="error el-icon-warning">入职天数为0时，代表入职当天返利</span>
       </div>
       <div class="error reward-error" v-if="rewardTipShow">
         <div class="x-flex-start-justify">
@@ -181,7 +162,15 @@ export default {
   props: ['moneyList'],
   data () {
     return {
-      orderTakingForm: {},
+      orderTakingForm: {
+        reward_type: '', // 返利类型(1月返 2日返 3时返 4一次性返)
+        reward_money: '', // 返利金额(根据类型修改单位)
+        reward_money_type: '', // 1日2周3月(针对日返和时返) 1长期2持续（针对月返）结算类型 
+        settlement_time: '', // 结算时间(针对月返：次月第XX多少天；)
+        reward_needatime: '', // 需求入职天数/周数/月数(一次性时：0表示当天返)
+        duration_time: '', // 持续 (天数/周数/月数)
+        settlement_type: '', 
+      },
       comTypeList: [],
       moneyTypeList,
       rewardTypeList,
@@ -200,9 +189,30 @@ export default {
       return this.orderTakingForm.reward_money_type == 1 ? '日' : this.orderTakingForm.reward_money_type == 2 ? '周' : '月'
     }
   },
+   watch: {
+    orderTakingForm: {
+      handler (val, oldName) {
+        for (let key in val) {
+          if (val.reward_type == 1) {
+            if (val[key] != '' && key != 'reward_needtime' && key != 'duration_time') {
+              this.$emit('submit', val)
+            }
+          }
+          else {
+            if (val[key] != '') {
+              this.$emit('submit', val)
+            }
+          }
+        }
+      },
+      deep: true
+    }
+  },
   methods: {
-    getTypeFlag () {
-
+    changeReward (val) {
+      if (val == 1) {
+        this.orderTakingForm.settlement_type = 2
+      }
     },
     focusInput () {
       this.rewardTipShow = true
@@ -222,78 +232,3 @@ export default {
   }
 }
 </script>
-<style lang="scss">
-  .salary-rebate {
-    padding-bottom: 20px;
-    width: 100%;
-    .width500 {
-      width: 500px;
-    }
-    .width700 {
-      width: 700px;
-    }
-    .el-form-item{
-      display: inline-block!important;
-    }
-    .width110 {
-      width: 110px;
-      margin: 0 20px;
-    }
-    .reward_type {
-      margin-bottom: 10px;
-    }
-    .error {
-      top: -16px;
-      &.reward-error {
-        width: 300px;
-        left: 360px;
-        top: -10px;
-        ul {
-          margin-left:5px;
-          font-size:12px;
-          line-height: 20px;
-        }
-      }
-    }
-    .el-scrollbar__wrap {
-      width: 180px;
-      .text-input {
-        overflow: hidden;
-        border: none;
-        padding: 0 0 0 20px;
-      }
-    }
-  }
-  .width160 {
-    width: 160px!important;
-    margin-right: 30px;
-    &.el-select  {
-      >.el-input{
-        width: 160px!important;
-      }
-    }
-    .moneyType {
-      color: #333;
-    }
-    .el-input-group__append,.el-input-group__prepend {   
-      border:none;
-      border-radius: 0;
-      background: none;
-      padding: 0;
-      background-color:none;
-    }
-  }
-  .text-input {
-    padding: 0 10px;
-    box-sizing: border-box;
-    border: 1px solid #eee;
-    height: 38px;
-    .el-input__inner {
-      padding: 0 ;
-      height: 37px!important;
-      line-height: 37px!important;
-      text-align: center;
-      border: none!important;
-    }
-  }
-</style>

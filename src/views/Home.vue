@@ -255,7 +255,7 @@ export default {
       if (this.token) {
         let params = {
           job_id: val.id,
-          uid: val.uid
+          uid: localStorage.getItem('uid')
         }
         addApply(params).then(res => {
           console.log(res)

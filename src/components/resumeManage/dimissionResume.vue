@@ -21,28 +21,21 @@
         </el-form-item>
         <el-form-item label="联系电话：">
           <el-input
-            v-model="formMember.name"
+            v-model="formMember.mobile"
             class="width300"
             placeholder="请输入联系电话"
           ></el-input>
         </el-form-item>
         <el-form-item label="意向岗位：">
-          <el-select
-            v-model="formMember.industry"
+          <el-input
+            v-model="formMember.job"
             class="width300"
             placeholder="请输入意向岗位关键字"
-          >
-            <el-option
-              :label="item"
-              :value="key"
-              v-for="(item,key) in jobList"
-              :key="key"
-            ></el-option>
-          </el-select>
+          ></el-input>
         </el-form-item>
         <el-form-item label="录入人：">
           <el-input
-            v-model="formMember.name"
+            v-model="formMember.inputName"
             class="width300"
             placeholder="请输入录入人关键字"
           ></el-input>
@@ -58,14 +51,14 @@
         </el-form-item>
         <el-form-item label="跟进人：">
           <el-input
-            v-model="formMember.name"
+            v-model="formMember.track_name"
             class="width300"
             placeholder="请输入跟进人关键字"
           ></el-input>
         </el-form-item>
         <el-form-item label="意向工资：">
           <el-select
-            v-model="formMember.industry"
+            v-model="formMember.money"
             class="width300"
             placeholder="请选择意向工资"
           >
@@ -98,7 +91,7 @@
           >查询</el-button>
           <el-button
             type="primary"
-            @click="onSubmit"
+            @click="onReset"
             class="select-btn"
           >重置</el-button>
         </el-form-item>
@@ -419,6 +412,15 @@ export default {
     onSubmit (value) {
       let params = Object.assign(this.formMember, value)
       this.getList(params)
+    },
+    onReset() {
+      this.formMember= {
+        uid: localStorage.getItem('uid'),
+        limit: 10,
+        page: 1
+      }
+      this.timeList = []
+      this.getList(this.formMember)
     }
   }
 }
