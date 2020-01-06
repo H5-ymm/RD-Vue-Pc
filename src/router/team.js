@@ -108,7 +108,7 @@ let children = [{  // 团队论坛
     requiresAuth: 2
   }
 },
-{ // 部门列表
+{ //
   path: '/accountSettings',
   name: 'AccountSettings',
   component: AccountSettings,
@@ -217,7 +217,7 @@ let children = [{  // 团队论坛
 }
 ]
 
-let userPosition =  sessionStorage.getItem('userPosition')// 1 总经理，2经理，3 成员
+let userPosition = sessionStorage.getItem('userPosition')// 1 总经理，2经理，3 成员
 let rootList = [
   { // 团队设置
     path: '/teamSetting',
@@ -301,13 +301,13 @@ let receiptList = [
       requiresAuth: 1
     }
   },
-  
+
 ]
-if (userPosition==1) {
-  children = [...children,...rootList,...receiptList]
+if (userPosition == 1) {
+  children = [...children, ...rootList, ...receiptList]
 }
-if (userPosition==2) {
-  children = [...children,...receiptList]
+if (userPosition == 2) {
+  children = [...children, ...receiptList]
 }
 export const teamRouters = {
   path: '/team',

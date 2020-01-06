@@ -131,7 +131,7 @@ export const applyStatusList = [
   { label: '已同意', value: 1 },
   { label: '已拒绝', value: 2 },
   { label: '取消申请', value: 3 },
-  { label: '其他端对已接', value: 4 },
+  { label: '其他团队已接', value: 4 },
   { label: '上架中', value: 5 },
   { label: '已下架', value: 6 }
 ]
@@ -188,4 +188,18 @@ export const positionStatusList = [
   { label: '高薪返利', value: 1 },
   { label: '企业急招', value: 2 },
   { label: '精选岗位', value: 3 }
+]
+
+export const applyStatusList1 = [
+  { label: '已申请', value: 0 },
+  { label: '已同意', value: 1 },
+  { label: '已拒绝', value: 2 },
+  { label: '已取消申请', value: 3 },
+]
+export const entryStatusList2 = [
+  { label: '面试开始', value: 1 },
+  { label: '面试结束', value: 2 },
+  { label: '审核面试简历', value: 3 },
+  { label: '入职开始', value: 4 },
+  { label: '入职结束', value: 5 }
 ]

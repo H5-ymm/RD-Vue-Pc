@@ -2,8 +2,8 @@
   <div class="customize-search-box x-flex-start-justify">
     <div class="x-flex-start-justify select-input-box">
       <el-select v-model="params.type" slot="prepend" style="width:140px" placeholder="请选择">
-        <el-option label="职位搜索" value="1"></el-option>
-        <el-option label="企业搜索" value="2"></el-option>
+        <el-option label="职位搜索" :value="1"></el-option>
+        <el-option label="企业搜索" :value="2"></el-option>
       </el-select>
       <el-input v-model="params.kew_name" placeholder="请输入内容"></el-input>
     </div>
@@ -14,7 +14,9 @@
 export default {
   data () {
     return {
-      params: {}
+      params: {
+        type: 1
+      }
     }
   },
   methods: {

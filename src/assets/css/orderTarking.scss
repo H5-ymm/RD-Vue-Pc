@@ -10,7 +10,7 @@
   padding:0;
   .orderTaking-grid-content {
     background: #fff;
-    height: 576px;
+    min-height: 600px;
   }
   .orderTaking-search {
     width:100%;
@@ -116,10 +116,14 @@
     height: 112px;
     margin: 0 20px;
   }
-  .orderTaking-main-sectionActive {
-    background:#F6F9FE;
+  .orderTaking-main-card {
+    &:hover {
+      background:#F6F9FE;
+    }
   }
-
+  // .orderTaking-main-sectionActive {
+  //   background:#F6F9FE;
+  // }
   .orderTaking-main-row {
     display: flex;
     justify-content: space-between;
@@ -135,6 +139,15 @@
     .orderTaking-main-col1{
       width: 906px;
       margin-right: 14px;
+    }
+    .el-button--primary.is-plain {
+      background: #fff;
+      color: #1890FF;
+      border-color: #1890FF;
+      &:hover {
+        background:#1890FF;
+        color: #fff;
+      }
     }
   }
 }
@@ -201,10 +214,11 @@
 }
 .orderTaking-main-row .bg-purple-light {
   background: #fff;
+  margin-bottom: 20px;
 }
 .orderTaking-login {
   height: 375px;
-  margin-top: 20px;
+  // margin-top: 20px;
 }
 .orderTaking-main-history {
   padding:5px 0;

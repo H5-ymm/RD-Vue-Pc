@@ -5,35 +5,13 @@
     <el-row class="tac">
       <el-col :span="24">
         <div class="names">人事达</div>
-        <el-menu
-          class="el-menu-vertical-demo"
-          background-color="#000"
-          active-text-color="#1890FF"
-          text-color="#fff"
-          @open="handleOpen"
-          :unique-opened="true"
-          @close="handleClose"
-          @select="selectMenus"
-          router
-          :default-active="routerli"
-        >
-          <el-submenu
-            :index="item.title"
-            class="acts"
-            v-for="(item,index) in menus"
-            :key="index"
-          >
+        <el-menu class="el-menu-vertical-demo" background-color="#000" active-text-color="#1890FF" text-color="#fff" @open="handleOpen" :unique-opened="true" @close="handleClose" @select="selectMenus" router :default-active="routerli">
+          <el-submenu :index="item.title" class="acts" v-for="(item,index) in menus" :key="index">
             <template slot="title">
               <i class="el-icon-collection"></i>
               <span>{{item.title}}</span>
             </template>
-            <el-menu-item
-              :index="val.title"
-              :class="{'is-active':title==val.title}"
-              v-for="(val,ind) in item.submenu"
-              :key="ind"
-              :route="val.url"
-            >{{val.title}}</el-menu-item>
+            <el-menu-item :index="val.title" :class="{'is-active':title==val.title}" v-for="(val,ind) in item.submenu" :key="ind" :route="val.url">{{val.title}}</el-menu-item>
           </el-submenu>
         </el-menu>
       </el-col>
@@ -88,14 +66,14 @@ export default {
           title: '接单管理',
           icon: 'el-icon-collection-tag',
           submenu: [
-            {
-              title: '申请接单',
-              url: '/teamApplication'
-            },
-            {
-              title: '接单分配',
-              url: '/receiptTable'
-            },
+            // {
+            //   title: '申请接单',
+            //   url: '/teamApplication'
+            // },
+            // {
+            //   title: '接单分配',
+            //   url: '/receiptTable'
+            // },
             {
               title: '输送人才',
               url: '/teamInterviewPersonnel'
@@ -212,56 +190,75 @@ export default {
       ],
       title: '',
       root: {
-          title: '团队设置',
-          icon: 'el-icon-collection-tag',
-          submenu: [
-            {
-              title: '团队信息',
-              url: '/teamSetting'
-            },
-            {
-              title: '部门管理',
-              url: '/department'
-            }
-          ]
-        },
-        receipt: {
-          title: '内部发单',
-          icon: 'el-icon-collection-tag',
-          submenu: [
+        title: '团队设置',
+        icon: 'el-icon-collection-tag',
+        submenu: [
+          {
+            title: '团队信息',
+            url: '/teamSetting'
+          },
+          {
+            title: '部门管理',
+            url: '/department'
+          }
+        ]
+      },
+      receipt: {
+        title: '内部发单',
+        icon: 'el-icon-collection-tag',
+        submenu: [
 
-            {
-              title: '管理内部职位',
-              url: '/publishJobList?view=1'
-            },
-            {
-              title: '已发布职位',
-              url: '/publishJobList?view=2'
-            },
-            {
-              title: '已推荐简历',
-              url: '/applyResume?view=3'
-            },
-            {
-              title: '领取发单',
-              url: '/collectingInvoice'
-            },
-            {
-              title: '内部审核简历',
-              url: '/checkResume'
-            }
-          ]
+          {
+            title: '管理内部职位',
+            url: '/publishJobList?view=1'
+          },
+          {
+            title: '已发布职位',
+            url: '/publishJobList?view=2'
+          },
+          {
+            title: '已推荐简历',
+            url: '/applyResume?view=3'
+          },
+          {
+            title: '领取发单',
+            url: '/collectingInvoice'
+          },
+          {
+            title: '内部审核简历',
+            url: '/checkResume'
+          }
+        ]
+      },
+      receiptRoot: [
+        {
+          title: '申请接单',
+          url: '/teamApplication'
         },
+        {
+          title: '接单分配',
+          url: '/receiptTable'
+        }
+      ],
+      receiptRoot1: [
+        {
+          title: '接单分配',
+          url: '/receiptTable'
+        }
+      ],
+      userPosition: 0
     }
   },
-  created(){
+  created () {
     let userPosition = sessionStorage.getItem('userPosition')
-    if (userPosition==1) {
+    if (userPosition == 1) {
       this.menus.splice(4, 0, this.root)
-      this.menus.splice(9,0,this.receipt)
+      this.menus.splice(9, 0, this.receipt)
+      this.menus[3].submenu = this.receiptRoot.concat(this.menus[3].submenu)
     }
-    if (userPosition==2)  {
-      this.menus.splice(8,0,this.receipt)
+    if (userPosition == 2) {
+      this.menus[3].submenu = this.receiptRoot1.concat(this.menus[3].submenu)
+      this.menus.splice(8, 0, this.receipt)
     }
   },
   methods: {

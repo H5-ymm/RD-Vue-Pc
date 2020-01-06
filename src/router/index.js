@@ -9,13 +9,13 @@ import withdraw from '../components/finance/withdraw'
 import tradingRecord from '../components/finance/tradingRecord'
 
 export const commonRouters = [
-  {
-    path: '/accountSettings',  //账户设置
-    component: AccountSettings,
-    meta: {
-      requiresAuth: 2
-    }
-  },
+  // {
+  //   path: '/accountSettings',  //账户设置
+  //   component: AccountSettings,
+  //   meta: {
+  //     requiresAuth: 2
+  //   }
+  // },
   {
     path: '/accountSafe',  //账户安全
     name: AccountSafe,

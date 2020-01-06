@@ -5,37 +5,17 @@
 <template>
   <div class="tables-box billingManagement receipt-manage">
     <div class="table-list">
-      <el-form
-        :inline="true"
-        label-width="100px"
-        label-position="right"
-        :model="formMember"
-        class="demo-form-inline form-item-wrap"
-      >
+      <el-form :inline="true" label-width="100px" label-position="right" :model="formMember" class="demo-form-inline form-item-wrap">
         <el-form-item label="职位名称：">
           <el-input v-model="formMember.name" class="width300" placeholder="请输入职位名称关键字"></el-input>
           <el-button type="primary" @click="onSubmit" class="select-btn">查询</el-button>
         </el-form-item>
         <el-form-item label="状态筛选：">
-          <el-button
-            :type="activeIndex==index ?'primary':''"
-            v-for="(item,index) in checkStatusList"
-            :key="index"
-            plain
-            @click="selectStatus(item,index)"
-            class="select-status"
-          >{{item.label}}</el-button>
+          <el-button :type="activeIndex==index ?'primary':''" v-for="(item,index) in checkStatusList" :key="index" plain @click="selectStatus(item,index)" class="select-status">{{item.label}}</el-button>
         </el-form-item>
       </el-form>
       <div class="member-table">
-        <el-table
-          border
-          :data="tableData"
-          ref="multipleTable"
-          style="width: 100%"
-          @sort-change="sortChange"
-          @selection-change="handleSelectionChange"
-        >
+        <el-table border :data="tableData" ref="multipleTable" style="width: 100%" @sort-change="sortChange" @selection-change="handleSelectionChange">
           <el-table-column label="职位名称" align="center" width="150">
             <template slot-scope="props">
               <el-button type="text" @click="viewJob(props.row)">{{props.row.name}}</el-button>
@@ -53,17 +33,14 @@
             </template>
           </el-table-column>
           <el-table-column label="返利金额" prop="reward_money" align="center" width="150"></el-table-column>
-          <el-table-column label="发布日期" prop="desc"  sortable="custom" align="center" width="150">
-             <template slot-scope="props">
+          <el-table-column label="发布日期" prop="desc" sortable="custom" align="center" width="150">
+            <template slot-scope="props">
               <span>{{props.row.ctime?$moment.unix(props.row.ctime).format('YYYY-MM-DD HH:mm'):'--'}}</span>
             </template>
           </el-table-column>
           <el-table-column label="状态" align="center" width="150">
             <template slot-scope="props">
-              <span
-                class="status"
-                :class="`{active-status${props.row.status}}`"
-              >{{props.row.status | statusType}}</span>
+              <span class="status" :class="`{active-status${props.row.status}}`">{{props.row.status | statusType}}</span>
             </template>
           </el-table-column>
           <el-table-column label="操作" align="center" width="150">
@@ -74,46 +51,17 @@
                 v-if="scope.row.status==1"
                 size="small"
               >修改</el-button> -->
-              <el-button
-                @click="handleRecceipt(scope.row)"
-                type="text"
-                v-if="scope.row.status==1||scope.row.status==3"
-                size="small"
-              >删除</el-button>
-              <el-button
-                @click="viewJob(scope.row)"
-                type="text"
-                v-if="scope.row.status==4"
-                size="small"
-              >查看</el-button>
-              <el-button
-                @click="handleDel(scope.row)"
-                v-if="scope.row.status==3"
-                type="text"
-                size="small"
-              >下架</el-button>
-              <el-button
-                @click="handleDel(scope.row)"
-                type="text"
-                v-if="scope.row.status==4"
-                size="small"
-              >上架</el-button>
+              <el-button @click="handleRecceipt(scope.row)" type="text" v-if="scope.row.status==1||scope.row.status==3" size="small">删除</el-button>
+              <el-button @click="viewJob(scope.row)" type="text" size="small">查看</el-button>
+              <el-button @click="handleDel(scope.row)" v-if="scope.row.status==2&&scope.row.job_status==1" type="text" size="small">下架</el-button>
+              <el-button @click="handleDel(scope.row)" type="text" v-if="scope.row.status==2&&scope.row.job_status==2" size="small">上架</el-button>
             </template>
           </el-table-column>
         </el-table>
       </div>
-      <el-pagination
-        class="team-pagination"
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :current-page="formMember.page"
-        :page-sizes="[10, 20, 30, 40]"
-        :page-size="formMember.limit"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="total"
-      ></el-pagination>
+      <el-pagination class="team-pagination" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="formMember.page" :page-sizes="[10, 20, 30, 40]" :page-size="formMember.limit" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
     </div>
-    <viewJob :dialogTableVisible="dialogJobVisible" :id="id" @handleClose="dialogJobVisible=fasle"></viewJob>
+    <viewJob :dialogTableVisible="dialogJobVisible" :id="id" @handleClose="dialogJobVisible=false"></viewJob>
   </div>
 </template>
 
@@ -166,7 +114,7 @@ export default {
       userId: '',
       multipleSelection: [],
       activeIndex: 0,
-      id:''
+      id: ''
     }
   },
   created () {
@@ -186,7 +134,7 @@ export default {
         this.formMember[column.prop] = 'asc'
       }
       else {
-        this.formMember[column.prop]= 'desc'
+        this.formMember[column.prop] = 'desc'
       }
       this.getList(this.formMember)
     },
@@ -212,6 +160,7 @@ export default {
 
     },
     viewJob (val) {
+      console.log(val)
       this.id = val.id
       this.dialogJobVisible = true
     },

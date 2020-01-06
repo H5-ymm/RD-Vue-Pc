@@ -16,26 +16,13 @@
       </ul>
     </div>
     <div class="table-list">
-      <el-form
-        :inline="true"
-        label-width="120px"
-        label-position="right"
-        :model="formMember"
-        class="demo-form-inline form-item-wrap"
-      >
+      <el-form :inline="true" label-width="120px" label-position="right" :model="formMember" class="demo-form-inline form-item-wrap">
         <el-form-item label="企业/岗位名称：">
           <el-input v-model="formMember.name" class="width300" placeholder="请输入职位名称关键字"></el-input>
           <el-button type="primary" @click="onSubmit" class="select-btn">查询</el-button>
         </el-form-item>
         <el-form-item label="状态筛选：">
-          <el-button
-            :type="activeIndex==index ?'primary':''"
-            v-for="(item,index) in statusList"
-            :key="index"
-            plain
-            @click="selectStatus(item,index)"
-            class="select-status"
-          >{{item.label}}</el-button>
+          <el-button :type="activeIndex==index ?'primary':''" v-for="(item,index) in statusList" :key="index" plain @click="selectStatus(item,index)" class="select-status">{{item.label}}</el-button>
         </el-form-item>
       </el-form>
       <div class="member-table resume-table resume-table1">
@@ -47,46 +34,40 @@
           </span>
           <el-button type="text" @click="multipleSelection=[]">清空</el-button>
         </div>
-        <el-table
-          border
-          :data="tableData"
-          ref="multipleTable"
-          style="width: 100%"
-          @selection-change="handleSelectionChange"
-        >
+        <el-table border :data="tableData" ref="multipleTable" style="width: 100%" @selection-change="handleSelectionChange">
           <el-table-column type="selection" align="center" width="60"></el-table-column>
-          <el-table-column label="企业名称" align="center" width="150">
+          <el-table-column label="企业名称" align="center" width="180">
             <template slot-scope="props">
               <el-button type="text" @click="handleEdit(props.row)">{{props.row.company_name}}</el-button>
             </template>
           </el-table-column>
-          <el-table-column label="岗位名称" align="center" width="120">
+          <el-table-column label="岗位名称" align="center" width="180">
             <template slot-scope="props">
-              <el-button type="text">{{props.row.job_name}}</el-button>
+              <el-button type="text" class="text-line">{{props.row.job_name}}</el-button>
             </template>
           </el-table-column>
           <!-- <el-table-column label="返利模式" prop="offermoney_type" align="center" width="120"></el-table-column> -->
           <el-table-column label="薪资类型" align="center" width="100">
             <template slot-scope="props">
-              <el-button type="text">{{props.row.offermoney_type | moneyType}}</el-button>
+              <span>{{props.row.offermoney_type | moneyType}}</span>
             </template>
           </el-table-column>
           <el-table-column label="工资" align="center" width="100">
             <template slot-scope="props">
-              <el-button type="text">{{props.row.offermoney || 0}}</el-button>
+              <span>{{props.row.offermoney || 0}}</span>
             </template>
           </el-table-column>
           <el-table-column label="接单状态" align="center" width="120">
-             <template slot-scope="props">
+            <template slot-scope="props">
               <span class="status" :class="{'status3':props.row.is_up !=1}">{{props.row.is_up ==1 ? '进行中': '已下架'}}</span>
             </template>
           </el-table-column>
           <el-table-column label="岗位匹配度" prop="entry_num" align="center" width="150">
             <template slot-scope="props">
-               <el-rate v-model="value1"></el-rate>
+              <el-rate v-model="value1"></el-rate>
             </template>
           </el-table-column>
-          <el-table-column label="岗位匹配项" align="center" min-width="180" >
+          <el-table-column label="岗位匹配项" align="center" min-width="180">
             <template slot-scope="props">
               <jobMate :statusObj="props.row"></jobMate>
             </template>
@@ -98,23 +79,14 @@
           </el-table-column>
         </el-table>
       </div>
-      <el-pagination
-        class="team-pagination"
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :current-page="formMember.page"
-        :page-sizes="[10, 20, 30, 40]"
-        :page-size="formMember.limit"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="total"
-      ></el-pagination>
+      <el-pagination class="team-pagination" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="formMember.page" :page-sizes="[10, 20, 30, 40]" :page-size="formMember.limit" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
     </div>
   </div>
 </template>
 
 <script>
 import { getResumeList, addUserResume } from '@/api/resume'
-import { getJoblist,addPut } from '@/api/internalInvoice'
+import { getJoblist, addPut } from '@/api/internalInvoice'
 import { moneyTypeList, rewardTypeList, payTypeList, weekList } from '@/base/base'
 import { recommendTeamUserJob } from '@/api/collect'
 import jobMate from './jobMate'
@@ -158,14 +130,14 @@ export default {
       ],
       activeIndex: 0,
       tabIndex: 0,
-      value1:5,
+      value1: 5,
       jobId: '',
-      resumeId:''
+      resumeId: ''
     }
   },
   created () {
     this.jobId = this.$route.query.id
-    console.log(this.jobId )
+    console.log(this.jobId)
     this.getList(this.formMember)
   },
   methods: {

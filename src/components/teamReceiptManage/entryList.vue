@@ -4,13 +4,7 @@
 <template>
   <div class="tables-box billingManagement">
     <div class="table-list">
-      <el-form
-        :inline="true"
-        label-width="100px"
-        label-position="right"
-        :model="formMember"
-        class="demo-form-inline"
-      >
+      <el-form :inline="true" label-width="100px" label-position="right" :model="formMember" class="demo-form-inline">
         <el-form-item label="职位名称：">
           <el-input v-model="formMember.name" class="width300" placeholder="请输入职位名称关键字"></el-input>
         </el-form-item>
@@ -24,43 +18,21 @@
         </el-form-item>
         <el-form-item label="薪资模式：">
           <el-select v-model="formMember.industry" class="width300" placeholder="请选择薪资模式">
-            <el-option
-              :label="item.label"
-              :value="item.value"
-              v-for="(item,index) in moneyTypeList"
-              :key="index"
-            ></el-option>
+            <el-option :label="item.label" :value="item.value" v-for="(item,index) in moneyTypeList" :key="index"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="返利模式：">
           <el-select v-model="formMember.industry" class="width300" placeholder="请选择返利模式">
-            <el-option
-              :label="item.label"
-              :value="item.value"
-              v-for="(item,index) in rewardTypeList"
-              :key="index"
-            ></el-option>
+            <el-option :label="item.label" :value="item.value" v-for="(item,index) in rewardTypeList" :key="index"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="状态：">
           <el-select v-model="formMember.industry" class="width300" placeholder="请选择">
-            <el-option
-              :label="item.label"
-              :value="item.value"
-              v-for="(item,index) in entryStatusList"
-              :key="index"
-            ></el-option>
+            <el-option :label="item.label" :value="item.value" v-for="(item,index) in entryStatusList" :key="index"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="接单时间：">
-          <el-date-picker
-            class="width300"
-            v-model="formMember.date"
-            type="daterange"
-            range-separator="-"
-            start-placeholder="开始日期区间"
-            end-placeholder="结束日期"
-          ></el-date-picker>
+          <el-date-picker class="width300" v-model="formMember.date" type="daterange" range-separator="-" start-placeholder="开始日期区间" end-placeholder="结束日期"></el-date-picker>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="onSubmit" class="select-btn">查询</el-button>
@@ -68,14 +40,7 @@
         </el-form-item>
       </el-form>
       <div class="member-table">
-        <el-table
-          border
-          :data="tableData"
-          ref="multipleTable"
-          style="width: 100%"
-          @selection-change="handleSelectionChange"
-        >
-          <el-table-column type="selection" align="center" width="60"></el-table-column>
+        <el-table border :data="tableData" ref="multipleTable" style="width: 100%">
           <el-table-column label="职位名称" align="center" width="150">
             <template slot-scope="props">
               <el-button type="text" @click="handleEdit(props.row)">{{props.row.name}}</el-button>
@@ -96,10 +61,7 @@
           <el-table-column label="薪资模式" prop="reward_money" align="center" width="100"></el-table-column>
           <el-table-column label="状态" align="center" width="100">
             <template slot-scope="props">
-              <span
-                class="status"
-                :class="{'active-status':props.row.status==1}"
-              >{{props.row.status==1?"正常":'锁定'}}</span>
+              <span class="status" :class="{'active-status':props.row.status==1}">{{props.row.status==1?"正常":'锁定'}}</span>
             </template>
           </el-table-column>
           <el-table-column label="岗位城市" prop="entry_num" align="center" width="150"></el-table-column>
@@ -119,16 +81,7 @@
           </el-table-column>
         </el-table>
       </div>
-      <el-pagination
-        class="team-pagination"
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :current-page="formMember.page"
-        :page-sizes="[10, 20, 30, 40]"
-        :page-size="formMember.limit"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="total"
-      ></el-pagination>
+      <el-pagination class="team-pagination" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="formMember.page" :page-sizes="[10, 20, 30, 40]" :page-size="formMember.limit" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
     </div>
   </div>
 </template>

@@ -4,225 +4,77 @@
 <template>
   <div class="tables-box billingManagement">
     <div class="table-list">
-      <el-form
-        :inline="true"
-        label-width="100px"
-        label-position="right"
-        :model="formMember"
-        class="demo-form-inline"
-      >
+      <el-form :inline="true" label-width="100px" label-position="right" :model="formMember" class="demo-form-inline">
         <el-form-item label="职位名称：">
-          <el-input
-            v-model="formMember.name"
-            class="width300"
-            placeholder="请输入职位名称关键字"
-          ></el-input>
+          <el-input v-model="formMember.name" class="width300" placeholder="请输入职位名称关键字"></el-input>
         </el-form-item>
         <el-form-item label="团队名称：">
-          <el-input
-            v-model="formMember.name"
-            class="width300"
-            placeholder="请输入团队名称关键字"
-          ></el-input>
+          <el-input v-model="formMember.name" class="width300" placeholder="请输入团队名称关键字"></el-input>
         </el-form-item>
         <el-form-item label="团队负责人：">
-          <el-input
-            v-model="formMember.name"
-            class="width300"
-            placeholder="请输入团队负责人姓名"
-          ></el-input>
+          <el-input v-model="formMember.name" class="width300" placeholder="请输入团队负责人姓名"></el-input>
         </el-form-item>
         <el-form-item label="团队性质：">
-          <el-select
-            v-model="formMember.industry"
-            class="width300"
-            placeholder="请选择"
-          >
-            <el-option
-              :label="item.label"
-              :value="item.value"
-              v-for="(item,index) in teamTypeList"
-              :key="index"
-            ></el-option>
+          <el-select v-model="formMember.industry" class="width300" placeholder="请选择">
+            <el-option :label="item.label" :value="item.value" v-for="(item,index) in teamTypeList" :key="index"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="状态：">
-          <el-select
-            v-model="formMember.industry"
-            class="width300"
-            placeholder="请选择"
-          >
-            <el-option
-              :label="item.label"
-              :value="item.value"
-              v-for="(item,index) in applyStatusList"
-              :key="index"
-            ></el-option>
+          <el-select v-model="formMember.industry" class="width300" placeholder="请选择">
+            <el-option :label="item.label" :value="item.value" v-for="(item,index) in applyStatusList" :key="index"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-button
-            type="primary"
-            @click="onSubmit"
-            class="select-btn"
-          >查询</el-button>
-          <el-button
-            type="primary"
-            @click="onSubmit"
-            class="select-btn"
-          >重置</el-button>
+          <el-button type="primary" @click="onSubmit" class="select-btn">查询</el-button>
+          <el-button type="primary" @click="onSubmit" class="select-btn">重置</el-button>
         </el-form-item>
       </el-form>
       <div class="member-table">
-        <el-table
-          border
-          :data="tableData"
-          ref="multipleTable"
-          style="width: 100%"
-          @selection-change="handleSelectionChange"
-        >
-          <el-table-column
-            label="职位名称"
-            align="center"
-            width="150"
-          >
+        <el-table border :data="tableData" ref="multipleTable" style="width: 100%" @selection-change="handleSelectionChange">
+          <el-table-column label="职位名称" align="center" width="150">
             <template slot-scope="props">
-              <el-button
-                type="text"
-                @click="viewJob(props.row)"
-              >{{props.row.name}}</el-button>
+              <el-button type="text" @click="viewJob(props.row)">{{props.row.name}}</el-button>
             </template>
           </el-table-column>
-          <el-table-column
-            label="团队名称"
-            align="center"
-            width="150"
-          >
+          <el-table-column label="团队名称" prop="team_name" align="center" width="150">
+          </el-table-column>
+          <el-table-column label="团队负责人" align="center" prop="team_user" width="150">
+          </el-table-column>
+          <el-table-column label="团队性质" prop="reward_money" align="center" width="150">
+
             <template slot-scope="props">
-              <el-button type="text">{{props.row.money_type | moneyType}}</el-button>
+              <span>{{props.row.team_type==1?'个人':'企业'}}</span>
             </template>
           </el-table-column>
-          <el-table-column
-            label="岗位薪资"
-            prop="depart_name"
-            align="center"
-            width="150"
-          ></el-table-column>
-          <el-table-column
-            label="团队负责人"
-            align="center"
-            width="150"
-          >
+          <el-table-column label="申请日期" prop="jddesc" sortable align="center" width="150">
             <template slot-scope="props">
-              <el-button type="text">{{props.row.reward_type | rewardType}}</el-button>
+              <span>{{props.row.addtime?$moment.unix(props.row.addtime).format('YYYY-MM-DD HH:mm'):'--'}}</span>
             </template>
           </el-table-column>
-          <el-table-column
-            label="团队性质"
-            prop="reward_money"
-            align="center"
-            width="150"
-          ></el-table-column>
-          <el-table-column
-            label="申请日期"
-            prop="entry_num"
-            sortable
-            align="center"
-            width="150"
-          ></el-table-column>
-          <el-table-column
-            label="状态"
-            align="center"
-            width="150"
-          >
+          <el-table-column label="状态" align="center" width="150">
             <template slot-scope="props">
-              <span
-                class="status"
-                :class="`active-status${props.row.status}`"
-              >{{props.row.status|statusType}}</span>
+              <span class="status" :class="`status${props.row.status}`">{{props.row.status|statusType}}</span>
             </template>
           </el-table-column>
-          <el-table-column
-            label="操作"
-            align="center"
-            width="150"
-          >
+          <el-table-column label="操作" align="center" min-width="180">
             <template slot-scope="scope">
-              <el-button
-                @click="viewTeam(scope.row)"
-                type="text"
-                v-if="props.row.status<2"
-                size="small"
-              >查看团队</el-button>
-              <el-button
-                5
-                @click="viewJob(scope.row)"
-                type="text"
-                size="small"
-                v-if="props.row.status>=2&&props.row.status<5"
-              >查看职位</el-button>
-              <el-button
-                @click="handleDel(scope.row)"
-                type="text"
-                v-if="props.row.status>1"
-                size="small"
-              >删除</el-button>
-              <el-button
-                @click="dialogTableVisible=true"
-                type="text"
-                size="small"
-                v-if="props.row.status==1"
-              >联系客服</el-button>
-              <el-button
-                @click="handleShelf(1,scope.row)"
-                type="text"
-                size="small"
-                v-if="props.row.status==6"
-              >上架</el-button>
-              <el-button
-                @click="handleShelf(2,scope.row)"
-                type="text"
-                size="small"
-                v-if="props.row.status==5"
-              >下架</el-button>
-              <el-button
-                @click="handleAudit(1,scope.row)"
-                type="text"
-                size="small"
-                v-if="props.row.status==0"
-              >同意</el-button>
-              <el-button
-                @click="handleAudit(2,scope.row)"
-                v-if="props.row.status==1"
-                type="text"
-                size="small"
-              >拒绝</el-button>
+              <el-button @click="viewTeam(scope.row)" type="text" v-if="scope.row.status<2" size="small">查看团队</el-button>
+              <el-button @click="viewJob(scope.row)" type="text" size="small" v-if="scope.row.status>=2&&scope.row.status<5">查看职位</el-button>
+              <el-button @click="handleDel(scope.row)" type="text" v-if="scope.row.status>1" size="small">删除</el-button>
+              <el-button @click="dialogTableVisible=true" type="text" size="small" v-if="scope.row.status==1">联系客服</el-button>
+              <el-button @click="handleShelf(1,scope.row)" type="text" size="small" v-if="scope.row.status==6">上架</el-button>
+              <el-button @click="handleShelf(2,scope.row)" type="text" size="small" v-if="scope.row.status==5">下架</el-button>
+              <el-button @click="handleAudit(1,scope.row)" type="text" size="small" v-if="scope.row.status==0">同意</el-button>
+              <el-button @click="handleAudit(2,scope.row)" v-if="scope.row.status==0" type="text" size="small">拒绝</el-button>
             </template>
           </el-table-column>
         </el-table>
       </div>
-      <el-pagination
-        class="team-pagination"
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :current-page="formMember.page"
-        :page-sizes="[10, 20, 30, 40]"
-        :page-size="formMember.limit"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="total"
-      ></el-pagination>
+      <el-pagination class="team-pagination" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="formMember.page" :page-sizes="[10, 20, 30, 40]" :page-size="formMember.limit" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
     </div>
     <customerService :dialogTableVisible="dialogTableVisible"></customerService>
-    <viewJob
-      :dialogTableVisible="dialogJobVisible"
-      :id="id"
-      @handleClose="dialogJobVisible=fasle"
-    ></viewJob>
-    <viewTeam
-      :dialogTableVisible="dialogTeamVisible"
-      @handleClose="dialogTeamVisible=fasle"
-      :teamId="teamId"
-    ></viewTeam>
+    <viewJob :dialogTableVisible="dialogJobVisible" :id="id" @handleClose="dialogJobVisible=false"></viewJob>
+    <viewTeam :dialogTableVisible="dialogTeamVisible" @handleClose="dialogTeamVisible=fasle" :teamId="teamId"></viewTeam>
   </div>
 </template>
 
@@ -243,19 +95,19 @@ export default {
       let obj = moneyTypeList.find(item => {
         return val == item.value
       })
-      return obj.label
+      return obj ? obj.label : '--'
     },
     rewardType (val) {
       let obj = rewardTypeList.find(item => {
         return val == item.value
       })
-      return obj.label
+      return obj ? obj.label : '--'
     },
     statusType (val) {
       let obj = applyStatusList.find(item => {
         return val == item.value
       })
-      return obj.label
+      return obj ? obj.label : '--'
     }
 
   },
@@ -291,6 +143,7 @@ export default {
     getList (params) {
       applyInvoiceList(params).then(res => {
         const { data } = res
+        console.log(res)
         this.tableData = data.data
         this.total = data.count
       })
@@ -319,6 +172,7 @@ export default {
       }
       auditInvoiceInfo(params).then(res => {
         this.$message.success('操作成功')
+        this.getList(this.formMember)
       }).catch(error => {
         this.$message.warning(error.status.remind)
       })
@@ -331,6 +185,7 @@ export default {
       }
       companyReceiptShelf(params).then(res => {
         this.$message.success('操作成功')
+        this.getList(this.formMember)
       }).catch(error => {
         this.$message.warning(error.status.remind)
       })

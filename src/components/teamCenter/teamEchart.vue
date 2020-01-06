@@ -6,7 +6,7 @@
 <script>
 import $echart from 'echarts'
 export default {
-  props: ['activeIndex', 'legendIndex'],
+  props: ['activeIndex', 'legendIndex', 'percentList', 'list'],
   data () {
     return {
       axais: {
@@ -73,7 +73,8 @@ export default {
         xAxis: {},
         yAxis: {},
         series: [],
-        itemStyleColor: '#0581DE'
+        itemStyleColor: '#0581DE',
+        index: 0
       }
     }
   },
@@ -83,6 +84,7 @@ export default {
   },
   watch: {
     activeIndex (val) {
+      this.index = val
       this.getLegenData(this.legendIndex)
       this.getData(val)
     },
@@ -115,13 +117,45 @@ export default {
         }
       }
     },
+    getKey (index) {
+      let label = ''
+      if (index == 1) {
+        label = 'total'
+      }
+      else if (index == 2) {
+        label = 'put'
+      }
+      else if (index == 3) {
+        label = 'view'
+      }
+      else {
+        label = 'entry'
+      }
+      return label
+    },
+    getArry (obj) {
+      var arr = []
+      for (let i in obj) {
+        arr.push(obj[i]); //属性
+        //arr.push(obj[i]); //值
+      }
+      return arr
+    },
     getList (val) {
       let arr = []
       if (val == 1) {
-        arr[0] = [5, 10, 26, 20, 40, 10, 22]
-        arr[1] = [50, 20, 36, 10, 10, 20, 22]
-        arr[2] = [10, 10, 16, 20, 14, 13, 12]
-        arr[3] = [50, 20, 26, 30, 11, 10, 32]
+        if (this.percentList && this.percentList.total && this.activeIndex == 0) {
+          arr[0] = this.getArry(this.percentList.total)
+          arr[1] = this.getArry(this.percentList.put)
+          arr[2] = this.getArry(this.percentList.view)
+          arr[3] = this.getArry(this.percentList.entry)
+        }
+        if (this.percentList && this.percentList.total && this.list) {
+          let key = this.getKey(this.activeIndex)
+          console.log(Array.from(this.percentList[key]))
+          arr[0] = this.getArry(this.percentList[key])
+          arr[1] = this.getArry(this.percentList[key])
+        }
       }
       else if (val == 2) {
         let arr1 = []

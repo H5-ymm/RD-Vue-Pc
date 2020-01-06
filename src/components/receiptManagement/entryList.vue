@@ -4,67 +4,39 @@
 <template>
   <div class="tables-box billingManagement">
     <div class="table-list">
-      <el-form
-        :inline="true"
-        label-width="100px"
-        label-position="right"
-        :model="formMember"
-        class="demo-form-inline"
-      >
+      <el-form :inline="true" label-width="100px" label-position="right" :model="formMember" class="demo-form-inline">
         <el-form-item label="职位名称：">
-          <el-input v-model="formMember.name" class="width300" placeholder="请输入职位名称关键字"></el-input>
+          <el-input v-model="formMember.job_name" class="width300" placeholder="请输入职位名称关键字"></el-input>
         </el-form-item>
         <el-form-item label="职位类别：">
-          <el-select v-model="formMember.industry" class="width300" placeholder="选择相应的职位类别">
+          <el-select v-model="formMember.job_type" class="width300" placeholder="选择相应的职位类别">
             <el-option :label="item" :value="key" v-for="(item,key) in jobList" :key="key"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="团队名称：">
-          <el-input v-model="formMember.name" class="width300" placeholder="请输入团队名称关键字"></el-input>
+          <el-input v-model="formMember.team_name" class="width300" placeholder="请输入团队名称关键字"></el-input>
         </el-form-item>
         <el-form-item label="薪资模式：">
-          <el-select v-model="formMember.industry" class="width300" placeholder="请选择薪资模式">
-            <el-option
-              :label="item.label"
-              :value="item.value"
-              v-for="(item,index) in moneyTypeList"
-              :key="index"
-            ></el-option>
+          <el-select v-model="formMember.money_type" class="width300" placeholder="请选择薪资模式">
+            <el-option :label="item.label" :value="item.value" v-for="(item,index) in moneyTypeList" :key="index"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="返利模式：">
-          <el-select v-model="formMember.industry" class="width300" placeholder="请选择返利模式">
-            <el-option
-              :label="item.label"
-              :value="item.value"
-              v-for="(item,index) in rewardTypeList"
-              :key="index"
-            ></el-option>
+          <el-select v-model="formMember.reward_type" class="width300" placeholder="请选择返利模式">
+            <el-option :label="item.label" :value="item.value" v-for="(item,index) in rewardTypeList" :key="index"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="状态：">
-          <el-select v-model="formMember.industry" class="width300" placeholder="请选择">
-            <el-option
-              :label="item.label"
-              :value="item.value"
-              v-for="(item,index) in statusList"
-              :key="index"
-            ></el-option>
+          <el-select v-model="formMember.status" class="width300" placeholder="请选择">
+            <el-option :label="item.label" :value="item.value" v-for="(item,index) in statusList" :key="index"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="接单时间：">
-          <el-date-picker
-            class="width300"
-            v-model="formMember.date"
-            type="daterange"
-            range-separator="-"
-            start-placeholder="开始日期区间"
-            end-placeholder="结束日期"
-          ></el-date-picker>
+          <el-date-picker class="width300" @change="changeDate" v-model="timeList" type="daterange" range-separator="-" start-placeholder="开始日期区间" end-placeholder="结束日期"></el-date-picker>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="onSubmit" class="select-btn">查询</el-button>
-          <el-button type="primary" @click="onSubmit" class="select-btn">重置</el-button>
+          <el-button type="primary" @click="reset" class="select-btn">重置</el-button>
         </el-form-item>
       </el-form>
       <div class="member-table">
@@ -89,59 +61,37 @@
           <el-table-column label="薪资模式" prop="reward_money" align="center" width="100"></el-table-column>
           <el-table-column label="状态" align="center" width="100">
             <template slot-scope="props">
-              <span
-                class="status"
-                :class="{'active-status':props.row.status==1}"
-              >{{props.row.status==1?"正常":'锁定'}}</span>
+              <span class="status" :class="{'active-status':props.row.status==1}">{{props.row.status==1?"正常":'锁定'}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="岗位城市" prop="entry_num" align="center" width="150"></el-table-column>
-          <el-table-column label="返利模式" prop="entry_num" align="center" width="100"></el-table-column>
-          <el-table-column label="入职时间" prop="entry_num" sortable align="center" width="150"></el-table-column>
+          <el-table-column label="岗位城市" prop="citys" align="center" width="150"></el-table-column>
+          <el-table-column label="返利模式" align="center" width="100">
+            <template slot-scope="props">
+              <span>{{props.row.reward_type|rewardType}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="入职时间" prop="addtime" sortable align="center" width="150">
+            <template slot-scope="props">
+              <span>{{props.row.addtime?$moment(props.row.addtime).format('YYYY-MM-DD HH:mm'):'--'}}</span>
+            </template>
+          </el-table-column>
           <el-table-column label="联系人" prop="entry_num" align="center" width="100"></el-table-column>
           <el-table-column label="操作" align="center" min-width="120">
             <template slot-scope="scope">
               <el-button @click="handleUser(1,scope.row)" type="text" size="small">入职结束</el-button>
-              <el-button
-                @click="$router.push({path:'/entryDetailTable',query:{id:val.id}})"
-                type="text"
-                size="small"
-              >
+              <el-button @click="$router.push({path:'/entryDetailTable',query:{id:val.id}})" type="text" size="small">
                 入职审核
                 <span class="resume-number">(+150)</span>
               </el-button>
-              <el-button
-                @click="$router.push({path:'commonTable',query:{id:props.row.id,view:5}})"
-                type="text"
-                size="small"
-              >面试结果</el-button>
-              <el-button
-                @click="$router.push({path:'commonTable',query:{id:props.row.id,view:4}})"
-                type="text"
-                size="small"
-              >在职名单</el-button>
+              <el-button @click="$router.push({path:'commonTable',query:{id:props.row.id,view:5}})" type="text" size="small">面试结果</el-button>
+              <el-button @click="$router.push({path:'commonTable',query:{id:props.row.id,view:4}})" type="text" size="small">在职名单</el-button>
             </template>
           </el-table-column>
         </el-table>
       </div>
-      <el-pagination
-        class="team-pagination"
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :current-page="formMember.page"
-        :page-sizes="[10, 20, 30, 40]"
-        :page-size="formMember.limit"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="total"
-      ></el-pagination>
+      <el-pagination class="team-pagination" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="formMember.page" :page-sizes="[10, 20, 30, 40]" :page-size="formMember.limit" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
     </div>
-    <modal
-      :dialogTableVisible="dialogTableVisible"
-      @handleOk="handleOk"
-      :modalObj="modalObj"
-      :isShow="isShow"
-      @handleClose="dialogTableVisible=false"
-    ></modal>
+    <modal :dialogTableVisible="dialogTableVisible" @handleOk="handleOk" :modalObj="modalObj" :isShow="isShow" @handleClose="dialogTableVisible=false"></modal>
   </div>
 </template>
 
@@ -281,6 +231,14 @@ export default {
       })
     },
     onSubmit () {
+      this.getList(this.formMember)
+    },
+    reset () {
+      this.formMember = {
+        uid: localStorage.getItem('uid'),
+        limit: 10,
+        page: 1
+      }
       this.getList(this.formMember)
     }
   }

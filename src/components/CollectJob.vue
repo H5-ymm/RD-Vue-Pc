@@ -8,13 +8,7 @@
 <template>
   <div class="tables-box billingManagement receipt-manage">
     <div class="table-list">
-      <el-form
-        :inline="true"
-        label-width="100px"
-        label-position="right"
-        :model="formMember"
-        class="demo-form-inline form-item-wrap"
-      >
+      <el-form :inline="true" label-width="100px" label-position="right" :model="formMember" class="demo-form-inline form-item-wrap">
         <el-form-item label="搜索类型：">
           <el-select v-model="formMember.type" class="width120" placeholder="请选择">
             <el-option label="职位名称" value="1"></el-option>
@@ -24,118 +18,71 @@
           <el-button type="primary" @click="handleSearch" class="select-btn">查询</el-button>
         </el-form-item>
         <el-form-item label="返利模式：">
-          <el-button
-            :type="formMember.reward_type==item.value ?'primary':''"
-            v-for="(item,index) in rewardTypeList"
-            :key="index"
-            plain
-            @click="selectStatus('reward_type',item)"
-            class="select-status"
-          >{{item.label}}</el-button>
+          <el-button :type="formMember.reward_type==item.value ?'primary':''" v-for="(item,index) in rewardTypeList" :key="index" plain @click="selectStatus('reward_type',item)" class="select-status">{{item.label}}</el-button>
         </el-form-item>
         <el-form-item label="职位状态：">
-          <el-button
-            :type="formMember.jobStatus==item.value ?'primary':''"
-            v-for="(item,index) in jobStatusList"
-            :key="index"
-            plain
-            class="select-status"
-            @click="selectStatus('jobStatus',item)"
-          >{{item.label}}</el-button>
+          <el-button :type="formMember.jobStatus==item.value ?'primary':''" v-for="(item,index) in jobStatusList" :key="index" plain class="select-status" @click="selectStatus('jobStatus',item)">{{item.label}}</el-button>
         </el-form-item>
         <el-form-item label="薪资模式：">
-          <el-button
-            :type="formMember.moneyType==item.value ?'primary':''"
-            v-for="(item,index) in moneyTypeList"
-            :key="index"
-            plain
-            @click="selectStatus('moneyType',item)"
-            class="select-status"
-          >{{item.label}}</el-button>
+          <el-button :type="formMember.moneyType==item.value ?'primary':''" v-for="(item,index) in moneyTypeList" :key="index" plain @click="selectStatus('moneyType',item)" class="select-status">{{item.label}}</el-button>
         </el-form-item>
         <el-form-item label="推荐状态：" v-if="userPosition==2">
-          <el-button
-            :type="status==item.value ?'primary':''"
-            v-for="(item,index) in recommendStatusList"
-            :key="index"
-            plain
-            @click="selectStatus('status',item)"
-            class="select-status"
-          >{{item.label}}</el-button>
+          <el-button :type="status==item.value ?'primary':''" v-for="(item,index) in recommendStatusList" :key="index" plain @click="selectStatus('status',item)" class="select-status">{{item.label}}</el-button>
         </el-form-item>
       </el-form>
       <div class="member-table">
         <el-table border :data="tableData" ref="multipleTable" style="width: 100%">
           <el-table-column label="职位名称" align="center" width="150">
             <template slot-scope="props">
-              <el-button type="text" @click="handleEdit(props.row)">{{props.row.name}}</el-button>
+              <el-button type="text" @click="viewJob(props.row)">{{props.row.name}}</el-button>
             </template>
           </el-table-column>
           <el-table-column label="企业名称" prop="name" align="center" width="150"></el-table-column>
-          <el-table-column label="企业性质" prop="name" align="center" width="150"></el-table-column>
-          <el-table-column label="需求人数" prop="name" align="center" width="110"></el-table-column>
-          <el-table-column label="薪资模式" align="center" width="110">
+          <el-table-column label="企业性质" prop="name" align="center" width="150">
             <template slot-scope="props">
-              <el-button type="text">{{props.row.money_type | moneyType}}</el-button>
+              <span>{{props.row.com_type==1?'企业' : '团队'}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="岗位薪资" prop="depart_name" align="center" width="110"></el-table-column>
+          <el-table-column label="需求人数" prop="required_number" align="center" width="110"></el-table-column>
+          <!-- <el-table-column label="薪资模式" align="center" width="110">
+            <template slot-scope="props">
+              <span>{{props.row.money_type | moneyType}}</span>
+            </template>
+          </el-table-column> -->
+          <el-table-column label="岗位薪资" align="center" width="110">
+            <template slot-scope="props">
+              <span>{{props.row.money}}元/{{props.row.money_type==1?'月':props.row.money_type==2?'日':'时'}}</span>
+            </template>
+          </el-table-column>
           <el-table-column label="返利模式" align="center" width="110">
             <template slot-scope="props">
-              <el-button type="text">{{props.row.reward_type | rewardType}}</el-button>
+              <span>{{props.row.reward_money}}元/{{props.row.reward_type | rewardType}}</span>
             </template>
           </el-table-column>
           <el-table-column label="职位状态" align="center" width="110">
             <template slot-scope="props">
-              <span>{{props.row.status==1?"招聘中":'已下架'}}</span>
+              <span class="status" :class="`status${props.row.job_status}`">{{props.row.job_status==1?"招聘中":'已下架'}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="推荐状态" align="center" width="110" v-if="userPosition!=1">
+          <el-table-column label="推荐状态" align="center" width="110" v-if="userPosition==1">
             <template slot-scope="props">
-              <span
-                class="status"
-                :class="`status${props.row.status}`"
-              >{{props.row.status|recommendStatus}}</span>
+              <span class="status" :class="`status${props.row.status}`">{{props.row.status|recommendStatus}}</span>
             </template>
           </el-table-column>
           <el-table-column label="操作" align="center" min-width="150">
             <template slot-scope="scope">
-              <el-button
-                @click="handleRecommend(scope.row)"
-                v-if="scope.row.status==1&&scope.row.jobStatus==1&&userPosition==3"
-                type="text"
-                size="small"
-              >推荐接单</el-button>
-              <el-button
-                @click="handleApply(scope.row)"
-                v-if="scope.row.jobStatus==1&&userPosition!=3"
-                type="text"
-                size="small"
-              >申请接单</el-button>
+              <el-button @click="handleRecommend(scope.row)" v-if="scope.row.status==1&&scope.row.jobStatus==1&&userPosition==3" type="text" size="small">推荐接单</el-button>
+              <el-button @click="handleApply(scope.row)" v-if="scope.row.jobStatus==1&&userPosition!=3" type="text" size="small">申请接单</el-button>
               <el-button @click="handleDel(scope.row)" type="text" size="small">取消收藏</el-button>
               <span v-if="scope.row.status==2" type="text" size="small">已申请</span>
             </template>
           </el-table-column>
         </el-table>
       </div>
-      <el-pagination
-        class="team-pagination"
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :current-page="formMember.page"
-        :page-sizes="[10, 20, 30, 40]"
-        :page-size="formMember.limit"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="total"
-      ></el-pagination>
+      <el-pagination class="team-pagination" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="formMember.page" :page-sizes="[10, 20, 30, 40]" :page-size="formMember.limit" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
     </div>
-    <modal
-      :dialogTableVisible="dialogTableVisible"
-      @handleOk="handleOk"
-      isShow="true"
-      :modalObj="modalObj"
-      @handleClose="dialogTableVisible=false"
-    ></modal>
+    <viewJob :dialogTableVisible="dialogJobVisible" :id="id" @handleClose="dialogJobVisible=false"></viewJob>
+    <modal :dialogTableVisible="dialogTableVisible" @handleOk="handleOk" isShow="true" :modalObj="modalObj" @handleClose="dialogTableVisible=false"></modal>
   </div>
 </template>
 
@@ -143,28 +90,30 @@
 import { getCollectList, teamcollection, recommendList, recommendTeamUserJob } from '../api/collect'
 import { moneyTypeList, rewardTypeList, payTypeList, weekList, recommendStatusList } from '../base/base'
 import modal from './common/modal'
+import viewJob from './common/viewJob'
 export default {
   components: {
-    modal
+    modal,
+    viewJob
   },
   filters: {
     moneyType (val) {
       let obj = moneyTypeList.find(item => {
         return val == item.value
       })
-      return obj.label
+      return obj ? obj.label : '--'
     },
     rewardType (val) {
       let obj = rewardTypeList.find(item => {
         return val == item.value
       })
-      return obj.label
+      return obj ? obj.label : '--'
     },
-    recommendStatus () {
+    recommendStatus (val) {
       let obj = recommendStatusList.find(item => {
         return val == item.value
       })
-      return obj.label
+      return obj ? obj.label : '--'
     }
   },
   data () {
@@ -173,6 +122,7 @@ export default {
       rewardTypeList,
       recommendStatusList,
       dialogTableVisible: false,
+      dialogJobVisible: false,
       tableData: [],
       formMember: {
         uid: localStorage.getItem('uid'),
@@ -194,6 +144,7 @@ export default {
         okText: '查看申请',
         closeText: '继续浏览'
       },
+      id: '',
       userPosition: sessionStorage.getItem('userPosition')// 1 总经理，2经理，3 成员
     }
   },
@@ -205,20 +156,26 @@ export default {
     getList (params) {
       getCollectList(params).then(res => {
         const { data } = res
+        console.log(data)
         this.tableData = data.data
         this.total = data.count
       }).catch(error => {
         console.log(error)
         if (error) {
           this.$message.error(error.status.remind)
-        }     
+        }
       })
     },
+    viewJob (val) {
+      this.id = val.id
+      this.dialogJobVisible = true
+    },
     selectStatus (key, item) {
-      if (key=='status') {
+      if (key == 'status') {
         this.status = item.value
       }
       this.formMember[key] = item.value
+      this.getList(this.formMember)
     },
     handleSizeChange (val) {
       this.formMember.limit = val

@@ -6,7 +6,7 @@
         <a class="welcome">欢迎注册</a>
       </div>
       <div class="bg-purple-light">
-        <span @click="$router.push('home')">浏览首页</span>
+        <!-- <span @click="$router.push('home')">浏览首页</span> -->
         <a>021-51991869</a>
       </div>
     </el-header>
@@ -15,7 +15,7 @@
         <el-row class="loads-box">
           <el-col :span="12">
             <el-form :model="formTab" label-width="20" ref="TabForm" :rules="formTabs" class="register-form-box">
-              <div class="x-flex login-btn">
+              <div class="x-flex-between login-btn">
                 <el-button class="button" :class="registerType==1?'comRight':'timm-right'" @click="goRegister(1)">注册企业</el-button>
                 <el-button class="button" :class="registerType==2?'comRight':'timm-right'" @click="goRegister(2)">注册团队</el-button>
               </div>
@@ -28,14 +28,14 @@
                 <el-progress :percentage="40" :format="format" class="error progress" color="#FE2A00" v-if="formTab.password.length&&formTab.password.length<=6"></el-progress>
                 <el-progress :percentage="70" :format="format" class="error progress" color="#FF9938" v-if="formTab.password.length>6&&formTab.password.length<=10"></el-progress>
                 <el-progress :percentage="100" :format="format" class="error progress" color="#58B44E" v-if="formTab.password.length>10"></el-progress>
-                <el-input v-model="formTab.password" placeholder="请输入密码" show-word-limit></el-input>
+                <el-input v-model="formTab.password" type="password" placeholder="请输入密码" show-word-limit></el-input>
               </el-form-item>
               <el-form-item prop="passworded" label="确认密码">
                 <span class="error el-icon-warning" v-if="isShowPas">两次输入的密码不一致</span>
-                <el-input v-model="formTab.passworded" placeholder="请输入密码" show-word-limit></el-input>
+                <el-input v-model="formTab.passworded" placeholder="请再次输入密码" type="password" show-word-limit></el-input>
               </el-form-item>
               <el-form-item label="发送验证码">
-                <el-input v-model="formTab.code" placeholder="请输入密码" class="inputCode" show-word-limit></el-input>
+                <el-input v-model="formTab.code" placeholder="请输入验证码" class="inputCode" show-word-limit></el-input>
                 <el-button type="primary" class="code-btn" @click="sendCode" plain>{{content}}</el-button>
               </el-form-item>
               <el-form-item prop="name" :label="registerType==1?'公司名称':'团队名称'">
@@ -80,7 +80,7 @@ export default {
   components: {
     districtSelet
   },
-  name:'register',
+  name: 'register',
   data () {
     let validatereg = (rule, value, callback) => {   //验证用户名是否合法
       let reg = /^1[3456789]\d{9}$/;
@@ -104,11 +104,11 @@ export default {
         if (this.formTab.password !== '') {
           this.$refs.TabForm.validateField('passworded')
         }
-        let reg = /^[a-zA-Z][a-zA-Z0-9]{6,16}$/;
-        if (!reg.test(value)) {
+        let reg = /^[a-zA-Z0-9]{6,17}$/;
+        if (reg.test(value) == true) {
           callback();
         } else {
-          callback(new Error('密码不合法(请输入数字或字母)'));
+          callback(new Error('(请输入6到17位数字和字母混合)'));
         }
         this.isShowPasword = false
         callback();
@@ -234,12 +234,12 @@ export default {
             localStorage.setItem('userType', this.registerType)
             localStorage.setItem('token', res.data.token)
             // this.$router.push('team')
-            
-            if (res.data.type==1) {
-             this.$router.push('createOrderTaking')
+            sessionStorage.setItem('userPosition', 1)
+            if (res.data.type == 1) {
+              this.$router.push('createOrderTaking')
             }
             else {
-             this.$router.push('teamData')
+              this.$router.push('teamData')
             }
           }).catch(error => {
             this.$message.error(error.status.remind)

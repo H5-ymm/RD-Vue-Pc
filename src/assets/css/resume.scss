@@ -69,6 +69,11 @@
     font-size:14px;
     color:#FF1818;
   }
+  .no-status {
+    font-size: 12px;
+    margin-right: 15px;
+    color: #333333;
+  }
   .status {
     position: relative;
     margin-left: 10px;
@@ -82,9 +87,29 @@
       left: -20px;
       background: #71D875;
     }
+    &.status0{
+      &::before{
+        background: #999999;
+      }   
+    }
+    &.status2{
+      &::before{
+        background:  #FF0000;
+      }   
+    }
     &.status3{
       &::before{
+        background: #F19D3A;
+      }   
+    }
+    &.status6{
+      &::before{
         background:  #333333;
+      }   
+    }
+    &.status4{
+      &::before{
+        background: #01A46F;
       }   
     }
   }

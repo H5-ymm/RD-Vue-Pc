@@ -2,6 +2,8 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import { teamRouters } from './router/team'
 import { companyRouters } from './router/company'
+import { commonRouters } from './router/index'
+
 import About from './views/About.vue'
 import store from './store'
 const Home = resolve => (require(['./views/Home.vue'], resolve))
@@ -20,7 +22,7 @@ let userType = localStorage.getItem('userType')
 let publiceRouters = [
   {
     path: '/',
-    redirect: 'home',
+    redirect: 'login',
   },
   {
     path: '/about',
@@ -82,6 +84,7 @@ let routers = new Router({
 let router = []
 router.push(companyRouters)
 router.push(teamRouters)
+router = [...router]
 // 4.将生成好的路由addRoutes
 routers.addRoutes(router)
 // 注册全局钩子用来拦截导航

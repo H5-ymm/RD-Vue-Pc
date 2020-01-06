@@ -21,7 +21,7 @@
             </ul>
             <el-button type="text" class="orderTaking-more" @click="dialogVisible=true">更多</el-button>
           </div>
-          <div class="orderTaking-search-query x-flex-start-justify">
+          <div class="orderTaking-search-query x-flex-start-justify" v-if="params.cityid">
             <span class="orderTaking-search-label">不限</span>
             <ul class="orderTaking-search-value">
               <li v-for="(item, index) in areaList" :key="index" @click="querySelect(item.code,'three_cityid')" :class="{'active': params.three_cityid==item.code}">{{item.name}}</li>
@@ -53,7 +53,7 @@
         <div class="orderTaking-main-row">
           <div class="orderTaking-main-col1">
             <div class="grid-content orderTaking-grid-content">
-              <section v-for="(item,index) in list" :key="index" :class="{'orderTaking-main-sectionActive':index==0}">
+              <section v-for="(item,index) in list" :key="index" class="orderTaking-main-card" :class="{'orderTaking-main-sectionActive':index==0}">
                 <div class="orderTaking-main-section x-flex-between">
                   <div class="orderTaking-main-row orderTaking-main-row1">
                     <ul class="orderTaking-main-item">
@@ -92,7 +92,7 @@
                     </ul>
                   </div>
                   <div>
-                    <el-button type="primary" @click="handleApply(item)">立即接单</el-button>
+                    <el-button type="primary" plain @click="handleApply(item)">立即接单</el-button>
                   </div>
                 </div>
               </section>
@@ -100,9 +100,9 @@
             <el-pagination background class="pagination" @current-change="currentChange" layout="prev, pager, next" :total="total"></el-pagination>
           </div>
           <div class="orderTaking-main-col2">
-            <div class="bg-purple-light">
+            <div class="bg-purple-light" v-if="browsingList.length">
               <p class="job-title">看过的接单职位</p>
-              <div v-if="browsingList.length">
+              <div>
                 <ul class="orderTaking-main-item orderTaking-main-history" v-for="(item,index) in browsingList" :key="index">
                   <li class="x-flex-between">
                     <span class="company-name">{{item.name}}</span>
@@ -117,7 +117,7 @@
               </div>
             </div>
             <div class="orderTaking-login" v-if="isShowLogin">
-              <LoginBox></LoginBox>
+              <LoginBox @goLogin="goLogin"></LoginBox>
             </div>
           </div>
         </div>
@@ -180,6 +180,9 @@ export default {
   created () {
     this.getData(this.params)
     this.getAreaList(this.code)
+    if (!this.token) {
+      this.isShowLogin = true
+    }
   },
   mounted () {
     document.scrollingElement.scrollTop = 0
@@ -195,6 +198,12 @@ export default {
         this.isShow = false
       }
     },
+    goLogin (val) {
+      if (val) {
+        this.token = val
+        this.isShowLogin = false
+      }
+    },
     switchNav (item, index) {
       this.activeIndex = index
       this.$router.push(item.url)
@@ -202,6 +211,9 @@ export default {
     querySelect (val, key) {
       this.params[key] = val
       this[key] = val
+      if (key == 'cityid') {
+        this.getAreaList(val)
+      }
       this.getData(this.params)
     },
     handleClose () {
@@ -216,7 +228,7 @@ export default {
       getList(params).then(res => {
         if (res.data.data) {
           this.list = res.data.data.data
-          this.browsingList = res.data.data.data
+          this.browsingList = res.data.data.browsing
           this.total = res.data.count
         }
         else {
@@ -283,7 +295,7 @@ export default {
       this.getData(this.params)
     }
   },
-   destroyed () {
+  destroyed () {
     window.removeEventListener('scroll', this.windowScroll)
   }
 }

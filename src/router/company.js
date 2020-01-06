@@ -119,5 +119,5 @@ export const companyRouters = {
     requiresAuth: 1
   },
   redirect: 'createOrderTaking',
-  children: [...children, ...commonRouters]
+  children: [...children]
 }

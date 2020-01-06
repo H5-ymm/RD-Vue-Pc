@@ -14,3 +14,4 @@ export const adjustmentList = data => $post('/team/adjustmentList', data) // 部
 export const departmentRoleList = data => $post('/team/departmentRoleList', data) // 获取团队部门和部门职称列表
 export const editTeamUserRole = data => $post('/team/editTeamUserRole', data) // 团队成员角色调整
 export const teamListUser = data => $post('/team/teamListUser', data) // 团队人员列表(在选着部门经理是调用)
+

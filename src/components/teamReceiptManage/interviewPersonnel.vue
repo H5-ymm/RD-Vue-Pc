@@ -5,152 +5,122 @@
 <template>
   <div class="tables-box billingManagement">
     <div class="table-list">
-      <el-form
-        :inline="true"
-        label-width="100px"
-        label-position="right"
-        :model="formMember"
-        class="demo-form-inline"
-      >
+      <el-form :inline="true" label-width="100px" label-position="right" :model="formMember" class="demo-form-inline">
         <el-form-item label="职位名称：">
-          <el-input v-model="formMember.name" class="width300" placeholder="请输入职位名称关键字"></el-input>
+          <el-input v-model="formMember.job_name" class="width300" placeholder="请输入职位名称关键字"></el-input>
         </el-form-item>
         <el-form-item label="职位类别：">
-          <el-select v-model="formMember.industry" class="width300" placeholder="选择相应的职位类别">
+          <el-select v-model="formMember.job_type" class="width300" placeholder="选择相应的职位类别">
             <el-option :label="item" :value="key" v-for="(item,key) in jobList" :key="key"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="团队名称：">
-          <el-input v-model="formMember.name" class="width300" placeholder="请输入团队名称关键字"></el-input>
+          <el-input v-model="formMember.team_name" class="width300" placeholder="请输入团队名称关键字"></el-input>
         </el-form-item>
         <el-form-item label="薪资模式：">
-          <el-select v-model="formMember.industry" class="width300" placeholder="请选择薪资模式">
-            <el-option
-              :label="item.label"
-              :value="item.value"
-              v-for="(item,index) in moneyTypeList"
-              :key="index"
-            ></el-option>
+          <el-select v-model="formMember.money_type" class="width300" placeholder="请选择薪资模式">
+            <el-option :label="item.label" :value="item.value" v-for="(item,index) in moneyTypeList" :key="index"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="返利模式：">
-          <el-select v-model="formMember.industry" class="width300" placeholder="请选择返利模式">
-            <el-option
-              :label="item.label"
-              :value="item.value"
-              v-for="(item,index) in rewardTypeList"
-              :key="index"
-            ></el-option>
+          <el-select v-model="formMember.reward_type" class="width300" placeholder="请选择返利模式">
+            <el-option :label="item.label" :value="item.value" v-for="(item,index) in rewardTypeList" :key="index"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="状态：">
-          <el-select v-model="formMember.industry" class="width300" placeholder="请选择">
-            <el-option
-              :label="item.label"
-              :value="item.value"
-              v-for="(item,index) in statusList"
-              :key="index"
-            ></el-option>
+          <el-select v-model="formMember.status" class="width300" placeholder="请选择">
+            <el-option :label="item.label" :value="item.value" v-for="(item,index) in statusList" :key="index"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="接单时间：">
-          <el-date-picker
-            class="width300"
-            v-model="formMember.date"
-            type="daterange"
-            range-separator="-"
-            start-placeholder="开始日期区间"
-            end-placeholder="结束日期"
-          ></el-date-picker>
+          <el-date-picker class="width300" @change="changeDate" v-model="timeList" type="daterange" range-separator="-" start-placeholder="开始日期区间" end-placeholder="结束日期"></el-date-picker>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="onSubmit" class="select-btn">查询</el-button>
-          <el-button type="primary" @click="onSubmit" class="select-btn">重置</el-button>
+          <el-button type="primary" @click="reset" class="select-btn">重置</el-button>
         </el-form-item>
       </el-form>
       <div class="member-table">
-        <el-table
-          border
-          :data="tableData"
-          ref="multipleTable"
-          style="width: 100%"
-          @selection-change="handleSelectionChange"
-        >
-          <el-table-column type="selection" align="center" width="60"></el-table-column>
+        <el-table border :data="tableData" @sort-change="sortChange" ref="multipleTable" style="width: 100%">
           <el-table-column label="职位名称" align="center" width="150">
             <template slot-scope="props">
-              <el-button type="text" @click="handleEdit(props.row)">{{props.row.name}}</el-button>
+              <el-button type="text" @click="handleEdit(props.row)">{{props.row.job_name}}</el-button>
             </template>
           </el-table-column>
-          <el-table-column label="团队名称" align="center" width="150">
+          <el-table-column label="企业名称" prop="com_name" align="center" width="150">
+          </el-table-column>
+          <el-table-column label="需求人数" prop="required_number" align="center" width="100"></el-table-column>
+          <el-table-column label="已推荐简历" align="center" prop="put_num" width="100">
+          </el-table-column>
+          <el-table-column label="审核通过简历" prop="pass_num" align="center" width="120"></el-table-column>
+          <el-table-column label="岗位薪资" prop="money" align="center" width="150"></el-table-column>
+          <el-table-column label="薪资模式" align="center" width="100">
             <template slot-scope="props">
-              <el-button type="text">{{props.row.money_type | moneyType}}</el-button>
+              <span>{{props.row.money_type|moneyType}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="需求人数" prop="depart_name" align="center" width="100"></el-table-column>
-          <el-table-column label="已推荐简历" align="center" width="100">
-            <template slot-scope="props">
-              <el-button type="text">{{props.row.reward_type | rewardType}}</el-button>
-            </template>
-          </el-table-column>
-          <el-table-column label="审核通过简历" prop="depart_name" align="center" width="120"></el-table-column>
-          <el-table-column label="岗位薪资" prop="reward_money" align="center" width="150"></el-table-column>
-          <el-table-column label="薪资模式" prop="reward_money" align="center" width="100"></el-table-column>
           <el-table-column label="发单状态" align="center" width="150">
             <template slot-scope="props">
-              <span
-                class="status"
-                :class="{'active-status':props.row.status==1}"
-              >{{props.row.status==1?"正常":'锁定'}}</span>
+              <span class="status" :class="`status${props.row.invoice_status}`">{{props.row.invoice_status}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="岗位城市" prop="entry_num" align="center" width="120"></el-table-column>
-          <el-table-column label="接单时间" prop="entry_num" sortable align="center" width="150"></el-table-column>
-          <el-table-column label="返利模式" prop="entry_num" align="center" width="100"></el-table-column>
-          <el-table-column label="面试时间" prop="entry_num" sortable align="center" width="150"></el-table-column>
-          <el-table-column label="操作" align="center">
+          <el-table-column label="岗位城市" prop="entry_num" align="center" width="120">
+            <template slot-scope="props">
+              <span>{{props.row.province}}{{props.row.city}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="接单时间" prop="jddesc" sortable="custom" align="center" width="150">
+            <template slot-scope="props">
+              <span>{{props.row.addtime?$moment(props.row.addtime).format('YYYY-MM-DD HH:mm'):'--'}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="返利模式" align="center" width="100">
+            <template slot-scope="props">
+              <span>{{props.row.reward_type|rewardType}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="面试时间" prop="msdesc" sortable="custom" align="center" width="150">
+            <template slot-scope="props">
+              <span>{{props.row.msdesc?$moment(props.row.msdesc).format('YYYY-MM-DD HH:mm'):'--'}}</span>
+            </template>
+          </el-table-column>
+          </el-table-column>
+          <el-table-column label="操作" align="center" min-width="180">
             <template slot-scope="scope">
-              <el-button @click="$router.push('/recommendResume')" type="text" size="small">推荐简历</el-button>
-              <el-button @click="$router.push('/auditionResult')" type="text" size="small">
-                面试名单
-                <span class="resume-number">(+150)</span>
-              </el-button>
-              <el-button @click="$router.push('/commonTableList')" type="text" size="small">
-                推荐名单
-                <span class="resume-number">(+150)</span>
-              </el-button>
-              <!-- <el-button @click="$router.push('/commonTableList')" type="text" size="small">
-                查看通知
-                <span class="resume-number">(+150)</span>
-              </el-button>-->
-              <el-button @click="$router.push('/viewResume')" type="text" size="small">联系客服</el-button>
+              <div v-if="!scope.row.interview_status">
+                <el-button @click="$router.push('/recommendResume')" type="text" size="small">推荐简历</el-button>
+                <el-button @click="$router.push('/commonTableList')" type="text" size="small">
+                  推荐名单
+                  <!-- <span class="resume-number">(+150)</span> -->
+                </el-button>
+              </div>
+              <div v-if="scope.row.interview_status==1||scope.row.interview_status==2">
+                <el-button @click="$router.push('/auditionResult')" type="text" size="small">
+                  面试名单
+                  <!-- <span class="resume-number">(+150)</span> -->
+                </el-button>
+                <el-button @click="$router.push('/viewResume')" type="text" size="small">联系客服</el-button>
+              </div>
             </template>
           </el-table-column>
         </el-table>
       </div>
-      <el-pagination
-        class="team-pagination"
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :current-page="formMember.page"
-        :page-sizes="[10, 20, 30, 40]"
-        :page-size="formMember.limit"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="total"
-      ></el-pagination>
+      <el-pagination class="team-pagination" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="formMember.page" :page-sizes="[10, 20, 30, 40]" :page-size="formMember.limit" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
     </div>
     <receiptModal :dialogTableVisible="dialogTableVisible"></receiptModal>
+    <viewJob :dialogTableVisible="dialogJobVisible" :id="jobId" @handleClose="dialogJobVisible=false"></viewJob>
   </div>
 </template>
 <script>
-import { getTeamList, loginOutTeam, addTeamUser, updateTeamUser } from '../../api/team'
-import { getReceiptList } from '../../api/receipt'
+import { applyList } from '../../api/teamReceipt'
 import { moneyTypeList, rewardTypeList, payTypeList, weekList } from '../../base/base'
 import receiptModal from './receiptModal'
 import { getConstant } from '../../api/dictionary'
+import viewJob from '../common/viewJob'
 export default {
   components: {
-    receiptModal
+    receiptModal,
+    viewJob
   },
   filters: {
     moneyType (val) {
@@ -171,6 +141,7 @@ export default {
       moneyTypeList,
       rewardTypeList,
       dialogTableVisible: false,
+      dialogJobVisible: false,
       visible: false,
       tableData: [],
       currentPage: 1,
@@ -178,13 +149,11 @@ export default {
       formMember: {
         uid: localStorage.getItem('uid'),
         limit: 10,
-        page: 1
+        page: 1,
+        type: 1
       },
       total: 0,
-      len: 0,
-      userId: '',
-      multipleSelection: [],
-      form: {},
+      jobId: '',
       statusList: [
         { label: '全部', value: 0 },
         { label: '收集中', value: 1 },
@@ -193,7 +162,8 @@ export default {
         { label: '面试结束', value: 4 }
       ],
       activeIndex: 0,
-      jobList: {}
+      jobList: {},
+      timeList: []
     }
   },
   created () {
@@ -210,11 +180,24 @@ export default {
       })
     },
     getList (params) {
-      getReceiptList(params).then(res => {
+      applyList(params).then(res => {
         const { data } = res
         this.tableData = data.data
         this.total = data.count
       })
+    },
+    sortChange (column) {
+      if (column.order == 'ascending') {
+        this.formMember[column.prop] = 'asc'
+      }
+      else {
+        this.formMember[column.prop] = 'desc'
+      }
+      this.getList(this.formMember)
+    },
+    changeDate (val) {
+      this.formMember.beginTime = val[0]
+      this.formMember.endTime = val[1]
     },
     selectStatus (item, index) {
       this.activeIndex = index
@@ -229,17 +212,8 @@ export default {
       this.getList(this.formMember)
     },
     handleEdit (val) {
-      this.dialogTableVisible = true
-      this.userId = val
-      console.log(this.userId)
-    },
-    handleDel (uid) {
-      loginOutTeam({ uid }).then(res => {
-        this.$message.success('退出成功')
-        this.getList(this.formMember)
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+      this.dialogJobVisible = true
+      this.jobId = val
     },
     submitMember (val) {
       updateTeamUser(val).then(res => {
@@ -247,15 +221,8 @@ export default {
         this.getList(this.params)
       })
     },
-    handleSelectionChange (val) {
-      this.len = val
-    },
-    addMember () {
-      this.visible = true
-    },
-    onSubmit (value) {
-      let params = Object.assign(this.formMember, value)
-      this.getList(params)
+    onSubmit () {
+      this.getList(this.formMember)
     },
     submitForm (val) {
       this.visible = false
@@ -264,6 +231,15 @@ export default {
       }).catch(error => {
         this.$message.error(error.status.remind)
       })
+    },
+    reset () {
+      this.formMember = {
+        uid: localStorage.getItem('uid'),
+        limit: 10,
+        page: 1
+      }
+      this.timeList = []
+      this.getList(this.formMember)
     }
   }
 }

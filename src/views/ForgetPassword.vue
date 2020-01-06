@@ -13,21 +13,12 @@
     <el-main class="login-main">
       <div class="register-content">
         <div class="register-box">
-          <el-form
-            ref="TabForm"
-            :model="formTab"
-            label-width="20"
-            :rules="formTabs"
-            class="form-box"
-          >
+          <el-form ref="TabForm" :model="formTab" label-width="20" :rules="formTabs" class="form-box">
             <div class="x-flex-around register-btn">
               <el-button type="text">忘记密码</el-button>
             </div>
             <el-form-item prop="name" label="手机号">
-              <span
-                class="error errorInfo el-icon-warning"
-                v-if="isShowError"
-              >账号或者密码错误，如遇到问题联系客服，021-51991869</span>
+              <span class="error errorInfo el-icon-warning" v-if="isShowError">账号或者密码错误，如遇到问题联系客服，021-51991869</span>
               <el-input placeholder="请输入11位手机号" v-model="formTab.mobile">
                 <template slot="prepend">
                   <span>+86</span>
@@ -37,25 +28,14 @@
             </el-form-item>
             <el-form-item label="发送验证码">
               <span class="error el-icon-warning" v-if="isCodeError">验证码错误或者已过期</span>
-              <el-input
-                v-model="formTab.code"
-                placeholder="请输入密码"
-                class="inputCode"
-                show-word-limit
-              ></el-input>
-              <el-button
-                type="primary"
-                class="code-btn"
-                plain
-                :class="{disabled: !this.canClick}"
-                @click="sendCode"
-              >{{content}}</el-button>
+              <el-input v-model="formTab.code" placeholder="请输入验证码" class="inputCode" show-word-limit></el-input>
+              <el-button type="primary" class="code-btn" plain :class="{disabled: !this.canClick}" @click="sendCode">{{content}}</el-button>
             </el-form-item>
             <el-form-item prop="newPassword" label="密码">
-              <el-input v-model="formTab.newPassword" placeholder="请输入密码" show-word-limit></el-input>
+              <el-input v-model="formTab.newPassword" type="password" placeholder="请输入密码" show-word-limit></el-input>
             </el-form-item>
             <el-form-item prop="newPassworded" label="确认密码">
-              <el-input v-model="formTab.newPassworded" placeholder="请输入确认密码" show-word-limit></el-input>
+              <el-input v-model="formTab.newPassworded" placeholder="请输入确认密码" type="password" show-word-limit></el-input>
             </el-form-item>
             <el-form-item class="submit-btn">
               <el-button type="primary" @click="onSubmit('TabForm')" class="login">确认</el-button>

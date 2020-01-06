@@ -26,3 +26,5 @@ export const entryUserResumeList = data => $post('/company/entryUserRecommendRes
 export const updateEntryUser = data => $post('/company/updateEntryUser', data)  //人员入职操作
 export const incumbencyUserResumeList = data => $post('/company/incumbencyUserRecommendResumeList', data) //在职名单列表
 export const editEntryTime = data => $post('/company/editEntryTime', data)  //入职时间
+
+

@@ -1,89 +1,38 @@
 <template>
   <div class="login-view">
-    <el-form
-      ref="TabForm"
-      :model="formTab"
-      label-width="20"
-      :rules="formTabs"
-      class="form-box"
-    >
+    <el-form ref="TabForm" :model="formTab" label-width="20" :rules="formTabs" class="form-box">
       <div class="x-flex-between login-view-btn">
-        <el-button
-          type="text"
-          :class="loginWay==1?'':'active'"
-          @click="switchLogin(1)"
-        >账号登录</el-button>
-        <el-button
-          type="text"
-          :class="loginWay==2?'':'active'"
-          @click="switchLogin(2)"
-        >短信登录</el-button>
+        <el-button type="text" :class="loginWay==1?'':'active'" @click="switchLogin(1)">账号登录</el-button>
+        <el-button type="text" :class="loginWay==2?'':'active'" @click="switchLogin(2)">短信登录</el-button>
       </div>
-      <el-form-item
-        prop="name"
-        label="手机号"
-      >
+      <el-form-item prop="name" label="手机号">
         <span class="error errorInfo el-icon-warning">账号或者密码错误</span>
-        <el-input
-          placeholder="请输入11位手机号"
-          v-model="formTab.name"
-        >
+        <el-input placeholder="请输入11位手机号" v-model="formTab.name">
           <template slot="prepend">
             <span>+86</span>
             <i class="el-icon-arrow-down"></i> |
           </template>
         </el-input>
       </el-form-item>
-      <el-form-item
-        prop="passwords"
-        label="密码"
-        v-if="loginWay==1"
-      >
-        <el-input
-          v-model="formTab.password"
-          placeholder="请输入密码"
-          show-word-limit
-        ></el-input>
+      <el-form-item prop="passwords" label="密码" v-if="loginWay==1">
+        <el-input v-model="formTab.password" placeholder="请输入密码" show-word-limit></el-input>
       </el-form-item>
-      <el-form-item
-        prop="passwords"
-        label="发送验证码"
-        v-if="loginWay==2"
-      >
+      <el-form-item prop="passwords" label="发送验证码" v-if="loginWay==2">
         <span class="error el-icon-warning">验证码错误或者已过期</span>
-        <el-input
-          v-model="formTab.code"
-          placeholder="请输入密码"
-          class="inputCode"
-          show-word-limit
-        ></el-input>
-        <el-button
-          type="primary"
-          class="code-btn small-code-btn"
-          plain
-          :class="{disabled: !this.canClick}"
-          @click="sendCode"
-        >{{content}}</el-button>
+        <el-input v-model="formTab.code" placeholder="请输入密码" type="password" class="inputCode" show-word-limit></el-input>
+        <el-button type="primary" class="code-btn small-code-btn" plain :class="{disabled: !this.canClick}" @click="sendCode">{{content}}</el-button>
       </el-form-item>
       <el-form-item>
         <el-checkbox v-model="checked">记住密码</el-checkbox>
         <span class="code-btn password">忘记密码</span>
       </el-form-item>
       <el-form-item>
-        <el-button
-          type="primary"
-          @click="onSubmit('TabForm')"
-          class="login"
-        >注册</el-button>
+        <el-button type="primary" @click="onSubmit('TabForm')" class="login">登录</el-button>
       </el-form-item>
       <p class="text">
         还没有账户，
         <a href="/load">免费注册</a>
-        <img
-          src="../assets/img/loginRight.png"
-          alt
-          class="loginRight"
-        />
+        <img src="../assets/img/loginRight.png" alt class="loginRight" />
       </p>
     </el-form>
   </div>
@@ -174,7 +123,14 @@ export default {
         if (valid) {
           console.log(this.formTab)
           goLogin(this.formTab).then(res => {
-            console.log(res)
+            localStorage.setItem('userType', res.data.type)
+            let registerType = res.data.type
+            localStorage.setItem('token', res.data.token)
+            localStorage.setItem('uid', res.data.uid)
+            localStorage.setItem('userName', res.data.username)
+            // 登录人身份
+            sessionStorage.setItem('userPosition', res.data.gradeNum)
+            this.$emit('goLogin', res.data.token)
           }).catch(error => {
             console.log(error)
             return this.$message.error(error.status.remind)

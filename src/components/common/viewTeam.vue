@@ -1,23 +1,12 @@
 <template>
-  <el-dialog
-    width="830px"
-    title
-    :visible.sync="dialogTableVisible"
-    class="member-dialog"
-    :show-close="false"
-  >
+  <el-dialog width="830px" title :visible.sync="dialogTableVisible" class="member-dialog" :show-close="false">
     <div class="member-row team-info-box" v-if="teamId">
       <img src="../../assets/img/member/cancel.png" alt class="cancel-icon" @click="handleClose" />
       <section class="member-col1">
-        <img
-          src="../../assets/img/member/cancel.png"
-          class="member-col1-comLogo"
-          v-if="!teamInfo.log"
-          alt
-        />
+        <img src="../../assets/img/member/cancel.png" class="member-col1-comLogo" v-if="!teamInfo.log" alt />
         <img :src="teamInfo.log" class="member-col1-comLogo" alt />
         <P class="member-col1-comName">{{teamInfo.team_name}}</P>
-        <p class="member-col1-time">申请日期：{{teamInfo.team_name}}</p>
+        <p class="member-col1-time">申请日期：{{teamInfo.addtime}}</p>
       </section>
       <section class="member-col3">
         <ul class="x-flex-between">
@@ -97,7 +86,11 @@ export default {
   watch: {
     teamId (val) {
       if (val) {
-        seeTeamInfo({ teamId: this.teamId }).then(res => {
+        let params = {
+          teamId: this.teamId,
+          uid: localStorage.getItem('uid')
+        }
+        seeTeamInfo(params).then(res => {
           this.teamInfo = res.data
         }).catch(error => {
           this.$message.error(error.status.remind)
@@ -160,7 +153,7 @@ export default {
           width: 100%;
           .team-info-card-item {
             span {
-              margin-left: 30px;
+              margin-left:0;
               &:nth-of-type(2) {
                 margin-left:0;
               }

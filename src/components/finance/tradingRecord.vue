@@ -1,72 +1,24 @@
 <template>
   <div class="my-account-view my-account-record">
     <div class="my-account-query">
-      <el-form
-        :inline="true"
-        label-width="90px"
-        label-position="right"
-        :model="formMember"
-        class="internal-invoice-form"
-      >
+      <el-form :inline="true" label-width="90px" label-position="right" :model="formMember" class="internal-invoice-form">
         <el-form-item label="时间：">
           <div class="x-flex-start select-time">
-            <el-date-picker
-              v-model="formMember.time"
-              type="date"
-              value="yyyy-MM-dd"
-              value-format="timestamp"
-              class="width140"
-              placeholder="选择日期"
-              @change="selectStatus($event,'time')"
-            ></el-date-picker>
+            <el-date-picker v-model="formMember.time" type="date" value="yyyy-MM-dd" value-format="timestamp" class="width140" placeholder="选择日期" @change="selectStatus($event,'time')"></el-date-picker>
             <span>-</span>
-            <el-date-picker
-              v-model="formMember.time1"
-              type="date"
-              value="yyyy-MM-dd"
-              value-format="timestamp"
-              class="width140"
-              @change="selectStatus($event,'time1')"
-              placeholder="选择日期"
-            ></el-date-picker>
-            <el-date-picker
-              class="month-btn"
-              v-model="formMember.month"
-              type="month"
-              placeholder="按月选择"
-            ></el-date-picker>
+            <el-date-picker v-model="formMember.time1" type="date" value="yyyy-MM-dd" value-format="timestamp" class="width140" @change="selectStatus($event,'time1')" placeholder="选择日期"></el-date-picker>
+            <el-date-picker class="month-btn" v-model="formMember.month" type="month" placeholder="按月选择"></el-date-picker>
           </div>
         </el-form-item>
         <el-form-item label="最近：">
-          <el-button
-            :type="formMember.time==item.value ?'primary':''"
-            v-for="(item,index) in list"
-            :key="index"
-            plain
-            @click="selectStatus('time',item)"
-            class="select-status"
-          >{{item.label}}</el-button>
+          <el-button :type="formMember.time==item.value ?'primary':''" v-for="(item,index) in list" :key="index" plain @click="selectStatus('time',item)" class="select-status">{{item.label}}</el-button>
         </el-form-item>
         <el-form-item label="资金流向：">
-          <el-button
-            :type="formMember.moneyType==item.value ?'primary':''"
-            v-for="(item,index) in list1"
-            :key="index"
-            plain
-            @click="selectStatus('moneyType',item)"
-            class="select-status"
-          >{{item.label}}</el-button>
+          <el-button :type="formMember.moneyType==item.value ?'primary':''" v-for="(item,index) in list1" :key="index" plain @click="selectStatus('moneyType',item)" class="select-status">{{item.label}}</el-button>
         </el-form-item>
         <el-form-item label="类型：">
           <div class="x-flex-start">
-            <el-button
-              :type="formMember.type==item.value ?'primary':''"
-              v-for="(item,index) in list2"
-              :key="index"
-              plain
-              @click="selectStatus('type',item)"
-              class="select-status"
-            >{{item.label}}</el-button>
+            <el-button :type="formMember.type==item.value ?'primary':''" v-for="(item,index) in list2" :key="index" plain @click="selectStatus('type',item)" class="select-status">{{item.label}}</el-button>
             <p @click="show=!show" class="x-flex-center senior-search-btn">
               <el-link :type="show?'primary': ''" :underline="false">高级筛选</el-link>
               <i class="el-icon-arrow-down"></i>
@@ -101,9 +53,9 @@
           <span class="give-money">120.00元</span>
         </p>
       </div>
-      <el-table border :data="tableData" ref="multipleTable" style="width: 100%">
+      <el-table border :data="tableData" @sort-change="sortChange" ref="multipleTable" style="width: 100%">
         <el-table-column label="流水号" prop="depart_name" align="center" width="190"></el-table-column>
-        <el-table-column label="日期" sortable align="center" width="190">
+        <el-table-column label="日期" sortable="custom" align="center" width="190">
           <template slot-scope="props">
             <span>{{ props.row.addtime ? $moment.unix(props.row.addtime).format('YYYY-MM-DD HH:mm'): '--'}}</span>
           </template>
@@ -114,16 +66,7 @@
         <el-table-column label="账户余额（元）" prop="mobile" align="center" width="190"></el-table-column>
         <el-table-column label="支付方式" prop="num" align="center" width="190"></el-table-column>
       </el-table>
-      <el-pagination
-        class="pagination"
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :current-page="formMember.page"
-        :page-sizes="[10, 20, 30, 40]"
-        :page-size="formMember.limit"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="total"
-      ></el-pagination>
+      <el-pagination class="pagination" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="formMember.page" :page-sizes="[10, 20, 30, 40]" :page-size="formMember.limit" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
     </div>
   </div>
 </template>
@@ -177,6 +120,15 @@ export default {
     },
     handleCurrentChange (val) {
       this.formMember.page = val
+      this.getList(this.formMember)
+    },
+    sortChange (column) {
+      if (column.order == 'ascending') {
+        this.formMember.timeDesc = 'asc'
+      }
+      else {
+        this.formMember.timeDesc = 'desc'
+      }
       this.getList(this.formMember)
     },
     handleSearch () { },

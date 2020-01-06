@@ -4,13 +4,7 @@
 <template>
   <div class="tables-box billingManagement">
     <div class="table-list">
-      <el-form
-        :inline="true"
-        label-width="100px"
-        label-position="right"
-        :model="formMember"
-        class="demo-form-inline"
-      >
+      <el-form :inline="true" label-width="100px" label-position="right" :model="formMember" class="demo-form-inline">
         <el-form-item label="职位名称：">
           <el-input v-model="formMember.job_name" class="width300" placeholder="请输入职位名称关键字"></el-input>
         </el-form-item>
@@ -24,43 +18,21 @@
         </el-form-item>
         <el-form-item label="薪资模式：">
           <el-select v-model="formMember.money_type" class="width300" placeholder="请选择薪资模式">
-            <el-option
-              :label="item.label"
-              :value="item.value"
-              v-for="(item,index) in moneyTypeList"
-              :key="index"
-            ></el-option>
+            <el-option :label="item.label" :value="item.value" v-for="(item,index) in moneyTypeList" :key="index"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="返利模式：">
           <el-select v-model="formMember.money_type" class="width300" placeholder="请选择返利模式">
-            <el-option
-              :label="item.label"
-              :value="item.value"
-              v-for="(item,index) in rewardTypeList"
-              :key="index"
-            ></el-option>
+            <el-option :label="item.label" :value="item.value" v-for="(item,index) in rewardTypeList" :key="index"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="发单状态：">
           <el-select v-model="formMember.status" class="width300" placeholder="请选择">
-            <el-option
-              :label="item.label"
-              :value="item.value"
-              v-for="(item,index) in statusList"
-              :key="index"
-            ></el-option>
+            <el-option :label="item.label" :value="item.value" v-for="(item,index) in statusList" :key="index"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="面试时间：">
-          <el-date-picker
-            class="width300"
-            v-model="timeList"
-            type="daterange"
-            range-separator="-"
-            start-placeholder="开始日期区间"
-            end-placeholder="结束日期"
-          ></el-date-picker>
+          <el-date-picker class="width300" v-model="timeList" type="daterange" range-separator="-" start-placeholder="开始日期区间" end-placeholder="结束日期"></el-date-picker>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="onSubmit" class="select-btn">查询</el-button>
@@ -76,41 +48,31 @@
           </span>
           <el-button type="text" @click="multipleSelection=[]">清空</el-button>
         </div>
-        <el-table
-          border
-          :data="tableData"
-          ref="multipleTable"
-          style="width: 100%"
-          @selection-change="handleSelectionChange"
-        >
-          <el-table-column type="selection" align="center" width="60"></el-table-column>
-          <el-table-column label="职位名称" align="center" width="190">
+        <el-table border :data="tableData" ref="multipleTable" style="width: 100%">
+          <el-table-column label="职位名称" align="center" width="150">
             <template slot-scope="props">
               <el-button type="text">{{props.row.name}}</el-button>
             </template>
           </el-table-column>
-          <el-table-column label="团队名称" align="center" width="110">
+          <el-table-column label="团队名称" align="center" width="150">
             <template slot-scope="props">
               <el-button type="text">{{props.row.money_type | moneyType}}</el-button>
             </template>
           </el-table-column>
-          <el-table-column label="需求人数" prop="depart_name" align="center" width="110"></el-table-column>
+          <el-table-column label="需求人数" prop="depart_name" align="center" width="100"></el-table-column>
           <el-table-column label="面试通过" align="center" width="110">
             <template slot-scope="props">
               <el-button type="text">{{props.row.reward_type | rewardType}}</el-button>
             </template>
           </el-table-column>
-          <el-table-column label="岗位薪资" prop="reward_money" align="center" width="110"></el-table-column>
-          <el-table-column label="薪资模式" prop="reward_money" align="center" width="110"></el-table-column>
-          <el-table-column label="状态" align="center" width="150">
+          <el-table-column label="岗位薪资" prop="reward_money" align="center" width="120"></el-table-column>
+          <el-table-column label="薪资模式" prop="reward_money" align="center" width="100"></el-table-column>
+          <el-table-column label="状态" align="center" width="100">
             <template slot-scope="props">
-              <span
-                class="status"
-                :class="{'active-status':props.row.status==1}"
-              >{{props.row.status | statusType}}</span>
+              <span class="status" :class="{'active-status':props.row.status==1}">{{props.row.status==1?"正常":'锁定'}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="岗位城市" prop="entry_num" align="center" width="150"></el-table-column>
+          <el-table-column label="岗位城市" prop="citys" align="center" width="150"></el-table-column>
           <el-table-column label="接单时间" prop="entry_num" sortable align="center" width="150"></el-table-column>
           <el-table-column label="返利模式" prop="entry_num" align="center" width="110"></el-table-column>
           <el-table-column label="面试时间" prop="entry_num" sortable align="center" width="150"></el-table-column>
@@ -118,58 +80,23 @@
           <el-table-column label="操作" align="center" min-width="195px">
             <template slot-scope="props">
               <el-button @click="handleOver(props.row)" type="text" size="small">面试结束</el-button>
-              <el-button
-                @click="$router.push({path:'checkResume',query:{id:props.row.id}})"
-                type="text"
-                size="small"
-              >审核结果</el-button>
-              <el-button
-                @click="$router.push({path:'auditionNameList',query:{id:props.row.id}})"
-                type="text"
-                size="small"
-              >面试名单</el-button>
+              <el-button @click="$router.push({path:'checkResume',query:{id:props.row.id}})" type="text" size="small">审核结果</el-button>
+              <el-button @click="$router.push({path:'auditionNameList',query:{id:props.row.id}})" type="text" size="small">面试名单</el-button>
               <el-button @click="dialogTableVisible=true" type="text" size="small">通知入职</el-button>
-              <el-button
-                @click="$router.push({path:'/entryList',query:{id:val.id}})"
-                type="text"
-                size="small"
-              >查看入职</el-button>
-              <el-button
-                @click="$router.push({path:'commonTable',query:{id:props.row.id,view:3}})"
-                type="text"
-                size="small"
-              >
+              <el-button @click="$router.push({path:'/entryList',query:{id:val.id}})" type="text" size="small">查看入职</el-button>
+              <el-button @click="$router.push({path:'commonTable',query:{id:props.row.id,view:3}})" type="text" size="small">
                 面试结果
                 <span class="resume-number">(+150)</span>
               </el-button>
-              <el-button
-                @click="$router.push({path:'commonTable',query:{id:props.row.id,view:2}})"
-                type="text"
-                size="small"
-              >查看简历</el-button>
+              <el-button @click="$router.push({path:'commonTable',query:{id:props.row.id,view:2}})" type="text" size="small">查看简历</el-button>
             </template>
           </el-table-column>
         </el-table>
       </div>
-      <el-pagination
-        class="team-pagination"
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :current-page="formMember.page"
-        :page-sizes="[10, 20, 30, 40]"
-        :page-size="formMember.limit"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="total"
-      ></el-pagination>
+      <el-pagination class="team-pagination" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="formMember.page" :page-sizes="[10, 20, 30, 40]" :page-size="formMember.limit" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
     </div>
     <noticeModal :dialogTableVisible="dialogTableVisible" noticeType="入职" @submitForm="submitForm"></noticeModal>
-    <modal
-      :dialogTableVisible="visible"
-      @handleOk="handleOk"
-      isShow="true"
-      :modalObj="modalObj"
-      @handleClose="visible=false,jobId=''"
-    ></modal>
+    <modal :dialogTableVisible="visible" @handleOk="handleOk" isShow="true" :modalObj="modalObj" @handleClose="visible=false,jobId=''"></modal>
   </div>
 </template>
 <script>

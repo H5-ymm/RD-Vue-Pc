@@ -6,7 +6,7 @@
         <a class="welcome">欢迎登录</a>
       </div>
       <div class="bg-purple-light">
-        <span @click="$router.push('home')">浏览首页</span>
+        <!-- <span @click="$router.push('home')">浏览首页</span> -->
         <a>021-51991869</a>
       </div>
     </el-header>
@@ -28,11 +28,11 @@
               </el-input>
             </el-form-item>
             <el-form-item prop="passwords" label="密码" v-if="loginWay==1">
-              <el-input v-model="formTab.password" placeholder="请输入密码" show-word-limit></el-input>
+              <el-input v-model="formTab.password" placeholder="请输入密码" @keyup.enter.native="onSubmit('TabForm')" type="password" show-word-limit></el-input>
             </el-form-item>
             <el-form-item label="发送验证码" v-if="loginWay==2">
               <span class="error el-icon-warning" v-if="isCodeError">验证码错误或者已过期</span>
-              <el-input v-model="formTab.code" placeholder="请输入密码" class="inputCode" show-word-limit></el-input>
+              <el-input v-model="formTab.code" placeholder="请输入验证码" @keyup.enter.native="onSubmit('TabForm')" class="inputCode" show-word-limit></el-input>
               <el-button type="primary" class="code-btn" plain :class="{disabled: !this.canClick}" @click="sendCode">{{content}}</el-button>
             </el-form-item>
             <el-form-item v-if="loginWay==1">
@@ -67,12 +67,12 @@ export default {
       }
     };
     let validatePassReg = function (rule, value, callback) {   //验证密码是否合法
-      let reg = /^[a-zA-Z][a-zA-Z0-9]{6,30}$/;
-      if (reg.test(value) == true) {
-        callback();
-      } else {
-        callback(new Error('密码不合法(请输入数字或字母)'));
-      }
+      // let reg = /^[a-zA-Z0-9]{6,17}$/;
+      // if (reg.test(value) == true) {
+      //   callback();
+      // } else {
+      //   callback(new Error('(请输入6到17位数字和字母混合)'));
+      // }
     };
     return {
       formTab: {
@@ -122,7 +122,7 @@ export default {
   //    next()
   //  }
   // },
-  mounted:function(){
+  mounted: function () {
     // window.location.reload()
   },
   methods: {
@@ -182,13 +182,13 @@ export default {
             localStorage.setItem('uid', res.data.uid)
             localStorage.setItem('userName', res.data.username)
             // 登录人身份
-            sessionStorage.setItem('userPosition',res.data.gradeNum)
-            
-            if (res.data.type==1) {
-             this.$router.push('createOrderTaking')
+            sessionStorage.setItem('userPosition', res.data.gradeNum)
+
+            if (res.data.type == 1) {
+              this.$router.push('createOrderTaking')
             }
             else {
-             this.$router.push('teamData')
+              this.$router.push('teamData')
             }
           }).catch(error => {
             if (error.status.code == 3010) {

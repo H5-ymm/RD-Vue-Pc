@@ -1,30 +1,14 @@
 <template>
   <div class="salary-rebate">
-    <el-form-item label="综合薪资">
+    <el-form-item label="综合薪资" required>
       <div>
         <el-select v-model="orderTakingForm.offermoney_type" class="width160" placeholder="请选择">
-          <el-option
-            :label="item.label"
-            :value="item.value"
-            v-show="index"
-            v-for="(item,index) in moneyTypeList"
-            :key="item.label"
-          ></el-option>
+          <el-option :label="item.label" :value="item.value" v-show="index" v-for="(item,index) in moneyTypeList" :key="item.label"></el-option>
         </el-select>
-        <el-select
-          v-model="orderTakingForm.offermoney"
-          v-if="orderTakingForm.offermoney_type==1"
-          class="width160"
-          placeholder="请选择"
-        >
+        <el-select v-model="orderTakingForm.offermoney" v-if="orderTakingForm.offermoney_type==1" class="width160" placeholder="请选择">
           <el-option :label="item" :value="key" v-for="(item,key) in moneyList" :key="key"></el-option>
         </el-select>
-        <el-input
-          placeholder="请输入薪资"
-          v-if="orderTakingForm.offermoney_type&&orderTakingForm.offermoney_type!=1"
-          class="width160 text-input"
-          v-model="orderTakingForm.offermoney"
-        >
+        <el-input placeholder="请输入薪资" v-if="orderTakingForm.offermoney_type&&orderTakingForm.offermoney_type!=1" class="width160 text-input" v-model="orderTakingForm.offermoney">
           <template slot="append">
             <span class="moneyType" v-if="orderTakingForm.offermoney_type==2">元/人/日</span>
             <span class="moneyType" v-if="orderTakingForm.offermoney_type==3">元/人/时</span>
@@ -41,7 +25,7 @@ export default {
   data () {
     return {
       orderTakingForm: {
-        money_type: 1
+        offermoney_type: 1
       },
       comTypeList: [],
       moneyTypeList,
@@ -65,7 +49,7 @@ export default {
     orderTakingForm: {
       handler (val, oldName) {
         for (let key in val) {
-         if (val[key] != '') {
+          if (val[key] != '') {
             this.$emit('submit', val)
           }
         }

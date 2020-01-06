@@ -4,36 +4,17 @@
 <template>
   <div class="tables-box billingManagement">
     <div class="table-list">
-      <el-form
-        :inline="true"
-        label-width="100px"
-        label-position="right"
-        :model="formMember"
-        class="demo-form-inline"
-      >
+      <el-form :inline="true" label-width="100px" label-position="right" :model="formMember" class="demo-form-inline">
         <el-form-item label="姓名：">
           <el-input v-model="formMember.name" class="width300" placeholder="请输入职位名称关键字"></el-input>
           <el-button type="primary" @click="onSubmit" class="select-btn">查询</el-button>
         </el-form-item>
         <el-form-item label="状态筛选：">
-          <el-button
-            :type="activeIndex==index ?'primary':''"
-            v-for="(item,index) in statusList"
-            :key="index"
-            plain
-            @click="selectStatus(item,index)"
-            class="select-status"
-          >{{item.label}}</el-button>
+          <el-button :type="activeIndex==index ?'primary':''" v-for="(item,index) in statusList" :key="index" plain @click="selectStatus(item,index)" class="select-status">{{item.label}}</el-button>
         </el-form-item>
       </el-form>
       <div class="member-table resume-table">
-        <el-table
-          border
-          :data="tableData"
-          ref="multipleTable"
-          style="width: 100%"
-          @selection-change="handleSelectionChange"
-        >
+        <el-table border :data="tableData" ref="multipleTable" style="width: 100%" @selection-change="handleSelectionChange">
           <el-table-column label="姓名" align="center" width="150">
             <template slot-scope="props">
               <el-button type="text" @click="handleEdit(props.row)">{{props.row.name}}</el-button>
@@ -54,10 +35,7 @@
           <el-table-column label="推荐时间" prop="entry_num" sortable align="center" width="150"></el-table-column>
           <el-table-column label="状态" align="center" width="150">
             <template slot-scope="props">
-              <span
-                class="status"
-                :class="{'active-status':props.row.status==1}"
-              >{{props.row.status==1?"正常":'锁定'}}</span>
+              <span class="status" :class="{'active-status':props.row.status==1}">{{props.row.status==1?"正常":'锁定'}}</span>
             </template>
           </el-table-column>
           <el-table-column label="操作" align="center">
@@ -71,23 +49,14 @@
           </el-table-column>
         </el-table>
       </div>
-      <el-pagination
-        class="team-pagination"
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :current-page="formMember.page"
-        :page-sizes="[10, 20, 30, 40]"
-        :page-size="formMember.limit"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="total"
-      ></el-pagination>
+      <el-pagination class="team-pagination" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="formMember.page" :page-sizes="[10, 20, 30, 40]" :page-size="formMember.limit" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
     </div>
   </div>
 </template>
 
 <script>
-import { getTeamList, loginOutTeam, addTeamUser, updateTeamUser } from '../../api/team'
-import { getReceiptList } from '../../api/receipt'
+// import { getTeamList, loginOutTeam, addTeamUser, updateTeamUser } from '../../api/team'
+import { getListPut } from '../../api/teamReceipt'
 import { moneyTypeList, rewardTypeList, payTypeList, weekList } from '../../base/base'
 export default {
   filters: {
@@ -116,7 +85,8 @@ export default {
       formMember: {
         uid: localStorage.getItem('uid'),
         limit: 10,
-        page: 1
+        page: 1,
+        type: 2
       },
       total: 0,
       len: 0,
@@ -139,7 +109,7 @@ export default {
   },
   methods: {
     getList (params) {
-      getReceiptList(params).then(res => {
+      getListPut(params).then(res => {
         const { data } = res
         this.tableData = data.data
         this.total = data.count

@@ -2,14 +2,7 @@
   <div class="job-detail-view reward-rule-row">
     <div class="job-detail-row">
       <section class="resume-col3">
-        <el-form
-          :model="formMember"
-          ref="formMember"
-          class="demo-form-inline"
-          label-position="right"
-          label-width="100px"
-          :inline="true"
-        >
+        <el-form :model="formMember" ref="formMember" class="demo-form-inline" label-position="right" label-width="100px" :inline="true">
           <section class="resume-card">
             <div class="x-flex-between-start resume-card-row">
               <div class="resume-card-item">
@@ -30,21 +23,10 @@
                   <el-input v-model="formMember.work_tel" class="width406" placeholder="请输入合作商务电话"></el-input>
                 </el-form-item>
                 <el-form-item label="面试时间">
-                  <el-date-picker
-                    class="width406"
-                    format="yyyy-MM-dd"
-                    value-format="timestamp"
-                    v-model="formMember.meeting_time"
-                    type="date"
-                    placeholder="选择面试时间"
-                  ></el-date-picker>
+                  <el-date-picker class="width406" format="yyyy-MM-dd" value-format="timestamp" v-model="formMember.meeting_time" type="date" placeholder="选择面试时间"></el-date-picker>
                 </el-form-item>
                 <el-form-item label="面试地址" prop="user_name">
-                  <el-input
-                    v-model="formMember.meeting_addr"
-                    class="width406"
-                    placeholder="请输入面试地址"
-                  ></el-input>
+                  <el-input v-model="formMember.meeting_addr" class="width406" placeholder="请输入面试地址"></el-input>
                 </el-form-item>
                 <el-form-item label="发单负责人" prop="user_name">
                   <el-input v-model="formMember.link_man" class="width406" placeholder="请输入发单负责人"></el-input>
@@ -74,13 +56,7 @@
     <div class="resume-footer-btn">
       <el-button type="primary" @click="submitForm">保存</el-button>
     </div>
-    <personalModal
-      :dialogTableVisible="dialogTableVisible"
-      title="指定招聘人"
-      @handleClose="dialogTableVisible=false"
-      @handleOk="handleOk"
-      :personalList="personalList"
-    ></personalModal>
+    <personalModal :dialogTableVisible="dialogTableVisible" title="指定招聘人" @handleClose="dialogTableVisible=false" @handleOk="handleOk" :personalList="personalList"></personalModal>
   </div>
 </template>
 <script>
@@ -95,7 +71,7 @@ export default {
       dialogTableVisible: false,
       formMember: {
         job_type: 1,
-        is_assign:1
+        is_assign: 1
       },
       assignUids: '',
       meetingTime: '',
@@ -108,22 +84,23 @@ export default {
   methods: {
     selectPerson () {
       let uid = localStorage.getItem('uid')
-      getTeamManage({uid}).then(res => {
+      getTeamManage({ uid }).then(res => {
         this.personalList = res.data
         this.dialogTableVisible = true
       }).catch(error => {
         this.$message.error(error.status.remind)
       })
     },
-    handleOk (val) { 
+    handleOk (val) {
       this.list = val
-      let arr = val.map(item=>{
+      let arr = val.map(item => {
         return item.uid
-      }) 
+      })
       this.formMember.assign_uids = arr.join(',')
       this.dialogTableVisible = false
     },
     submitForm () {
+      this.formMember.meeting_time = this.formMember.meeting_time.splice(0, 10)
       console.log(this.formMember)
       this.$emit('submitForm', this.formMember)
     }

@@ -4,26 +4,13 @@
 <template>
   <div class="tables-box billingManagement receipt-manage">
     <div class="table-list">
-      <el-form
-        :inline="true"
-        label-width="100px"
-        label-position="right"
-        :model="formMember"
-        class="demo-form-inline"
-      >
+      <el-form :inline="true" label-width="100px" label-position="right" :model="formMember" class="demo-form-inline">
         <el-form-item label="职位名称：">
           <el-input v-model="formMember.where" class="width300" placeholder="请输入职位名称关键字"></el-input>
           <el-button type="primary" @click="onSubmit" class="select-btn">查询</el-button>
         </el-form-item>
         <el-form-item label="状态筛选：">
-          <el-button
-            :type="activeIndex==index ?'primary':''"
-            v-for="(item,index) in statusList"
-            :key="index"
-            plain
-            @click="selectStatus(item,index)"
-            class="select-status"
-          >{{item.label}}</el-button>
+          <el-button :type="activeIndex==index ?'primary':''" v-for="(item,index) in statusList" :key="index" plain @click="selectStatus(item,index)" class="select-status">{{item.label}}</el-button>
         </el-form-item>
       </el-form>
       <div class="member-table">
@@ -36,13 +23,7 @@
           </span>
           <el-button type="text" @click="multipleSelection=[]">清空</el-button>
         </div>
-        <el-table
-          border
-          :data="tableData"
-          ref="multipleTable"
-          style="width: 100%"
-          @selection-change="handleSelectionChange"
-        >
+        <el-table border @sort-change="sortChange" :data="tableData" ref="multipleTable" style="width: 100%" @selection-change="handleSelectionChange">
           <el-table-column type="selection" align="center" width="50"></el-table-column>
           <el-table-column label="姓名" align="center" width="110">
             <template slot-scope="props">
@@ -61,8 +42,14 @@
             </template>
           </el-table-column>
           <el-table-column label="住址" prop="reward_money" align="center" width="110"></el-table-column>
-          <el-table-column label="推荐时间" prop="entry_num" sortable align="center" width="180"></el-table-column>
-          <el-table-column label="状态" prop="entry_num" sortable align="center" width="180"></el-table-column>
+          <el-table-column label="推荐时间" prop="desc" sortable="custom" align="center" width="180">
+            <template slot-scope="props">
+              <div>
+                {{props.row.addtime?$moment.unix(props.row.addtime).format('YYYY-MM-DD HH:mm'): '--'}}
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column label="状态" prop="entry_num" align="center" width="180"></el-table-column>
           <el-table-column label="审核简历" align="center">
             <template slot-scope="scope">
               <el-button @click="handlResume(1,scope.row.id)" type="text" size="small">通过</el-button>
@@ -71,23 +58,9 @@
           </el-table-column>
         </el-table>
       </div>
-      <el-pagination
-        class="team-pagination"
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :current-page="formMember.page"
-        :page-sizes="[10, 20, 30, 40]"
-        :page-size="formMember.limit"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="total"
-      ></el-pagination>
+      <el-pagination class="team-pagination" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="formMember.page" :page-sizes="[10, 20, 30, 40]" :page-size="formMember.limit" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
     </div>
-    <modal
-      :dialogTableVisible="dialogTableVisible"
-      @handleOk="handleOk"
-      :modalObj="modalObj"
-      @handleClose="dialogTableVisible=false,id=''"
-    ></modal>
+    <modal :dialogTableVisible="dialogTableVisible" @handleOk="handleOk" :modalObj="modalObj" @handleClose="dialogTableVisible=false,id=''"></modal>
   </div>
 </template>
 
@@ -164,6 +137,15 @@ export default {
         this.tableData = data.data
         this.total = data.count
       })
+    },
+    sortChange (column) {
+      if (column.order == 'ascending') {
+        this.formMember[column.prop] = 'asc'
+      }
+      else {
+        this.formMember[column.prop] = 'desc'
+      }
+      this.getList(this.formMember)
     },
     selectStatus (item, index) {
       this.activeIndex = index

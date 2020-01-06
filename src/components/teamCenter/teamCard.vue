@@ -58,49 +58,22 @@
   }
 </style>
 <template>
-  <el-row
-    :gutter="20"
-    type="flex"
-    justify="space-between"
-  >
-    <el-col
-      :span="5"
-      v-for="(item,index) in teamCenterCount"
-      :key="index"
-    >
-      <div
-        class="team-center-card x-flex-start-between"
-        @click="select(item, index)"
-        :class="{'active':activeIndex==index}"
-      >
+  <el-row :gutter="20" type="flex" justify="space-between">
+    <el-col :span="5" v-for="(item,index) in teamCenterCount" :key="index">
+      <div class="team-center-card x-flex-start-between" @click="select(item, index)" :class="{'active':activeIndex==index}">
         <div class="x-flex-start">
-          <div
-            class="team-card-icon"
-            :class="`activeImg${item.id}`"
-          >
-            <img
-              :src="require(`../../assets/img/teamCenter/icon${item.id}.png`)"
-              alt
-            />
+          <div class="team-card-icon" :class="`activeImg${item.id}`">
+            <img :src="require(`../../assets/img/teamCenter/icon${item.id}.png`)" alt />
           </div>
           <div>
             <p>{{cardInfo[item.label]}}</p>
-            <p class="team-count">{{item.num}}</p>
+            <p class="team-count">{{item.num?item.num:'--'}}</p>
           </div>
         </div>
-        <div
-          v-if="index!=0"
-          class="team-card-col2"
-        >
-          <p class="num-color">+12%</p>
-          <p
-            class="el-icon-top num-color"
-            v-if="item.top"
-          ></p>
-          <p
-            class="el-icon-bottom num-color-red"
-            v-else
-          ></p>
+        <div v-if="index!=0" class="team-card-col2">
+          <p class="num-color">{{item.rate>=1?'+': '-'}}{{item.rate}}%</p>
+          <p class="el-icon-top num-color" v-if="item.rate>1"></p>
+          <p class="el-icon-bottom num-color-red" v-else></p>
           <p>周同比</p>
         </div>
       </div>
@@ -108,7 +81,10 @@
   </el-row>
 </template>
 <script>
+
+
 export default {
+  props: ['teamCenterInfo'],
   data () {
     return {
       cardInfo: {
@@ -122,34 +98,53 @@ export default {
       teamCenterCount: [
         {
           id: 1,
-          num: 22,
+          num: 0,
           label: 'depNum',
-          top: 1
+          rate: 0
         },
         {
           id: 2,
-          num: 22,
+          num: 0,
           label: 'reduseNum',
-          top: 1
+          rate: 0
         },
         {
           id: 3,
-          num: 11,
+          num: 0,
           label: 'nameNum',
-          top: 0
+          rate: 0
         }, {
           id: 4,
-          num: 22,
+          num: 0,
           label: 'aduitNum',
-          top: 0
+          rate: 0
         },
         {
           id: 5,
-          num: 333,
+          num: 0,
           label: 'entryNum',
-          top: 0
+          rate: 0
         }
       ]
+    }
+  },
+  created () {
+
+    // this.teamCenterCount[0].num = this.teamCenterInfo.total_num
+  },
+  watch: {
+    teamCenterInfo (val) {
+      if (val) {
+        this.teamCenterCount[1].rate = this.teamCenterInfo.total
+        this.teamCenterCount[2].rate = this.teamCenterInfo.put
+        this.teamCenterCount[3].rate = this.teamCenterInfo.view
+        this.teamCenterCount[4].rate = this.teamCenterInfo.entry
+        this.teamCenterCount[1].num = this.teamCenterInfo.total_num
+        this.teamCenterCount[2].num = this.teamCenterInfo.put_num
+        this.teamCenterCount[3].num = this.teamCenterInfo.view_num
+        this.teamCenterCount[4].num = this.teamCenterInfo.entry_num
+        this.teamCenterCount[0].num = this.teamCenterInfo.put_num + this.teamCenterInfo.entry_num + this.teamCenterInfo.entry_num + this.teamCenterInfo.total_num
+      }
     }
   },
   methods: {
