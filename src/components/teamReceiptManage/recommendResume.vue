@@ -46,11 +46,11 @@
           <p>33</p>
         </div>
         <div class="recomment-card-info">
-          <p>需求人数：</p>
+          <p>已推荐人数：</p>
           <p>33</p>
         </div>
         <div class="recomment-card-info">
-          <p>需求人数：</p>
+          <p>已通过人数：</p>
           <p>3</p>
         </div>
       </div>

@@ -5,7 +5,7 @@
     box-shadow:2px 3px 10px 0px rgba(106,106,106,0.1);
     border-radius:5px;
     height: 80px;
-    padding: 20px 30px;
+    padding: 20px;
     &.active {
       border:1px solid #1890FF;
     }
@@ -135,7 +135,7 @@ export default {
   watch: {
     teamCenterInfo (val) {
       if (val) {
-        this.teamCenterCount[1].rate = this.teamCenterInfo.total
+        this.teamCenterCount[1].rate = this.teamCenterInfo.total.toFixed(1)
         this.teamCenterCount[2].rate = this.teamCenterInfo.put
         this.teamCenterCount[3].rate = this.teamCenterInfo.view
         this.teamCenterCount[4].rate = this.teamCenterInfo.entry

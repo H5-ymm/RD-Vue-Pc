@@ -10,7 +10,7 @@
           <li v-for="(item,index) in hasPersonList" :key="index" class="x-flex-around">
             <span class="item-name">{{index+1}}.{{item.user_name}}</span>
             <span class="item-time">领取时间：{{$moment(item.ctime).format('YYYY-MM-DD HH:mm')}}</span>
-            <el-button type="primary" plain @click="handleCancle(item.touid)">取消分配</el-button>
+            <el-button :type="index==activeIndex?'default':'primary'" plain @click="handleCancle(item.touid,index)">取消分配</el-button>
           </li>
         </ul>
       </section>
@@ -40,14 +40,18 @@ export default {
           id: ''
         }
       ],
-      ids: []
+      ids: [],
+      type: 'primary',
+      isCancel:false,
+      activeIndex: -1
     }
   },
   methods: {
     handleClose () {
       this.$emit('handleClose')
     },
-    handleCancle (id) {
+    handleCancle (id,index) {
+      this.activeIndex = index
       let arr = []
       arr.push(id)
       this.ids = [...new Set(arr)]

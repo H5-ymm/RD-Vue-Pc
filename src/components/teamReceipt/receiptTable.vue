@@ -54,13 +54,13 @@
           <el-table-column label="申请人" align="center" prop="dsh" width="180" v-if="userPosition==1">
             <template slot-scope="scope">
               <div class="text-line" v-if="scope.row.dsh">
-                <span v-for="(item,index) in scope.row.dsh.split(',')" :key="index">{{item.name}}</span>
+                <span>{{scope.row.dsh}}</span>
               </div>
             </template>
           </el-table-column>
           <el-table-column label="分配接单" align="center" width="180" v-if="userPosition==1">
             <template slot-scope="scope">
-              <div class="text-line" @click="handleRecepit(2,scope.row)">
+              <div class="text-line" @click="handleRecepit(3,scope.row)">
                 <el-button type="text" size="small">{{scope.row.ylq}}</el-button>
               </div>
             </template>
@@ -83,14 +83,14 @@
               <div v-if="userPosition==2">
                 <el-button @click="handleApply(scope.row)" type="text" v-if="!scope.row.apportion_status&&scope.row.apportion_action==1" size="small">申请推荐</el-button>
                 <el-button @click="viewJob(scope.row)" type="text" size="small">查看职位</el-button>
-                <el-button @click="handleRecepit(1,scope.row)" type="text" size="small" v-if="scope.row.apportion_status==1&&scope.row.apportion_action==1">分配组员</el-button>
+                <el-button @click="handleRecepit(2,scope.row)" type="text" size="small" v-if="scope.row.apportion_status==1&&scope.row.apportion_action==1">分配组员</el-button>
                 <el-button @click="handleRecepitManagers(0,scope.row)" type="text" size="small" v-if="scope.row.apportion_status==1">重新申请</el-button>
                 <el-button @click="handleRecepitManagers(3,scope.row)" type="text" size="small" v-if="scope.row.apportion_status==3">取消申请</el-button>
                 <!-- <el-button @click="dialogVisible=true" type="text" size="small">删除职位</el-button> -->
               </div>
               <div v-if="userPosition==1">
                 <el-button @click="viewJob(scope.row)" type="text" v-if="!scope.row.dsh" size="small">查看职位</el-button>
-                <el-button @click="dialogTableVisible=true" v-if="!scope.row.dsh" type="text" size="small">分配接单</el-button>
+                <el-button @click="handleRecepit(1,scope.row)" v-if="!scope.row.dsh" type="text" size="small">分配接单</el-button>
                 <el-button @click="handleEdit(1,scope.row)" type="text" v-if="scope.row.dsh" size="small">同意</el-button>
                 <el-button @click="handleEdit(2,scope.row)" type="text" v-if="scope.row.dsh" size="small">拒绝</el-button>
               </div>
@@ -108,7 +108,7 @@
 </template>
 
 <script>
-import { getcurapply, apportionJjob, auditRecv, getpartMember, curapportionList, addApportion, changeApportion } from '../../api/teamReceipt'
+import { getcurapply, apportionJob, auditRecv, getpartMember, curapportionList, addApportion, changeApportion } from '../../api/teamReceipt'
 import { moneyTypeList, rewardTypeList, payTypeList, entryStatusList, applyStatusList1 } from '../../base/base'
 import viewJob from '../common/viewJob'
 import modal from '../common/modal'
@@ -204,7 +204,7 @@ export default {
     // 分配操作
     handleRecepit (status, val) {
       this.handleStatus = status
-      this.jobId = val.id
+      this.jobId = val.job_id
       if (status == 1) {
         this.getPersonList()
       }
@@ -215,13 +215,12 @@ export default {
     // 经理操作
     handleRecepitManagers (status, val) {
       let params = {
-        job_id: val.id,
-        uid: localStorage.getItem('uid'),
-        status
+        job_id: val.job_id,
+        uid: localStorage.getItem('uid')
       }
       changeApportion(params).then(res => {
-        this.personalList = res.data || []
-        this.dialogTableVisible = true
+        this.hasPersonList = res.data || []
+        this.personVisible = true
       }).catch(error => {
         this.$message.error(error.status.remind)
       })
@@ -229,10 +228,11 @@ export default {
     getPersonList () {
       let params = {
         job_id: this.jobId,
-        uid: this.uid
+        uid: localStorage.getItem('uid')
       }
       getpartMember(params).then(res => {
         this.personalList = res.data || []
+        console.log(res.data)
         this.dialogTableVisible = true
       }).catch(error => {
         this.$message.error(error.status.remind)
@@ -241,7 +241,7 @@ export default {
     getCurapportionList () {
       let params = {
         job_id: this.jobId,
-        uid: this.uid
+        uid: localStorage.getItem('uid')
       }
       curapportionList(params).then(res => {
         this.hasPersonList = res.data || []
@@ -264,10 +264,9 @@ export default {
       })
     },
     handleApply (val) {
-      console.log(val)
       let params = {
         uid: localStorage.getItem('uid'),
-        job_id: val.job_id
+        job_id: val.job_id,
       }
       addApportion(params).then(res => {
         this.getList(this.formMember)
@@ -275,15 +274,29 @@ export default {
         this.$message.error(error.status.remind)
       })
     },
-    handleOk () {
-
+    handleOk (val) {
+      let arr = val.map(val=>{
+        return val.uid
+      })
+      this.dialogTableVisible= false
+      let params = {
+        uid: localStorage.getItem('uid'),
+        job_id: this.jobId,
+        uids: arr.join(',')
+       }
+      apportionJob(params).then(res => {
+        this.getList(this.formMember)
+      }).catch(error => {
+        this.$message.error(error.status.remind)
+      })
     },
     // 取消分配
     handleOkPerson (val) {
       let params = {
         job_id: this.jobId,
-        uids: val
+        dsh_uid: val
       }
+      this.personVisible = false
       this.handleEdit(3, params)
     },
     submitMember (val) {

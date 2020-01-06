@@ -74,7 +74,8 @@ export default {
         yAxis: {},
         series: [],
         itemStyleColor: '#0581DE',
-        index: 0
+        index: 0,
+        arrList: []
       }
     }
   },
@@ -91,6 +92,17 @@ export default {
     legendIndex (val) {
       this.getLegenData(val)
       this.getData(this.activeIndex)
+    },
+    percentList: {
+      handler (val, oldName) {
+        if (val) {
+          this.arrList = val
+          this.getList(this.legendIndex)
+          this.getLegenData(this.legendIndex)
+          this.getData(this.activeIndex)
+        }
+      },
+      deep: true
     }
   },
   methods: {
@@ -137,49 +149,21 @@ export default {
       var arr = []
       for (let i in obj) {
         arr.push(obj[i]); //属性
-        //arr.push(obj[i]); //值
       }
       return arr
     },
     getList (val) {
       let arr = []
-      if (val == 1) {
-        if (this.percentList && this.percentList.total && this.activeIndex == 0) {
-          arr[0] = this.getArry(this.percentList.total)
-          arr[1] = this.getArry(this.percentList.put)
-          arr[2] = this.getArry(this.percentList.view)
-          arr[3] = this.getArry(this.percentList.entry)
-        }
-        if (this.percentList && this.percentList.total && this.list) {
-          let key = this.getKey(this.activeIndex)
-          console.log(Array.from(this.percentList[key]))
-          arr[0] = this.getArry(this.percentList[key])
-          arr[1] = this.getArry(this.percentList[key])
-        }
+      if (this.arrList && this.arrList.total && this.activeIndex == 0) {
+        arr[0] = this.getArry(this.percentList.total)
+        arr[1] = this.getArry(this.percentList.put)
+        arr[2] = this.getArry(this.percentList.view)
+        arr[3] = this.getArry(this.percentList.entry)
       }
-      else if (val == 2) {
-        let arr1 = []
-        let arr2 = []
-        for (let i = 1; i < 31; i++) {
-          arr1.push(i + 6)
-          arr2.push(i + 8)
-        }
-        arr[0] = arr1
-        arr[1] = arr2
-        arr[2] = arr1.map(item => { return item + 2 })
-        arr[3] = arr2.map(item => { return item + 1 })
-      }
-      else if (val == 3) {
-        arr[0] = [5, 10, 26]
-        arr[1] = [10, 20, 36]
-        arr[2] = [14, 10, 16]
-        arr[3] = [30, 22, 6]
-      }
-      else {
-        arr[0] = [5, 10, 23, 20, 30, 4, 20, 5, 10, 23, 20, 30]
-        arr[1] = [50, 20, 36, 10, 10, 20, 22, 20, 10, 26, 13, 15]
-        arr[2] = [15, 10, 13, 10, 20, 14, 10, 15, 10, 13, 10, 10]
-        arr[3] = [25, 10, 16, 13, 20, 10, 22, 10, 20, 16, 23, 25]
+      if (this.arrList && this.arrList.total && this.list) {
+        let key = this.getKey(this.activeIndex)
+        arr[0] = this.getArry(this.arrList[key])
+        arr[1] = this.getArry(this.list[key])
       }
       return arr
     },
@@ -228,6 +212,7 @@ export default {
       }
       else {
         this.legendData = ['简历总数', '报名总数', '面试总数', '入职总数']
+        console.log(this.getList(this.legendIndex)[0])
         this.series = [{
           name: '简历总数',
           type: 'line',

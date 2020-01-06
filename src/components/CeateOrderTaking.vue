@@ -104,38 +104,8 @@
         <el-form-item label="职位描述" required>
           <span class="error el-icon-warning error-job">职位描述，最低输入30个字。</span>
           <div class="job_content">
-            <div contenteditable="true" v-html="content" @input="onDivInput($event,'content')" class="job_textarea"></div>
-            <!-- <el-input :autosize="{minRows: 5}" v-model="orderTakingForm.content" class="width408" placeholder=""></el-input> -->
-            <!-- <div class="x-flex-start"> -->
-
-            <!-- <span>工作内容：</span>
-              <div
-                contenteditable="true"
-                v-html="content"
-                @input="onDivInput($event,'content')"
-                class="job_textarea"
-              ></div>
-            </div>
-            <div class="x-flex-start">
-              <span>职位要求：</span>
-              <div
-                contenteditable="true"
-                @input="onDivInput($event,'jobRequire')"
-                v-html="jobRequire"
-                class="job_textarea"
-              ></div>
-            </div>
-            <div class="x-flex-start">
-              <span>工作时间：</span>
-              <div
-                contenteditable="true"
-                @input="onDivInput($event,'jobTime')"
-                v-html="jobTime"
-                class="job_textarea"
-              ></div>
-            </div> -->
+            <div contenteditable="true" v-html="content" @input="keepLastIndex($event)" class="job_textarea"></div>       
             <span class="content-len">{{len}}/1000字</span>
-            <!-- </div> -->
           </div>
         </el-form-item>
         <el-form-item label="联系人" required>
@@ -178,6 +148,7 @@ export default {
         is_five_risks: 1,
         sex: 3,
         is_fund: 1,
+        job_content:'',
         uid: localStorage.getItem('uid')
       },
       imageUrl: '',
@@ -205,9 +176,14 @@ export default {
     let params = 'edu_type,money_array,job_array'
     this.getList(params)
   },
+  mounted(){
+    // setTimeout(()=>{
+    //   this.keepLastIndex(e.target)
+    // },5)
+  },
   computed: {
     len () {
-      return this.content.length
+      return this.content.length + this.orderTakingForm.job_content.length
     }
   },
   methods: {
@@ -228,6 +204,23 @@ export default {
       if (!this.orderTakingForm.name) {
         this.orderTakingForm.name = this.jobName
       }
+    },
+    keepLastIndex(obj) {
+       console.log(this.content)
+      if (window.getSelection) { //ie11 10 9 ff safari
+        // obj.focus(); //解决ff不获取焦点无法定位问题
+        let range =  window.getSelection().getRangeAt(0);//创建range
+        // range.selectAllChildren(obj); //range 选择obj下所有子内容
+        // range.collapseToEnd(); //光标移至最后
+      } else if (document.selection) { //ie10 9 8 7 6 5
+        let range = document.selection.createRange(); //创建选择对象
+        range.moveToElementText(obj); //range定位到obj
+        range.collapse(false); //光标移至最后
+        range.select();
+      }
+      console.log(obj)
+      this.orderTakingForm.job_content = obj.target.innerText
+      // this[key] = obj.target.innerHTML
     },
     numberChange (val) {
 

@@ -70,7 +70,7 @@
               <el-button @click="handleCancle(scope.row)" type="text" size="small" v-if="scope.row.status==0">取消申请</el-button>
               <el-button @click="dialogTableVisible=true" type="text" size="small" v-if="scope.row.status==1">联系客服</el-button>
               <span v-if="scope.row.status==3" class="no-status">已取消申请</span>
-              <el-button @click="handleDel(scope.row)" type="text" size="small" v-if="scope.row.status>1||scope.row.p_status==-1">删除</el-button>
+              <el-button @click="handleDel(scope.row)" type="text" size="small" v-if="scope.row.status>1||scope.row.status==4&&scope.row.p_status==-1">删除</el-button>
             </template>
           </el-table-column>
         </el-table>

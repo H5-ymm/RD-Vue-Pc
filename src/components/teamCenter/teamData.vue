@@ -27,11 +27,11 @@
           <el-form-item label="搜索类型：">
             <div class="x-flex-center">
               <el-select v-model="formMember.depart_id" class="width120" placeholder="部门" v-if="userPosition==1">
-                <el-option :label="item.label" :value="item.value" v-for="(item,index) in depList" :key="index"></el-option>
+                <el-option :label="item.depart_name" :value="item.id" v-for="(item,index) in depList" :key="index"></el-option>
               </el-select>
               <el-input v-if="userPosition==1" v-model="formMember.search_uid" class="width300" placeholder="请输入职位名称关键字"></el-input>
-              <el-input v-if="userPosition==2" v-model="formMember.search_uid" class="width300" placeholder="请输入组员姓名"></el-input>
-              <el-button type="primary" class="select-btn">查询</el-button>
+              <el-input v-if="userPosition==2" v-model="formMember.name" class="width300" placeholder="请输入组员姓名"></el-input>
+              <el-button type="primary" @click="querySearch" class="select-btn">查询</el-button>
             </div>
           </el-form-item>
         </el-form>
@@ -72,8 +72,8 @@ import logTable from './logTable'
 import receiptLogTable from './receiptLogTable'
 import orderQuery from './orderQuery'
 import allOrder from './allOrder'
-import { getrank, getCompare, getnumLeader } from '@/api/teamCenter'
-import { getDepartmentList } from '@/api/department'
+import { getrank, getCompare, getnumLeader,getmemberList } from '@/api/teamCenter'
+import { departmentRoleList } from '@/api/department'
 export default {
   components: {
     teamPanel,
@@ -86,7 +86,9 @@ export default {
   },
   data () {
     return {
-      formMember: {},
+      formMember: {
+        uid: localStorage.getItem('uid')
+      },
       timeList: [
         { label: '一周', value: 1 },
         { label: '一个月', value: 2 },
@@ -124,6 +126,7 @@ export default {
       teamCenterInfo: {},
       percentList: {},
       list: {},
+      personList:[],
       userPosition: sessionStorage.getItem('userPosition'), // 1 总经理，2经理，3 成员
     }
   },
@@ -131,36 +134,47 @@ export default {
     this.getList(this.params)
     this.getCompareInfo(this.paramsInfo)
     this.getData(this.paramsEchart)
+    if (this.userPosition==1) {
+      this.getDep()
+    }
+    // this.getPerson(this.formMember)
     // this.getData(this.paramsEchart, 1)
   },
   methods: {
+    getPerson(params){
+      getmemberList(params).then(res => {
+        this.personList = res.data|| []
+      }).catch(error => {
+        this.$message.error(error.status.remind)
+      })
+    },
     getData (params, last) {
       if (last) {
         params.last = last
       }
       getnumLeader(params).then(res => {
         console.log(res.data)
-        this.depList = res.data
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
-    },
-    getDep () {
-      getDepartmentList().then(res => {
-        console.log(res.data)
-        if (last) {
+         if (last) {
           this.list = res.data
         }
         else {
           this.percentList = res.data
         }
+       
+      }).catch(error => {
+        this.$message.error(error.status.remind)
+      })
+    },
+    getDep () {
+      let uid = localStorage.getItem('uid')
+      departmentRoleList({uid}).then(res => {
+        this.depList = res.data || []
       }).catch(error => {
         this.$message.error(error.status.remind)
       })
     },
     getCompareInfo (params) {
       getCompare(params).then(res => {
-        console.log(res.data)
         this.teamCenterInfo = res.data
       }).catch(error => {
         this.$message.error(error.status.remind)
@@ -177,12 +191,20 @@ export default {
         this.$message.error(error.status.remind)
       })
     },
+    querySearch(){
+      this.paramsInfo.depart_id = this.formMember.depart_id
+      this.getCompareInfo(this.paramsInfo)
+      this.paramsEchart.depart_id = this.formMember.depart_id
+      this.paramsEchart.search_uid = this.formMember.name
+      this.getData(this.paramsEchart)
+    },
     selectQueryOrder (val) {
       this.params = Object.assign(this.params, val)
       this.getList(this.params)
     },
     selectQuery (val) {
-      console.log(val)
+      this.paramsEchart = Object.assign(this.paramsEchart, val)
+      this.getData(this.paramsEchart)
       this.legendIndex = val.type
     }
   },
