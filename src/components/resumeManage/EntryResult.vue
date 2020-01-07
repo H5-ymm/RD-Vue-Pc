@@ -265,7 +265,7 @@
                 v-if="scope.row.status==2"
               >放弃面试</el-button>
               <el-button
-                @click="abandoned(scope.row)"
+                @click="$router.push('/recommendJob?id='+ scope.row.id)"
                 type="text"
                 size="small"
                 v-if="scope.row.status==3"

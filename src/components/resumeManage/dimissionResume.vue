@@ -231,7 +231,7 @@
           >
             <template slot-scope="scope">
               <el-button
-                @click="$router.push('/recommendJob')"
+                @click="$router.push('/recommendJob?id='+scope.row.id)"
                 type="text"
                 size="small"
               >推荐岗位</el-button>

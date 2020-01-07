@@ -33,3 +33,4 @@ export const getOffermsg = data => $post('/teamtalent/getOffermsg', data) // 获
 
 export const giveupEntry = data => $post('/teamtalent/giveup_entry', data) // 获取面试时间
 export const giveupView = data => $post('/teamtalent/giveup_view', data) // 获取面试时间
+export const getapplyInfo = data => $post('/Teamtalent/getapply_info', data) // 获取带推荐职位信息(企业名称，需求，已推送)

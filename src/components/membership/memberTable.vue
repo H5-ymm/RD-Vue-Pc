@@ -17,10 +17,10 @@
     </div>
     <div class="table">
       <el-table border :data="tableData" ref="multipleTable" style="width: 100%" @selection-change="handleSelectionChange">
-        <el-table-column label="序号" type="selection" align="center" width="60"></el-table-column>
+        <el-table-column label="序号" type="selection" align="center" width="60" v-if="userPosition!=3"></el-table-column>
         <el-table-column label="姓名" align="center" width="150">
           <template slot-scope="props">
-            <el-button type="text" @click="handleEdit(props.row.uid)">{{props.row.user_name}}</el-button>
+            <el-button type="text" @click="handleView(props.row.uid)">{{props.row.user_name}}</el-button>
           </template>
         </el-table-column>
         <el-table-column label="联系电话" prop="mobile" align="center" width="150"></el-table-column>
@@ -80,6 +80,9 @@ export default {
         return this.$message.warning('请选择组员')
       }
       this.$emit('handleEdit', val)
+    },
+    handleView(val){
+      this.$emit('handleView', val)
     },
     handleSelectionChange (val) {
       this.multipleSelection = val;

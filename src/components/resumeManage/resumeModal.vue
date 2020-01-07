@@ -138,7 +138,7 @@ export default {
         address: '',
         provinceid: '',
         cityid: '',
-        uid: localStorage.getItem('uid'),
+        uid: localStorage.getItem('uid')
       },
       rules: {
         name: [

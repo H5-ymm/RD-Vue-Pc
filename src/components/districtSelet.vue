@@ -37,8 +37,8 @@ export default {
     }
   },
   created () {
-    console.log(this.address)
     if (!this.address.length) {
+      this.districtList = []
       this.getRegion([])
     }
     else {
@@ -47,19 +47,28 @@ export default {
     }
   },
   watch: {
-    address (val) {
-      if (val.length) {
-        this.getRegion(val)
-        this.districtList = val.map(item => { return item + '' })
+     address: {
+        handler(val,oldVal){
+          console.log(val)
+          if (val.length) {
+            this.getRegion(val)
+            setTimeout(()=>{
+              this.districtList = this.address.map(item => { return item + '' })
+            },1000)
+            // this.getRegion(val)
+            // this.districtList = this.address.map(item => { return item + '' })
+          }
+          else {
+            this.getRegion([])
+            this.districtList = []
+          }
+        },
+        deep: true  // 可以深度检测到 person 对象的属性值的变化
       }
-      else {
-        this.getRegion([])
-      }
-    }
   },
   methods: {
     handleItemChange (val) {
-      this.getCityList(val)
+      this.getCityList(val) 
     },
     getProlist (list) {
       return list.map(item => {
@@ -138,15 +147,18 @@ export default {
         this.options.forEach(item => {
           if (item.code == value[0]) {
             this.list.push(item.name)
-            item.children.forEach(val => {
-              if (val.code == code) {
-                this.list.push(val.name)
-                val.children = arr
-                this.arr = arr
-              }
-            })
+           if (item.children.length) {
+              item.children.forEach(val => {
+                if (val.code == code) {
+                  this.list.push(val.name)
+                  val.children = arr
+                  this.arr = arr
+                }
+              })
+            }
           }
         })
+        console.log(this.options)
       })
     },
     changeData (val) {

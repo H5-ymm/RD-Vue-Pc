@@ -40,43 +40,25 @@
         </div>
         <div class="x-flex-center">
           <p>最后登录时间</p>
-          <p>{{formMember.logout_time}}</p>
+          <p>{{formMember.logout_time?$moment.unix(formMember.logout_time).format('YYYY-MM-DD HH:mm'):'-'}}</p>
         </div>
         <div class="x-flex-center">
           <p>当前状态</p>
           <p>{{formMember.status == 1 ? '正常': '锁定'}}</p>
         </div>
+        <div class="x-flex-center">
+          <p>部门</p>
+          <p>{{formMember.depart_name}}</p>
+        </div>
+        <div class="x-flex-center">
+          <p>当前职称</p>
+          <p>{{formMember.grade_name}}</p>
+        </div>
       </section>
       <section class="member-col3" v-if="userPosition!=3">
         <el-form :model="formMember" class="demo-form-inline" label-width="90px">
-          <el-form-item label="部门">
-            <el-select placeholder="请选择" v-model="depId" @change="selectDep">
-              <el-option
-                :label="item.depart_name"
-                :value="item.id"
-                v-for="(item,index) in depList"
-                :key="index"
-              ></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="当前职称">
-            <el-select v-model="formMember.grade_id" placeholder="请选择">
-              <el-option
-                :label="item.grade_name"
-                :value="item.id"
-                v-for="(item,index) in jobList"
-                :key="index"
-              ></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="当前状态">
-            <el-radio-group v-model="formMember.status">
-              <el-radio :label="1" border>正常</el-radio>
-              <el-radio :label="2" border>锁定</el-radio>
-            </el-radio-group>
-          </el-form-item>
           <el-form-item label="活动形式" v-if="formMember.status==2">
-            <el-input type="textarea" v-model="formMember.remark" placeholder="请输入锁定说明（必填）"></el-input>
+            <el-input type="textarea"  readonly v-model="formMember.remark" placeholder="请输入锁定说明（必填）"></el-input>
           </el-form-item>
           <el-form-item label="认证信息">
             <memberTooltip :formMember="formMember"></memberTooltip>
@@ -85,7 +67,7 @@
       </section>
     </div>
     <div slot="footer">
-      <el-button type="primary" @click="submitMember">确定</el-button>
+      <el-button type="primary" @click="handleClose">关闭</el-button>
       <!-- <el-button type="primary" @click="handleClose">关闭</el-button> -->
     </div>
   </el-dialog>
@@ -113,7 +95,7 @@ export default {
     }
   },
   created () {
-    this.getJobList()
+
   },
   watch: {
     userId (val) {
@@ -132,42 +114,10 @@ export default {
       seeTeamUserInfo(params).then(res => {
         console.log(res)
         this.formMember = res.data
-        this.depId = this.getJob(this.depList, this.formMember.grade_id)
-        this.jobList = this.getArr(this.depList, this.depId)
-        console.log(this.jobList)
+        // this.depId = this.getJob(this.depList, this.formMember.grade_id)
+        // this.jobList = this.getArr(this.depList, this.depId)
+        // console.log(this.jobList)
       })
-    },
-    getJobList () {
-      let uid = localStorage.getItem('uid')
-      departmentRoleList({ uid }).then(res => {
-        console.log(res)
-        this.depList = res.data
-      })
-    },
-    getArr (arr, id) {
-      let newArr = []
-      arr.forEach(item => {
-        if (item.id == id) {
-          newArr = item.child
-        }
-      })
-      return newArr
-    },
-    getJob (arr, id) {
-      let depId
-      arr.forEach(item => {
-        if (item.child) {
-          item.child.forEach(val => {
-            if (val.id == id) {
-              depId = val.depart_id
-            }
-          })
-        }
-      })
-      return depId
-    },
-    selectDep (val) {
-      this.jobList = this.getArr(this.depList, val)
     },
     handleClose () {
       this.$parent.dialogTableVisible = false

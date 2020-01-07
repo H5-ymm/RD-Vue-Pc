@@ -3,11 +3,11 @@
     <memberCard :userType="userType" :teamInfo="teamInfo"></memberCard>
     <div class="table-list">
       <memberQuery @onSubmit="onSubmit"></memberQuery>
-      <memberTable :total="total" :tableData="tableData" @handleEdit="handleEdit" @addMember="addMember" @handleDel="handleDel" @handleSelectionChange="handleSelectionChange"></memberTable>
+      <memberTable :total="total" :tableData="tableData" @handleEdit="handleEdit" @handleView="handleView" @addMember="addMember" @handleDel="handleDel" @handleSelectionChange="handleSelectionChange"></memberTable>
       <el-pagination class="team-pagination" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="formMember.page" :page-sizes="[10, 30, 50, 100]" :page-size="formMember.limit" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
     </div>
-    <memberAdd :dialogTableVisible="visible" @submitForm="submitForm"></memberAdd>
-    <memberInfo :dialogTableVisible="dialogTableVisible" @submitMember="submitMember" :userId="userId"></memberInfo>
+    <memberAdd :dialogTableVisible="visible" :id="userId" @submitForm="submitForm"></memberAdd>
+    <memberInfo :dialogTableVisible="dialogTableVisible" :userId="userId"></memberInfo>
   </div>
 </template>
 
@@ -67,12 +67,15 @@ export default {
         this.tableData = data.data
         this.total = data.count
         this.teamInfo = data.teamInfo
-        console.log(data)
       })
+    },
+    handleView(val){
+      this.userId = val
+      this.dialogTableVisible = true
     },
     handleEdit (val) {
       this.userId = val
-      this.dialogTableVisible = true
+      this.visible = true
       console.log(this.userId)
     },
     handleDel (uid) {
@@ -81,12 +84,6 @@ export default {
         this.getList(this.formMember)
       }).catch(error => {
         this.$message.error(error.status.remind)
-      })
-    },
-    submitMember (val) {
-      updateTeamUser(val).then(res => {
-        this.dialogTableVisible = false
-        this.getList(this.formMember)
       })
     },
     handleSelectionChange (val) {
@@ -100,12 +97,23 @@ export default {
       this.getList(params)
     },
     submitForm (val) {
-      addTeamUser(val).then(res => {
-        this.visible = false
-        this.getList(this.formMember)
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+      if (this.userId) {
+        updateTeamUser(val).then(res => {
+          this.visible = false
+          // this.userId = ''
+          this.getList(this.formMember)
+        }).catch(error => {
+          this.$message.error(error.status.remind)
+        })
+      }
+      else {
+        addTeamUser(val).then(res => {
+          this.visible = false
+          this.getList(this.formMember)
+        }).catch(error => {
+          this.$message.error(error.status.remind)
+        })
+      }   
     }
   }
 }

@@ -31,6 +31,12 @@
     border:1px solid #1890ff;
   }
 }
+.el-textarea__inner {
+  border: 1px solid #eee;
+  &:focus,&:hover {
+    border:1px solid #1890ff;
+  }
+}
 .el-button {
   padding: 11px 20px;
 }

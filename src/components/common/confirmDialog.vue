@@ -72,6 +72,7 @@ export default {
       this.$refs['form'].validate((valid) => {
         if (valid) {
           this.$emit('submit', this.form)
+          this.form.reason = ''
         } else {
           return false
         }

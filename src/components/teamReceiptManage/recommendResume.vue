@@ -38,21 +38,22 @@
     <div class="recomment-card x-flex-start-justify">
       <div class="recomment-card-col1">
         <p>推荐公司：</p>
-        <p class="desired-position">仁达网络科技（上海）有限公司</p>
+        <p class="desired-position">{{resumeInfo.com_name?resumeInfo.com_name:'--'}}</p>
       </div>
       <div class="x-flex-around recomment-card-col2">
         <div class="recomment-card-info">
           <p>需求人数：</p>
-          <p>33</p>
+          <p>{{resumeInfo.need_num?resumeInfo.need_num:'--'}}</p>
         </div>
         <div class="recomment-card-info">
           <p>已推荐人数：</p>
-          <p>33</p>
+          <p>{{resumeInfo.put?resumeInfo.put:'--'}}</p>
         </div>
         <div class="recomment-card-info">
           <p>已通过人数：</p>
-          <p>3</p>
+          <p>{{resumeInfo.pass?resumeInfo.pass:'--'}}</p>
         </div>
+        <el-progress :percentage="percentageNum"></el-progress>
       </div>
     </div>
     <div class="table-list recommend-table">
@@ -118,7 +119,7 @@
 
 <script>
 // import { getTeamList, loginOutTeam, addTeamUser, updateTeamUser } from '../../api/team'
-import { gettalent, addPut } from '../../api/teamReceipt'
+import { gettalent, addPut, getapplyInfo } from '../../api/teamReceipt'
 import { moneyTypeList, rewardTypeList, payTypeList, weekList } from '../../base/base'
 import jobMate from '../resumeManage/jobMate'
 export default {
@@ -166,14 +167,20 @@ export default {
         { label: '未入职', value: 3 }
       ],
       activeIndex: 0,
-      jobId: ''
+      jobId: '',
+      resumeInfo:{},
+      percentageNum: 0
     }
   },
   created () {
     // 初始化查询标签数据
     this.formMember.id = this.$route.query.id
-    this.jobId = this.$route.query.jobId
+    if (this.$route.query.jobId) {
+      this.jobId = this.$route.query.jobId
+    } 
+    this.getInfo()
     this.getList(this.formMember)
+    
   },
   methods: {
     getList (params) {
@@ -181,6 +188,28 @@ export default {
         const { data } = res
         this.tableData = data.data
         this.total = data.count
+      }).catch(error => {
+        this.$message.error(error.status.remind)
+      })
+    },
+    getInfo(){
+      let params = {
+        apply_id: this.formMember.id,
+        uid: localStorage.getItem('uid')
+      }
+      getapplyInfo(params).then(res => {
+        this.resumeInfo = res.data
+        let need_num =  !res.data.need_num ? 0:res.data.need_num
+        let pass = !res.data.pass ? 0 : res.data.pass
+        console.log(parseInt((pass / Number(need_num))*100))
+        if (!pass&&!need_num) {
+          this.percentageNum = 0
+        }
+       else {
+          this.percentageNum = parseInt((pass / Number(need_num))*100)
+       }
+      }).catch(error => {
+        this.$message.error(error.status.remind)
       })
     },
     selectStatus (item, index) {

@@ -80,7 +80,7 @@
           <el-table-column label="操作" align="center" min-width="200">
             <template slot-scope="scope">
               <el-button @click="handleEdit(scope.row)" type="text" size="small">编辑简历</el-button>
-              <el-button @click="$router.push(`/recommendJob?id=${scope.row.id}`)" type="text" size="small">推荐岗位</el-button>
+              <el-button @click="routerResume(scope.row)" type="text" size="small">推荐岗位</el-button>
               <el-button @click="abandoned(scope.row)" type="text" size="small">放弃用户</el-button>
             </template>
           </el-table-column>
@@ -96,7 +96,9 @@
 </template>
 <script>
 import {  getResumeList, addUserResume, selectUserResumeInfo, giveUpResume, exportUserResume,
-  importUserResume, downloadTestTable} from '@/api/resume'
+  importUserResume, downloadTestTable,updateUserResume} from '@/api/resume'
+
+import { addPut } from '@/api/internalInvoice'
 import { moneyTypeList, rewardTypeList, payTypeList, weekList } from '../../base/base'
 import resumeModal from './resumeModal'
 import followUpRecord from './followUpRecord'
@@ -218,6 +220,12 @@ export default {
       this.formMember.beginTime = val[0]
       this.formMember.endTime = val[1]
     },
+    routerResume(val){
+      let arr = JSON.parse(sessionStorage.getItem('menus'))
+      arr[1] = '推荐岗位'
+      sessionStorage.setItem('menus', JSON.stringify(arr))
+      this.$router.push('/recommendJob?id='+ val.id)
+    },
     change (val) {
       this.formMember.provinceid = val[0]
       this.formMember.cityid = val[1]
@@ -273,17 +281,22 @@ export default {
       this.getList(params)
     },
     updateResume (val) {
-      updateTeamUser(val).then(res => {
-        this.getList(this.params)
+      val.uid = localStorage.getItem('uid')
+      updateUserResume(val).then(res => {
+        this.dialogTableVisible = false
+        this.$message.success('保存成功')
+        this.getList(this.formMember)
+      }).catch(error => {
+        this.$message.error(error.status.remind)
       })
     },
     submitForm (val) {
-      this.dialogTableVisible = false
       if (this.resumeId) {
         this.updateResume(val)
       }
       else {
         addUserResume(val).then(res => {
+          this.dialogTableVisible = false
           this.getList(this.formMember)
           this.$message.success('保存成功')
         }).catch(error => {

@@ -97,7 +97,7 @@
             <template slot-scope="scope">
               <el-button @click="abandoned (1,scope.row)" type="text" size="small" v-if="scope.row.status==1">放弃报名</el-button>
               <el-button @click="abandoned(2,scope.row)" type="text" size="small" v-if="scope.row.status==2">放弃面试</el-button>
-              <el-button @click="abandoned(scope.row)" type="text" size="small" v-if="scope.row.status==3">推荐岗位</el-button>
+              <el-button @click="abandoned(4,scope.row)" type="text" size="small" v-if="scope.row.status==3">推荐岗位</el-button>
               <el-button @click="abandoned(3,scope.row)" type="text" size="small">放弃用户</el-button>
             </template>
           </el-table-column>
@@ -190,10 +190,18 @@ export default {
   },
   created () {
     // 初始化查询标签数据
+    this.viewType = this.$route.query.view
     this.getList(this.formMember)
     let params = 'job_array'
     this.getData(params)
-    this.viewType = this.$route.query.view
+  },
+  watch:{
+    $route(to,from){
+      console.log(to)
+      console.log(from)
+      this.viewType = this.$route.query.view
+      this.getList(this.formMember)
+    }
   },
   computed: {
     label () {

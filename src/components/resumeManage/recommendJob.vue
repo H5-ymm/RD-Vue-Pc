@@ -6,11 +6,11 @@
     <div>
       <ul class="x-flex-start tab-box">
         <li :class="{'tab-active':tabIndex==0}" @click="tabIndex=0">
-          <p>内部发单</p>
+          <p>团队接单</p>
           <img src="../../assets/img/icon6.png" v-if="tabIndex==0" alt />
         </li>
         <li :class="{'tab-active':tabIndex==1}" @click="tabIndex=1">
-          <p>团队接单</p>
+          <p>内部发单</p>
           <img src="../../assets/img/icon6.png" v-if="tabIndex==1" alt />
         </li>
       </ul>
