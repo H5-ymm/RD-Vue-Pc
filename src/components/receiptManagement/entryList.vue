@@ -43,25 +43,22 @@
         <el-table border :data="tableData" ref="multipleTable" style="width: 100%">
           <el-table-column label="职位名称" align="center" width="150">
             <template slot-scope="props">
-              <el-button type="text">{{props.row.name}}</el-button>
+              <el-button type="text">{{props.row.jobName}}</el-button>
             </template>
           </el-table-column>
-          <el-table-column label="团队名称" align="center" width="150">
+          <el-table-column label="团队名称" prop="team_name" align="center" width="150">
+          </el-table-column>
+          <el-table-column label="需求人数" prop="required_number" align="center" width="100"></el-table-column>
+          <el-table-column label="已入职" align="center" width="100" prop="recommendResume"></el-table-column>
+          <el-table-column label="岗位薪资" prop="money" align="center" width="120"></el-table-column>
+          <el-table-column label="薪资模式" align="center" width="100">
             <template slot-scope="props">
-              <el-button type="text">{{props.row.money_type | moneyType}}</el-button>
+              <span>{{props.row.money_type|moneyType}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="需求人数" prop="depart_name" align="center" width="100"></el-table-column>
-          <el-table-column label="已入职" align="center" width="100">
-            <template slot-scope="props">
-              <el-button type="text">{{props.row.reward_type | rewardType}}</el-button>
-            </template>
-          </el-table-column>
-          <el-table-column label="岗位薪资" prop="reward_money" align="center" width="120"></el-table-column>
-          <el-table-column label="薪资模式" prop="reward_money" align="center" width="100"></el-table-column>
           <el-table-column label="状态" align="center" width="100">
             <template slot-scope="props">
-              <span class="status" :class="{'active-status':props.row.status==1}">{{props.row.status==1?"正常":'锁定'}}</span>
+              <span class="status" :class="`status${props.row.entry_status}`">{{props.row.entry_status|status}}</span>
             </template>
           </el-table-column>
           <el-table-column label="岗位城市" prop="citys" align="center" width="150"></el-table-column>
@@ -72,24 +69,24 @@
           </el-table-column>
           <el-table-column label="入职时间" prop="addtime" sortable align="center" width="150">
             <template slot-scope="props">
-              <span>{{props.row.addtime?$moment(props.row.addtime).format('YYYY-MM-DD HH:mm'):'--'}}</span>
+              <span>{{props.row.addtime?$moment.unix(props.row.addtime).format('YYYY-MM-DD HH:mm'):'--'}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="联系人" prop="entry_num" align="center" width="100"></el-table-column>
-          <el-table-column label="操作" align="center" min-width="120">
+          <el-table-column label="联系人" prop="link_name" align="center" width="100"></el-table-column>
+          <el-table-column label="操作" align="center" min-width="160">
             <template slot-scope="scope">
-              <el-button @click="handleUser(1,scope.row)" type="text" size="small">入职结束</el-button>
-              <el-button @click="$router.push({path:'/entryDetailTable',query:{id:val.id}})" type="text" size="small">
+              <el-button @click="handleUser(1,scope.row)" type="text" size="small" v-if="scope.row.entry_status==1">入职结束</el-button>
+              <el-button v-if="scope.row.entry_status==2||scope.row.entry_status==3" @click="$router.push({path:'/entryDetailTable',query:{id:scope.row.id}})" type="text" size="small">
                 入职审核
-                <span class="resume-number">(+150)</span>
+                <!-- <span class="resume-number">(+150)</span> -->
               </el-button>
-              <el-button @click="$router.push({path:'commonTable',query:{id:props.row.id,view:5}})" type="text" size="small">面试结果</el-button>
-              <el-button @click="$router.push({path:'commonTable',query:{id:props.row.id,view:4}})" type="text" size="small">在职名单</el-button>
+              <el-button @click="$router.push({path:'commonTable',query:{id:props.row.id,view:5}})" type="text" v-if="scope.row.entry_status==1" size="small">面试结果</el-button>
+              <el-button @click="$router.push({path:'commonTable',query:{id:props.row.id,view:4}})" type="text" size="small" v-if="scope.row.entry_status==4">在职名单</el-button>
             </template>
           </el-table-column>
         </el-table>
       </div>
-      <el-pagination class="team-pagination" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="formMember.page" :page-sizes="[10, 20, 30, 40]" :page-size="formMember.limit" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
+      <el-pagination class="team-pagination" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="formMember.page" :page-sizes="[10, 30, 50, 100]" :page-size="formMember.limit" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
     </div>
     <modal :dialogTableVisible="dialogTableVisible" @handleOk="handleOk" :modalObj="modalObj" :isShow="isShow" @handleClose="dialogTableVisible=false"></modal>
   </div>
@@ -97,7 +94,7 @@
 
 <script>
 import { entryInvoiceList, endEntry } from '../../api/receipt'
-import { moneyTypeList, rewardTypeList, payTypeList, weekList } from '../../base/base'
+import { moneyTypeList, rewardTypeList, entryStatusList } from '../../base/base'
 import { getConstant } from '../../api/dictionary'
 import modal from '../common/modal'
 export default {
@@ -109,19 +106,26 @@ export default {
       let obj = moneyTypeList.find(item => {
         return val == item.value
       })
-      return obj.label
+      return obj ? obj.label : '--'
     },
     rewardType (val) {
       let obj = rewardTypeList.find(item => {
         return val == item.value
       })
-      return obj.label
+      return obj ? obj.label : '--'
     },
+    status (val) {
+      let obj = entryStatusList.find(item => {
+        return val == item.value
+      })
+      return obj ? obj.label : '--'
+    }
   },
   data () {
     return {
       moneyTypeList,
       rewardTypeList,
+      entryStatusList,
       dialogTableVisible: false,
       visible: false,
       tableData: [],
@@ -150,7 +154,8 @@ export default {
       },
       jobId: '',
       isShow: true,
-      overType: 0
+      overType: 0,
+      timeList: []
     }
   },
   created () {
@@ -175,11 +180,17 @@ export default {
         const { data } = res
         this.tableData = data.data
         this.total = data.count
+      }).catch(error => {
+        this.$message.error(error.status.remind)
       })
     },
     selectStatus (item, index) {
       this.activeIndex = index
       this.formMember.status = item.value
+    },
+    changeDate (val) {
+      this.formMember.begintime = val[0]
+      this.formMember.endtime = val[1]
     },
     handleSizeChange (val) {
       this.formMember.limit = val
@@ -239,6 +250,7 @@ export default {
         limit: 10,
         page: 1
       }
+      this.timeList = []
       this.getList(this.formMember)
     }
   }

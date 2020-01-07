@@ -1,12 +1,5 @@
 <template>
-  <el-form
-    :model="formMember"
-    :rules="rules"
-    :inline="true"
-    label-position="left"
-    ref="formMember"
-    class="demo-form-inline account-bind"
-  >
+  <el-form :model="formMember" :rules="rules" :inline="true" label-position="left" ref="formMember" class="demo-form-inline account-bind">
     <el-form-item label="支付宝账号" required prop="account_no">
       <el-input v-model="formMember.account_no" placeholder="请输入要绑定的支付宝账号"></el-input>
     </el-form-item>
@@ -54,6 +47,12 @@ export default {
         type: 2
       },
       rules: {
+        account_no: [
+          { required: true, message: '请输入支付宝账号', trigger: 'blur' }
+        ],
+        user_name: [
+          { required: true, message: '请输入姓名', trigger: 'blur' }
+        ],
         idCard: [
           { required: true, message: '请输入身份证号码', trigger: 'blur' },
           { validator: validate, trigger: 'blur' }
@@ -63,7 +62,8 @@ export default {
           { validator: validatereg, trigger: 'blur' }
         ]
       },
-      uid: localStorage.getItem('uid')
+      uid: localStorage.getItem('uid'),
+
     }
   },
   created () {

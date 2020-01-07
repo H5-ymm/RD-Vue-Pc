@@ -1,70 +1,29 @@
 <template>
-  <el-dialog
-    width="75%"
-    :visible="dialogTableVisible"
-    class="member-dialog table-dialog"
-    :show-close="false"
-  >
+  <el-dialog width="75%" :visible="dialogTableVisible" class="member-dialog table-dialog" :show-close="false">
     <div class="member-row turnover-row">
-      <img
-        src="../../assets/img/member/cancel.png"
-        alt
-        class="cancel-icon"
-        @click="handleClose"
-      />
+      <img src="../../assets/img/member/cancel.png" alt class="cancel-icon" @click="handleClose" />
       <section class="member-col1">
         <p>人员调整</p>
       </section>
       <div class="member-table turnover-box">
         <div class="memberForm">
-          <el-form
-            :inline="true"
-            :model="formMember"
-            class="demo-form-inline"
-          >
+          <el-form :inline="true" :model="formMember" class="demo-form-inline">
             <el-form-item label="姓名/联系电话：">
-              <el-input
-                v-model="formMember.where"
-                placeholder="请输入你要搜索的关键字"
-                class="width300"
-              ></el-input>
+              <el-input v-model="formMember.where" placeholder="请输入你要搜索的关键字" class="width300"></el-input>
             </el-form-item>
             <el-form-item>
-              <el-button
-                type="primary"
-                @click="querySearch"
-                class="select-btn"
-              >搜索</el-button>
+              <el-button type="primary" @click="querySearch" class="select-btn">搜索</el-button>
             </el-form-item>
             <div class="action-btn x-flex-between">
               <div>
                 <el-form-item>
-                  <el-select
-                    v-model="formMember.departId"
-                    placeholder="所属部门"
-                    @change="selectDep"
-                    class="width100"
-                  >
-                    <el-option
-                      :label="item.depart_name"
-                      :value="item.id"
-                      v-for="(item,index) in depList"
-                      :key="index"
-                    ></el-option>
+                  <el-select v-model="formMember.departId" placeholder="所属部门" @change="selectDep" value-key="depart_name" class="width100">
+                    <el-option :label="item.depart_name" :value="item.id" v-for="(item,index) in depList" :key="item.depart_name"></el-option>
                   </el-select>
                 </el-form-item>
                 <el-form-item>
-                  <el-select
-                    v-model="formMember.gradeId"
-                    placeholder="等级"
-                    class="width100"
-                  >
-                    <el-option
-                      :label="item.grade_name"
-                      :value="item.id"
-                      v-for="(item,index) in jobList"
-                      :key="index"
-                    ></el-option>
+                  <el-select v-model="formMember.gradeId" placeholder="等级" class="width100">
+                    <el-option :label="item.grade_name" :value="item.id" v-for="(item,index) in jobList" :key="index"></el-option>
                   </el-select>
                 </el-form-item>
                 <span class="select-text">
@@ -77,130 +36,45 @@
           </el-form>
         </div>
         <div class="table">
-          <el-table
-            border
-            :data="tableData"
-            ref="multipleTable"
-            style="width: 100%"
-            @selection-change="handleSelectionChange"
-          >
-            <el-table-column
-              label="序号"
-              type="selection"
-              align="center"
-              width="60"
-            ></el-table-column>
-            <el-table-column
-              label="姓名"
-              align="center"
-              prop="user_name"
-              width="150"
-            ></el-table-column>
-            <el-table-column
-              label="联系电话"
-              prop="mobile"
-              align="center"
-              width="150"
-            ></el-table-column>
-            <el-table-column
-              label="最近登录时间"
-              align="center"
-              width="150"
-            >
+          <el-table border :data="tableData" ref="multipleTable" style="width: 100%" @selection-change="handleSelectionChange">
+            <el-table-column label="序号" type="selection" align="center" width="60"></el-table-column>
+            <el-table-column label="姓名" align="center" prop="user_name" width="150"></el-table-column>
+            <el-table-column label="联系电话" prop="mobile" align="center" width="150"></el-table-column>
+            <el-table-column label="最近登录时间" align="center" width="150">
               <template slot-scope="props">
                 <span>{{ props.row.loginTime ? $moment.unix(props.row.loginTime).format('YYYY-MM-DD HH:mm'): '--'}}</span>
               </template>
             </el-table-column>
-            <el-table-column
-              label="直属上级"
-              prop="superiorName"
-              align="center"
-              width="150"
-            ></el-table-column>
-            <el-table-column
-              label="所属部门"
-              align="center"
-              width="150"
-            >
+            <el-table-column label="直属上级" prop="superiorName" align="center" width="150"></el-table-column>
+            <el-table-column label="所属部门" align="center" width="150">
               <template slot-scope="props">
                 <span v-if="!isEdit">{{ props.row.depart_name}}</span>
-                <el-select
-                  v-else
-                  v-model="depart_id"
-                  :placeholder="props.row.depart_name"
-                  @change="selectDep"
-                  class="width100 table-edit"
-                >
-                  <el-option
-                    :label="item.depart_name"
-                    :value="item.id"
-                    v-for="(item,index) in depList"
-                    :key="index"
-                  ></el-option>
+                <el-select v-else v-model="depart_id" :placeholder="props.row.depart_name" @change="selectDep" class="width100 table-edit">
+                  <el-option :label="item.depart_name" :value="item.id" v-for="(item,index) in depList" :key="index"></el-option>
                 </el-select>
               </template>
             </el-table-column>
-            <el-table-column
-              label="等级"
-              align="center"
-              width="150"
-            >
+            <el-table-column label="等级" align="center" width="150">
               <template slot-scope="props">
                 <span v-if="!isEdit">{{ props.row.grade_name}}</span>
-                <el-select
-                  v-else
-                  v-model="grade_id"
-                  :placeholder="props.row.grade_name"
-                  @change="selectDep"
-                  class="width100 table-edit"
-                >
-                  <el-option
-                    :label="item.grade_name"
-                    :value="item.id"
-                    v-for="(item,index) in jobList"
-                    :key="index"
-                  ></el-option>
+                <el-select v-else v-model="grade_id" :placeholder="props.row.grade_name" @change="selectDep" class="width100 table-edit">
+                  <el-option :label="item.grade_name" :value="item.id" v-for="(item,index) in jobList" :key="index"></el-option>
                 </el-select>
               </template>
             </el-table-column>
-            <el-table-column
-              label="操作"
-              align="center"
-              min-width="160"
-            >
+            <el-table-column label="操作" align="center" min-width="160">
               <template slot-scope="scope">
-                <el-button
-                  @click="handleEdit(scope.row,scope.$index)"
-                  v-if="!isEdit"
-                  type="text"
-                  size="small"
-                >调整人员</el-button>
+                <el-button @click="handleEdit(scope.row,scope.$index)" v-if="!isEdit&&uid!=scope.row.uid" type="text" size="small">调整人员</el-button>
+                <span v-if="uid==scope.row.uid">团长</span>
                 <div v-if="isEdit&&activeIndex==scope.$index">
-                  <el-button
-                    @click="handleSubmit"
-                    type="text"
-                    size="small"
-                  >确认</el-button>
-                  <el-button
-                    @click="handleCloseEdit"
-                    type="text"
-                    size="small"
-                  >取消</el-button>
+                  <el-button @click="handleSubmit" type="text" size="small">确认</el-button>
+                  <el-button @click="handleCloseEdit" type="text" size="small">取消</el-button>
                 </div>
               </template>
             </el-table-column>
           </el-table>
         </div>
-        <el-pagination
-          class="team-pagination"
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-          :current-page="formMember.page"
-          :page-sizes="[10, 20, 30, 40]"
-          :page-size="formMember.limit"
-          layout="total, sizes, prev, pager, next, jumper"
-          :total="total"
-        ></el-pagination>
+        <el-pagination class="team-pagination" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="formMember.page" :page-sizes="[10, 30, 50, 100]" :page-size="formMember.limit" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
       </div>
     </div>
   </el-dialog>
@@ -228,7 +102,8 @@ export default {
       isEdit: false,
       depInfo: {},
       depart_id: '',
-      grade_id: ''
+      grade_id: '',
+      uid: localStorage.getItem('uid')
     }
   },
   created () {
@@ -284,7 +159,7 @@ export default {
       // this.teamId = row.uid
       // this.$emit('handleEdit', row.uid)
     },
-    handleCloseEdit(){
+    handleCloseEdit () {
       this.activeIndex = -1
       this.isEdit = false
     },

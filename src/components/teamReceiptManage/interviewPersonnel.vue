@@ -14,8 +14,8 @@
             <el-option :label="item" :value="key" v-for="(item,key) in jobList" :key="key"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="团队名称：">
-          <el-input v-model="formMember.team_name" class="width300" placeholder="请输入团队名称关键字"></el-input>
+        <el-form-item label="企业名称：">
+          <el-input v-model="formMember.com_name" class="width300" placeholder="请输入团队名称关键字"></el-input>
         </el-form-item>
         <el-form-item label="薪资模式：">
           <el-select v-model="formMember.money_type" class="width300" placeholder="请选择薪资模式">
@@ -69,9 +69,9 @@
               <span>{{props.row.province}}{{props.row.city}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="接单时间" prop="jddesc" sortable="custom" align="center" width="150">
+          <el-table-column label="接单时间" prop="jddesc" sortable="custom" align="center" width="160">
             <template slot-scope="props">
-              <span>{{props.row.addtime?$moment(props.row.addtime).format('YYYY-MM-DD HH:mm'):'--'}}</span>
+              <span>{{props.row.addtime?props.row.addtime:'--'}}</span>
             </template>
           </el-table-column>
           <el-table-column label="返利模式" align="center" width="100">
@@ -79,23 +79,23 @@
               <span>{{props.row.reward_type|rewardType}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="面试时间" prop="msdesc" sortable="custom" align="center" width="150">
+          <el-table-column label="面试时间" prop="msdesc" sortable="custom" align="center" width="160">
             <template slot-scope="props">
-              <span>{{props.row.msdesc?$moment(props.row.msdesc).format('YYYY-MM-DD HH:mm'):'--'}}</span>
+              <span>{{props.row.addtime?props.row.addtime:'--'}}</span>
             </template>
           </el-table-column>
           </el-table-column>
           <el-table-column label="操作" align="center" min-width="180">
             <template slot-scope="scope">
               <div v-if="!scope.row.interview_status">
-                <el-button @click="$router.push('/recommendResume')" type="text" size="small">推荐简历</el-button>
-                <el-button @click="$router.push('/commonTableList')" type="text" size="small">
+                <el-button @click="$router.push('/recommendResume?id='+ scope.row.id + '&jobId='+scope.row.job_id)" type="text" size="small">推荐简历</el-button>
+                <el-button @click="$router.push('/commonTableList?id='+ scope.row.id+ '&jobId='+scope.row.job_id)" type="text" size="small">
                   推荐名单
                   <!-- <span class="resume-number">(+150)</span> -->
                 </el-button>
               </div>
               <div v-if="scope.row.interview_status==1||scope.row.interview_status==2">
-                <el-button @click="$router.push('/auditionResult')" type="text" size="small">
+                <el-button @click="$router.push('/auditionResult?id='+ scope.row.id)" type="text" size="small">
                   面试名单
                   <!-- <span class="resume-number">(+150)</span> -->
                 </el-button>
@@ -105,7 +105,7 @@
           </el-table-column>
         </el-table>
       </div>
-      <el-pagination class="team-pagination" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="formMember.page" :page-sizes="[10, 20, 30, 40]" :page-size="formMember.limit" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
+      <el-pagination class="team-pagination" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="formMember.page" :page-sizes="[10, 30, 50, 100]" :page-size="formMember.limit" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
     </div>
     <receiptModal :dialogTableVisible="dialogTableVisible"></receiptModal>
     <viewJob :dialogTableVisible="dialogJobVisible" :id="jobId" @handleClose="dialogJobVisible=false"></viewJob>

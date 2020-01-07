@@ -24,7 +24,7 @@
         </ul>
         <div class="resume-btn">
           <a href="#top">
-            <el-button @click="handleClose">返回顶部</el-button>
+            <el-button>返回顶部</el-button>
           </a>
           <el-button type="primary" @click="submitForm">确定</el-button>
         </div>

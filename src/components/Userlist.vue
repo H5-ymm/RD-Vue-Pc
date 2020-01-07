@@ -3,31 +3,11 @@
     <memberCard :userType="userType" :teamInfo="teamInfo"></memberCard>
     <div class="table-list">
       <memberQuery @onSubmit="onSubmit"></memberQuery>
-      <memberTable
-        :total="total"
-        :tableData="tableData"
-        @handleEdit="handleEdit"
-        @addMember="addMember"
-        @handleDel="handleDel"
-        @handleSelectionChange="handleSelectionChange"
-      ></memberTable>
-      <el-pagination
-        class="team-pagination"
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :current-page="formMember.page"
-        :page-sizes="[10, 20, 30, 40]"
-        :page-size="formMember.limit"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="total"
-      ></el-pagination>
+      <memberTable :total="total" :tableData="tableData" @handleEdit="handleEdit" @addMember="addMember" @handleDel="handleDel" @handleSelectionChange="handleSelectionChange"></memberTable>
+      <el-pagination class="team-pagination" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="formMember.page" :page-sizes="[10, 30, 50, 100]" :page-size="formMember.limit" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
     </div>
     <memberAdd :dialogTableVisible="visible" @submitForm="submitForm"></memberAdd>
-    <memberInfo
-      :dialogTableVisible="dialogTableVisible"
-      @submitMember="submitMember"
-      :userId="userId"
-    ></memberInfo>
+    <memberInfo :dialogTableVisible="dialogTableVisible" @submitMember="submitMember" :userId="userId"></memberInfo>
   </div>
 </template>
 
@@ -106,7 +86,7 @@ export default {
     submitMember (val) {
       updateTeamUser(val).then(res => {
         this.dialogTableVisible = false
-        this.getList(this.params)
+        this.getList(this.formMember)
       })
     },
     handleSelectionChange (val) {
@@ -120,8 +100,8 @@ export default {
       this.getList(params)
     },
     submitForm (val) {
-      this.visible = false
       addTeamUser(val).then(res => {
+        this.visible = false
         this.getList(this.formMember)
       }).catch(error => {
         this.$message.error(error.status.remind)

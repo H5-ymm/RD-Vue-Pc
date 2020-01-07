@@ -36,18 +36,19 @@
           margin-top: 12px;
           margin-right: 10px;
         }
+        .code-btn {
+          &.el-button--primary.is-plain{
+            &:hover {
+              background-color: #1890ff;
+              color: #fff;
+            }
+          }
+        }
      }
   }
 </style>
 <template>
-  <el-form
-    :model="formMember"
-    :rules="rules"
-    :inline="true"
-    label-position="left"
-    ref="formMember"
-    class="demo-form-inline account-bind"
-  >
+  <el-form :model="formMember" :rules="rules" :inline="true" label-position="left" ref="formMember" class="demo-form-inline account-bind">
     <el-form-item label="姓名" required prop="user_name">
       <el-input v-model="formMember.user_name" placeholder="请输入持卡人真实姓名"></el-input>
     </el-form-item>
@@ -70,21 +71,16 @@
       </el-radio-group>
     </el-form-item>
     <el-form-item label="选择银行" required>
-      <el-select v-model="formMember.bank_name" placeholder="请选择部门经理">
-        <el-option
-          :label="item.bank_name"
-          :value="item.bank_code"
-          v-for="(item,index) in bankList"
-          :key="index"
-        ></el-option>
+      <el-select v-model="formMember.bank_name" placeholder="选择银行">
+        <el-option :label="item.bank_name" :value="item.bank_code" v-for="(item,index) in bankList" :key="index"></el-option>
       </el-select>
     </el-form-item>
-    <el-form-item label="手机号码" required prop="mobile">
+    <el-form-item label="手机号码" required>
       <el-input v-model="formMember.mobile" placeholder="请输入手机号码"></el-input>
     </el-form-item>
-    <el-form-item label="短信验证码" required prop="code">
+    <el-form-item label="短信验证码" required>
       <el-input v-model="formMember.code" placeholder="请输入短信验证码" class="bind-input-code"></el-input>
-      <el-button type="primary" class="code-btn" plain>发送验证码</el-button>
+      <el-button type="primary" class="code-btn" @click="sendCode" plain>发送验证码</el-button>
     </el-form-item>
     <div class="account-btn-box x-flex-end">
       <el-button @click="handleClose">取消</el-button>
@@ -113,14 +109,15 @@ export default {
         uid: localStorage.getItem('uid'),
         type: 2,
         card_type: 'DC',
-        card_attribute: 'C'
+        card_attribute: 'C',
+        token: ''
       },
       rules: {
         user_name: [
-          { required: true, message: '请输入姓名', trigger: 'blur' }
+          { message: '请输入姓名', trigger: 'blur' }
         ],
         idCard: [
-          { required: true, message: '请输入身份证号码', trigger: 'blur' },
+          { message: '请输入身份证号码', trigger: 'blur' },
           { validator: validate, trigger: 'blur' }
         ]
       },

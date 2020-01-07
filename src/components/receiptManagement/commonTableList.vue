@@ -4,62 +4,47 @@
 <template>
   <div class="tables-box billingManagement">
     <div class="table-list">
-      <el-form
-        :inline="true"
-        label-width="100px"
-        label-position="right"
-        :model="formMember"
-        class="demo-form-inline"
-      >
+      <el-form :inline="true" label-width="100px" label-position="right" :model="formMember" class="demo-form-inline">
         <el-form-item label="姓名：">
           <el-input v-model="formMember.where" class="width300" placeholder="请输入职位名称关键字"></el-input>
           <el-button type="primary" @click="onSubmit" class="select-btn">查询</el-button>
         </el-form-item>
       </el-form>
       <div class="member-table">
-        <el-table
-          border
-          :data="tableData"
-          ref="multipleTable"
-          style="width: 100%"
-          @selection-change="handleSelectionChange"
-        >
+        <el-table border :data="tableData" ref="multipleTable" @sort-change="sortChange" style="width: 100%">
           <el-table-column label="姓名" align="center" width="150">
             <template slot-scope="props">
-              <el-button type="text" @click="handleEdit(props.row)">{{props.row.name}}</el-button>
+              <el-button type="text">{{props.row.name}}</el-button>
             </template>
           </el-table-column>
-          <el-table-column label="年龄" align="center" width="150">
+          <el-table-column label="年龄" prop="age" align="center" width="150">
+          </el-table-column>
+          <el-table-column label="性别" align="center" width="150">
             <template slot-scope="props">
-              <el-button type="text">{{props.row.money_type | moneyType}}</el-button>
+              <span>{{props.row.sex==1?'男':props.row.sex==2?'女':'男女不限'}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="性别" prop="depart_name" align="center" width="150"></el-table-column>
-          <el-table-column label="学历" align="center" width="150">
+          <el-table-column label="学历" prop="education" align="center" width="150"></el-table-column>
+          <el-table-column label="住址" align="center" prop="citys" width="150">
+          </el-table-column>
+          <el-table-column label="推荐时间" prop="entry_num" sortable align="center" width="150">
             <template slot-scope="props">
-              <el-button type="text">{{props.row.reward_type | rewardType}}</el-button>
+              <span>{{props.row.addtime?$moment.unix(props.row.addtime).format('YYYY-MM-DD HH:mm'):'--'}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="住址" prop="reward_money" align="center" width="150"></el-table-column>
-          <el-table-column label="推荐时间" prop="entry_num" sortable align="center" width="150"></el-table-column>
-          <el-table-column label="状态" prop="status" sortable align="center" width="150"></el-table-column>
-          <el-table-column label="操作" align="center" v-if="viewType==5">
+          <el-table-column label="状态" align="center" min-width="150">
+            <template slot-scope="props">
+              <span class="status">{{props.row.entry_status==1?'未通过':'通过'}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="操作" align="center" min-width="150" v-if="viewType==5">
             <template slot-scope="props">
               <el-button type="text" @click="handleUser(props.row)" size="small">离职</el-button>
             </template>
           </el-table-column>
         </el-table>
       </div>
-      <el-pagination
-        class="team-pagination"
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :current-page="formMember.page"
-        :page-sizes="[10, 20, 30, 40]"
-        :page-size="formMember.limit"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="total"
-      ></el-pagination>
+      <el-pagination class="team-pagination" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="formMember.page" :page-sizes="[10, 30, 50, 100]" :page-size="formMember.limit" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
     </div>
   </div>
 </template>
@@ -73,13 +58,13 @@ export default {
       let obj = moneyTypeList.find(item => {
         return val == item.value
       })
-      return obj.label
+      return obj ? obj.label : '--'
     },
     rewardType (val) {
       let obj = rewardTypeList.find(item => {
         return val == item.value
       })
-      return obj.label
+      return obj ? obj.label : '--'
     },
   },
   data () {
@@ -120,6 +105,8 @@ export default {
     // 4.在职名单
     // 5.入职名单
     this.viewType = this.$route.query.view
+    this.jobId = this.$route.query.id
+    this.formMember.jobId = this.jobId
     this.getList(this.formMember)
   },
   methods: {
@@ -127,18 +114,33 @@ export default {
       if (this.viewType == 4) {
         incumbencyUserResumeList(params).then(res => {
           this.getData(res)
+        }).catch(error => {
+          this.$message.error(error.status.remind)
         })
       }
       else if (this.viewType == 3) {
         entryResumeList(params).then(res => {
           this.getData(res)
+        }).catch(error => {
+          this.$message.error(error.status.remind)
         })
       }
       else {
         entryUserResumeList(params).then(res => {
           this.getData(res)
+        }).catch(error => {
+          this.$message.error(error.status.remind)
         })
       }
+    },
+    sortChange (column) {
+      if (column.order == 'ascending') {
+        this.formMember[column.prop] = 'asc'
+      }
+      else {
+        this.formMember[column.prop] = 'desc'
+      }
+      this.getList(this.formMember)
     },
     getData (res) {
       const { data } = res

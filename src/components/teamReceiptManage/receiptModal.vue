@@ -6,39 +6,21 @@
         <p>通知入职</p>
       </section>
       <section class="member-col3 bind-col3">
-        <el-form
-          :model="formMember"
-          :rules="rules"
-          :inline="true"
-          label-position="left"
-          ref="formMember"
-          class="demo-form-inline"
-        >
-          <el-form-item label="入职时间" required prop="depart_name">
+        <el-form :model="formMember" :inline="true" label-position="left" ref="formMember" class="demo-form-inline">
+          <el-form-item label="入职时间" required>
             <div class="x-flex-between">
-              <el-date-picker
-                v-model="formMember.date"
-                type="date"
-                class="width195"
-                placeholder="请选择入职日期">
+              <el-date-picker v-model="formMember.date" type="date" class="width195" placeholder="请选择入职日期">
               </el-date-picker>
-              <el-time-select
-                class="width195"
-                v-model="formMember.value"
-                :picker-options="{
+              <el-time-select class="width195" v-model="formMember.value" :picker-options="{
                   start: '08:30',
                   step: '00:15',
                   end: '18:30'
-                }"
-                placeholder="请选择入职时间">
+                }" placeholder="请选择入职时间">
               </el-time-select>
-             </div>
+            </div>
           </el-form-item>
-          <el-form-item label="通知内容" required prop="user_id">
-            <el-input v-model="formMember.depart_name"  
-             type="textarea"
-             class="width400"
-             :autosize="{maxRows: 4}" placeholder="请输入通知内容"></el-input>
+          <el-form-item label="通知内容" required>
+            <el-input v-model="formMember.content" type="textarea" class="width400" :autosize="{maxRows: 4}" placeholder="请输入通知内容"></el-input>
           </el-form-item>
         </el-form>
       </section>
@@ -64,17 +46,7 @@ export default {
   data () {
     return {
       formMember: {
-        depart_name: '',
-        user_id: '',
         uid: localStorage.getItem('uid'),
-      },
-      rules: {
-        depart_name: [
-          { required: true, message: '请输入部门名称', trigger: 'blur' },
-        ],
-        user_id: [
-          { required: true, message: '请选择部门经理', trigger: 'blur' }
-        ]
       },
       userList: [],
       uid: localStorage.getItem('uid'),

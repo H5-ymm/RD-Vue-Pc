@@ -28,11 +28,11 @@
               </el-input>
             </el-form-item>
             <el-form-item prop="passwords" label="密码" v-if="loginWay==1">
-              <el-input v-model="formTab.password" placeholder="请输入密码" @keyup.enter.native="onSubmit('TabForm')" type="password" show-word-limit></el-input>
+              <el-input v-model="formTab.password" placeholder="请输入密码" @keyup.enter.native="onSubmit('TabForm')" type="password"></el-input>
             </el-form-item>
             <el-form-item label="发送验证码" v-if="loginWay==2">
               <span class="error el-icon-warning" v-if="isCodeError">验证码错误或者已过期</span>
-              <el-input v-model="formTab.code" placeholder="请输入验证码" @keyup.enter.native="onSubmit('TabForm')" class="inputCode" show-word-limit></el-input>
+              <el-input v-model="formTab.code" placeholder="请输入验证码" @keyup.enter.native="onSubmit('TabForm')" class="inputCode"></el-input>
               <el-button type="primary" class="code-btn" plain :class="{disabled: !this.canClick}" @click="sendCode">{{content}}</el-button>
             </el-form-item>
             <el-form-item v-if="loginWay==1">

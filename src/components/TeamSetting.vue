@@ -3,19 +3,10 @@
     <p class="title">{{type?'团队性质':'请选择团队性质'}}</p>
     <el-row class="team-setting-box" type="flex" justify="center" :gutter="20">
       <el-col :span="6" class="x-flex-center" v-for="(item,index) in menus" :key="index">
-        <div
-          @click="selectType(index,item)"
-          class="grid-content-person grid-content-select"
-          :class="{'grid-content-active':activIndex==index}"
-        >
+        <div @click="selectType(index,item)" class="grid-content-person grid-content-select" :class="{'grid-content-active':activIndex==index}">
           <img :src="item.imgUrl" alt />
           <p>{{item.title}}</p>
-          <img
-            src="../assets/img/team/selected.png"
-            alt
-            class="select-tag"
-            v-if="activIndex==index"
-          />
+          <img src="../assets/img/team/selected.png" alt class="select-tag" v-if="activIndex==index" />
         </div>
       </el-col>
     </el-row>
@@ -46,14 +37,13 @@ export default {
   },
   created () {
     let uid = localStorage.getItem('uid')
-    console.log(this.$router)
     getTeamInfo({ uid }).then(res => {
       if (res && res.data) {
         this.teamId = res.data.uid
         this.type = res.data.type
         if (this.type) {
           this.activIndex = this.type == 2 ? 0 : 1
-          // this.$router.replace({ path: this.url, query: { teamId: this.teamId, type: this.type } })
+          this.$router.replace({ path: this.url, query: { teamId: this.teamId, type: this.type } })
         }
       }
       else {

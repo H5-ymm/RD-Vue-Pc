@@ -22,4 +22,14 @@ export const applyList = data => $post('/teamtalent/apply_list', data) //根据�
 export const getListPut = data => $post('/teamtalent/getList_put', data) //根据接单状态获取推荐简历列表
 export const addApportion = data => $post('/teamapply/add_apportion_bymember', data)
 
-export const changeApportion = data => $post('/teamapply/change_apportion', data)
+export const changeApportion = data => $post('/teamtalent/change_apportion', data)
+
+export const gettalent = data => $post('/teamtalent/gettalent', data)
+export const addPut = data => $post('/teamtalent/add_put', data)
+export const delPut = data => $post('/teamtalent/del_put', data)
+
+export const getViewtime = data => $post('/teamtalent/getViewtime', data) // 获取面试时间
+export const getOffermsg = data => $post('/teamtalent/getOffermsg', data) // 获取面试时间
+
+export const giveupEntry = data => $post('/teamtalent/giveup_entry', data) // 获取面试时间
+export const giveupView = data => $post('/teamtalent/giveup_view', data) // 获取面试时间

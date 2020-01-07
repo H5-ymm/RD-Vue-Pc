@@ -7,13 +7,7 @@
       </section>
       <section class="member-col3 bind-col3">
         <!-- <keep-alive> -->
-        <component
-          :is="slotName"
-          :mobile="mobile"
-          @submitForm="submitForm"
-          @handleClose="handleClose"
-          :isUpdate="isUpdate"
-        ></component>
+        <component :is="slotName" :mobile="mobile" @submitForm="submitForm" @handleClose="handleClose" :isUpdate="isUpdate"></component>
         <!-- </keep-alive> -->
       </section>
     </div>
@@ -67,6 +61,7 @@ export default {
     return {
       formMember: {
         uid: localStorage.getItem('uid'),
+        type: localStorage.getItem('userType')
       }
     }
   },
@@ -77,15 +72,8 @@ export default {
       this.$parent.dialogTableVisible = false
     },
     submitForm (val) {
-      console.log(val)
-      this.$emit('submitForm', val)
-      // this.$refs['formMember'].validate((valid) => {
-      //   if (valid) {
-      //     this.$emit('submitForm', this.formMember)
-      //   } else {
-      //     return false
-      //   }
-      // })
+      let params = Object.assign(this.formMember, val)
+      this.$emit('submitForm', params)
     }
   }
 }

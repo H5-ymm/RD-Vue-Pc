@@ -1,12 +1,5 @@
 <template>
-  <el-form
-    :model="formMember"
-    :rules="rules"
-    :inline="true"
-    label-position="left"
-    ref="formMember"
-    class="demo-form-inline account-bind"
-  >
+  <el-form :model="formMember" :rules="rules" :inline="true" label-position="left" ref="formMember" class="demo-form-inline account-bind">
     <el-form-item label="邮箱地址" required prop="email">
       <el-input v-model="formMember.email" placeholder="请输入绑定邮箱地址"></el-input>
     </el-form-item>
@@ -33,15 +26,13 @@ export default {
     };
     return {
       formMember: {
-        email: '',
-        uid: localStorage.getItem('uid'),
+        email: ''
       },
       rules: {
         email: [
           { validator: validate, trigger: 'blur' }
         ]
-      },
-      uid: localStorage.getItem('uid')
+      }
     }
   },
   created () {

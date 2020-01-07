@@ -98,7 +98,7 @@
           </el-table-column>
         </el-table>
       </div>
-      <el-pagination class="team-pagination" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="formMember.page" :page-sizes="[10, 20, 30, 40]" :page-size="formMember.limit" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
+      <el-pagination class="team-pagination" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="formMember.page" :page-sizes="[10, 30, 50, 100]" :page-size="formMember.limit" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
     </div>
     <viewJob :dialogTableVisible="dialogJobVisible" @handleClose="dialogJobVisible=false" :id="jobId"></viewJob>
     <personalModal :dialogTableVisible="dialogTableVisible" :personalList="personalList" @handleOk="handleOk" :title="userPosition==2?'分配组员':userPosition==1?'分配接单':''" @handleClose="dialogTableVisible=false"></personalModal>

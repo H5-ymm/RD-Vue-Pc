@@ -67,11 +67,12 @@
           </el-table-column>
           <el-table-column label="跟进记录" align="center" width="100">
             <template slot-scope="props">
-              <el-button class="text-line" type="text" @click="viewRecord(props.row)">{{props.row.name}}</el-button>
+              <el-button class="text-line" type="text" @click="viewRecord(props.row)">{{props.row.trackList.length?props.row.trackList[0].title:'-'}}</el-button>
             </template>
           </el-table-column>
-          <el-table-column label="跟进时间" prop="entry_num" sortable="custom" align="center" width="150">
+          <el-table-column label="跟进时间" sortable="custom" align="center" width="160">
             <template slot-scope="props">
+              <span type="text">{{props.row.uptime?$moment.unix(props.row.uptime).format('YYYY-MM-DD HH:mm'):'--'}}</span>
             </template>
           </el-table-column>
           <el-table-column label="录入人" prop="input_username" align="center" width="100"></el-table-column>
@@ -85,7 +86,7 @@
           </el-table-column>
         </el-table>
       </div>
-      <el-pagination class="team-pagination" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="formMember.page" :page-sizes="[10, 20, 30, 40]" :page-size="formMember.limit" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
+      <el-pagination class="team-pagination" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="formMember.page" :page-sizes="[10, 30, 50, 100]" :page-size="formMember.limit" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
     </div>
     <resumeModal :dialogTableVisible="dialogTableVisible" :resumeId="resumeId" @submitForm="submitForm" :resumeInfo="resumeInfo"></resumeModal>
     <confirmDialog :dialogTableVisible="visible" @submit="submit" @handleClose="handleClose" :dialogObj="dialogObj"></confirmDialog>

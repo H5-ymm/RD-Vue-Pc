@@ -56,13 +56,7 @@
       </div>
     </div>
     <div class="table-list recommend-table">
-      <el-form
-        :inline="true"
-        label-width="75px"
-        label-position="right"
-        :model="formMember"
-        class="demo-form-inline"
-      >
+      <el-form :inline="true" label-width="75px" label-position="right" :model="formMember" class="demo-form-inline">
         <el-form-item label="姓名：">
           <el-input v-model="formMember.name" class="width300" placeholder="请输入职位名称关键字"></el-input>
           <el-button type="primary" @click="onSubmit" class="select-btn">查询</el-button>
@@ -77,31 +71,27 @@
           </span>
           <el-button type="text" @click="multipleSelection=[]">清空</el-button>
         </div>
-        <el-table
-          border
-          :data="tableData"
-          ref="multipleTable"
-          style="width: 100%"
-          @selection-change="handleSelectionChange"
-        >
+        <el-table border :data="tableData" ref="multipleTable" style="width: 100%" @selection-change="handleSelectionChange">
           <el-table-column type="selection" align="center" width="50"></el-table-column>
-          <el-table-column label="姓名" align="center" width="150">
-            <template slot-scope="props">
-              <el-button type="text" @click="handleEdit(props.row)">{{props.row.name}}</el-button>
-            </template>
+          <el-table-column label="姓名" align="center" width="150" prop="name">
+
           </el-table-column>
           <el-table-column label="联系电话" prop="mobile" align="center" width="150"></el-table-column>
           <el-table-column label="性别" align="center" width="90">
             <template slot-scope="props">
-              <el-button type="text">{{props.row.sex==2?'男':'女'}}</el-button>
+              <span>{{props.row.sex==2?'男':'女'}}</span>
             </template>
           </el-table-column>
           <el-table-column label="年龄" prop="age" align="center" width="90"></el-table-column>
-          <el-table-column label="意向岗位" prop="depart_name" align="center" width="150"></el-table-column>
-          <el-table-column label="意向工资" prop="depart_name" align="center" width="120"></el-table-column>
-          <el-table-column label="意向城市" align="center" width="100">
+          <el-table-column label="意向岗位" prop="desired_position" align="center" width="150"></el-table-column>
+          <el-table-column label="意向工资" align="center" width="120">
             <template slot-scope="props">
-              <el-button type="text">{{props.row.reward_type | rewardType}}</el-button>
+              <span>{{props.row.min_expect_money }}~{{props.row.max_expect_money }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="意向城市" align="center" width="120">
+            <template slot-scope="props">
+              <span>{{props.row.province}}{{props.row.city}}</span>
             </template>
           </el-table-column>
           <el-table-column label="岗位匹配度" prop="reward_money" align="center" width="150">
@@ -109,45 +99,44 @@
               <el-rate v-model="props.row.reward_type"></el-rate>
             </template>
           </el-table-column>
-          <el-table-column label="岗位匹配项" prop="entry_num" align="center" width="150"></el-table-column>
+          <el-table-column label="岗位匹配项" align="center" min-width="160">
+            <template slot-scope="props">
+              <jobMate :statusObj="props.row"></jobMate>
+            </template>
+          </el-table-column>
           <el-table-column label="操作" align="center" min-width="120">
             <template slot-scope="scope">
-              <el-button @click="$router.push('recommendJob')" type="text" size="small">推荐岗位</el-button>
+              <el-button @click="handleJob(scope.row)" type="text" size="small">推荐岗位</el-button>
             </template>
           </el-table-column>
         </el-table>
       </div>
-      <el-pagination
-        class="team-pagination"
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :current-page="formMember.page"
-        :page-sizes="[10, 20, 30, 40]"
-        :page-size="formMember.limit"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="total"
-      ></el-pagination>
+      <el-pagination class="team-pagination" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="formMember.page" :page-sizes="[10, 30, 50, 100]" :page-size="formMember.limit" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
     </div>
   </div>
 </template>
 
 <script>
-import { getTeamList, loginOutTeam, addTeamUser, updateTeamUser } from '../../api/team'
-import { getReceiptList } from '../../api/receipt'
+// import { getTeamList, loginOutTeam, addTeamUser, updateTeamUser } from '../../api/team'
+import { gettalent, addPut } from '../../api/teamReceipt'
 import { moneyTypeList, rewardTypeList, payTypeList, weekList } from '../../base/base'
+import jobMate from '../resumeManage/jobMate'
 export default {
+  components: {
+    jobMate
+  },
   filters: {
     moneyType (val) {
       let obj = moneyTypeList.find(item => {
         return val == item.value
       })
-      return obj.label
+      return obj ? obj.label : '--'
     },
     rewardType (val) {
       let obj = rewardTypeList.find(item => {
         return val == item.value
       })
-      return obj.label
+      return obj ? obj.label : '--'
     },
   },
   data () {
@@ -162,7 +151,8 @@ export default {
       formMember: {
         uid: localStorage.getItem('uid'),
         limit: 10,
-        page: 1
+        page: 1,
+        id: ''
       },
       total: 0,
       len: 0,
@@ -175,16 +165,19 @@ export default {
         { label: '已入职', value: 2 },
         { label: '未入职', value: 3 }
       ],
-      activeIndex: 0
+      activeIndex: 0,
+      jobId: ''
     }
   },
   created () {
     // 初始化查询标签数据
+    this.formMember.id = this.$route.query.id
+    this.jobId = this.$route.query.jobId
     this.getList(this.formMember)
   },
   methods: {
     getList (params) {
-      getReceiptList(params).then(res => {
+      gettalent(params).then(res => {
         const { data } = res
         this.tableData = data.data
         this.total = data.count
@@ -202,42 +195,24 @@ export default {
       this.formMember.page = val
       this.getList(this.formMember)
     },
-    handleEdit (val) {
-      this.dialogTableVisible = true
-      this.userId = val
-      console.log(this.userId)
-    },
-    handleDel (uid) {
-      loginOutTeam({ uid }).then(res => {
-        this.$message.success('退出成功')
+    handleJob (val) {
+      let param = {
+        resume_id: val.id,
+        uid: localStorage.getItem('uid'),
+        apply_id: this.formMember.id
+      }
+      addPut(param).then(res => {
+        this.$message.success('推荐成功')
         this.getList(this.formMember)
       }).catch(error => {
         this.$message.error(error.status.remind)
-      })
-    },
-    submitMember (val) {
-      updateTeamUser(val).then(res => {
-        this.dialogTableVisible = false
-        this.getList(this.params)
       })
     },
     handleSelectionChange (val) {
       this.len = val
     },
-    addMember () {
-      this.visible = true
-    },
-    onSubmit (value) {
-      let params = Object.assign(this.formMember, value)
-      this.getList(params)
-    },
-    submitForm (val) {
-      this.visible = false
-      addTeamUser(val).then(res => {
-        this.getList(this.formMember)
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+    onSubmit () {
+      this.getList(this.formMember)
     }
   }
 }

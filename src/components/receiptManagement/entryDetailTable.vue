@@ -1,14 +1,17 @@
+<style lang="scss">
+@import '@/assets/css/resume';
+</style>
 <template>
   <div class="tables-box billingManagement">
     <div class="table-list">
-      <el-form :inline="true" label-width="100px" label-position="right" :model="formMember" class="demo-form-inline">
+      <el-form :inline="true" label-width="60px" label-position="right" :model="formMember" class="demo-form-inline">
         <el-form-item label="姓名：">
           <el-input v-model="formMember.name" class="width300" placeholder="请输入职位名称关键字"></el-input>
           <el-button type="primary" @click="onSubmit" class="select-btn">查询</el-button>
         </el-form-item>
-        <el-form-item label="状态筛选：">
+        <!-- <el-form-item label="状态筛选：">
           <el-button :type="activeIndex==index ?'primary':''" v-for="(item,index) in statusList" :key="index" plain @click="selectStatus(item,index)" class="select-status">{{item.label}}</el-button>
-        </el-form-item>
+        </el-form-item> -->
       </el-form>
       <div class="member-table resume-table">
         <div class="table-query">
@@ -56,7 +59,7 @@
           </el-table-column>
         </el-table>
       </div>
-      <el-pagination class="team-pagination" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="formMember.page" :page-sizes="[10, 20, 30, 40]" :page-size="formMember.limit" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
+      <el-pagination class="team-pagination" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="formMember.page" :page-sizes="[10, 30, 50, 100]" :page-size="formMember.limit" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
     </div>
     <modal :dialogTableVisible="dialogTableVisible" @handleOk="handleOk" isShow="true" :modalObj="modalObj" @handleClose="visible=false,jobId=''"></modal>
     <viewJob :dialogTableVisible="dialogJobVisible" @handleClose="dialogJobVisible=fasle"></viewJob>
@@ -209,28 +212,3 @@ export default {
   }
 }
 </script>
-
-<style lang="scss">
-.billingManagement {
-  .demo-form-inline {
-    width: 80%;
-  }
-  .table-list {
-    padding-top: 70px;
-    padding-left: 10px;
-    .select-btn {
-      margin-left: 20px;
-    }
-    .member-table {
-      margin-top: 40px;
-    }
-  }
-  .width300 {
-    width: 300px;
-  }
-  .select-status {
-    margin-right: 10px;
-  }
-}
-
-</style>

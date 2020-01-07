@@ -1,26 +1,12 @@
 <template>
-  <el-dialog
-    width="1000px"
-    top="8vh"
-    :visible="dialogTableVisible"
-    class="member-dialog"
-    :show-close="false"
-  >
+  <el-dialog width="1000px" top="8vh" :visible="dialogTableVisible" class="member-dialog" :show-close="false">
     <div class="member-row">
       <img src="../../assets/img/member/cancel.png" alt class="cancel-icon" @click="handleClose" />
       <section class="member-col1">
         <p>{{resumeId?'修改简历':'添加简历'}}</p>
       </section>
       <section class="resume-col3">
-        <el-form
-          :model="formMember"
-          :rules="rules"
-          ref="formMember"
-          class="demo-form-inline"
-          label-position="right"
-          label-width="100px"
-          :inline="true"
-        >
+        <el-form :model="formMember" :rules="rules" ref="formMember" class="demo-form-inline" label-position="right" label-width="100px" :inline="true">
           <section class="resume-card">
             <p class="resume-main-title x-flex-start-justify">
               <img src="../../assets/img/icon7.png" />
@@ -40,23 +26,14 @@
                   </el-select>
                 </el-form-item>
                 <el-form-item label="详细地址">
-                  <districtSelet @change="change" :disabled="true" :placeholder="'请选择省市'"></districtSelet>
-                  <el-input
-                    v-model="formMember.address"
-                    class="resume-address"
-                    placeholder="请输入详细地址"
-                  ></el-input>
+                  <districtSelet @change="change" :disabled="true" :address="address" :placeholder="'请选择省市'"></districtSelet>
+                  <el-input v-model="formMember.address" class="resume-address" placeholder="请输入详细地址"></el-input>
                 </el-form-item>
               </div>
               <div class="resume-card-item">
                 <el-form-item label="年龄" required>
                   <el-select v-model="formMember.age" placeholder="请选择年龄">
-                    <el-option
-                      :label="item"
-                      :value="item"
-                      v-for="(item,index) in ageList"
-                      :key="index"
-                    ></el-option>
+                    <el-option :label="item" :value="item" v-for="(item,index) in ageList" :key="index"></el-option>
                   </el-select>
                 </el-form-item>
                 <el-form-item label="性别">
@@ -76,29 +53,15 @@
             <div class="x-flex-between-start resume-card-row">
               <div class="resume-card-item">
                 <el-form-item label="期望城市" prop="user_name">
-                  <districtSelet @change="changeExpect" :disabled="true" :placeholder="'请选择省市'"></districtSelet>
+                  <districtSelet @change="changeExpect" :disabled="true" :address="addressExpect" :placeholder="'请选择省市'"></districtSelet>
                 </el-form-item>
                 <el-form-item label="期望薪资" prop="id_card">
-                  <el-select v-model="formMember.money" placeholder="请选择期望薪资">
-                    <el-option
-                      :label="item"
-                      :value="key"
-                      v-for="(item,key) in moneyArray"
-                      :key="key"
-                    ></el-option>
+                  <el-select v-model="formMember.money" value-key="label" placeholder="请选择期望薪资">
+                    <el-option :label="item.label" :value="item.value" v-for="(item,index) in moneyArray" :key="item.label"></el-option>
                   </el-select>
                 </el-form-item>
                 <el-form-item label="预计入职时间">
-                  <el-date-picker
-                    v-model="entryTime"
-                    type="daterange"
-                    format="yyyy-MM-dd"
-                    value-format="yyyy-MM-dd"
-                    @change="changeDate"
-                    range-separator="-"
-                    start-placeholder="入职开始时间"
-                    end-placeholder="入职结束时间"
-                  ></el-date-picker>
+                  <el-date-picker v-model="entryTime" type="daterange" format="yyyy-MM-dd" value-format="timestamp" @change="changeDate" range-separator="-" start-placeholder="入职开始时间" end-placeholder="入职结束时间"></el-date-picker>
                 </el-form-item>
                 <el-form-item label="缴纳五险">
                   <el-radio-group v-model="formMember.is_five_risks">
@@ -108,12 +71,7 @@
                   </el-radio-group>
                 </el-form-item>
                 <el-form-item label="备注">
-                  <el-input
-                    v-model="formMember.remark"
-                    type="textarea"
-                    :autosize="{ maxRows: 3}"
-                    placeholder="请输入备注信息"
-                  ></el-input>
+                  <el-input v-model="formMember.remark" type="textarea" :autosize="{ maxRows: 3}" placeholder="请输入备注信息"></el-input>
                 </el-form-item>
               </div>
               <div class="resume-card-item">
@@ -121,14 +79,8 @@
                   <el-input v-model="formMember.desired_position" placeholder="请输入期望岗位"></el-input>
                 </el-form-item>
                 <el-form-item label="薪资模式">
-                  <el-select v-model="formMember.grade_id" placeholder="请选择薪资模式">
-                    <el-option
-                      :label="item.label"
-                      :value="item.value"
-                      v-show="index"
-                      v-for="(item,index) in moneyTypeList"
-                      :key="item.label"
-                    ></el-option>
+                  <el-select v-model="formMember.salary_type" placeholder="请选择薪资模式">
+                    <el-option :label="item.label" :value="item.value" v-show="index" v-for="(item,index) in moneyTypeList" :key="item.label"></el-option>
                   </el-select>
                 </el-form-item>
                 <el-form-item label="缴纳公积金">
@@ -201,8 +153,10 @@ export default {
       jobList: [],
       ageList: [],
       moneyTypeList,
-      moneyArray: {},
-      entryTime: []
+      moneyArray: [],
+      entryTime: [],
+      address: [],
+      addressExpect: []
     }
   },
   created () {
@@ -226,21 +180,41 @@ export default {
         resumeId: this.resumeId
       }
       selectUserResumeInfo(params).then(res => {
-        console.log(res)
+        console.log(res.data)
         this.formMember = res.data
-        this.entryTime[0] = res.data.entry_begintime
-        this.entryTime[1] = res.data.entry_endtime
+        if (res.data.entry_begintime) {
+          this.entryTime[0] = this.$moment.unix(res.data.entry_begintime).format('YYYY-MM-DD')
+          this.entryTime[1] = this.$moment.unix(res.data.entry_endtime).format('YYYY-MM-DD')
+        } else {
+          this.entryTime = []
+        }
+        this.addressExpect = [res.data.expect_provindeid, res.data.expect_cityid]
+        this.address = [res.data.provinceid, res.data.cityid]
       })
     },
     getList (filed) {
       getConstant({ filed }).then(res => {
         this.edu_type = res.data.edu_type
-        this.moneyArray = res.data.money_array
+        this.moneyArray = this.getArry(res.data.money_array)
+        console.log(this.moneyArray)
       })
     },
+    getArry (obj) {
+      var arr = []
+      for (let i in obj) {
+        arr.push({
+          label: obj[i],
+          value: Number(i)
+        }); //属性
+      }
+      console.log(arr)
+      return arr
+    },
     changeDate (val) {
-      this.formMember.entry_begintime = val[0]
-      this.formMember.entry_endtime = val[1]
+      let entry_begintime = val[0] + ''
+      let entry_endtime = val[1] + ''
+      this.formMember.entry_begintime = entry_begintime.slice(0, 10)
+      this.formMember.entry_endtime = entry_endtime.slice(0, 10)
     },
     change (val) {
       this.formMember.provinceid = val[0]

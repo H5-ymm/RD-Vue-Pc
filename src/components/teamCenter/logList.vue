@@ -15,7 +15,7 @@
     <div class="team-center-table">
       <component :is="componentId" :tableData="tableData"></component>
     </div>
-    <el-pagination class="team-pagination" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="params.page" :page-sizes="[10, 20, 30, 40]" :page-size="params.limit" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
+    <el-pagination class="team-pagination" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="params.page" :page-sizes="[10, 30, 50, 100]" :page-size="params.limit" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
   </div>
 </template>
 <script>

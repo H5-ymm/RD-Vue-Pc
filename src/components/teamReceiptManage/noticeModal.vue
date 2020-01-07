@@ -6,55 +6,25 @@
         <p>通知面试</p>
       </section>
       <section class="member-col3 bind-col3">
-        <el-form
-          :model="formMember"
-          :rules="rules"
-          :inline="true"
-          label-position="left"
-          ref="formMember"
-          class="demo-form-inline"
-        >
-          <el-form-item label="面试时间" required prop="depart_name">
-            <div class="x-flex-between">
-              <el-date-picker
-                v-model="formMember.date"
-                type="date"
-                class="width195"
-                placeholder="请选择面试日期">
-              </el-date-picker>
-              <el-time-select
-                class="width195"
-                v-model="formMember.value"
-                :picker-options="{
-                  start: '08:30',
-                  step: '00:15',
-                  end: '18:30'
-                }"
-                placeholder="请选择面试时间">
-              </el-time-select>
-             </div>
+        <el-form :model="formMember" :inline="true" label-position="left" ref="formMember" class="demo-form-inline">
+          <el-form-item label="面试时间">
+            <div class="x-flex-start">
+              <span>{{viewTimeInfo.view_time}}</span>
+            </div>
           </el-form-item>
-          <el-form-item label="面试地点" required prop="user_id">
-            <districtSelet
-              class="width400"
-              placeholder="--"
-              :address="address"
-              ></districtSelet>
-            <el-input v-model="formMember.address" class="address" placeholder="请输入详细地址"></el-input>
+          <el-form-item label="面试地点">
+            <span>{{address}}{{viewTimeInfo.view_addr}}</span>
           </el-form-item>
-          <el-form-item label="通知内容" required prop="user_id">
-            <el-input v-model="formMember.depart_name"  
-             type="textarea"
-             class="width400"
-             :autosize="{maxRows: 4}" placeholder="请输入通知内容"></el-input>
+          <el-form-item label="通知内容">
+            <span>{{content}}</span>
           </el-form-item>
         </el-form>
       </section>
     </div>
-    <div slot="footer" class="notice-footer-btn">
+    <!-- <div slot="footer" class="notice-footer-btn">
       <el-button @click="submitForm">取消</el-button>
       <el-button type="primary" @click="submitForm">确定</el-button>
-    </div>
+    </div> -->
   </el-dialog>
 </template>
 <script>
@@ -68,7 +38,16 @@ export default {
   components: {
     districtSelet
   },
-  props: ['dialogTableVisible'],
+  props: {
+    viewTimeInfo: {
+      type: Object,
+      default: {}
+    },
+    dialogTableVisible: {
+      type: Boolean,
+      default: false
+    }
+  },
   data () {
     return {
       formMember: {
@@ -76,17 +55,20 @@ export default {
         user_id: '',
         uid: localStorage.getItem('uid'),
       },
-      rules: {
-        depart_name: [
-          { required: true, message: '请输入部门名称', trigger: 'blur' },
-        ],
-        user_id: [
-          { required: true, message: '请选择部门经理', trigger: 'blur' }
-        ]
-      },
       userList: [],
       uid: localStorage.getItem('uid'),
-      address: []
+      address: '',
+      content: ''
+    }
+  },
+  watch: {
+    viewTimeInfo (val) {
+      if (val) {
+        console.log(val)
+        let arr = val.content.split('/')
+        this.address = arr[0] + arr[1] + arr[2]
+        this.content = arr[3]
+      }
     }
   },
   created () {
@@ -101,10 +83,21 @@ export default {
     handleClose () {
       this.$parent.visible = false
     },
+    changeAddress (val) {
+      this.address = val.join(',')
+    },
     submitForm () {
+      let date = this.formMember.date + this.formMember.time
+      let date1 = this.$moment(date, 'YYYY-MM-DD HH:mm').valueOf()
+      let address = this.address.join('/')
+      date1 = date1 + ''
+      let params = {
+        time: date1.substring(0, 10),
+        content: address + '/' + this.formMember.content
+      }
       this.$refs['formMember'].validate((valid) => {
         if (valid) {
-          this.$emit('submitForm', this.formMember)
+          this.$emit('submitForm', params)
         } else {
           return false
         }

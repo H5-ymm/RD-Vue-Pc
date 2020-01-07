@@ -119,7 +119,7 @@
           <el-table-column label="岗位类型" align="center" width="110">
             <template slot-scope="props">
               <span>{{props.row.jobType | jobType}}</span>
-            </template> 
+            </template>
           </el-table-column>
           <el-table-column label="工作地址" prop="address" align="center" width="110"></el-table-column>
           <el-table-column label="员工薪资" align="center" width="110">
@@ -136,14 +136,14 @@
           <el-table-column label="招聘人数" prop="put_num" align="center" width="110"></el-table-column>
           <el-table-column label="报名人数" prop="view_dcl" align="center" width="110">
             <template slot-scope="props">
-              <span >{{props.row.view_dcl}}</span>
+              <span>{{props.row.view_dcl}}</span>
             </template>
           </el-table-column>
           <el-table-column label="面试人数" align="center" width="110">
             <template slot-scope="props">
               <div>
                 {{props.row.view_num}}
-                <span class="fail-color"> 
+                <span class="fail-color">
                   (待处理{{
                   props.row.view_dcl}})</span>
               </div>
@@ -192,7 +192,7 @@
           </el-table-column>
         </el-table>
       </div>
-      <el-pagination class="team-pagination" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="formMember.page" :page-sizes="[10, 20, 30, 40]" :page-size="formMember.limit" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
+      <el-pagination class="team-pagination" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="formMember.page" :page-sizes="[10, 30, 50, 100]" :page-size="formMember.limit" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
     </div>
     <personalModal :dialogTableVisible="dialogTableVisible" :personalList="personalList" @handleOk="handleOk" @handleClose="dialogTableVisible=false"></personalModal>
     <havePersonModal :dialogTableVisible="personVisible" @handleClose="personVisible=false" @handleOk="handleOk"></havePersonModal>
@@ -228,11 +228,11 @@ export default {
       })
       return obj ? obj.label : ''
     },
-    jobType(val){
+    jobType (val) {
       let obj = positionStatusList.find(item => {
         return val == item.value
       })
-      return obj? obj.label: '-'    
+      return obj ? obj.label : '-'
     }
   },
   data () {
@@ -332,7 +332,12 @@ export default {
       addPut(params).then(res => {
         this.getList(this.formMember)
       }).catch(error => {
-        this.$message.error(error.status.remind)
+        if (!error.status.remind) {
+          this.$message.error('')
+        }
+        else {
+          this.$message.error(error.status.remind)
+        }
       })
     },
     getPersonList () {

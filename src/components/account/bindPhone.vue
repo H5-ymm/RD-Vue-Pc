@@ -1,12 +1,5 @@
 <template>
-  <el-form
-    :model="formMember"
-    :rules="rules"
-    :inline="true"
-    label-position="left"
-    ref="formMember"
-    class="demo-form-inline account-bind"
-  >
+  <el-form :model="formMember" :rules="rules" :inline="true" label-position="left" ref="formMember" class="demo-form-inline account-bind">
     <el-form-item label="原手机号码" required prop="mobile">
       <el-input v-model="formMember.mobile" readonly placeholder="请输入原手机号码"></el-input>
     </el-form-item>
@@ -29,12 +22,9 @@ export default {
   props: ['mobile'],
   data () {
     return {
-      formMember: {
-        uid: localStorage.getItem('uid'),
-      },
+      formMember: {},
       rules: {
-      },
-      uid: localStorage.getItem('uid')
+      }
     }
   },
   created () {

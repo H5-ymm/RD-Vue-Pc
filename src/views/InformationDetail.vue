@@ -128,7 +128,6 @@ export default {
       })
     },
     windowScroll () {
-
       let scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
       if (scrollTop > 100) {
         this.isShow = true

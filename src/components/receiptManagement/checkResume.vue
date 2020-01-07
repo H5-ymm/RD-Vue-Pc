@@ -30,35 +30,41 @@
               <el-button type="text">{{props.row.name}}</el-button>
             </template>
           </el-table-column>
-          <el-table-column label="年龄" align="center" width="110">
+          <el-table-column label="年龄" prop="age" align="center" width="110">
+          </el-table-column>
+          <el-table-column label="性别" align="center" width="110">
             <template slot-scope="props">
-              <el-button type="text">{{props.row.money_type | moneyType}}</el-button>
+              <span>
+                {{props.row.sex==1?'男': '女'}}
+              </span>
             </template>
           </el-table-column>
-          <el-table-column label="性别" prop="depart_name" align="center" width="110"></el-table-column>
-          <el-table-column label="学历" align="center" width="110">
-            <template slot-scope="props">
-              <el-button type="text">{{props.row.reward_type | rewardType}}</el-button>
-            </template>
+          <el-table-column label="学历" prop="education" align="center" width="110">
           </el-table-column>
-          <el-table-column label="住址" prop="reward_money" align="center" width="110"></el-table-column>
+          <el-table-column label="住址" prop="citys" align="center" width="110"></el-table-column>
           <el-table-column label="推荐时间" prop="desc" sortable="custom" align="center" width="180">
             <template slot-scope="props">
-              <div>
-                {{props.row.addtime?$moment.unix(props.row.addtime).format('YYYY-MM-DD HH:mm'): '--'}}
-              </div>
+              <span type="text">{{props.row.addtime?$moment.unix(props.row.addtime).format('YYYY-MM-DD'):'--'}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="状态" prop="entry_num" align="center" width="180"></el-table-column>
-          <el-table-column label="审核简历" align="center">
+          <el-table-column label="状态" prop="entry_num" align="center" width="180">
+            <template slot-scope="props">
+              <span class="status" :class="`status${props.row.status}`">
+                {{props.row.status|status}}
+              </span>
+            </template>
+          </el-table-column>
+          <el-table-column label="审核简历" align="center" width="150">
             <template slot-scope="scope">
-              <el-button @click="handlResume(1,scope.row.id)" type="text" size="small">通过</el-button>
-              <el-button @click="handlResume(2,scope.row.id)" type="text" size="small">未通过</el-button>
+              <el-button @click="handlResume(1,scope.row.id)" type="text" size="small" v-if="!scope.row.status">通过</el-button>
+              <span v-if="scope.row.status==1">通过</span>
+              <span v-if="scope.row.status==2">{{props.row.status|status}}</span>
+              <el-button @click="handlResume(2,scope.row.id)" type="text" size="small" v-if="!scope.row.status">未通过</el-button>
             </template>
           </el-table-column>
         </el-table>
       </div>
-      <el-pagination class="team-pagination" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="formMember.page" :page-sizes="[10, 20, 30, 40]" :page-size="formMember.limit" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
+      <el-pagination class="team-pagination" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="formMember.page" :page-sizes="[10, 30, 50, 100]" :page-size="formMember.limit" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
     </div>
     <modal :dialogTableVisible="dialogTableVisible" @handleOk="handleOk" :modalObj="modalObj" @handleClose="dialogTableVisible=false,id=''"></modal>
   </div>
@@ -67,7 +73,7 @@
 <script>
 import { getTeamList, loginOutTeam, addTeamUser, updateTeamUser } from '../../api/team'
 import { auditResumeList, auditResumeRecommend } from '../../api/receipt'
-import { moneyTypeList, rewardTypeList, payTypeList, weekList } from '../../base/base'
+import { moneyTypeList, rewardTypeList, checkStatusList1 } from '../../base/base'
 import modal from '../common/modal'
 export default {
   components: {
@@ -78,17 +84,24 @@ export default {
       let obj = moneyTypeList.find(item => {
         return val == item.value
       })
-      return obj.label
+      return obj ? obj.label : '--'
     },
     rewardType (val) {
       let obj = rewardTypeList.find(item => {
         return val == item.value
       })
-      return obj.label
+      return obj ? obj.label : '--'
     },
+    status (val) {
+      let obj = checkStatusList1.find(item => {
+        return val == item.value
+      })
+      return obj ? obj.label : '--'
+    }
   },
   data () {
     return {
+      checkStatusList1,
       moneyTypeList,
       rewardTypeList,
       dialogTableVisible: false,
@@ -121,6 +134,12 @@ export default {
         closeText: '取消'
       },
       status: ''
+    }
+  },
+  watch: {
+    $route () {
+      this.formMember.job_id = this.$route.query.id
+      this.getList(this.formMember)
     }
   },
   created () {
@@ -198,7 +217,7 @@ export default {
     },
     handleSelectionChange (val) {
       let arr = val.map(item => {
-        return itm.id
+        return item.id
       })
       this.id = arr.join(',')
     },

@@ -261,6 +261,11 @@ export default {
       this.menus.splice(8, 0, this.receipt)
     }
   },
+  watch: {
+    $route (val) {
+      this.title = JSON.parse(sessionStorage.getItem('menus'))[1]
+    }
+  },
   methods: {
     handleOpen (key, keyPath) {
       console.log(key, keyPath);
@@ -274,7 +279,6 @@ export default {
       this.$router.push('/load')
     },
     selectMenus (key, keyPath) {
-      console.log(key, keyPath)
       this.title = key
       let arr = keyPath
       sessionStorage.setItem('menus', JSON.stringify(arr))

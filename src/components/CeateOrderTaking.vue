@@ -104,7 +104,7 @@
         <el-form-item label="职位描述" required>
           <span class="error el-icon-warning error-job">职位描述，最低输入30个字。</span>
           <div class="job_content">
-            <div contenteditable="true" v-html="content" @input="keepLastIndex($event)" class="job_textarea"></div>       
+            <div contenteditable="true" v-html="content" @input="keepLastIndex($event)" class="job_textarea"></div>
             <span class="content-len">{{len}}/1000字</span>
           </div>
         </el-form-item>
@@ -148,7 +148,7 @@ export default {
         is_five_risks: 1,
         sex: 3,
         is_fund: 1,
-        job_content:'',
+        job_content: '',
         uid: localStorage.getItem('uid')
       },
       imageUrl: '',
@@ -176,7 +176,7 @@ export default {
     let params = 'edu_type,money_array,job_array'
     this.getList(params)
   },
-  mounted(){
+  mounted () {
     // setTimeout(()=>{
     //   this.keepLastIndex(e.target)
     // },5)
@@ -205,11 +205,11 @@ export default {
         this.orderTakingForm.name = this.jobName
       }
     },
-    keepLastIndex(obj) {
-       console.log(this.content)
+    keepLastIndex (obj) {
+      console.log(this.content)
       if (window.getSelection) { //ie11 10 9 ff safari
         // obj.focus(); //解决ff不获取焦点无法定位问题
-        let range =  window.getSelection().getRangeAt(0);//创建range
+        let range = window.getSelection().getRangeAt(0);//创建range
         // range.selectAllChildren(obj); //range 选择obj下所有子内容
         // range.collapseToEnd(); //光标移至最后
       } else if (document.selection) { //ie10 9 8 7 6 5
@@ -239,10 +239,7 @@ export default {
       this.orderTakingForm = Object.assign(this.orderTakingForm, val)
     },
     submitForm (orderTakingForm) {
-      if (this.content) {
-        this.orderTakingForm.job_content = this.content
-      }
-      else {
+      if (!this.content) {
         return this.$message.warning('请输入职位描述')
       }
       this.$refs[orderTakingForm].validate((valid) => {

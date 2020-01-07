@@ -13,8 +13,8 @@
             <el-option :label="item" :value="key" v-for="(item,key) in jobList" :key="key"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="团队名称：">
-          <el-input v-model="formMember.team_name" class="width300" placeholder="请输入团队名称关键字"></el-input>
+        <el-form-item label="企业名称：">
+          <el-input v-model="formMember.team_name" class="width300" placeholder="请输入企业名称关键字"></el-input>
         </el-form-item>
         <el-form-item label="薪资模式：">
           <el-select v-model="formMember.money_type" class="width300" placeholder="请选择薪资模式">
@@ -36,41 +36,32 @@
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="onSubmit" class="select-btn">查询</el-button>
-          <el-button type="primary" @click="onSubmit" class="select-btn">重置</el-button>
+          <el-button type="primary" @click="reset" class="select-btn">重置</el-button>
         </el-form-item>
       </el-form>
       <div class="member-table">
         <el-table border :data="tableData" ref="multipleTable" style="width: 100%" @selection-change="handleSelectionChange">
           <el-table-column label="职位名称" align="center" width="150">
             <template slot-scope="props">
-              <el-button type="text" @click="handleEdit(props.row)">{{props.row.name}}</el-button>
+              <el-button type="text" @click="handleEdit(props.row)">{{props.row.job_name}}</el-button>
             </template>
           </el-table-column>
-          <el-table-column label="团队名称" align="center" width="150">
-            <template slot-scope="props">
-              <el-button type="text">{{props.row.money_type | moneyType}}</el-button>
-            </template>
+          <el-table-column label="企业名称" prop="com_name" align="center" width="150">
           </el-table-column>
           <el-table-column label="需求人数" prop="required_number" align="center" width="100"></el-table-column>
-          <el-table-column label="面试通过" align="center" width="150">
-            <template slot-scope="props">
-              <el-button type="text">{{props.row.reward_type | rewardType}}</el-button>
-            </template>
+          <el-table-column label="面试通过" align="center" prop="put_num" width="150">
           </el-table-column>
           <el-table-column label="岗位薪资" prop="money" align="center" width="150"></el-table-column>
-          <el-table-column label="薪资模式" align="center" width="150">
-            <template slot-scope="props">
-              <span>{{props.row.money_type|moneyType}}</span>
-            </template>
-          </el-table-column>
+          <el-table-column label="薪资模式" align="center" prop="money" width="150"></el-table-column>
           <el-table-column label="状态" align="center" width="150">
             <template slot-scope="props">
-              <span class="status" :class="`status${props.row.status}`">{{props.row.status==1?"正常":'锁定'}}</span>
+              <span class="status" :class="`status${props.row.status}`" v-if="props.row.entry_status==0">{{props.row.interview_status==1?"面试开始":props.row.interview_status==2?'审核面试简历':'面试结束'}}</span>
+              <span class="status" :class="`status${props.row.status}`" v-if="props.row.entry_status">{{props.row.entry_status==1?"入职开始":'入职结束'}}</span>
             </template>
           </el-table-column>
           <el-table-column label="岗位城市" align="center" width="150">
             <template slot-scope="props">
-              <span>{{props.row.citys}}</span>
+              <span>{{props.row.province}}{{props.row.city}}</span>
             </template>
           </el-table-column>
           <el-table-column label="返利模式" align="center" width="150">
@@ -78,32 +69,30 @@
               <span>{{props.row.reward_type|rewardType}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="接单时间" prop="jddesc" sortable="custom" align="center" width="150">
+          <el-table-column label="面试时间" prop="jddesc" sortable="custom" align="center" width="170">
             <template slot-scope="props">
-              <span>{{props.row.addtime?$moment(props.row.addtime).format('YYYY-MM-DD HH:mm'):'--'}}</span>
+              <el-button type="text" @click="viewTime(props.row)">{{props.row.view_time?props.row.view_time:'--'}}</el-button>
             </template>
           </el-table-column>
-          <el-table-column label="联系人" prop="entry_num" align="center" width="150"></el-table-column>
-          <el-table-column label="操作" align="center" width="150">
+          <!-- <el-table-column label="联系人" prop="entry_num" align="center" width="150"></el-table-column> -->
+          <el-table-column label="操作" align="center" width="180">
             <template slot-scope="props">
-              <el-button @click="$router.push('/commonTableList')" type="text" size="small">面试名单</el-button>
-              <el-button @click="dialogTableVisible=true" type="text" size="small">联系客服</el-button>
-              <el-button @click="$router.push({path:'commonTableList',query:{id:props.row.id,view:5}})" type="text" size="small">入职名单</el-button>
+              <el-button @click="$router.push('/commonTableList')" type="text" size="small" v-if="props.row.entry_status==0">面试名单</el-button>
+              <el-button @click="dialogTableVisible=true" type="text" size="small" v-if="props.row.entry_status&&props.row.interview_status">联系客服</el-button>
+              <el-button @click="routerEntry" v-if="props.row.entry_status>=1" type="text" size="small">入职名单</el-button>
             </template>
           </el-table-column>
         </el-table>
       </div>
-      <el-pagination class="team-pagination" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="formMember.page" :page-sizes="[10, 20, 30, 40]" :page-size="formMember.limit" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
+      <el-pagination class="team-pagination" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="formMember.page" :page-sizes="[10, 30, 50, 100]" :page-size="formMember.limit" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
     </div>
-    <noticeModal :dialogTableVisible="visible"></noticeModal>
+    <noticeModal :dialogTableVisible="visible" :viewTimeInfo="viewTimeInfo"></noticeModal>
     <customerService :dialogTableVisible="dialogTableVisible"></customerService>
   </div>
 </template>
 
 <script>
-import { getTeamList, loginOutTeam, addTeamUser, updateTeamUser } from '../../api/team'
-import { getResumeList } from '../../api/receipt'
-import { applyList } from '../../api/teamReceipt'
+import { applyList, getViewtime } from '../../api/teamReceipt'
 import { moneyTypeList, rewardTypeList, payTypeList, weekList, entryStatusList2 } from '../../base/base'
 import noticeModal from './noticeModal'
 import customerService from '../common/customerService'
@@ -159,7 +148,9 @@ export default {
       ],
       activeIndex: 0,
       jobList: {},
-      timeList: []
+      timeList: [],
+      apply_id: '',
+      viewTimeInfo: {}
     }
   },
   created () {
@@ -189,6 +180,21 @@ export default {
     selectStatus (item, index) {
       this.activeIndex = index
       this.formMember.status = item.value
+    },
+    routerEntry () {
+      let arr = JSON.parse(sessionStorage.getItem('menus'))
+      arr[1] = '入职名单'
+      sessionStorage.setItem('menus', JSON.stringify(arr))
+      this.$router.push('teamEntryList')
+    },
+    viewTime (val) {
+      this.visible = true
+      this.apply_id = val.id
+      getViewtime({ apply_id: val.id }).then(res => {
+        this.viewTimeInfo = res.data
+      }).catch(error => {
+        this.$message.error(error.status.remind)
+      })
     },
     handleSizeChange (val) {
       this.formMember.limit = val
@@ -234,6 +240,16 @@ export default {
       }).catch(error => {
         this.$message.error(error.status.remind)
       })
+    },
+    reset () {
+      this.formMember = {
+        uid: localStorage.getItem('uid'),
+        limit: 10,
+        page: 1,
+        type: 2
+      }
+      this.timeList = []
+      this.getList(this.formMember)
     }
   }
 }

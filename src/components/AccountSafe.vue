@@ -14,30 +14,20 @@
           <div class="account-save-col3 x-flex-end">
             <span class="account-btn" v-if="index==0&&item.status" @click="editMobile(item)">修改</span>
             <span class="account-btn" v-if="index==1" @click="$router.push('accountBank')">管理</span>
-            <span
-              class="account-btn"
-              v-if="!item.status&&index!=3"
-              @click="hanbleBind(item,index)"
-            >绑定</span>
+            <span class="account-btn" v-if="!item.status&&index!=3" @click="hanbleBind(item,index)">绑定</span>
             <span v-if="item.status">已绑定</span>
           </div>
         </li>
       </ul>
     </div>
-    <accountDialog
-      :title="title"
-      :dialogTableVisible="dialogTableVisible"
-      :slotName="slotName"
-      :mobile="mobile"
-      @submitForm="submitForm"
-    ></accountDialog>
+    <accountDialog :title="title" :dialogTableVisible="dialogTableVisible" :slotName="slotName" :mobile="mobile" @submitForm="submitForm"></accountDialog>
   </div>
 </template>
 
 <script>
 import accountDialog from './account/accountDialog'
 import { getUserInfo, getUserBinkInfo } from '@/api/user'
-import { companyBinkInfo, bindEmail, userBinkBank } from '@/api/bind'
+import { companyBinkInfo, bindEmail, userBinkBank, userBinkAlipay } from '@/api/bind'
 export default {
   components: {
     accountDialog
@@ -103,7 +93,8 @@ export default {
       slotName: '',
       title: '',
       mobile: '',
-      activeIndex: -1
+      activeIndex: -1,
+      type: localStorage.getItem('userType')
     }
   },
   created () {

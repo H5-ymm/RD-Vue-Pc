@@ -1,62 +1,21 @@
 <template>
-  <el-form
-    :model="formMember"
-    :rules="rules"
-    :inline="true"
-    label-position="left"
-    ref="formMember"
-    class="demo-form-inline account-bind"
-  >
+  <el-form :model="formMember" :rules="rules" :inline="true" label-position="left" ref="formMember" class="demo-form-inline account-bind">
     <el-form-item label="姓名" required v-if="isUpdate">
-      <el-input
-        v-model="formMember.depart_name"
-        suffix-icon="el-icon-success input-success"
-        placeholder="请输入已认证信息的姓名"
-      ></el-input>
+      <el-input v-model="userName" readonly suffix-icon="el-icon-success input-success" placeholder="请输入已认证信息的姓名"></el-input>
       <span class="error el-icon-warning">姓名与已认证信息不符</span>
     </el-form-item>
     <el-form-item label="身份证" required v-if="isUpdate">
-      <el-input
-        v-model="formMember.depart_name"
-        suffix-icon="el-icon-success input-success"
-        placeholder="请输入已认证的身份证号码"
-      ></el-input>
+      <el-input v-model="formMember.id_card" suffix-icon="el-icon-success input-success" placeholder="请输入已认证的身份证号码"></el-input>
       <span class="error el-icon-warning">身份证号码与已认证信息不符</span>
     </el-form-item>
-    <el-form-item :label="label" required prop="depart_name">
-      <el-progress
-        :percentage="40"
-        :format="format"
-        class="error progress"
-        color="#FE2A00"
-        v-if="formMember.depart_name.length&&formMember.depart_name.length<=6"
-      ></el-progress>
-      <el-progress
-        :percentage="70"
-        :format="format"
-        class="error progress"
-        color="#FF9938"
-        v-if="formMember.depart_name.length>6&&formMember.depart_name.length<=10"
-      ></el-progress>
-      <el-progress
-        :percentage="100"
-        :format="format"
-        class="error progress"
-        color="#58B44E"
-        v-if="formMember.depart_name.length>10"
-      ></el-progress>
-      <el-input
-        v-model="formMember.depart_name"
-        suffix-icon="el-icon-success input-success"
-        placeholder="请输入6为数字组合的新密码"
-      ></el-input>
+    <el-form-item :label="label" required prop="payPassword">
+      <el-progress :percentage="40" :format="format" class="error progress" color="#FE2A00" v-if="formMember.payPassword.length&&formMember.depart_name.length<=6"></el-progress>
+      <el-progress :percentage="70" :format="format" class="error progress" color="#FF9938" v-if="formMember.payPassword.length>6&&formMember.depart_name.length<=10"></el-progress>
+      <el-progress :percentage="100" :format="format" class="error progress" color="#58B44E" v-if="formMember.payPassword.length>10"></el-progress>
+      <el-input v-model="formMember.payPassword" suffix-icon="el-icon-success input-success" placeholder="请输入6为数字组合的新密码"></el-input>
     </el-form-item>
     <el-form-item :label="label1" required>
-      <el-input
-        v-model="formMember.depart_name"
-        suffix-icon="el-icon-success input-success"
-        placeholder="请输入和上面相同的密码"
-      ></el-input>
+      <el-input v-model="formMember.payPassword" suffix-icon="el-icon-success input-success" placeholder="请输入和上面相同的密码"></el-input>
       <span class="error el-icon-warning">两次密码不一致</span>
     </el-form-item>
     <div class="account-btn-box x-flex-end">
@@ -68,14 +27,15 @@
 </template>
 <script>
 import { validateIdCard } from '../../util/util'
+import { getUserName } from '@/api/user'
 export default {
   props: ['dialogTableVisible', 'isUpdate'],
   data () {
     return {
       formMember: {
-        depart_name: '',
-        user_id: '',
+        id_card: '',
         uid: localStorage.getItem('uid'),
+        payPassword: ''
       },
       rules: {
         depart_name: [
@@ -83,11 +43,12 @@ export default {
         ]
       },
       isShow: false,
-      uid: localStorage.getItem('uid')
+      uid: localStorage.getItem('uid'),
+      userName: ''
     }
   },
   created () {
-
+    this.getName()
   },
   computed: {
     label () {
@@ -98,6 +59,18 @@ export default {
     }
   },
   methods: {
+    getName () {
+      let params = {
+        uid: this.uid,
+        type: localStorage.getItem('userType')
+      }
+      getUserName(params).then(res => {
+        if (res.data) {
+          this.userName = res.data.user_name
+          this.formMember.uid = res.data.uid
+        }
+      })
+    },
     handelForget () {
       this.isShow = true
     },

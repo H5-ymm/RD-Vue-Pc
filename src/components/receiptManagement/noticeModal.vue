@@ -6,51 +6,20 @@
         <p>通知{{noticeType}}</p>
       </section>
       <section class="member-col3 bind-col3">
-        <el-form
-          :model="formMember"
-          :inline="true"
-          label-position="left"
-          ref="formMember"
-          class="demo-form-inline"
-        >
+        <el-form :model="formMember" :inline="true" label-position="left" ref="formMember" class="demo-form-inline">
           <el-form-item :label="`${noticeType}时间`" required>
             <div class="x-flex-between">
-              <el-date-picker
-                v-model="formMember.date"
-                type="date"
-                class="width195"
-                value-format="yyyy-MM-dd"
-                format="yyyy-MM-dd"
-                :placeholder="`请选择${noticeType}日期`"
-              ></el-date-picker>
-              <el-time-select
-                class="width195"
-                type="date"
-                value-format="HH:mm"
-                format="HH:mm"
-                v-model="formMember.time"
-                :placeholder="`请选择${noticeType}时间`"
-              ></el-time-select>
+              <el-date-picker v-model="formMember.date" type="date" :picker-options="pickerOptions" class="width195" value-format="yyyy-MM-dd" format="yyyy-MM-dd" :placeholder="`请选择${noticeType}日期`"></el-date-picker>
+              <el-time-select class="width195" type="date" value-format="HH:mm" format="HH:mm" v-model="formMember.time" :placeholder="`请选择${noticeType}时间`"></el-time-select>
             </div>
           </el-form-item>
           <el-form-item :label="`${noticeType}地点`" required>
-            <districtSelet
-              class="width400"
-              @change="changeAddress"
-              :placeholder="`请选择${noticeType}地点`"
-              :address="address"
-            ></districtSelet>
+            <districtSelet class="width400" @changeAddress="changeAddress" :placeholder="`请选择${noticeType}地点`"></districtSelet>
             <el-input v-model="formMember.address" class="address" placeholder="请输入详细地址"></el-input>
           </el-form-item>
           <el-form-item label="通知内容" required>
-            <span class="error el-icon-warning">审核通过简历会直接发送{{noticeType}}}通知，谨慎操作</span>
-            <el-input
-              v-model="formMember.content"
-              type="textarea"
-              class="width400"
-              :autosize="{maxRows: 4}"
-              placeholder="请输入通知内容"
-            ></el-input>
+            <span class="error el-icon-warning">审核通过简历会直接发送{{noticeType}}通知，谨慎操作</span>
+            <el-input v-model="formMember.content" type="textarea" class="width400" :autosize="{maxRows: 4}" placeholder="请输入通知内容"></el-input>
           </el-form-item>
         </el-form>
       </section>
@@ -74,6 +43,11 @@ export default {
       formMember: {
 
       },
+      pickerOptions: {
+        disabledDate (time) {
+          return time.getTime() < Date.now();
+        },
+      },
       uid: localStorage.getItem('uid'),
       address: []
     }
@@ -92,8 +66,9 @@ export default {
       let date = this.formMember.date + this.formMember.time
       let date1 = this.$moment(date, 'YYYY-MM-DD HH:mm').valueOf()
       let address = this.address.join('/')
+      date1 = date1 + ''
       let params = {
-        time: date1,
+        time: date1.substring(0, 10),
         content: address + '/' + this.formMember.content
       }
       this.$refs['formMember'].validate((valid) => {

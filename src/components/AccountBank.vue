@@ -2,34 +2,18 @@
   <div class="account-bank-view">
     <div class="account-bank-box">
       <el-row :gutter="20">
-        <el-col
-          :span="6"
-          v-for="(item,index) in list"
-          :key="index"
-        >
-          <ul
-            class="account-bank-list account-bank-add"
-            v-if="index==0"
-          >
-            <li
-              class="box-card-add x-flex-center"
-              @click="dialogTableVisible=true"
-            >
+        <el-col :span="6" v-for="(item,index) in list" :key="index">
+          <ul class="account-bank-list account-bank-add" v-if="index==0">
+            <li class="box-card-add x-flex-center" @click="dialogTableVisible=true">
               <i class="el-icon-plus"></i>
               <p>新增银行卡</p>
             </li>
           </ul>
-          <ul
-            class="account-bank-list"
-            v-else
-          >
+          <ul class="account-bank-list" v-else>
             <li class="box-card-bank">
               <div class="account-bank-item">
                 <div class="x-flex-start-justify bank-base-info">
-                  <img
-                    src="../assets/img/account/wx.png"
-                    class="account-bank-col1"
-                  />
+                  <img src="../assets/img/card.png" class="account-bank-col1" />
                   <!-- <span class="account-bank-col1"></span> -->
                   <div class="account-bank-col2">
                     <p class="account-title">{{item.bank_name}}</p>
@@ -40,11 +24,7 @@
                   </div>
                 </div>
                 <p class="bank-number x-flex-start-num">
-                  <span
-                    v-for="i in 3"
-                    :key="i"
-                    class="hide-icon"
-                  >***</span>
+                  <span v-for="i in 3" :key="i" class="hide-icon">***</span>
                   <span>{{item.bank_account_no | bankNo}}</span>
                 </p>
               </div>
@@ -60,12 +40,7 @@
         </el-col>
       </el-row>
     </div>
-    <accountDialog
-      title="新建银行卡"
-      :dialogTableVisible="dialogTableVisible"
-      slotName="bindBank"
-      @submitForm="submitForm"
-    ></accountDialog>
+    <accountDialog title="新建银行卡" :dialogTableVisible="dialogTableVisible" slotName="bindBank" @submitForm="submitForm"></accountDialog>
   </div>
 </template>
 <script>
@@ -86,7 +61,8 @@ export default {
     return {
       dialogTableVisible: false,
       uid: localStorage.getItem('uid'),
-      list: []
+      list: [],
+      type: localStorage.getItem('userType')
     };
   },
   created () {
@@ -104,6 +80,7 @@ export default {
     },
     submitForm (val) {
       console.log(val)
+      this.dialogTableVisible = false
     }
   }
 }

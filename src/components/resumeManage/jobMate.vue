@@ -30,7 +30,7 @@ export default {
 <style lang="scss">
 .job-tooltip {
   .item {
-    margin-right: 10px;
+    margin: 0 6px;
     max-width: 19px; 
   }
 }

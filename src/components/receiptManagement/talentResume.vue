@@ -89,8 +89,8 @@
           <el-table-column label="操作" align="center" width="150">
             <template slot-scope="props">
               <div v-if="props.row.invoice_status==0||props.row.invoice_status==1">
-                <el-button @click="$router.push({path:'checkResume',query:{id:props.row.id,view:1}})" type="text" size="small">审核简历</el-button>
-                <el-button @click="dialogTableVisible=true" type="text" size="small">面试通知</el-button>
+                <el-button @click="checkResume(props.row)" type="text" size="small">审核简历</el-button>
+                <el-button @click="handleNote(props.row)" type="text" size="small">面试通知</el-button>
               </div>
               <div v-if="props.row.interview_status==1||props.row.interview_status==2">
                 <el-button @click="$router.push({path:'checkResume',query:{id:props.row.id,view:2}})" type="text" size="small">查看面试</el-button>
@@ -100,7 +100,7 @@
           </el-table-column>
         </el-table>
       </div>
-      <el-pagination class="team-pagination" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="formMember.page" :page-sizes="[10, 20, 30, 40]" :page-size="formMember.limit" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
+      <el-pagination class="team-pagination" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="formMember.page" :page-sizes="[10, 30, 50, 100]" :page-size="formMember.limit" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
     </div>
     <viewJob :dialogTableVisible="dialogJobVisible" :id="jobId" @handleClose="dialogJobVisible=false"></viewJob>
     <noticeModal :dialogTableVisible="dialogTableVisible" noticeType="面试" @submitForm="submitForm"></noticeModal>
@@ -192,9 +192,21 @@ export default {
         this.total = data.count
       })
     },
+    checkResume (val) {
+      if (!val.view_time) {
+        this.handleNote(val)
+      }
+      else {
+        $router.push({ path: 'checkResume', query: { id: props.row.id, view: 1 } })
+      }
+    },
     viewJob (val) {
       this.jobId = val.id
       this.dialogJobVisible = true
+    },
+    handleNote (val) {
+      this.jobId = val.id
+      this.dialogTableVisible = true
     },
     changeDate (val) {
       this.formMember.entry_begintime = val[0]
@@ -256,9 +268,11 @@ export default {
     },
     // 面试时间
     submitForm (val) {
-      let params = Object.assign(val, { job_id: this.jobId, uid: this.formMemberuid })
+      let params = Object.assign(val, { job_id: this.jobId, uid: this.formMember.uid })
       editInterviewTime(params).then(res => {
         this.getList(this.formMember)
+        this.$router.push('interviewPersonnel?jobId=' + this.jobId)
+        this.dialogTableVisible = false
       }).catch(error => {
         this.$message.error(error.status.remind)
       })

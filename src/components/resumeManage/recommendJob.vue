@@ -38,16 +38,16 @@
           <el-table-column type="selection" align="center" width="60"></el-table-column>
           <el-table-column label="企业名称" align="center" width="180">
             <template slot-scope="props">
-              <el-button type="text" @click="handleEdit(props.row)">{{props.row.company_name}}</el-button>
+              <span>{{props.row.company_name}}</span>
             </template>
           </el-table-column>
           <el-table-column label="岗位名称" align="center" width="180">
             <template slot-scope="props">
-              <el-button type="text" class="text-line">{{props.row.job_name}}</el-button>
+              <span class="text-line">{{props.row.job_name}}</span>
             </template>
           </el-table-column>
           <!-- <el-table-column label="返利模式" prop="offermoney_type" align="center" width="120"></el-table-column> -->
-          <el-table-column label="薪资类型" align="center" width="100">
+          <el-table-column label="返利模式" align="center" width="100">
             <template slot-scope="props">
               <span>{{props.row.offermoney_type | moneyType}}</span>
             </template>
@@ -67,7 +67,7 @@
               <el-rate v-model="value1"></el-rate>
             </template>
           </el-table-column>
-          <el-table-column label="岗位匹配项" align="center" min-width="180">
+          <el-table-column label="岗位匹配项" align="center" min-width="170">
             <template slot-scope="props">
               <jobMate :statusObj="props.row"></jobMate>
             </template>
@@ -79,7 +79,7 @@
           </el-table-column>
         </el-table>
       </div>
-      <el-pagination class="team-pagination" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="formMember.page" :page-sizes="[10, 20, 30, 40]" :page-size="formMember.limit" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
+      <el-pagination class="team-pagination" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="formMember.page" :page-sizes="[10, 30, 50, 100]" :page-size="formMember.limit" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
     </div>
   </div>
 </template>
@@ -87,6 +87,7 @@
 <script>
 import { getResumeList, addUserResume } from '@/api/resume'
 import { getJoblist, addPut } from '@/api/internalInvoice'
+import { getListPut } from '@/api/teamReceipt'
 import { moneyTypeList, rewardTypeList, payTypeList, weekList } from '@/base/base'
 import { recommendTeamUserJob } from '@/api/collect'
 import jobMate from './jobMate'
@@ -140,17 +141,33 @@ export default {
     console.log(this.jobId)
     this.getList(this.formMember)
   },
+  watch: {
+    tabIndex (val) {
+      this.getList(this.formMember)
+    }
+  },
   methods: {
     getList (params) {
-      getJoblist(params).then(res => {
-        const { data } = res
-        this.tableData = data.data
-        console.log(res)
-        this.total = res.data.count
-      })
+      if (this.tabIndex == 0) {
+        getJoblist(params).then(res => {
+          const { data } = res
+          this.tableData = data.data
+          this.total = res.data.count
+        })
+      }
+      else {
+        params
+        getListPut(params).then(res => {
+          const { data } = res
+          this.tableData = data.data
+          console.log(res)
+          this.total = res.data.count
+        })
+      }
     },
     selectStatus (item, index) {
       this.activeIndex = index
+      this.getList(this.formMember)
       this.formMember.status = item.value
     },
     handleSizeChange (val) {

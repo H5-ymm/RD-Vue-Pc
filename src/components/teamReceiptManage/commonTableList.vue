@@ -4,7 +4,7 @@
 <template>
   <div class="tables-box billingManagement">
     <div class="table-list">
-      <el-form :inline="true" label-width="100px" label-position="right" :model="formMember" class="demo-form-inline">
+      <el-form :inline="true" label-width="100px" label-position="right" :model="formMember" class="demo-form-inline form-item-wrap">
         <el-form-item label="姓名：">
           <el-input v-model="formMember.name" class="width300" placeholder="请输入职位名称关键字"></el-input>
           <el-button type="primary" @click="onSubmit" class="select-btn">查询</el-button>
@@ -14,63 +14,67 @@
         </el-form-item>
       </el-form>
       <div class="member-table resume-table">
-        <el-table border :data="tableData" ref="multipleTable" style="width: 100%" @selection-change="handleSelectionChange">
+        <el-table border :data="tableData" ref="multipleTable" style="width: 100%">
           <el-table-column label="姓名" align="center" width="150">
             <template slot-scope="props">
-              <el-button type="text" @click="handleEdit(props.row)">{{props.row.name}}</el-button>
+              <el-button type="text">{{props.row.name}}</el-button>
             </template>
           </el-table-column>
-          <el-table-column label="年龄" align="center" width="150">
+          <el-table-column label="年龄" prop="age" align="center" width="150">
+          </el-table-column>
+          <el-table-column label="性别" align="center" width="150">
             <template slot-scope="props">
-              <el-button type="text">{{props.row.money_type | moneyType}}</el-button>
+              <span>{{props.row.sex==1?'男':props.row.sex==2?'女':'男女不限'}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="性别" prop="depart_name" align="center" width="150"></el-table-column>
-          <el-table-column label="学历" align="center" width="150">
+          <el-table-column label="学历" prop="education" align="center" width="150"></el-table-column>
+          <el-table-column label="住址" align="center" width="150">
             <template slot-scope="props">
-              <el-button type="text">{{props.row.reward_type | rewardType}}</el-button>
+              <span>{{props.row.province}}{{props.row.city}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="住址" prop="reward_money" align="center" width="150"></el-table-column>
-          <el-table-column label="推荐时间" prop="entry_num" sortable align="center" width="150"></el-table-column>
+          <el-table-column label="推荐时间" prop="addtime" sortable align="center" width="160"></el-table-column>
           <el-table-column label="状态" align="center" width="150">
             <template slot-scope="props">
-              <span class="status" :class="{'active-status':props.row.status==1}">{{props.row.status==1?"正常":'锁定'}}</span>
+              <span class="status" :class="`status${props.row.status}`">{{props.row.status==0?"待审核":props.row.status==1?'通过':'未通过'}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="操作" align="center">
+          <el-table-column label="操作" align="center" width="180">
             <template slot-scope="scope">
-              <!-- <el-button @click="handleDel(scope.row)" type="text" size="small">联系客服</el-button> -->
-              <!-- <el-button @click="handleDel(scope.row)" type="text" size="small">查看部门</el-button> -->
-              <el-button @click="handleDel(scope.row)" type="text" size="small">放弃报名</el-button>
-              <el-button @click="$router.push('/auditionResult')" type="text" size="small">放弃面试</el-button>
-              <el-button @click="$router.push('/auditionResult')" type="text" size="small">推荐岗位</el-button>
+              <el-button @click="handleResume(1,scope.row)" type="text" v-if="scope.row.status==0" size="small">放弃报名</el-button>
+              <el-button @click="handleResume(2,scope.row)" v-if="scope.row.status==1" type="text" size="small">放弃面试</el-button>
+              <el-button @click="handleAppay(scope.row)" v-if="scope.row.entry_status==3||scope.row.status==3" type="text" size="small">推荐岗位</el-button>
+              <!-- <el-button @click="handleResume(3,scope.row)" v-if="scope.row.status==2" type="text" size="small">放弃入职</el-button> -->
             </template>
           </el-table-column>
         </el-table>
       </div>
-      <el-pagination class="team-pagination" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="formMember.page" :page-sizes="[10, 20, 30, 40]" :page-size="formMember.limit" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
+      <el-pagination class="team-pagination" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="formMember.page" :page-sizes="[10, 30, 50, 100]" :page-size="formMember.limit" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
     </div>
+    <!-- <confirmDialog :dialogTableVisible="visible" @submit="submit" @handleClose="handleClose" :dialogObj="dialogObj" :isShow="isShow"></confirmDialog> -->
   </div>
 </template>
 
 <script>
-// import { getTeamList, loginOutTeam, addTeamUser, updateTeamUser } from '../../api/team'
-import { getListPut } from '../../api/teamReceipt'
+import { getListPut, giveupView, giveupEntry, delPut, addApply } from '../../api/teamReceipt'
 import { moneyTypeList, rewardTypeList, payTypeList, weekList } from '../../base/base'
+import confirmDialog from '../common/confirmDialog'
 export default {
+  components: {
+    confirmDialog
+  },
   filters: {
     moneyType (val) {
       let obj = moneyTypeList.find(item => {
         return val == item.value
       })
-      return obj.label
+      return obj ? obj.label : '--'
     },
     rewardType (val) {
       let obj = rewardTypeList.find(item => {
         return val == item.value
       })
-      return obj.label
+      return obj ? obj.label : '--'
     },
   },
   data () {
@@ -86,7 +90,7 @@ export default {
         uid: localStorage.getItem('uid'),
         limit: 10,
         page: 1,
-        type: 2
+        apply_id: ''
       },
       total: 0,
       len: 0,
@@ -97,14 +101,31 @@ export default {
         { label: '全部', value: 0 },
         { label: '待审核', value: 1 },
         { label: '已通过', value: 2 },
-        { label: '未通过', value: 3 },
-        { label: '已下架', value: -1 }
+        { label: '未通过', value: 3 }
       ],
-      activeIndex: 0
+      activeIndex: 0,
+      apply_id: '',
+      dialogObj: {
+        title: '放弃报名',
+        subTitle: '放弃理由',
+        okText: '确认放弃',
+        placeholder: '请输入放弃理由'
+      },
+      resumeId: '',
+      jobId: ''
     }
   },
   created () {
     // 初始化查询标签数据
+    this.apply_id = this.$route.query.id
+    this.formMember.apply_id = this.apply_id
+    this.jobId = this.$route.query.jobId
+    if (this.$route.query.view == 5) {
+      this.formMember.type = 2
+    }
+    else {
+      this.formMember.type = ''
+    }
     this.getList(this.formMember)
   },
   methods: {
@@ -117,7 +138,19 @@ export default {
     },
     selectStatus (item, index) {
       this.activeIndex = index
-      this.formMember.status = item.value
+      this.formMember.type = item.value
+      this.getList(this.formMember)
+    },
+    handleAppay () {
+      let params = {
+        uid: localStorage.getItem('uid'),
+        job_id: this.jobId
+      }
+      addApply(params).then(res => {
+        this.getList(this.formMember)
+      }).catch(error => {
+        this.$message.error(error.status.remind)
+      })
     },
     handleSizeChange (val) {
       this.formMember.limit = val
@@ -127,42 +160,73 @@ export default {
       this.formMember.page = val
       this.getList(this.formMember)
     },
-    handleEdit (val) {
-      this.dialogTableVisible = true
-      this.userId = val
-      console.log(this.userId)
-    },
-    handleDel (uid) {
-      loginOutTeam({ uid }).then(res => {
-        this.$message.success('退出成功')
-        this.getList(this.formMember)
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
-    },
-    submitMember (val) {
-      updateTeamUser(val).then(res => {
-        this.dialogTableVisible = false
-        this.getList(this.params)
-      })
-    },
-    handleSelectionChange (val) {
-      this.len = val
-    },
-    addMember () {
+    submit (index, val) {
+      if (index == 1) {
+        this.dialogObj.title = '放弃报名'
+        this.isShow = true
+      }
+      else if (index == 1) {
+        this.dialogObj.title = '放弃面试'
+        this.isShow = true
+      }
+      else {
+        this.dialogObj.title = '放弃用户'
+        this.isShow = false
+      }
       this.visible = true
+      this.resumeId = val.id
     },
-    onSubmit (value) {
-      let params = Object.assign(this.formMember, value)
-      this.getList(params)
+    handleResume (status, val) {
+      let params = {
+        uid: localStorage.getItem('uid'),
+        ids: val.id
+      }
+      if (status == 1) {
+        this.handleResumeApi(params)
+      }
+      else if (status == 2) {
+        this.handleResumeApi1(params)
+      }
+      else {
+        this.handleResumeApi2(params)
+      }
     },
-    submitForm (val) {
-      this.visible = false
-      addTeamUser(val).then(res => {
-        this.getList(this.formMember)
+    handleResumeApi1 (params) {
+      giveupView(params).then(res => {
+        if (res.data) {
+          this.getList(this.formMember)
+        } else {
+          this.$message.error('操作失败')
+        }
+
       }).catch(error => {
         this.$message.error(error.status.remind)
       })
+    },
+    handleResumeApi2 (params) {
+      giveupEntry(params).then(res => {
+        if (res.data) {
+          this.getList(this.formMember)
+        } else {
+          this.$message.error('操作失败')
+        }
+      }).catch(error => {
+        this.$message.error(error.status.remind)
+      })
+    },
+    handleResumeApi (params) {
+      delPut(params).then(res => {
+        if (res.data) {
+          this.getList(this.formMember)
+        } else {
+          this.$message.error('操作失败')
+        }
+      }).catch(error => {
+        this.$message.error(error.status.remind)
+      })
+    },
+    onSubmit (val) {
+      this.getList(this.formMember)
     }
   }
 }

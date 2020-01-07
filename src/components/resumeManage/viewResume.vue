@@ -1,11 +1,5 @@
 <template>
-  <el-dialog
-    width="500px"
-    top="8vh"
-    :visible="dialogTableVisible"
-    class="member-dialog"
-    :show-close="false"
-  >
+  <el-dialog width="500px" top="8vh" :visible="dialogTableVisible" class="member-dialog" :show-close="false">
     <div class="member-row">
       <img src="../../assets/img/member/cancel.png" alt class="cancel-icon" @click="handleClose" />
       <section class="member-col1">
@@ -199,7 +193,7 @@ export default {
       this.formMember.expect_cityid = val[1]
     },
     handleClose () {
-      this.$parent.dialogTableVisible = false
+      this.$emit('handleClose')
     },
     submitForm () {
       this.$refs['formMember'].validate((valid) => {
@@ -232,6 +226,10 @@ export default {
       top: 5px;
       right: 0;
     }
+    .member-col1 {
+    background:#EBF4FB;
+    padding: 21px 0 20px;
+  }
     .member-col2 {
       line-height: 30px;
       margin: 10px auto;

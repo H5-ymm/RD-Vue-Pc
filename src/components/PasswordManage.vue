@@ -32,21 +32,12 @@
         </li>
       </ul>
     </div>
-    <accountDialog
-      :title="title"
-      :dialogTableVisible="dialogTableVisible"
-      :slotName="slotName"
-      @submitForm="submitForm"
-      :isUpdate="isUpdate"
-    ></accountDialog>
+    <accountDialog :title="title" :dialogTableVisible="dialogTableVisible" :slotName="slotName" @submitForm="submitForm" :isUpdate="isUpdate"></accountDialog>
     <noBindZfb :dialogTableVisible="visible" @submitForm="$router.push('accountSafe')"></noBindZfb>
   </div>
 </template>
 
 <script>
-import { getImg, getImgUrl } from '@/util/util'
-import { updateTeamInfo, getTeamInfo } from '@/api/team'
-import { uploadFile } from '@/api/upload'
 import { getUserInfo, getUserBinkInfo, getUserMobile, setLoginPassword, editPayPassword, setPayPassword, editUserPassword } from '@/api/user'
 import accountDialog from './account/accountDialog'
 import setUserPas from './account/setUserPas'
@@ -102,6 +93,7 @@ export default {
         }
       })
     },
+
     getMobilePas (uid) {
       getUserMobile({ uid }).then(res => {
         if (res.data) {
@@ -113,7 +105,7 @@ export default {
     },
     setPassword (val, index) {
       this.activeIndex = index
-      this.isUpdate = false
+      this.isUpdate = !this.isUpdate
       if (index == 0) {
         this.title = '设置账户密码'
         this.slotName = 'setUserPas'
@@ -143,7 +135,7 @@ export default {
       if (index == 1) {
         if (this.alipay_status) {
           this.title = '修改支付密码'
-          this.dialogTableVisible = false
+          this.dialogTableVisible = true
           this.slotName = 'setZfbPas'
         }
         else {
@@ -169,23 +161,6 @@ export default {
           this.dialogTableVisible = false
         }
       }
-    },
-    upload (params) {
-      const _file = params.file;
-      const isLt2M = _file.size / 1024 / 1024 < 2;
-      if (!isLt2M) {
-        this.$message.error("请上传2M以下的.xlsx文件");
-        return false;
-      }
-      uploadFile(_file).then(res => {
-        this.imageUrl = getImg(_file)
-        this.personalForm.log = res.data.url
-      })
-    },
-    change (val) {
-      this.personalForm.provinceid = val[0]
-      this.personalForm.cityid = val[1]
-      this.personalForm.three_cityid = val[2]
     },
     submitForm (val) {
       console.log(val)

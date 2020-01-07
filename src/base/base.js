@@ -142,6 +142,12 @@ export const entryStatusList = [
   { label: '审核入职', value: 3 },
   { label: '审核结束', value: 4 }
 ]
+export const entryStatusList3 = [
+  { label: '等待面试', value: 0 },
+  { label: '面试开始', value: 1 },
+  { label: '面试结束', value: 2 },
+  { label: '完成面试', value: 3 }
+]
 
 export const checkStatusList = [
   { label: '全部', value: 0 },
@@ -202,4 +208,10 @@ export const entryStatusList2 = [
   { label: '审核面试简历', value: 3 },
   { label: '入职开始', value: 4 },
   { label: '入职结束', value: 5 }
+]
+export const checkStatusList1 = [
+  { label: '待审核', value: 0 },
+  { label: '通过', value: 1 },
+  { label: '拒绝', value: 2 },
+  { label: '放弃报名', value: 3 }
 ]
