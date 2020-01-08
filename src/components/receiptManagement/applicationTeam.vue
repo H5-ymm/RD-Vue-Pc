@@ -74,7 +74,7 @@
     </div>
     <customerService :dialogTableVisible="dialogTableVisible"></customerService>
     <viewJob :dialogTableVisible="dialogJobVisible" :id="id" @handleClose="dialogJobVisible=false"></viewJob>
-    <viewTeam :dialogTableVisible="dialogTeamVisible" @handleClose="dialogTeamVisible=fasle" :teamId="teamId"></viewTeam>
+    <viewTeam :dialogTableVisible="dialogTeamVisible" @handleClose="dialogTeamVisible=false" :teamId="teamId"></viewTeam>
   </div>
 </template>
 

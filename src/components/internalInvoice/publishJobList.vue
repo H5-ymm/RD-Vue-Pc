@@ -24,6 +24,11 @@
     .outline-color {
       color: #999999;
     }
+    .default-status {
+      color: #333333;
+      font-size: 12px;
+      margin: 0 10px;
+    }
   }
   .width120 {
     width: 120px;
@@ -106,7 +111,7 @@
           <el-button :type="formMember.offermoney_type==item.value ?'primary':''" v-for="(item,index) in moneyTypeList" :key="index" plain @click="selectStatus('offermoney_type',item)" class="select-status">{{item.label}}</el-button>
         </el-form-item>
         <el-form-item label="招聘类型：">
-          <el-button :type="formMember.type==item.value ?'primary':''" v-for="(item,index) in advertisesList" :key="index" plain @click="selectStatus('moneyType',item)" class="select-status">{{item.label}}</el-button>
+          <el-button :type="formMember.job_type==item.value ?'primary':''" v-for="(item,index) in advertisesList" :key="index" plain @click="selectStatus('job_type',item)" class="select-status">{{item.label}}</el-button>
         </el-form-item>
       </el-form>
       <div class="member-table">
@@ -116,10 +121,10 @@
         <el-table border :data="tableData" ref="multipleTable" style="width: 100%">
           <el-table-column label="企业名称" prop="company_name" align="center" width="150"></el-table-column>
           <el-table-column label="岗位名称" prop="job_name" align="center" width="150"></el-table-column>
-          <el-table-column label="岗位类型" align="center" width="110">
-            <template slot-scope="props">
+          <el-table-column label="岗位类型" align="center" prop="job_type" width="110">
+            <!-- <template slot-scope="props">
               <span>{{props.row.jobType | jobType}}</span>
-            </template>
+            </template> -->
           </el-table-column>
           <el-table-column label="工作地址" prop="address" align="center" width="110"></el-table-column>
           <el-table-column label="员工薪资" align="center" width="110">
@@ -176,7 +181,7 @@
           <el-table-column label="操作" align="center" min-width="200">
             <template slot-scope="scope">
               <div v-if="viewType==1">
-                <el-button @click="$router.push('jobDetail')" type="text" size="small">详情</el-button>
+                <el-button @click="$router.push('jobDetail?id='+scope.row.id)" type="text" size="small">详情</el-button>
                 <el-button @click="handleRecepit(1,scope.row)" type="text" v-if="scope.row.is_up==1" size="small">分配跟进人</el-button>
                 <el-button @click="changeJobstatus(0,scope.row)" type="text" size="small" v-if="((scope.row&&scope.row.uid==uid)||userPosition==1)&&scope.row.is_up==1">下架</el-button>
                 <el-button @click="changeJobstatus(1,scope.row)" type="text" size="small" v-if="((scope.row&&scope.row.uid==uid)||userPosition==1)&&scope.row.is_up==0">上架</el-button>
@@ -184,8 +189,9 @@
                 <el-button @click="$router.push('jobDetail?id='+scope.row.id)" type="text" size="small" v-if="(scope.row&&scope.row.uid==uid)||userPosition==1">编辑</el-button>
               </div>
               <div v-if="viewType!=1">
-                <el-button @click="$router.push('jobDetail')" type="text" size="small">详情</el-button>
+                <el-button @click="$router.push('jobDetail?id='+scope.row.id)" type="text" size="small">详情</el-button>
                 <el-button @click="putResume(scope.row)" v-if="scope.row.is_up==1" type="text" size="small">推荐简历</el-button>
+                <span v-if="!scope.row.is_up" class="default-status">推荐简历</span>
                 <el-button @click="$router.push('applyResume?view=3')" type="text" size="small">已推荐简历</el-button>
               </div>
             </template>
@@ -195,7 +201,7 @@
       <el-pagination class="team-pagination" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="formMember.page" :page-sizes="[10, 30, 50, 100]" :page-size="formMember.limit" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
     </div>
     <personalModal :dialogTableVisible="dialogTableVisible" :personalList="personalList" @handleOk="handleOk" @handleClose="dialogTableVisible=false"></personalModal>
-    <havePersonModal :dialogTableVisible="personVisible" @handleClose="personVisible=false" @handleOk="handleOk"></havePersonModal>
+    <havePersonModal :dialogTableVisible="personVisible" @handleClose="personVisible=false" @handleOk="handleOk" :hasPersonList="hasPersonList"></havePersonModal>
   </div>
 </template>
 
@@ -281,6 +287,7 @@ export default {
       jobId: '',
       handleStatus: 1,
       personalList: [],
+      hasPersonList: [],
       uid: localStorage.getItem('uid')
     }
   },
@@ -313,6 +320,7 @@ export default {
     },
     selectStatus (key, item) {
       this.formMember[key] = item.value
+      this.getList(this.formMember)
     },
     handleSizeChange (val) {
       this.formMember.limit = val

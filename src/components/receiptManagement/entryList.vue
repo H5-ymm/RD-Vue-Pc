@@ -49,7 +49,7 @@
           <el-table-column label="团队名称" prop="team_name" align="center" width="150">
           </el-table-column>
           <el-table-column label="需求人数" prop="required_number" align="center" width="100"></el-table-column>
-          <el-table-column label="已入职" align="center" width="100" prop="recommendResume"></el-table-column>
+          <el-table-column label="已入职" prop="recommendResume" align="center" width="100"></el-table-column>
           <el-table-column label="岗位薪资" prop="money" align="center" width="120"></el-table-column>
           <el-table-column label="薪资模式" align="center" width="100">
             <template slot-scope="props">
@@ -62,26 +62,31 @@
             </template>
           </el-table-column>
           <el-table-column label="岗位城市" prop="citys" align="center" width="150"></el-table-column>
-          <el-table-column label="返利模式" align="center" width="100">
+          <el-table-column label="接单时间" sortable="custom" prop="jddesc" align="center" width="160">
+            <template slot-scope="props">
+              <span>{{props.row.addtime?$moment.unix(props.row.addtime).format('YYYY-MM-DD HH:mm'):'--'}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="返利模式" align="center" width="110">
             <template slot-scope="props">
               <span>{{props.row.reward_type|rewardType}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="入职时间" prop="addtime" sortable align="center" width="150">
+          <el-table-column label="入职时间" sortable align="center" width="150">
             <template slot-scope="props">
-              <span>{{props.row.addtime?$moment.unix(props.row.addtime).format('YYYY-MM-DD HH:mm'):'--'}}</span>
+              <span>{{props.row.entry_time?$moment.unix(props.row.entry_time).format('YYYY-MM-DD HH:mm'):'--'}}</span>
             </template>
           </el-table-column>
           <el-table-column label="联系人" prop="link_name" align="center" width="100"></el-table-column>
           <el-table-column label="操作" align="center" min-width="160">
             <template slot-scope="scope">
               <el-button @click="handleUser(1,scope.row)" type="text" size="small" v-if="scope.row.entry_status==1">入职结束</el-button>
-              <el-button v-if="scope.row.entry_status==2||scope.row.entry_status==3" @click="$router.push({path:'/entryDetailTable',query:{id:scope.row.id}})" type="text" size="small">
+              <el-button v-if="scope.row.entry_status==2||scope.row.entry_status==3" @click="$router.push({path:'commonTable',query:{id:scope.row.id,view:4}})" type="text" size="small">
                 入职审核
                 <!-- <span class="resume-number">(+150)</span> -->
               </el-button>
-              <el-button @click="$router.push({path:'commonTable',query:{id:props.row.id,view:5}})" type="text" v-if="scope.row.entry_status==1" size="small">面试结果</el-button>
-              <el-button @click="$router.push({path:'commonTable',query:{id:props.row.id,view:4}})" type="text" size="small" v-if="scope.row.entry_status==4">在职名单</el-button>
+              <el-button @click="$router.push({path:'commonTable',query:{id:scope.row.id,view:6}})" type="text" v-if="scope.row.entry_status==1" size="small">面试结果</el-button>
+              <el-button @click="$router.push({path:'commonTable',query:{id:scope.row.id,view:2}})" type="text" size="small" v-if="scope.row.entry_status==4">在职名单</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -93,9 +98,9 @@
 </template>
 
 <script>
-import { entryInvoiceList, endEntry } from '../../api/receipt'
-import { moneyTypeList, rewardTypeList, entryStatusList } from '../../base/base'
-import { getConstant } from '../../api/dictionary'
+import { entryInvoiceList, endEntry } from '@/api/receipt'
+import { moneyTypeList, rewardTypeList, entryStatusList } from '@/base/base'
+import { getConstant } from '@/api/dictionary'
 import modal from '../common/modal'
 export default {
   components: {
@@ -129,21 +134,16 @@ export default {
       dialogTableVisible: false,
       visible: false,
       tableData: [],
-      currentPage: 1,
-      userType: 1,
       formMember: {
         uid: localStorage.getItem('uid'),
         limit: 10,
         page: 1
       },
       total: 0,
-      jobId: '',
-      form: {},
       statusList: [
         { label: '全部', value: 0 },
         { label: '入职开始', value: 1 },
-        { label: '等待入职名单', value: 2 },
-        { label: '完成入职名单', value: 3 }
+        { label: '入职结束', value: 2 }
       ],
       activeIndex: 0,
       jobList: {},
@@ -215,7 +215,7 @@ export default {
       this.dialogTableVisible = false
       let params = {
         uid: localStorage.getItem('uid'),
-        jodId: val.id
+        jobId: val.id
       }
       if (this.overType == 1) {
         this.handleOverEntry(params)

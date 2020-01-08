@@ -27,6 +27,9 @@ export const receiveResume = data => $post('/teamresume/receiveResume', data)// 
 
 export const reductionDelResume = data => $post('/teamresume/reductionDelResume', data)// 还原
 
+export const getMatchingResume = data => $post('/teamtalent/getMatchingResume', data)
+
+export const getMatchingJobList = data => $post('/teamtalent/getMatchingJobList', data)
 
 
 

@@ -1,11 +1,5 @@
 <template>
-  <el-dialog
-    width="500px"
-    title
-    :visible.sync="dialogTableVisible"
-    class="member-dialog"
-    :show-close="false"
-  >
+  <el-dialog width="500px" title :visible.sync="dialogTableVisible" class="member-dialog" :show-close="false">
     <div class="member-row pay-row">
       <img src="../../assets/img/member/cancel.png" alt class="cancel-icon" @click="handleClose" />
       <section class="member-col1">

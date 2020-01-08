@@ -17,6 +17,9 @@
         margin-left: 20px;
       }
     }
+    .team-panel-section1 {
+      min-height: 306px;
+    }
   }
 </style>
 <template>
@@ -42,16 +45,16 @@
     </teamPanel>
     <el-row :gutter="20">
       <el-col :span="12">
-        <teamPanel title="部门日志" @viewMore="$router.push('logList?view=logTable')">
+        <teamPanel title="部门日志" class="team-panel-section1" @viewMore="$router.push('logList?view=logTable')">
           <div slot="content">
             <logTable></logTable>
           </div>
         </teamPanel>
       </el-col>
       <el-col :span="12">
-        <teamPanel title="接单简历日志" @viewMore="$router.push('logList?view=receiptLogTable')">
+        <teamPanel title="接单简历日志" class="team-panel-section1" @viewMore="$router.push('logList?view=receiptLogTable')">
           <div slot="content">
-            <receiptLogTable></receiptLogTable>
+            <receiptLogTable :tableData="tableData"></receiptLogTable>
           </div>
         </teamPanel>
       </el-col>
@@ -72,7 +75,7 @@ import logTable from './logTable'
 import receiptLogTable from './receiptLogTable'
 import orderQuery from './orderQuery'
 import allOrder from './allOrder'
-import { getrank, getCompare, getnumLeader,getmemberList } from '@/api/teamCenter'
+import { getrank, getCompare, getnumLeader, getmemberList, getapplyLog } from '@/api/teamCenter'
 import { departmentRoleList } from '@/api/department'
 export default {
   components: {
@@ -118,6 +121,11 @@ export default {
         depart_id: '',
         last: ''
       },
+      paramsLog: {
+        uid: localStorage.getItem('uid'),
+        limit: 5,
+        page: 1
+      },
       orderData: {},
       depList: [],
       activeIndex: 0,
@@ -126,7 +134,8 @@ export default {
       teamCenterInfo: {},
       percentList: {},
       list: {},
-      personList:[],
+      personList: [],
+      tableData: [],
       userPosition: sessionStorage.getItem('userPosition'), // 1 总经理，2经理，3 成员
     }
   },
@@ -134,16 +143,15 @@ export default {
     this.getList(this.params)
     this.getCompareInfo(this.paramsInfo)
     this.getData(this.paramsEchart)
-    if (this.userPosition==1) {
+    if (this.userPosition == 1) {
       this.getDep()
     }
-    // this.getPerson(this.formMember)
-    // this.getData(this.paramsEchart, 1)
+    this.getLogList(this.paramsLog)
   },
   methods: {
-    getPerson(params){
+    getPerson (params) {
       getmemberList(params).then(res => {
-        this.personList = res.data|| []
+        this.personList = res.data || []
       }).catch(error => {
         this.$message.error(error.status.remind)
       })
@@ -154,20 +162,20 @@ export default {
       }
       getnumLeader(params).then(res => {
         console.log(res.data)
-         if (last) {
+        if (last) {
           this.list = res.data
         }
         else {
           this.percentList = res.data
         }
-       
+
       }).catch(error => {
         this.$message.error(error.status.remind)
       })
     },
     getDep () {
       let uid = localStorage.getItem('uid')
-      departmentRoleList({uid}).then(res => {
+      departmentRoleList({ uid }).then(res => {
         this.depList = res.data || []
       }).catch(error => {
         this.$message.error(error.status.remind)
@@ -176,6 +184,14 @@ export default {
     getCompareInfo (params) {
       getCompare(params).then(res => {
         this.teamCenterInfo = res.data
+      }).catch(error => {
+        this.$message.error(error.status.remind)
+      })
+    },
+    getLogList (params) {
+      getapplyLog(params).then(res => {
+        this.tableData = res.data.data || []
+        this.total = res.data.count
       }).catch(error => {
         this.$message.error(error.status.remind)
       })
@@ -191,7 +207,7 @@ export default {
         this.$message.error(error.status.remind)
       })
     },
-    querySearch(){
+    querySearch () {
       this.paramsInfo.depart_id = this.formMember.depart_id
       this.getCompareInfo(this.paramsInfo)
       this.paramsEchart.depart_id = this.formMember.depart_id

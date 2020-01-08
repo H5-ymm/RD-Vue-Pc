@@ -45,7 +45,7 @@ export default {
       },
       pickerOptions: {
         disabledDate (time) {
-          return time.getTime() < Date.now();
+          return time.getTime() <= Date.now();
         },
       },
       uid: localStorage.getItem('uid'),

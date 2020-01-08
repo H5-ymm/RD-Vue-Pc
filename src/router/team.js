@@ -29,7 +29,7 @@ const checkResume = resolve => (require(['../components/internalInvoice/checkRes
 
 const resumeList = resolve => (require(['../components/internalInvoice/resumeList.vue'], resolve)) // 内部审核简历
 const transfer = resolve => (require(['../components/finance/transfer.vue'], resolve)) // 
-const CompanyForm = resolve => (require(['../components/teamMessage/teamCompanyForm.vue'], resolve)) // 团队企业
+const teamCompanyForm = resolve => (require(['../components/teamMessage/teamCompanyForm.vue'], resolve)) // 团队企业
 const personalForm = resolve => (require(['../components/teamMessage/personalForm.vue'], resolve)) // 团队个人
 const teamOrder = resolve => (require(['../components/teamCenter/teamOrder.vue'], resolve)) // 团队排名
 const logList = resolve => (require(['../components/teamCenter/logList.vue'], resolve)) // 团队日志
@@ -236,9 +236,9 @@ let rootList = [
     }
   },
   { // 团队个人设置
-    path: '/companyForm',
-    name: 'CompanyForm',
-    component: CompanyForm,
+    path: '/teamCompanyForm',
+    name: 'teamCompanyForm',
+    component: teamCompanyForm,
     meta: {
       requiresAuth: 2
     }
@@ -303,12 +303,13 @@ let receiptList = [
   },
 
 ]
-if (userPosition == 1) {
-  children = [...children, ...rootList, ...receiptList]
-}
-if (userPosition == 2) {
-  children = [...children, ...receiptList]
-}
+// if (userPosition == 1) {
+//   children = [...children, ...rootList, ...receiptList]
+// }
+children = [...children, ...rootList, ...receiptList]
+// if (userPosition == 2) {
+//   children = [...children, ...receiptList]
+// }
 export const teamRouters = {
   path: '/team',
   name: 'Team',

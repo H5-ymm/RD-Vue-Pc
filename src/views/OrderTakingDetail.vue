@@ -473,12 +473,17 @@ export default {
           uid: localStorage.getItem('uid')
         }
         addApply(params).then(res => {
-          this.centerDialogVisible = true
-          this.modalInfo = {
-            title: '申请成功！',
-            okText: '查看申请',
-            closeText: '关闭',
-            imgBg: require('../assets/img/success.png')
+          if (res.data) {
+            this.centerDialogVisible = true
+            this.modalInfo = {
+              title: '申请成功！',
+              okText: '查看申请',
+              closeText: '关闭',
+              imgBg: require('../assets/img/success.png')
+            }
+          }
+          else {
+            this.$message.error('接单失败')
           }
         }).catch(error => {
           this.$message.error(error.status.remind)

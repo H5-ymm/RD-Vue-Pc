@@ -85,8 +85,8 @@
 </template>
 
 <script>
-import { getResumeList, addUserResume } from '@/api/resume'
-import { getJoblist, addPut } from '@/api/internalInvoice'
+import { getResumeList, addUserResume, getMatchingResume, getMatchingJobList } from '@/api/resume'
+import { putResumelist, addPut } from '@/api/internalInvoice'
 import { getListPut } from '@/api/teamReceipt'
 import { moneyTypeList, rewardTypeList, payTypeList, weekList } from '@/base/base'
 import { recommendTeamUserJob } from '@/api/collect'
@@ -132,12 +132,12 @@ export default {
       activeIndex: 0,
       tabIndex: 0,
       value1: 5,
-      jobId: '',
       resumeId: ''
     }
   },
   created () {
-    this.jobId = this.$route.query.id
+    this.resumeId = this.$route.query.id
+    this.formMember.resumeId = this.$route.query.id
     console.log(this.jobId)
     this.getList(this.formMember)
   },
@@ -149,7 +149,7 @@ export default {
   methods: {
     getList (params) {
       if (this.tabIndex == 0) {
-        getJoblist(params).then(res => {
+        getMatchingJobList(params).then(res => {
           const { data } = res
           this.tableData = data.data
           this.total = res.data.count
@@ -167,8 +167,8 @@ export default {
     },
     selectStatus (item, index) {
       this.activeIndex = index
-      this.getList(this.formMember)
       this.formMember.status = item.value
+      this.getList(this.formMember)
     },
     handleSizeChange (val) {
       this.formMember.limit = val
@@ -178,13 +178,12 @@ export default {
       this.formMember.page = val
       this.getList(this.formMember)
     },
-    handleApply (resumeId) {
-      if (!resumeId) {
-        return this.$message.warning('请选择组员')
+    handleApply (jobId) {
+      if (!jobId) {
+        return this.$message.warning('请选择职位')
       }
       let params = {
-        job_id: this.jobId,
-        resume_id: resumeId,
+        jobId: jobId,
         uid: localStorage.getItem('uid')
       }
       addPut(params).then(res => {
@@ -230,24 +229,6 @@ export default {
         color: #fff;
       }
     }
-  }
-  .table-query {
-    margin-bottom:20px;
-    .select-text {
-      margin-left: 10px;
-    }
-  }
-  .table-list {
-    padding-left: 10px;
-    .select-btn {
-      margin-left: 20px;
-    }
-  }
-  .width300 {
-    width: 300px;
-  }
-  .select-status {
-    margin-right: 10px;
   }
 }
 

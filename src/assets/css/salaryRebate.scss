@@ -83,14 +83,6 @@
   }
 }
 .width160 {
-  &.reward-input {
-    margin-right: 0;
-    .el-input-group {
-      .el-input__inner {
-        width: 100px!important;
-      }
-    }
-  }
   .text-input {
     border: none;
     border-bottom: 1px solid #eee;
@@ -98,10 +90,17 @@
       width: 160px!important;
     }
   }
-  
   &.money_type {
     .el-input__inner {
       width: 85px!important;
+    }
+  }
+  &.reward-input {
+    margin-right: 0;
+    .el-input-group.text-input {
+      .el-input__inner {
+        width:60px!important;
+      }
     }
   }
 }

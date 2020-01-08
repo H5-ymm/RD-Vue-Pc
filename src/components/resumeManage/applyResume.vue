@@ -76,12 +76,12 @@
           <el-table-column :label="label" prop="money_m" align="center" width="150"></el-table-column>
           <el-table-column label="跟进记录" align="center" width="100">
             <template slot-scope="props">
-              <el-button class="text-line" type="text" @click="viewRecord(props.row)">{{props.row.name}}</el-button>
+              <el-button class="text-line" type="text" @click="viewRecord(props.row)" v-if="props.row.trackList&&props.row.trackList[0]">{{props.row.trackList[0].title}}</el-button>
             </template>
           </el-table-column>
-          <el-table-column label="跟进时间" prop="msdesc" sortable="custom" align="center" width="150">
+          <el-table-column label="跟进时间" prop="msdesc" sortable="custom" align="center" width="160">
             <template slot-scope="props">
-              <span type="text">{{props.row.uptime?$moment.unix(props.row.uptime).format('YYYY-MM-DD'):'--'}}</span>
+              <span type="text">{{props.row.trackList&&props.row.trackList[0].addtime?$moment.unix(props.row.trackList[0].addtime).format('YYYY-MM-DD HH:mm'):'--'}}</span>
             </template>
           </el-table-column>
           <el-table-column label="意向岗位" prop="desired_position" align="center" width="150"></el-table-column>
@@ -195,8 +195,8 @@ export default {
     let params = 'job_array'
     this.getData(params)
   },
-  watch:{
-    $route(to,from){
+  watch: {
+    $route (to, from) {
       console.log(to)
       console.log(from)
       this.viewType = this.$route.query.view

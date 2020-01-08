@@ -54,3 +54,6 @@
       overflow: hidden;
       text-overflow: ellipsis;
     }
+    .width150 {
+      width: 150px;
+    }

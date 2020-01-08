@@ -7,19 +7,9 @@
         <img src="../../assets/img/cardBg1.png" alt class="cardBg" v-if="key=='name'" />
         <img src="../../assets/img/cardBg2.png" alt class="cardBg" v-if="key=='num'" />
         <img src="../../assets/img/cardBg3.png" alt class="cardBg" v-if="key=='resumeNum'&&userPosition==1" />
-        <img
-          src="../../assets/img/cardBg4.png"
-          alt
-          class="cardBg"
-          v-if="key=='entryNum'&&userPosition==1"
-        />
+        <img src="../../assets/img/cardBg4.png" alt class="cardBg" v-if="key=='entryNum'&&userPosition==1" />
         <img src="../../assets/img/cardBg5.png" alt class="cardBg" v-if="key=='resumeNum'&&userPosition!=1" />
-        <img
-          src="../../assets/img/cardBg6.png"
-          alt
-          class="cardBg"
-          v-if="key=='entryNum'&&userPosition!=1"
-        />
+        <img src="../../assets/img/cardBg6.png" alt class="cardBg" v-if="key=='entryNum'&&userPosition!=1" />
       </el-card>
     </el-col>
   </el-row>
@@ -30,13 +20,13 @@ export default {
   props: ['userType', 'teamInfo'],
   data () {
     return {
-      userPosition:sessionStorage.getItem('userPosition')
+      userPosition: sessionStorage.getItem('userPosition')
     }
   },
   computed: {
     userLabel () {
       let obj = {}
-      if (this.userPosition==1) {
+      if (this.userPosition == 1) {
         obj = {
           name: '团队名称',
           num: '团队成员',
@@ -47,7 +37,7 @@ export default {
       else {
         obj = {
           name: '团队名称',
-          num: '招聘部',
+          num: localStorage.getItem('departName') ? localStorage.getItem('departName') : '--',
           resumeNum: '简历总数',
           entryNum: '已入职'
         }

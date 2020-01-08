@@ -44,128 +44,46 @@
 <template>
   <div class="tables-box billingManagement receipt-manage internal-invoice">
     <div class="table-list">
-      <el-form
-        :inline="true"
-        label-width="96px"
-        label-position="right"
-        :model="formMember"
-        class="internal-invoice-form form-item-wrap"
-      >
+      <el-form :inline="true" label-width="96px" label-position="right" :model="formMember" class="internal-invoice-form form-item-wrap">
         <el-form-item label="搜索类型：">
-          <el-select
-            v-model="type"
-            class="width120"
-            placeholder="请选择"
-          >
-            <el-option
-              label="职位名称"
-              value="job_name"
-            ></el-option>
-            <el-option
-              label="企业名称"
-              value="com_name"
-            ></el-option>
-            <el-option
-              label="工作地址"
-              value="address"
-            ></el-option>
+          <el-select v-model="type" class="width120" placeholder="请选择">
+            <el-option label="职位名称" value="job_name"></el-option>
+            <el-option label="企业名称" value="com_name"></el-option>
+            <el-option label="工作地址" value="address"></el-option>
           </el-select>
-          <el-input
-            v-model="keyword"
-            class="width300"
-            @change="changeInput"
-            placeholder="请输入你要搜索的关键字"
-          ></el-input>
-          <el-button
-            type="primary"
-            @click="handleSearch"
-            class="select-btn"
-          >查询</el-button>
-          <p
-            @click="show=!show"
-            class="x-flex-center senior-search-btn"
-          >
-            <el-link
-              :type="show?'primary': ''"
-              :underline="false"
-            >高级筛选</el-link>
+          <el-input v-model="keyword" class="width300" @change="changeInput" placeholder="请输入你要搜索的关键字"></el-input>
+          <el-button type="primary" @click="handleSearch" class="select-btn">查询</el-button>
+          <p @click="show=!show" class="x-flex-center senior-search-btn">
+            <el-link :type="show?'primary': ''" :underline="false">高级筛选</el-link>
             <i class="el-icon-arrow-down"></i>
           </p>
         </el-form-item>
         <el-collapse-transition>
-          <div
-            v-show="show"
-            class="senior-search-box x-flex-start"
-          >
+          <div v-show="show" class="senior-search-box x-flex-start">
             <div>
               <el-form-item label="发布时间：">
-                <el-button
-                  :type="formMember.ctime==item.value ?'primary':''"
-                  v-for="(item,index) in timeStatusList"
-                  :key="index"
-                  plain
-                  @click="selectStatus('ctime',item)"
-                  class="select-status"
-                >{{item.label}}</el-button>
+                <el-button :type="formMember.ctime==item.value ?'primary':''" v-for="(item,index) in timeStatusList" :key="index" plain @click="selectStatus('ctime',item)" class="select-status">{{item.label}}</el-button>
               </el-form-item>
               <el-form-item label="缴纳公积金：">
-                <el-button
-                  :type="formMember.reserve_fund==item.value ?'primary':''"
-                  v-for="(item,index) in statusList"
-                  :key="index"
-                  plain
-                  class="select-status"
-                  @click="selectStatus('reserve_fund',item)"
-                >{{item.label}}</el-button>
+                <el-button :type="formMember.reserve_fund==item.value ?'primary':''" v-for="(item,index) in statusList" :key="index" plain class="select-status" @click="selectStatus('reserve_fund',item)">{{item.label}}</el-button>
               </el-form-item>
               <el-form-item label="返利模式：">
-                <el-button
-                  :type="formMember.reward_type==item.value ?'primary':''"
-                  v-for="(item,index) in rewardTypeList"
-                  :key="index"
-                  plain
-                  @click="selectStatus('reward_type',item)"
-                  class="select-status"
-                >{{item.label}}</el-button>
+                <el-button :type="formMember.reward_type==item.value ?'primary':''" v-for="(item,index) in rewardTypeList" :key="index" plain @click="selectStatus('reward_type',item)" class="select-status">{{item.label}}</el-button>
               </el-form-item>
             </div>
             <div class="senior-search-col2">
               <el-form-item label="缴纳五险：">
-                <el-button
-                  :type="formMember.five_risks==item.value ?'primary':''"
-                  v-for="(item,index) in statusList"
-                  :key="index"
-                  plain
-                  @click="selectStatus('five_risks',item)"
-                  class="select-status"
-                >{{item.label}}</el-button>
+                <el-button :type="formMember.five_risks==item.value ?'primary':''" v-for="(item,index) in statusList" :key="index" plain @click="selectStatus('five_risks',item)" class="select-status">{{item.label}}</el-button>
               </el-form-item>
               <el-form-item label="上架状态：">
-                <el-button
-                  :type="formMember.is_up==item.value ?'primary':''"
-                  v-for="(item,index) in statusList"
-                  :key="index"
-                  plain
-                  @click="selectStatus('is_up',item)"
-                  class="select-status"
-                >{{item.label}}</el-button>
+                <el-button :type="formMember.is_up==item.value ?'primary':''" v-for="(item,index) in statusList" :key="index" plain @click="selectStatus('is_up',item)" class="select-status">{{item.label}}</el-button>
               </el-form-item>
               <el-form-item label="岗位类型：">
-                <el-button
-                  :type="formMember.job_type==item.value ?'primary':''"
-                  v-for="(item,index) in positionStatusList"
-                  :key="index"
-                  plain
-                  @click="selectStatus('job_type',item)"
-                  class="select-status"
-                >{{item.label}}</el-button>
+                <el-button :type="formMember.job_type==item.value ?'primary':''" v-for="(item,index) in positionStatusList" :key="index" plain @click="selectStatus('job_type',item)" class="select-status">{{item.label}}</el-button>
               </el-form-item>
             </div>
             <div class="up-box">
-              <p
-                @click="show=!show"
-                class="senior-search-btn"
-              >
+              <p @click="show=!show" class="senior-search-btn">
                 <span>收起</span>
                 <i class="el-icon-arrow-up"></i>
               </p>
@@ -174,159 +92,64 @@
         </el-collapse-transition>
 
         <el-form-item label="薪资类型：">
-          <el-button
-            :type="formMember.offermoney_type==item.value ?'primary':''"
-            v-for="(item,index) in moneyTypeList"
-            :key="index"
-            plain
-            @click="selectStatus('offermoney_type',item)"
-            class="select-status"
-          >{{item.label}}</el-button>
+          <el-button :type="formMember.offermoney_type==item.value ?'primary':''" v-for="(item,index) in moneyTypeList" :key="index" plain @click="selectStatus('offermoney_type',item)" class="select-status">{{item.label}}</el-button>
         </el-form-item>
         <el-form-item label="招聘类型：">
-          <el-button
-            :type="formMember.moneyType==item.value ?'primary':''"
-            v-for="(item,index) in advertisesList"
-            :key="index"
-            plain
-            @click="selectStatus('moneyType',item)"
-            class="select-status"
-          >{{item.label}}</el-button>
+          <el-button :type="formMember.moneyType==item.value ?'primary':''" v-for="(item,index) in advertisesList" :key="index" plain @click="selectStatus('moneyType',item)" class="select-status">{{item.label}}</el-button>
         </el-form-item>
       </el-form>
       <div class="member-table">
         <div class="table-query">
           <el-button @click="$router.push('postJob')">发布岗位</el-button>
         </div>
-        <el-table
-          border
-          :data="tableData"
-          ref="multipleTable"
-          style="width: 100%"
-        >
-          <el-table-column
-            label="企业名称"
-            align="center"
-            width="150"
-            prop="company_name"
-          >
+        <el-table border :data="tableData" ref="multipleTable" style="width: 100%">
+          <el-table-column label="企业名称" align="center" width="150" prop="company_name">
           </el-table-column>
-          <el-table-column
-            label="岗位名称"
-            prop="job_name"
-            align="center"
-            width="150"
-          ></el-table-column>
-          <el-table-column
-            label="岗位类型"
-            align="center"
-            width="110"
-          >
-           <template slot-scope="props">
+          <el-table-column label="岗位名称" prop="job_name" align="center" width="150"></el-table-column>
+          <el-table-column label="岗位类型" align="center" width="110">
+            <template slot-scope="props">
               <span>{{props.row.jobType | jobType}}</span>
-            </template>  
+            </template>
           </el-table-column>
-          <el-table-column
-            label="工作地址"
-            prop="address"
-            align="center"
-            width="110"
-          ></el-table-column>
-          <el-table-column
-            label="员工薪资"
-            align="center"
-            width="110"
-          >
-           <template slot-scope="props">
+          <el-table-column label="工作地址" prop="address" align="center" width="110"></el-table-column>
+          <el-table-column label="员工薪资" align="center" width="110">
+            <template slot-scope="props">
               <span>{{props.row.offermoney}}元/{{props.row.offermoney_type==1?'月':props.row.offermoney_type==2?'日':'时'}}</span>
             </template>
           </el-table-column>
-          <el-table-column
-            label="招聘类型"
-            align="center"
-            width="110"
-          >
-           <template slot-scope="props">
+          <el-table-column label="招聘类型" align="center" width="110">
+            <template slot-scope="props">
               <span>{{props.row.type}}</span>
             </template>
-            </el-table-column>
-          <el-table-column
-            label="薪资类型"
-            align="center"
-            width="110"
-          >
+          </el-table-column>
+          <el-table-column label="薪资类型" align="center" width="110">
             <template slot-scope="props">
               <span>{{props.row.offermoney_type | moneyType}}</span>
             </template>
           </el-table-column>
-          <el-table-column
-            label="招聘人数"
-            align="center"
-            width="110"
-            prop="number"
-          >
+          <el-table-column label="招聘人数" align="center" width="110" prop="number">
           </el-table-column>
-          <el-table-column
-            label="上架状态"
-            align="center"
-            width="110"
-            v-if="userPosition!=1"
-          >
+          <el-table-column label="上架状态" align="center" width="110">
             <template slot-scope="props">
-              <span
-                class="status"
-                :class="`status${props.row.is_up}`"
-              >{{props.row.is_up==1?'招聘中':'已下架'}}</span>
+              <span class="status" :class="`status${props.row.is_up}`">{{props.row.is_up==1?'招聘中':'已下架'}}</span>
             </template>
           </el-table-column>
-          <el-table-column
-            label="创建日期"
-            align="center"
-            width="170"
-          >
+          <el-table-column label="创建日期" align="center" width="170">
             <template slot-scope="props">
               <div>{{props.row.ctime?props.row.ctime:'--'}}</div>
             </template>
           </el-table-column>
-          <el-table-column
-            label="操作"
-            align="center"
-            min-width="150"
-          >
+          <el-table-column label="操作" align="center" min-width="150">
             <template slot-scope="scope">
-              <el-button
-                @click="$router.push('jobDetail')"
-                type="text"
-                size="small"
-              >详情</el-button>
-              <el-button
-                @click="handleApply(scope.row)"
-                v-if="scope.row.is_up==1"
-                type="text"
-                size="small"
-              >领取</el-button>
+              <el-button @click="$router.push('jobDetail')" type="text" size="small">详情</el-button>
+              <el-button @click="handleApply(scope.row)" v-if="scope.row.is_up==1" type="text" size="small">领取</el-button>
             </template>
           </el-table-column>
         </el-table>
       </div>
-      <el-pagination
-        class="team-pagination"
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :current-page="formMember.page"
-        :page-sizes="[10, 30, 50, 100]"
-        :page-size="formMember.limit"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="total"
-      ></el-pagination>
+      <el-pagination class="team-pagination" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="formMember.page" :page-sizes="[10, 30, 50, 100]" :page-size="formMember.limit" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
     </div>
-    <modal
-      :dialogTableVisible="dialogTableVisible"
-      @handleOk="handleOk"
-      isShow="true"
-      :modalObj="modalObj"
-      @handleClose="dialogTableVisible=false"
-    ></modal>
+    <modal :dialogTableVisible="dialogTableVisible" @handleOk="handleOk" isShow="true" :modalObj="modalObj" @handleClose="dialogTableVisible=false"></modal>
   </div>
 </template>
 
@@ -343,20 +166,20 @@ export default {
       let obj = moneyTypeList.find(item => {
         return val == item.value
       })
-      return obj? obj.label: '-'
+      return obj ? obj.label : '-'
     },
     recommendStatus (val) {
       let obj = recommendStatusList.find(item => {
         return val == item.value
       })
-      return obj? obj.label: '-'
+      return obj ? obj.label : '-'
     },
-    jobType(val){
+    jobType (val) {
       let obj = positionStatusList.find(item => {
         return val == item.value
       })
-      return obj? obj.label: '-'
-      
+      return obj ? obj.label : '-'
+
     }
   },
   data () {

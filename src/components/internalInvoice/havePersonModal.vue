@@ -23,8 +23,14 @@
 <script>
 export default {
   props: {
-    dialogTableVisible: false,
-    hasPersonList: Array
+    dialogTableVisible: {
+      type: Boolean,
+      default: false
+    },
+    hasPersonList: {
+      type: Array,
+      default: []
+    }
   },
   data () {
     return {
@@ -42,7 +48,7 @@ export default {
       ],
       ids: [],
       type: 'primary',
-      isCancel:false,
+      isCancel: false,
       activeIndex: -1
     }
   },
@@ -50,7 +56,7 @@ export default {
     handleClose () {
       this.$emit('handleClose')
     },
-    handleCancle (id,index) {
+    handleCancle (id, index) {
       this.activeIndex = index
       let arr = []
       arr.push(id)
@@ -92,13 +98,20 @@ export default {
       }
       .personal-box {
         padding: 10px 0 ;
-        height: 200px;
+        height: 300px;
         overflow: auto;
+        >li {
+          margin-bottom: 15px;
+        }
         .item-name{
           color: #333;
+          width: 80px;
+          text-align: left;
         }
         .item-time{
           color: #6A6A6A;
+          // width: 190px;
+          // text-align: left;
         }
       }
     }

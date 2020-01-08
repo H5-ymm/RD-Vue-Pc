@@ -2,13 +2,7 @@
 @import '@/assets/css/modal.scss';
 </style>
 <template>
-  <el-dialog
-    width="500px"
-    top="5vh"
-    :visible="dialogTableVisible"
-    class="member-dialog"
-    :show-close="false"
-  >
+  <el-dialog width="500px" top="5vh" :visible="dialogTableVisible" class="member-dialog" :show-close="false">
     <div class="member-row">
       <img src="../../assets/img/member/cancel.png" alt class="cancel-icon" @click="handleClose" />
       <section class="member-col1">
@@ -16,14 +10,7 @@
       </section>
       <div class="staff-detail-row">
         <section class="resume-col3">
-          <el-form
-            :model="formMember"
-            :rules="rules"
-            ref="formMember"
-            class="demo-form-inline"
-            label-position="right"
-            label-width="80px"
-          >
+          <el-form :model="formMember" :rules="rules" ref="formMember" class="demo-form-inline" label-position="right" label-width="80px">
             <section class="resume-card">
               <p class="resume-main-title x-flex-start-justify">
                 <img src="../../assets/img/icon7.png" />
@@ -53,22 +40,12 @@
                   </el-form-item>
                   <el-form-item label="学历">
                     <el-select v-model="formMember.education" value-key="key" placeholder="请选择学历" class="width300">
-                      <el-option
-                        :label="item"
-                        :value="key"
-                        v-for="(item,key) in edu_type"
-                        :key="key"
-                      ></el-option>
+                      <el-option :label="item" :value="key" v-for="(item,key) in edu_type" :key="key"></el-option>
                     </el-select>
                   </el-form-item>
                   <el-form-item label="详细地址">
                     <div class="width300 select-city">
-                      <districtSelet
-                        @change="change"
-                        :address="address"
-                        :disabled="true"
-                        :placeholder="'请选择省市'"
-                      ></districtSelet>
+                      <districtSelet @change="change" :address="address" :disabled="true" :placeholder="'请选择省市'"></districtSelet>
                     </div>
                     <el-input v-model="formMember.address" placeholder="请输入详细地址" class="width300"></el-input>
                   </el-form-item>
@@ -155,7 +132,10 @@ export default {
       }
       selectCompanyResumeInfo(params).then(res => {
         this.formMember = res.data
-        this.address = [res.data.provinceid, res.data.cityid]
+        if (res.data.provinceid && res.data.cityid) {
+          this.address = [res.data.provinceid, res.data.cityid]
+        }
+
       })
     },
     getList (filed) {

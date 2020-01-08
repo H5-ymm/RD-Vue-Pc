@@ -1,25 +1,23 @@
 <template>
-  <el-backtop target=".page-component__scroll .el-scrollbar__wrap" :bottom="100">
-    <ul class="fixed" v-if="isShow">
-      <li>
-        <a href="#header">
-          <el-tooltip class="item" effect="dark" content="一键置顶" placement="left">
-            <img src="../assets/img/top.png" alt />
-          </el-tooltip>
-        </a>
-      </li>
-      <li>
-        <el-tooltip class="item" effect="dark" content="联系客服" placement="left">
-          <img src="../assets/img/kefu.png" alt />
+  <ul class="fixed" v-if="isShow">
+    <li>
+      <a href="#header">
+        <el-tooltip class="item" effect="dark" content="一键置顶" placement="left">
+          <img src="../assets/img/top.png" alt />
         </el-tooltip>
-      </li>
-      <li class="help">
-        <el-tooltip class="item" effect="dark" content="帮助反馈" placement="left">
-          <img src="../assets/img/help.png" alt />
-        </el-tooltip>
-      </li>
-    </ul>
-  </el-backtop>
+      </a>
+    </li>
+    <li>
+      <el-tooltip class="item" effect="dark" content="联系客服" placement="left">
+        <img src="../assets/img/kefu.png" alt />
+      </el-tooltip>
+    </li>
+    <li class="help">
+      <el-tooltip class="item" effect="dark" content="帮助反馈" placement="left">
+        <img src="../assets/img/help.png" alt />
+      </el-tooltip>
+    </li>
+  </ul>
 </template>
 <script>
 export default {

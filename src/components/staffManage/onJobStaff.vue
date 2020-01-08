@@ -1,13 +1,7 @@
 <template>
   <div class="tables-box billingManagement">
     <div class="table-list">
-      <el-form
-        :inline="true"
-        label-width="100px"
-        label-position="right"
-        :model="formMember"
-        class="demo-form-inline"
-      >
+      <el-form :inline="true" label-width="100px" label-position="right" :model="formMember" class="demo-form-inline">
         <el-form-item label="姓名：">
           <el-input v-model="formMember.name" class="width300" placeholder="请输入姓名关键字"></el-input>
         </el-form-item>
@@ -24,24 +18,11 @@
         </el-form-item>
         <el-form-item label="性别：">
           <el-select v-model="formMember.sex" class="width300" placeholder="请选择性别">
-            <el-option
-              :label="item.label"
-              :value="item.value"
-              v-for="(item,index) in sexList"
-              :key="index"
-            ></el-option>
+            <el-option :label="item.label" :value="item.value" v-for="(item,index) in sexList" :key="index"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="入职时间：">
-          <el-date-picker
-            class="width300"
-            @change="changeDate"
-            v-model="timeList"
-            type="daterange"
-            range-separator="-"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-          ></el-date-picker>
+          <el-date-picker class="width300" @change="changeDate" v-model="timeList" type="daterange" range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期"></el-date-picker>
         </el-form-item>
         <el-form-item label="手机号码：">
           <el-input v-model="formMember.mobile" class="width300" placeholder="请输入手机号码"></el-input>
@@ -68,21 +49,11 @@
           </span>
           <el-button type="text" @click="multipleSelection=[],staffId=''">清空</el-button>
         </div>
-        <el-table
-          border
-          :data="tableData"
-          @sort-change="sortChange"
-          ref="multipleTable"
-          style="width: 100%"
-          @selection-change="handleSelectionChange"
-        >
+        <el-table border :data="tableData" @sort-change="sortChange" ref="multipleTable" style="width: 100%" @selection-change="handleSelectionChange">
           <el-table-column type="selection" align="center" width="50"></el-table-column>
           <el-table-column label="姓名" align="center" width="110">
             <template slot-scope="props">
-              <el-button
-                type="text"
-                @click="staffId=props.row.id,viewStaffVisible=true"
-              >{{props.row.name}}</el-button>
+              <el-button type="text" @click="staffId=props.row.id,viewStaffVisible=true">{{props.row.name}}</el-button>
             </template>
           </el-table-column>
           <el-table-column label="联系电话" prop="mobile" align="center" width="120"></el-table-column>
@@ -101,9 +72,7 @@
           <el-table-column label="学历" prop="education" align="center" width="110"></el-table-column>
           <el-table-column label="住址" align="center" width="190">
             <template slot-scope="props">
-              <span
-                class="text-line"
-              >{{props.row.provindeName}}{{props.row.cityName}}{{props.row.address}}</span>
+              <span class="text-line">{{props.row.provindeName}}{{props.row.cityName}}{{props.row.address}}</span>
             </template>
           </el-table-column>
           <el-table-column label="操作" align="center" min-width="190">
@@ -119,41 +88,12 @@
           </el-table-column>
         </el-table>
       </div>
-      <el-pagination
-        class="team-pagination"
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :current-page="formMember.page"
-        :page-sizes="[10, 30, 50, 100]"
-        :page-size="formMember.limit"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="total"
-      ></el-pagination>
+      <el-pagination class="team-pagination" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="formMember.page" :page-sizes="[10, 30, 50, 100]" :page-size="formMember.limit" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
     </div>
-    <modal
-      :dialogTableVisible="dialogTableVisible"
-      @handleOk="handleOk"
-      :modalObj="modalObj"
-      :isShow="isShow"
-      @handleClose="dialogTableVisible=false"
-    ></modal>
-    <leadResumeModal
-      :dialogTableVisible="leadResumeVisible"
-      @download="download"
-      @exportResume="exportResumeData"
-      @handleClose="leadResumeVisible=false"
-    ></leadResumeModal>
-    <staffModal
-      :dialogTableVisible="staffVisible"
-      @handleClose="staffVisible=false"
-      @submitForm="submitForm"
-      :staffId="staffId"
-    ></staffModal>
-    <viewStaff
-      :staffId="staffId"
-      :dialogTableVisible="viewStaffVisible"
-      @handleClose="viewStaffVisible=false,staffId=''"
-    ></viewStaff>
+    <modal :dialogTableVisible="dialogTableVisible" @handleOk="handleOk" :modalObj="modalObj" :isShow="isShow" @handleClose="dialogTableVisible=false"></modal>
+    <leadResumeModal :dialogTableVisible="leadResumeVisible" @download="download" @exportResume="exportResumeData" @handleClose="leadResumeVisible=false"></leadResumeModal>
+    <staffModal :dialogTableVisible="staffVisible" @handleClose="staffVisible=false" @submitForm="submitForm" :staffId="staffId"></staffModal>
+    <viewStaff :staffId="staffId" :dialogTableVisible="viewStaffVisible" @handleClose="viewStaffVisible=false,staffId=''"></viewStaff>
   </div>
 </template>
 
@@ -246,7 +186,7 @@ export default {
         })
       }
     },
-    changeDate(val){
+    changeDate (val) {
       this.formMember.beginTime = val[0]
       this.formMember.endTime = val[1]
     },
@@ -262,9 +202,12 @@ export default {
     },
     exportResumeData (file) {
       console.log(file)
-      this.leadResumeVisible = false
+
       importCompanyResume(file).then(res => {
+        this.leadResumeVisible = false
         this.getList(this.formMember)
+      }).catch(error => {
+        this.$message.error(error.status.remind)
       })
     },
     exportResume () {
@@ -370,7 +313,7 @@ export default {
     onSubmit () {
       this.getList(this.formMember)
     },
-    reset() {
+    reset () {
       this.formMember = {
         uid: localStorage.getItem('uid'),
         limit: 10,

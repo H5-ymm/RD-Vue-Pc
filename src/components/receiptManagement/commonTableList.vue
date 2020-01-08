@@ -11,7 +11,16 @@
         </el-form-item>
       </el-form>
       <div class="member-table">
+        <div class="table-query" v-if="viewType!=5&&viewType!=4">
+          <el-button @click="handleUser(1,id)">通过</el-button>
+          <el-button @click="handleUser(2,id)">未通过</el-button>
+        </div>
+        <div class="table-query" v-if="viewType==4">
+          <el-button @click="handleUser(1,id)">已入职</el-button>
+          <el-button @click="handleUser(2,id)">未入职</el-button>
+        </div>
         <el-table border :data="tableData" ref="multipleTable" @sort-change="sortChange" style="width: 100%">
+          <el-table-column type="selection" align="center" width="50" v-if="viewType!=5"></el-table-column>
           <el-table-column label="姓名" align="center" width="150">
             <template slot-scope="props">
               <el-button type="text">{{props.row.name}}</el-button>
@@ -34,12 +43,32 @@
           </el-table-column>
           <el-table-column label="状态" align="center" min-width="150">
             <template slot-scope="props">
-              <span class="status">{{props.row.entry_status==1?'未通过':'通过'}}</span>
+              <span class="status" v-if="!props.row.entry_status">待审核</span>
+              <span class="status" v-else>{{props.row.entry_status==1?'通过':props.row.entry_status==2?'未通过':'未参加'}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="操作" align="center" min-width="150" v-if="viewType==5">
+          <el-table-column label="操作" align="center" min-width="150" v-if="viewType==2">
             <template slot-scope="props">
               <el-button type="text" @click="handleUser(props.row)" size="small">离职</el-button>
+            </template>
+          </el-table-column>
+          <el-table-column label="操作" align="center" min-width="150" v-if="viewType==4">
+            <template slot-scope="props">
+              <div v-if="!props.row.entry_status">
+                <el-button type="text" @click="handleUser(1,props.row)" size="small">已入职</el-button>
+                <el-button type="text" @click="handleUser(2,props.row)" size="small">未入职</el-button>
+              </div>
+              <span v-else>{{props.row.entry_status==1?'已入职':'未入职'}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="操作" align="center" min-width="150" v-if="viewType==3">
+            <template slot-scope="props">
+              <div v-if="!props.row.entry_status">
+                <el-button type="text" @click="handleResume(1,props.row)" size="small">通过</el-button>
+                <el-button type="text" @click="handleResume(2,props.row)" size="small">未通过</el-button>
+                <el-button type="text" @click="handleResume(3,props.row)" size="small">未参加</el-button>
+              </div>
+              <span v-else>{{props.row.entry_status==1?'通过':props.row.entry_status==2?'未通过':'未参加'}}</span>
             </template>
           </el-table-column>
         </el-table>
@@ -50,7 +79,7 @@
 </template>
 
 <script>
-import { incumbencyUserResumeList, entryUserResumeList, entryResumeList, updateEntryUser } from '../../api/receipt'
+import { incumbencyUserResumeList, entryUserResumeList, entryResumeList, updateEntryUser, auditEntryResume } from '../../api/receipt'
 import { moneyTypeList, rewardTypeList, payTypeList } from '../../base/base'
 export default {
   filters: {
@@ -95,15 +124,16 @@ export default {
       ],
       activeIndex: 0,
       viewType: '',
-      jobId: ''
+      jobId: '',
+      id: ''
     }
   },
   created () {
     // 初始化查询标签数据
     // viewType
-    // 3.面试结果
-    // 4.在职名单
-    // 5.入职名单
+    // 4.面试结果
+    // 5.入职审核
+    // 2.在职名单
     this.viewType = this.$route.query.view
     this.jobId = this.$route.query.id
     this.formMember.jobId = this.jobId
@@ -112,13 +142,13 @@ export default {
   methods: {
     getList (params) {
       if (this.viewType == 4) {
-        incumbencyUserResumeList(params).then(res => {
+        entryUserResumeList(params).then(res => {
           this.getData(res)
         }).catch(error => {
           this.$message.error(error.status.remind)
         })
       }
-      else if (this.viewType == 3) {
+      else if (this.viewType == 3 || this.viewType == 6) {
         entryResumeList(params).then(res => {
           this.getData(res)
         }).catch(error => {
@@ -126,7 +156,7 @@ export default {
         })
       }
       else {
-        entryUserResumeList(params).then(res => {
+        incumbencyUserResumeList(params).then(res => {
           this.getData(res)
         }).catch(error => {
           this.$message.error(error.status.remind)
@@ -159,13 +189,27 @@ export default {
       this.formMember.page = val
       this.getList(this.formMember)
     },
-    handleUser (val) {
+    handleUser (status, val) {
       let params = {
         uid: localStorage.getItem('uid'),
         id: val.id,
-        status: 4
+        status: status
       }
       updateEntryUser(params).then(res => {
+        this.$message.success('操作成功')
+        this.$router.go(-1)
+        this.getList(this.formMember)
+      }).catch(error => {
+        this.$message.error(error.status.remind)
+      })
+    },
+    handleResume (status, val) {
+      let params = {
+        uid: localStorage.getItem('uid'),
+        id: val.id,
+        status: status
+      }
+      auditEntryResume(params).then(res => {
         this.$message.success('操作成功')
         this.getList(this.formMember)
       }).catch(error => {
@@ -175,20 +219,11 @@ export default {
     submitMember (val) {
       updateTeamUser(val).then(res => {
         this.dialogTableVisible = false
-        this.getList(this.params)
-      })
-    },
-    onSubmit (value) {
-      let params = Object.assign(this.formMember, value)
-      this.getList(params)
-    },
-    submitForm (val) {
-      this.visible = false
-      addTeamUser(val).then(res => {
         this.getList(this.formMember)
-      }).catch(error => {
-        this.$message.error(error.status.remind)
       })
+    },
+    onSubmit () {
+      this.getList(this.formMember)
     }
   }
 }

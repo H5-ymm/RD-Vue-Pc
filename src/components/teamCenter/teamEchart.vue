@@ -145,25 +145,26 @@ export default {
       }
       return label
     },
-    getArry (obj) {
-      var arr = []
+    getArray (obj) {
+      let arr = []
       for (let i in obj) {
-        arr.push(obj[i]); //属性
+        arr.push(obj[i])
       }
       return arr
     },
     getList (val) {
       let arr = []
       if (this.arrList && this.arrList.total && this.activeIndex == 0) {
-        arr[0] = this.getArry(this.percentList.total)
-        arr[1] = this.getArry(this.percentList.put)
-        arr[2] = this.getArry(this.percentList.view)
-        arr[3] = this.getArry(this.percentList.entry)
+        arr[0] = this.getArray(this.percentList.total)
+        arr[1] = this.getArray(this.percentList.put)
+        arr[2] = this.getArray(this.percentList.view)
+        console.log(this.getArray(this.percentList.entry))
+        arr[3] = this.getArray(this.percentList.entry)
       }
       if (this.arrList && this.arrList.total && this.list) {
         let key = this.getKey(this.activeIndex)
-        arr[0] = this.getArry(this.arrList[key])
-        arr[1] = this.getArry(this.list[key])
+        arr[0] = this.getArray(this.arrList[key])
+        arr[1] = this.getArray(this.list[key])
       }
       return arr
     },
@@ -212,7 +213,7 @@ export default {
       }
       else {
         this.legendData = ['简历总数', '报名总数', '面试总数', '入职总数']
-        console.log(this.getList(this.legendIndex)[0])
+        console.log(this.getList(this.legendIndex))
         this.series = [{
           name: '简历总数',
           type: 'line',

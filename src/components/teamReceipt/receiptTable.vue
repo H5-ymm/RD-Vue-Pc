@@ -58,10 +58,10 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column label="分配接单" align="center" width="180" v-if="userPosition==1">
+          <el-table-column label="已分配接单" align="center" width="180" v-if="userPosition==1">
             <template slot-scope="scope">
-              <div class="text-line" @click="handleRecepit(3,scope.row)">
-                <el-button type="text" size="small">{{scope.row.ylq}}</el-button>
+              <div @click="handleRecepit(3,scope.row)">
+                <el-button type="text" class="text-line width150" size="small">{{scope.row.ylq}}</el-button>
               </div>
             </template>
           </el-table-column>
@@ -84,8 +84,8 @@
                 <el-button @click="handleApply(scope.row)" type="text" v-if="!scope.row.apportion_status&&scope.row.apportion_action==1" size="small">申请推荐</el-button>
                 <el-button @click="viewJob(scope.row)" type="text" size="small">查看职位</el-button>
                 <el-button @click="handleRecepit(2,scope.row)" type="text" size="small" v-if="scope.row.apportion_status==1&&scope.row.apportion_action==1">分配组员</el-button>
-                <el-button @click="handleRecepitManagers(0,scope.row)" type="text" size="small" v-if="scope.row.apportion_status==1">重新申请</el-button>
-                <el-button @click="handleRecepitManagers(3,scope.row)" type="text" size="small" v-if="scope.row.apportion_status==3">取消申请</el-button>
+                <el-button @click="handleRecepitManagers(0,scope.row)" type="text" size="small" v-if="scope.row.apportion_status==3">重新申请</el-button>
+                <el-button @click="handleRecepitManagers(3,scope.row)" type="text" size="small" v-if="scope.row.apportion_status==1">取消申请</el-button>
                 <!-- <el-button @click="dialogVisible=true" type="text" size="small">删除职位</el-button> -->
               </div>
               <div v-if="userPosition==1">
@@ -275,15 +275,15 @@ export default {
       })
     },
     handleOk (val) {
-      let arr = val.map(val=>{
+      let arr = val.map(val => {
         return val.uid
       })
-      this.dialogTableVisible= false
+      this.dialogTableVisible = false
       let params = {
         uid: localStorage.getItem('uid'),
         job_id: this.jobId,
         uids: arr.join(',')
-       }
+      }
       apportionJob(params).then(res => {
         this.getList(this.formMember)
       }).catch(error => {

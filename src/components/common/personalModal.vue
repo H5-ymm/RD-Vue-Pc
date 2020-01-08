@@ -48,6 +48,7 @@ export default {
     },
     submit () {
       this.$emit('handleOk', this.checkList)
+      this.checkList = []
     }
   }
 }

@@ -99,24 +99,24 @@
               <div class="resume-card-item">
                 <div class="x-flex-start">
                   <p class="resume-col1">岗位名称</p>
-                  <p>{{formMember.name}}</p>
+                  <p>{{formMember.job_name}}</p>
                 </div>
                 <div class="x-flex-start">
                   <p class="resume-col1">用工企业名称</p>
-                  <p>{{formMember.age}}</p>
+                  <p>{{formMember.company_name}}</p>
                 </div>
                 <div class="x-flex-start">
                   <p class="resume-col1">招聘人数</p>
-                  <p>{{formMember.sex==1?'男':'女'}}</p>
+                  <p>{{formMember.number}}</p>
                 </div>
-                <div class="x-flex-start">
+                <div class="x-flex-start" v-if="formMember.offtime">
                   <p class="resume-col1">招工截止日期</p>
-                  <p>{{formMember.mobile}}</p>
+                  <p>{{formMember.offtime}}</p>
                 </div>
               </div>
-              <div class="company-info-box">
-                <img src="../../assets/img/icon8.png" alt />
-                <p>仁达网络科技（上海）有限公司</p>
+              <div class="company-info-box" v-if="formMember.company_logo">
+                <img src="../../assets/img/headIcon2.png" v-if="!formMember.company_logo" alt />
+                <p>{{formMember.company_name}}</p>
               </div>
             </div>
           </section>
@@ -129,67 +129,67 @@
               <div class="resume-card-item">
                 <div class="x-flex-start">
                   <p class="resume-col1">综合薪资</p>
-                  <p>{{formMember.name}}仁达网络科技（上海）有限公司仁达网络科技（上海</p>
+                  <p>{{formMember.money_min}}~{{formMember.money_max}}/{{formMember.offermoney_type==1?'月':formMember.offermoney_type==2?'日':'时'}}</p>
                 </div>
-                <div class="x-flex-start">
+                <div class="x-flex-start" v-if="formMember.welfare_statement">
                   <p class="resume-col1">薪资说明</p>
-                  <p class="x-flex-start">{{formMember.name}}</p>
+                  <p class="x-flex-start">{{formMember.welfare_statement}}</p>
                 </div>
               </div>
             </div>
           </section>
-          <section class="resume-card">
+          <section class="resume-card" v-if="!jobStatus">
             <p class="resume-main-title x-flex-start-justify">
               <img src="../../assets/img/receipt/icon3.png" />
               <span>岗位说明</span>
             </p>
             <div class="resume-card-row">
               <div class="resume-card-item">
-                <div class="x-flex-start">
+                <div class="x-flex-start" v-if="formMember.address">
                   <p class="resume-col1">工作地址</p>
-                  <p>{{formMember.name}}</p>
-                </div>
-                <div class="x-flex-start">
-                  <p class="resume-col1">工作时长</p>
                   <p>{{formMember.address}}</p>
+                </div>
+                <div class="x-flex-start" v-if="formMember.working_hours">
+                  <p class="resume-col1">工作时长</p>
+                  <p>{{formMember.working_hours}}</p>
                 </div>
                 <div class="x-flex-start">
                   <p class="resume-col1">入职条件</p>
-                  <p>{{formMember.address}}</p>
+                  <p>{{formMember.entry_requirements}}</p>
                 </div>
-                <div class="x-flex-start">
+                <div class="x-flex-start" v-if="formMember.job_description">
                   <p class="resume-col1">工作内容</p>
-                  <p>{{formMember.remark}}</p>
+                  <p>{{formMember.job_description}}</p>
                 </div>
               </div>
             </div>
           </section>
-          <section class="resume-card">
+          <section class="resume-card" v-if="!otherInfoStatus">
             <p class="resume-main-title x-flex-start-justify">
               <img src="../../assets/img/receipt/icon4.png" />
               <span>其他说明</span>
             </p>
             <div class="resume-card-row">
               <div class="resume-card-item">
-                <div class="x-flex-start">
+                <div class="x-flex-start" v-if="formMember.sex">
                   <p class="resume-col1">性别要求</p>
-                  <p>{{formMember.name}}</p>
+                  <p>{{formMember.sex==1?'男':formMember.sex==2?'女':'男女不限'}}</p>
                 </div>
-                <div class="x-flex-start">
+                <div class="x-flex-start" v-if="formMember.age_min">
                   <p class="resume-col1">年龄要求</p>
-                  <p>{{formMember.address}}</p>
+                  <p>{{formMember.age_min}}~{{formMember.age_max}}</p>
                 </div>
-                <div class="x-flex-start">
-                  <p class="resume-col1">缴纳五险</p>
-                  <p>{{formMember.address}}</p>
+                <div class="x-flex-start" v-if="formMember.five_risks">
+                  <p class=" resume-col1">缴纳五险</p>
+                  <p>{{formMember.five_risks==1?'是':formMember.sex==2?'否 ':'试用期后'}}</p>
                 </div>
-                <div class="x-flex-start">
+                <div class="x-flex-start" v-if="formMember.reserve_fund">
                   <p class="resume-col1">缴纳公积金</p>
-                  <p>{{formMember.money}}</p>
+                  <p>{{formMember.reserve_fund==1?'是':formMember.sex==2?'否 ':'试用期后'}}</p>
                 </div>
-                <div class="x-flex-start">
+                <div class="x-flex-start" v-if="formMember.com_introduction">
                   <p class="resume-col1">企业介绍</p>
-                  <p>1012-12-01</p>
+                  <p>{{formMember.com_introduction}}</p>
                 </div>
               </div>
             </div>
@@ -203,11 +203,11 @@
               <div class="resume-card-item view-resume-item">
                 <div class="x-flex-start">
                   <p class="resume-col1">招聘类型</p>
-                  <p>{{formMember.name}}</p>
+                  <p>{{formMember.type==1?'返利招聘':'普通招聘'}}</p>
                 </div>
-                <div class="x-flex-start">
+                <div class="x-flex-start" v-if="formMember.type==1">
                   <p class="resume-col1">返利模式</p>
-                  <p>{{formMember.address}}</p>
+                  <p>{{formMember.reward_money}}</p>
                 </div>
               </div>
             </div>
@@ -221,43 +221,40 @@
               <div class="resume-card-item">
                 <div class="x-flex-start">
                   <p class="resume-col1">岗位类型</p>
-                  <p>{{formMember.name}}</p>
+                  <p v-if="formMember.setinfo.job_type">{{formMember.setinfo.job_type|positionStatus}}</p>
+                  <p v-else>普通</p>
                 </div>
-                <div class="x-flex-start">
+                <div class="x-flex-start" v-if="formMember.setinfo.source">
                   <p class="resume-col1">岗位来源</p>
-                  <p>{{formMember.address}}</p>
+                  <p>{{formMember.setinfo.source}}</p>
                 </div>
-                <div class="x-flex-start">
+                <div class="x-flex-start" v-if="formMember.setinfo.work_man">
                   <p class="resume-col1">合作商务姓名</p>
-                  <p>{{formMember.address}}</p>
+                  <p>{{formMember.setinfo.work_man}}</p>
                 </div>
-                <div class="x-flex-start">
-                  <p class="resume-col1">期望岗位</p>
-                  <p>{{formMember.address}}</p>
-                </div>
-                <div class="x-flex-start">
+                <div class="x-flex-start" v-if="formMember.setinfo.work_tel">
                   <p class="resume-col1">合作商务电话</p>
-                  <p>{{formMember.address}}</p>
+                  <p>{{formMember.setinfo.work_tel}}</p>
                 </div>
-                <div class="x-flex-start">
+                <div class="x-flex-start" v-if="formMember.setinfo.meeting_time">
                   <p class="resume-col1">面试时间</p>
-                  <p>{{formMember.address}}</p>
+                  <p>{{formMember.setinfo.meeting_time}}</p>
                 </div>
-                <div class="x-flex-start">
+                <div class="x-flex-start" v-if="formMember.setinfo.meeting_addr">
                   <p class="resume-col1">面试地址</p>
-                  <p>{{formMember.address}}</p>
+                  <p>{{formMember.setinfo.meeting_addr}}</p>
                 </div>
-                <div class="x-flex-start">
+                <div class="x-flex-start" v-if="formMember.setinfo.link_man">
                   <p class="resume-col1">发单负责人</p>
-                  <p>{{formMember.address}}</p>
+                  <p>{{formMember.setinfo.link_man}}</p>
                 </div>
-                <div class="x-flex-start">
+                <div class="x-flex-start" v-if="formMember.setinfo.link_tel">
                   <p class="resume-col1">负责人电话</p>
-                  <p>{{formMember.address}}</p>
+                  <p>{{formMember.setinfo.link_tel}}</p>
                 </div>
-                <div class="x-flex-start">
+                <div class="x-flex-start" v-if="formMember.setinfo.is_assign==1">
                   <p class="resume-col1">指定招聘人</p>
-                  <p>{{formMember.address}}</p>
+                  <p>{{formMember.setinfo.assign_uids}}</p>
                 </div>
               </div>
             </div>
@@ -271,16 +268,45 @@
   </div>
 </template>
 <script>
+import { getJobinfo } from '@/api/internalInvoice'
+import { positionStatusList } from '@/base/base'
 export default {
+  filters: {
+    positionStatus (val) {
+      let obj = positionStatusList.find(item => {
+        return val == item.value
+      })
+      return obj ? obj.label : '--'
+    },
+  },
   data () {
     return {
       formMember: {},
-      id: ''
+      id: '',
+      positionStatusList
     }
   },
   created () {
     this.id = this.$route.query.id
-  }
+    this.getInfo(this.id)
+  },
+  computed: {
+    jobStatus () {
+      return !this.formMember.address && !this.formMember.working_hours && !this.formMember.entry_requirements && !this.formMember.job_description
+    },
+    otherInfoStatus () {
+      return !this.formMember.sex && !this.formMember.age_min && !this.formMember.five_risks && !this.formMember.reserve_fund && !this.formMember.com_introduction
+    }
+  },
+  methods: {
+    getInfo (id) {
+      getJobinfo({ id }).then(res => {
+        this.formMember = res.data
+      }).catch(error => {
+        this.$message.error(error.status.remind)
+      })
+    }
+  },
 }
 </script>
 

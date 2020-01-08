@@ -71,30 +71,36 @@
           </el-table-column>
           <el-table-column label="发单状态" align="center" width="150">
             <template slot-scope="props">
-              <span class="status" :class="`status${props.row.invoice_status}`">{{props.row.invoice_status|statusType}}</span>
+              <span class="status" v-if="!props.row.interview_status" :class="`status${props.row.invoice_status}`">{{props.row.invoice_status|statusType}}</span>
+              <span class="status" v-if="props.row.interview_status" :class="`status${props.row.invoice_status}`">{{props.row.interview_status==1?'面试开始':props.row.interview_status==2?'面试结束':'等待面试'}}</span>
             </template>
           </el-table-column>
           <el-table-column label="岗位城市" prop="citys" align="center" width="150"></el-table-column>
+          <el-table-column label="接单时间" sortable="custom" prop="jddesc" align="center" width="150">
+            <template slot-scope="props">
+              <span>{{props.row.addtime?$moment.unix(props.row.addtime).format('YYYY-MM-DD HH:mm'):'--'}}</span>
+            </template>
+          </el-table-column>
           <el-table-column label="返利模式" align="center" width="150">
             <template slot-scope="props">
               <span>{{props.row.reward_type|rewardType}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="接单时间" sortable="custom" prop="jddesc" align="center" width="150">
+          <el-table-column label="面试时间" sortable="custom" prop="jddesc" align="center" width="150">
             <template slot-scope="props">
-              <span>{{props.row.addtime?$moment.unix(props.row.addtime).format('YYYY-MM-DD HH:mm'):'--'}}</span>
+              <span>{{props.row.view_time?$moment.unix(props.row.view_time).format('YYYY-MM-DD HH:mm'):'--'}}</span>
             </template>
           </el-table-column>
           <el-table-column label="联系人" prop="link_name" align="center" width="150"></el-table-column>
           <el-table-column label="操作" align="center" width="150">
             <template slot-scope="props">
               <div v-if="props.row.invoice_status==0||props.row.invoice_status==1">
-                <el-button @click="checkResume(props.row)" type="text" size="small">审核简历</el-button>
-                <el-button @click="handleNote(props.row)" type="text" size="small">面试通知</el-button>
+                <el-button @click="checkResume(props.row)" v-if="!props.row.interview_status" type="text" size="small">审核简历</el-button>
+                <el-button @click="handleNote(props.row)" v-if="!props.row.view_time" type="text" size="small">面试通知</el-button>
               </div>
               <div v-if="props.row.interview_status==1||props.row.interview_status==2">
-                <el-button @click="$router.push({path:'checkResume',query:{id:props.row.id,view:2}})" type="text" size="small">查看面试</el-button>
-                <el-button @click="$router.push('/checkResume?view=2')" type="text" size="small">审核结果</el-button>
+                <el-button @click="$router.push({path:'interviewPersonnel',query:{id:props.row.id,view:2}})" v-if="props.row.interview_status==1" type="text" size="small">查看面试</el-button>
+                <el-button @click="$router.push({path:'checkResume',query:{id:props.row.id,view:3}})" type="text" size="small">审核结果</el-button>
               </div>
             </template>
           </el-table-column>
@@ -178,6 +184,11 @@ export default {
     let params = 'job_array'
     this.getData(params)
   },
+  watch: {
+    $route () {
+      this.getList(this.formMember)
+    }
+  },
   methods: {
     getData (filed) {
       getConstant({ filed }).then(res => {
@@ -193,11 +204,14 @@ export default {
       })
     },
     checkResume (val) {
+      if (!val.recommendResume) {
+        return this.$message.warning('推荐简历为空，不能审核')
+      }
       if (!val.view_time) {
         this.handleNote(val)
       }
       else {
-        $router.push({ path: 'checkResume', query: { id: props.row.id, view: 1 } })
+        this.$router.push({ path: 'checkResume', query: { id: val.id, view: 1 } })
       }
     },
     viewJob (val) {
@@ -233,7 +247,7 @@ export default {
       this.visible = false
       let params = {
         uid: localStorage.getItem('uid'),
-        jodId: this.jobId
+        jobId: this.jobId
       }
       exportRecommendResume(params)
     },
@@ -270,9 +284,13 @@ export default {
     submitForm (val) {
       let params = Object.assign(val, { job_id: this.jobId, uid: this.formMember.uid })
       editInterviewTime(params).then(res => {
-        this.getList(this.formMember)
-        this.$router.push('interviewPersonnel?jobId=' + this.jobId)
-        this.dialogTableVisible = false
+        if (res.data) {
+          this.getList(this.formMember)
+          this.dialogTableVisible = false
+        }
+        else {
+          this.$message.error('设置时间失败')
+        }
       }).catch(error => {
         this.$message.error(error.status.remind)
       })

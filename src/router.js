@@ -32,27 +32,42 @@ let publiceRouters = [
   {
     path: '/home',
     name: 'Home',
-    component: Home
+    component: Home,
+    meta: {
+      requiresAuth: 1
+    }
   },
   {
     path: '/orderTaking',
     name: 'OrderTaking',
-    component: OrderTaking
+    component: OrderTaking,
+    meta: {
+      requiresAuth: 1
+    }
   },
   {
     path: '/orderTakingDetail',
     name: 'OrderTakingDetail',
-    component: OrderTakingDetail
+    component: OrderTakingDetail,
+    meta: {
+      requiresAuth: 1
+    }
   },
   {
     path: '/information',
     name: 'Information',
-    component: Information
+    component: Information,
+    meta: {
+      requiresAuth: 1
+    }
   },
   {
     path: '/informationDetail',
     name: 'InformationDetail',
-    component: InformationDetail
+    component: InformationDetail,
+    meta: {
+      requiresAuth: 1
+    }
   },
   {
     path: '/login',
@@ -70,12 +85,6 @@ let publiceRouters = [
     component: ForgetPassword
   }
 ]
-// if (userType == 1) {
-//   routerList.push(companyRouters)
-// }
-// else {
-//   routerList.push(teamRouters)
-// }
 let routers = new Router({
   mode: "history",
   base: process.env.BASE_URL,
@@ -87,6 +96,15 @@ router.push(teamRouters)
 router = [...router]
 // 4.将生成好的路由addRoutes
 routers.addRoutes(router)
-// 注册全局钩子用来拦截导航
-
+// routers.beforeEach((to, from, next) => {
+//   if (to.meta.requireAuth) {
+//     if (store.state.token) {
+//       next()
+//     } else {
+//       next({ path: '/login' })
+//     }
+//   } else {
+//     next()
+//   }
+// })
 export default routers

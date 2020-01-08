@@ -21,7 +21,6 @@
 <script>
 import logTable from './logTable'
 import receiptLogTable from './receiptLogTable'
-
 import { getapplyLog } from '@/api/teamCenter'
 export default {
   components: {

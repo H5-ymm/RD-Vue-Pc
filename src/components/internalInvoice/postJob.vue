@@ -2,7 +2,8 @@
 <style lang="scss">
 .post-job-view {
   margin-bottom: 76px;
-  overflow: auto;
+  overflow-y: auto;
+  overflow-x: hidden;
   // width: 100%;
   .tab-box {
     margin: 0 0 25px;
@@ -94,7 +95,10 @@ export default {
         number: '',
         uid: localStorage.getItem('uid'),
         is_up: 1
-      }
+      },
+      baseInfo: {},
+      rewardInfo: {},
+
     }
   },
   watch: {

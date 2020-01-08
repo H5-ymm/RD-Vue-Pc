@@ -207,29 +207,30 @@ export default {
         title: '内部发单',
         icon: 'el-icon-collection-tag',
         submenu: [
-
-          {
-            title: '管理内部职位',
-            url: '/publishJobList?view=1'
-          },
-          {
-            title: '已发布职位',
-            url: '/publishJobList?view=2'
-          },
           {
             title: '已推荐简历',
             url: '/applyResume?view=3'
-          },
-          {
-            title: '领取发单',
-            url: '/collectingInvoice'
-          },
-          {
-            title: '内部审核简历',
-            url: '/checkResume'
           }
         ]
       },
+      internalInvoiceRoot: [
+        {
+          title: '已发布职位',
+          url: '/publishJobList?view=2'
+        },
+        {
+          title: '管理内部职位',
+          url: '/publishJobList?view=1'
+        },
+        {
+          title: '领取发单',
+          url: '/collectingInvoice'
+        },
+        {
+          title: '内部审核简历',
+          url: '/checkResume'
+        }
+      ],
       receiptRoot: [
         {
           title: '申请接单',
@@ -259,6 +260,10 @@ export default {
     if (userPosition == 2) {
       this.menus[3].submenu = this.receiptRoot1.concat(this.menus[3].submenu)
       this.menus.splice(8, 0, this.receipt)
+    }
+    if (userPosition != 3) {
+      let len = this.menus.length - 2
+      this.menus[len].submenu = this.internalInvoiceRoot.concat(this.menus[len].submenu)
     }
   },
   watch: {

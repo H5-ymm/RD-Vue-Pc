@@ -32,7 +32,7 @@
             </el-form-item>
             <el-form-item label="发送验证码" v-if="loginWay==2">
               <span class="error el-icon-warning" v-if="isCodeError">验证码错误或者已过期</span>
-              <el-input v-model="formTab.code" placeholder="请输入验证码" @keyup.enter.native="onSubmit('TabForm')" class="inputCode"></el-input>
+              <el-input v-model="formTab.code" placeholder="请输入验证码" @keyup.enter.native="onSubmit('TabForm')" type="text" class="inputCode"></el-input>
               <el-button type="primary" class="code-btn" plain :class="{disabled: !this.canClick}" @click="sendCode">{{content}}</el-button>
             </el-form-item>
             <el-form-item v-if="loginWay==1">
@@ -111,20 +111,6 @@ export default {
       }
     }
   },
-  // beforeRouteEnter(to, from, next){
-  //  if (to.path=='/login'&&to.query.redirect) {
-  //   setTimeout(()=>{
-  //     window.location.reload()
-  //   },100)
-  //   next()
-  //  }
-  //  else {
-  //    next()
-  //  }
-  // },
-  mounted: function () {
-    // window.location.reload()
-  },
   methods: {
     sendCode () {
       if (!this.formTab.name) {
@@ -132,7 +118,7 @@ export default {
       }
       this.countDown()
       getCode({ mobile: this.formTab.name }).then(res => {
-        this.token = res.data.tken
+        this.token = res.data.token
       })
     },
     countDown () {
@@ -152,10 +138,10 @@ export default {
     },
     switchLogin (index) {
       this.loginWay = index
-      this.formTab.type = index
-      this.formTab.name = ''
-      this.formTab.passwords = ''
-      this.formTab.code = ''
+      this.formTab = {
+        name: '',
+        type: index
+      }
     },
     remind (val) {
       if (val) {
@@ -181,9 +167,10 @@ export default {
             localStorage.setItem('token', res.data.token)
             localStorage.setItem('uid', res.data.uid)
             localStorage.setItem('userName', res.data.username)
+            localStorage.setItem('departName', res.data.departName)
             // 登录人身份
             sessionStorage.setItem('userPosition', res.data.gradeNum)
-
+            localStorage.setItem('userPosition', res.data.gradeNum)
             if (res.data.type == 1) {
               this.$router.push('createOrderTaking')
             }

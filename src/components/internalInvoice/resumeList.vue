@@ -46,7 +46,7 @@
             已选择
             <el-button type="text">{{multipleSelection.length}}&nbsp;</el-button>项
           </span>
-          <el-button type="text" @click="multipleSelection=[],jodId='',resumeId=''">清空</el-button>
+          <el-button type="text" @click="multipleSelection=[],jobId='',resumeId=''">清空</el-button>
         </div>
         <el-table
           border
@@ -118,7 +118,7 @@
       :dialogTableVisible="dialogTableVisible"
       @handleOk="handleOk"
       :modalObj="modalObj"
-      @handleClose="dialogTableVisible=false,jodId=''"
+      @handleClose="dialogTableVisible=false,jobId=''"
     ></modal>
   </div>
 </template>
@@ -156,7 +156,7 @@ export default {
         { label: '面试结果', value: 3 }
       ],
       viewType: 1,
-      jodId: '',
+      jobId: '',
       modalObj: {
         content: '你确定要批量操作？',
         okText: '确定',
@@ -174,8 +174,8 @@ export default {
   },
   created () {
     // 初始化查询标签数据
-    this.jodId = this.$route.query.jobId
-    this.formMember.job_id = this.jodId
+    this.jobId = this.$route.query.jobId
+    this.formMember.job_id = this.jobId
     this.getList(this.formMember)
   },
   methods: {

@@ -62,7 +62,7 @@
           <el-table-column label="意向工资" prop="money_m" align="center" width="150"></el-table-column>
           <el-table-column label="意向城市" align="center" width="150">
             <template slot-scope="props">
-              <span type="text">{{props.row.expect_provindeid}}{{props.row.expect_cityid}}</span>
+              <span type="text">{{props.row.expect_provindeName}}{{props.row.expect_cityName}}</span>
             </template>
           </el-table-column>
           <el-table-column label="跟进记录" align="center" width="100">
@@ -96,7 +96,7 @@
 </template>
 <script>
 import {  getResumeList, addUserResume, selectUserResumeInfo, giveUpResume, exportUserResume,
-  importUserResume, downloadTestTable,updateUserResume} from '@/api/resume'
+  importUserResume, downloadTestTable, updateUserResume} from '@/api/resume'
 
 import { addPut } from '@/api/internalInvoice'
 import { moneyTypeList, rewardTypeList, payTypeList, weekList } from '../../base/base'
@@ -148,7 +148,8 @@ export default {
       formMember: {
         uid: localStorage.getItem('uid'),
         limit: 10,
-        page: 1
+        page: 1,
+        timeDesc: 'desc'
       },
       total: 0,
       len: 0,
@@ -220,11 +221,11 @@ export default {
       this.formMember.beginTime = val[0]
       this.formMember.endTime = val[1]
     },
-    routerResume(val){
+    routerResume (val) {
       let arr = JSON.parse(sessionStorage.getItem('menus'))
       arr[1] = '推荐岗位'
       sessionStorage.setItem('menus', JSON.stringify(arr))
-      this.$router.push('/recommendJob?id='+ val.id)
+      this.$router.push('/recommendJob?id=' + val.id)
     },
     change (val) {
       this.formMember.provinceid = val[0]

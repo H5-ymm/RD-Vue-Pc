@@ -135,7 +135,7 @@ export default {
   watch: {
     teamCenterInfo (val) {
       if (val) {
-        this.teamCenterCount[1].rate = this.teamCenterInfo.total.toFixed(1)
+        this.teamCenterCount[1].rate = this.teamCenterInfo.total
         this.teamCenterCount[2].rate = this.teamCenterInfo.put
         this.teamCenterCount[3].rate = this.teamCenterInfo.view
         this.teamCenterCount[4].rate = this.teamCenterInfo.entry

@@ -26,7 +26,11 @@
               <span>{{props.row.money_type | moneyType}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="岗位薪资" prop="money" align="center" width="150"></el-table-column>
+          <el-table-column label="岗位薪资" align="center" width="150">
+            <template slot-scope="props">
+              <span>{{props.row.money_min}}~{{props.row.money_max}}</span>
+            </template>
+          </el-table-column>
           <el-table-column label="返利类型" align="center" width="150">
             <template slot-scope="props">
               <span>{{props.row.reward_type | rewardType}}</span>
@@ -120,6 +124,11 @@ export default {
   created () {
     // 初始化查询标签数据
     this.getList(this.formMember)
+  },
+  watch: {
+    $route (to, form) {
+      this.getList(this.formMember)
+    }
   },
   methods: {
     getList (params) {

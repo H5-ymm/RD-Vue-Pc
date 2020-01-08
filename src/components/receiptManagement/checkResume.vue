@@ -49,17 +49,32 @@
           </el-table-column>
           <el-table-column label="状态" prop="entry_num" align="center" width="180">
             <template slot-scope="props">
-              <span class="status" :class="`status${props.row.status}`">
-                {{props.row.status|status}}
-              </span>
+              <div v-if="viewType==3">
+                <span class="status" :class="`status${props.row.status}`">
+                  {{props.row.status|status}}
+                </span>
+              </div>
+              <div v-if="viewType==4">
+                <span class="status" :class="`status${props.row.interview_status}`">
+                  {{props.row.interview_status|status}}
+                </span>
+              </div>
             </template>
           </el-table-column>
-          <el-table-column label="审核简历" align="center" width="150">
+          <el-table-column :label="label" align="center" width="150">
             <template slot-scope="scope">
-              <el-button @click="handlResume(1,scope.row.id)" type="text" size="small" v-if="!scope.row.status">通过</el-button>
-              <span v-if="scope.row.status==1">通过</span>
-              <span v-if="scope.row.status==2">{{props.row.status|status}}</span>
-              <el-button @click="handlResume(2,scope.row.id)" type="text" size="small" v-if="!scope.row.status">未通过</el-button>
+              <div v-if="viewType==4">
+                <el-button @click="handlResume(1,scope.row.id)" type="text" size="small" v-if="!scope.row.interview_status">通过</el-button>
+                <span v-if="scope.row.interview_status==1">通过</span>
+                <span v-if="scope.row.interview_status==2">{{scope.row.scope.row.interview_status|status}}</span>
+                <el-button @click="handlResume(2,scope.row.id)" type="text" size="small" v-if="!scope.row.interview_status">未通过</el-button>
+              </div>
+              <div v-else>
+                <el-button @click="handlResume(1,scope.row.id)" type="text" size="small" v-if="!scope.row.status">通过</el-button>
+                <span v-if="scope.row.status==1">通过</span>
+                <span v-if="scope.row.status==2">{{scope.row.status|status}}</span>
+                <el-button @click="handlResume(2,scope.row.id)" type="text" size="small" v-if="!scope.row.status">未通过</el-button>
+              </div>
             </template>
           </el-table-column>
         </el-table>
@@ -72,7 +87,7 @@
 
 <script>
 import { getTeamList, loginOutTeam, addTeamUser, updateTeamUser } from '../../api/team'
-import { auditResumeList, auditResumeRecommend } from '../../api/receipt'
+import { auditResumeList, auditResumeRecommend, entryResumeList, auditEntryResume } from '../../api/receipt'
 import { moneyTypeList, rewardTypeList, checkStatusList1 } from '../../base/base'
 import modal from '../common/modal'
 export default {
@@ -126,7 +141,7 @@ export default {
       ],
       activeIndex: 0,
       viewType: 1,
-      jodId: '',
+      jobId: '',
       id: '',
       modalObj: {
         content: '你确定要批量操作？',
@@ -137,25 +152,52 @@ export default {
     }
   },
   watch: {
-    $route () {
-      this.formMember.job_id = this.$route.query.id
+    $route (to, from) {
+      this.formMember.jobId = this.$route.query.id
       this.getList(this.formMember)
+    }
+  },
+  computed: {
+    label () {
+      return this.viewType == 3 ? '审核简历' : '审核面试'
     }
   },
   created () {
     // 初始化查询标签数据
     this.viewType = this.$route.query.view
-    this.jodId = this.$route.query.id
-    this.formMember.job_id = this.$route.query.id
-    this.getList(this.formMember)
+    if (this.viewType == 3) {
+      let arr = JSON.parse(sessionStorage.getItem('menus'))
+      arr[1] = '审核结果'
+      this.formMember.job_id = this.$route.query.id
+      sessionStorage.setItem('menus', JSON.stringify(arr))
+    }
+    if (this.viewType == 4) {
+      this.formMember.jobId = this.$route.query.id
+      this.jobId = this.$route.query.id
+    }
+    if (this.$route.query.id) {
+      // this.jobId = this.$route.query.id
+      // this.formMember.jobId = this.$route.query.id
+      this.getList(this.formMember)
+    }
   },
   methods: {
     getList (params) {
-      auditResumeList(params).then(res => {
-        const { data } = res
-        this.tableData = data.data
-        this.total = data.count
-      })
+      if (this.viewType == 3) {
+        auditResumeList(params).then(res => {
+          const { data } = res
+          this.tableData = data.data
+          this.total = data.count
+        })
+      }
+      else {
+        entryResumeList(params).then(res => {
+          const { data } = res
+          this.tableData = data.data
+          this.total = data.count
+        })
+      }
+
     },
     sortChange (column) {
       if (column.order == 'ascending') {
@@ -202,17 +244,27 @@ export default {
         id: this.id,
         status: this.status
       }
-      auditResumeRecommend(params).then(res => {
-        this.$message.success('操作成功')
-        this.getList(this.formMember)
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+      if (this.viewType == 3) {
+        auditResumeRecommend(params).then(res => {
+          this.$message.success('操作成功')
+          this.getList(this.formMember)
+        }).catch(error => {
+          this.$message.error(error.status.remind)
+        })
+      }
+      else {
+        auditEntryResume(params).then(res => {
+          this.$message.success('操作成功')
+          this.getList(this.formMember)
+        }).catch(error => {
+          this.$message.error(error.status.remind)
+        })
+      }
     },
     submitMember (val) {
       updateTeamUser(val).then(res => {
         this.dialogTableVisible = false
-        this.getList(this.params)
+        this.getList(this.formMember)
       })
     },
     handleSelectionChange (val) {

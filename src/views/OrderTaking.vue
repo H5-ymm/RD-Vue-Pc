@@ -124,6 +124,7 @@
       </div>
     </el-main>
     <FooterView></FooterView>
+    <Dialog :centerDialogVisible="centerDialogVisible" :modalInfo="modalInfo" @handleClose="centerDialogVisible=false" @handleOk="handleOk"></Dialog>
     <AsideBox :isShow="isShow"></AsideBox>
     <ModalCity :dialogVisible="dialogVisible" @getCityCode="getCityCode" @handleClose="handleClose"></ModalCity>
   </el-container>
@@ -174,7 +175,16 @@ export default {
       money_type: '',
       browsingList: [],
       token: localStorage.getItem('token'),
-      isShowLogin: false
+      isShowLogin: false,
+      centerDialogVisible: false,
+      textShow: true,
+      modalInfo: {
+        title: '申请成功！',
+        okText: '查看申请',
+        closeText: '关闭',
+        imgBg: require('../assets/img/success.png')
+      }
+
     }
   },
   created () {
@@ -203,6 +213,10 @@ export default {
         this.token = val
         this.isShowLogin = false
       }
+    },
+    handleOk () {
+      this.centerDialogVisible = false
+      this.$router.push('teamApplication')
     },
     switchNav (item, index) {
       this.activeIndex = index
@@ -245,7 +259,12 @@ export default {
           uid: localStorage.getItem('uid')
         }
         addApply(params).then(res => {
-          console.log(res)
+          if (res.data) {
+            this.centerDialogVisible = true
+          }
+          else {
+            this.$message.error('接单失败')
+          }
         }).catch(error => {
           this.$message.error(error.status.remind)
         })

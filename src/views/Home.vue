@@ -20,13 +20,13 @@
           </ul>
         </div>
         <div class="bg-purple-light x-flex-between">
-          <span class="home-purple-left" v-if="!userInfo">
+          <!-- <span class="home-purple-left" v-if="!userInfo">
             <i class="el-icon-user-solid"></i>
             <a class="welcome" href="login">登录</a>
             <a class="divider">|</a>
             <a class="welcome" href="register">注册</a>
-          </span>
-          <P class="home-purple-left" v-else>
+          </span> -->
+          <P class="home-purple-left">
             <el-dropdown @command="handleCommand">
               <div class="el-dropdown-link x-flex-center" style="margin-right:10px">
                 <p> <img :src="userInfo.head_img" alt v-if="userInfo.head_img" />
@@ -116,6 +116,7 @@
         </section>
       </div>
     </el-main>
+    <Dialog :centerDialogVisible="centerDialogVisible" :modalInfo="modalInfo" @handleClose="centerDialogVisible=false" @handleOk="handleOk"></Dialog>
     <FooterView></FooterView>
     <AsideBox :isShow="isShow"></AsideBox>
   </el-container>
@@ -125,6 +126,7 @@
 import searchInput from '@/components/searchInput'
 import { homeList, advertisementList } from '../api/home'
 import { addApply } from '@/api/orderTarking'
+import Dialog from '@/components/Dialog'
 import FooterView from '@/components/FooterView'
 import AsideBox from '@/components/AsideBox'
 import { inquiryList } from '@/api/information'
@@ -134,12 +136,22 @@ export default {
   components: {
     FooterView,
     searchInput,
-    AsideBox
+    AsideBox,
+    Dialog
   },
   data () {
     return {
       activeIndex: 0,
       keywords: '',
+      isShow: false,
+      centerDialogVisible: false,
+      textShow: true,
+      modalInfo: {
+        title: '申请成功！',
+        okText: '查看申请',
+        closeText: '关闭',
+        imgBg: require('../assets/img/success.png')
+      },
       menus: [
         {
           title: '首页',
@@ -221,6 +233,10 @@ export default {
         this.$message.error(error.status.remind)
       })
     },
+    handleOk () {
+      this.centerDialogVisible = false
+      this.$router.push('teamApplication')
+    },
     windowScroll () {
       let scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
       console.log(scrollTop - document.documentElement.clientHeight)
@@ -258,7 +274,12 @@ export default {
           uid: localStorage.getItem('uid')
         }
         addApply(params).then(res => {
-          console.log(res)
+          if (res.data) {
+            this.centerDialogVisible = true
+          }
+          else {
+            this.$message.error('接单失败')
+          }
         }).catch(error => {
           this.$message.error(error.status.remind)
         })

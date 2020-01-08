@@ -27,7 +27,7 @@ export default {
       }, {
         title: '企业团队',
         imgUrl: require('../assets/img/team/team.png'),
-        url: 'companyForm',
+        url: 'teamCompanyForm',
         type: 1
       }],
       url: 'personalForm',

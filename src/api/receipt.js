@@ -15,7 +15,7 @@ export const editInterviewTime = data => $post('/company/editInterviewTime', dat
 export const endEntry = data => $post('/company/endEntry', data)  // 提前结束入职
 
 export const invoiceInterviewList = data => $post('/company/invoiceInterviewList', data) //面试职位列表
-export const auditEntryResume = data => $post('/company/auditEntryResumeRecommend', data) //面试结果操作
+export const auditEntryResume = data => $post('/company/auditInterviewResumeRecommend', data) //面试结果操作
 export const endInterview = data => $post('/company/endInterview', data) // 结束面试操作
 export const entryResumeList = data => $post('/company/entryRecommendResumeList', data)
 export const exportInterviewResume = data => $post('/company/exportInterviewRecommendResume', data) //面试简历导出

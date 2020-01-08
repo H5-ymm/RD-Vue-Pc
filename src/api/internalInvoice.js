@@ -19,3 +19,5 @@ export const getTeamManage = data => $post('/teamselfjob/get_team_manage', data)
 export const auditRemuse = data => $post('/teamselfjob/audit_remuse', data) //设置面试结果
 export const entrantResult = data => $post('/teamselfjob/entrant_result', data) //设置入职结果
 export const checkPutresume = data => $post('/teamselfjob/get_putresume', data) //审核简历
+
+export const getJobinfo = data => $post('/teamselfjob/getJobinfo', data) //审核简历

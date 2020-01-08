@@ -51,7 +51,7 @@
           <el-input v-model="orderTakingForm.name" class="width408" placeholder="请输入职位名称"></el-input>
           <span class="error el-icon-warning">发单：只有团队可以接单，岗位需求人数由团队统一提供，个人无法接取。</span>
         </el-form-item>
-        <el-form-item label="职位类别" prop="job_type" required>
+        <el-form-item label="职位类别" required>
           <el-select v-model="orderTakingForm.job_type" @change="selectJob" class="width408" placeholder="请选择职位类别">
             <el-option :label="item" :value="key" v-for="(item,key) in jobList" :key="key"></el-option>
           </el-select>
@@ -67,9 +67,9 @@
         </el-form-item>
         <el-form-item label="年龄" required>
           <div class="x-flex-start-justify width408">
-            <el-input type="number" class="width80" :min="16" v-model="orderTakingForm.min_age" placeholder="请输入"></el-input>
+            <el-input type="number" class="width80" :min="16" @input="changeInput($event,'min_age')" v-model="orderTakingForm.min_age" placeholder="请输入"></el-input>
             <span class="landline"></span>
-            <el-input type="number" class="width80" :max="45" v-model="orderTakingForm.max_age" placeholder="请输入"></el-input>
+            <el-input type="number" class="width80" :max="65" @input="changeInput($event,'max_age')" v-model="orderTakingForm.max_age" placeholder="请输入"></el-input>
           </div>
         </el-form-item>
         <el-form-item label="性别" required>
@@ -95,14 +95,14 @@
         </el-form-item>
         <el-form-item label="学历" required>
           <el-select v-model="orderTakingForm.education" class="width408" placeholder="请选择学历">
-            <el-option :label="item" :value="index+1" v-for="(item,index) in eduList" :key="index"></el-option>
+            <el-option :label="item" :value="index" v-for="(item,index) in eduList" :key="index"></el-option>
           </el-select>
         </el-form-item>
         <!-- 薪资和返利模式 -->
         <salaryAndRebate :moneyList="moneyList" @submit="submitSalary"></salaryAndRebate>
         <!-- 薪资和返利模式 -->
         <el-form-item label="职位描述" required>
-          <span class="error el-icon-warning error-job">职位描述，最低输入30个字。</span>
+          <span class="error el-icon-warning error-job" v-if="len<30">职位描述，最低输入30个字。</span>
           <div class="job_content">
             <div contenteditable="true" v-html="content" @input="keepLastIndex($event)" class="job_textarea"></div>
             <span class="content-len">{{len}}/1000字</span>
@@ -118,7 +118,7 @@
           <el-input v-model="orderTakingForm.email" class="width408" placeholder="请输入邮箱"></el-input>
         </el-form-item>
         <el-form-item class="teamMessage-btn">
-          <el-button type="primary" @click="submitForm('orderTakingForm')">发布</el-button>
+          <el-button type="primary" :disabled="!disabled" @click="submitForm('orderTakingForm')">发布</el-button>
           <el-button @click="resetForm('orderTakingForm')">取消</el-button>
         </el-form-item>
       </el-form>
@@ -143,7 +143,7 @@ export default {
       orderTakingForm: {
         type: 1,
         required_number: 2,
-        max_age: 45,
+        max_age: 65,
         min_age: 16,
         is_five_risks: 1,
         sex: 3,
@@ -169,7 +169,9 @@ export default {
       jobName: '',
       content: '工作内容：</br> 职位要求：</br> 工作时间：',
       jobRequire: '',
-      jobTime: ''
+      jobTime: '',
+      disabled: false,
+      rateInfo: null
     };
   },
   created () {
@@ -183,7 +185,13 @@ export default {
   },
   computed: {
     len () {
-      return this.content.length + this.orderTakingForm.job_content.length
+      let content = this.content.replace(/<[^>]+>/g, "").replace('/</br>/g', '')
+      content = content.replace(/(^\s+)|(\s+$)/g, "")
+      let length = content.length
+      // if (is_global.toLowerCase() == "g") {
+      //     result = result.replace(/\s/g, "");
+      // }
+      return length ? length : this.orderTakingForm.job_content.length + length
     }
   },
   methods: {
@@ -203,6 +211,20 @@ export default {
       }
       if (!this.orderTakingForm.name) {
         this.orderTakingForm.name = this.jobName
+      }
+    },
+    changeInput (val, key) {
+      if (val) {
+        if (key == 'min_age') {
+          if (Number(val) < 16) {
+            this.orderTakingForm[key] = 16
+          }
+        }
+        else {
+          if (Number(val) > 65) {
+            this.orderTakingForm[key] = 65
+          }
+        }
       }
     },
     keepLastIndex (obj) {
@@ -236,7 +258,15 @@ export default {
     },
     submitSalary (val) {
       console.log(val)
-      this.orderTakingForm = Object.assign(this.orderTakingForm, val)
+      if (val) {
+        this.rateInfo = val
+        this.disabled = true
+        this.orderTakingForm = Object.assign(this.orderTakingForm, val)
+      }
+      else {
+        this.rateInfo = 'null'
+        this.disabled = false
+      }
     },
     submitForm (orderTakingForm) {
       if (!this.content) {
@@ -245,8 +275,12 @@ export default {
       this.$refs[orderTakingForm].validate((valid) => {
         if (valid) {
           createInvoice(this.orderTakingForm).then(res => {
-            if (res.status.code == 200) {
+            if (res.data) {
               this.$router.push('checkReceipt')
+              this.resetForm()
+            }
+            else {
+              this.$message.error('发布失败')
             }
           }).catch(error => {
             this.$message.error(error.status.remind)
@@ -256,8 +290,18 @@ export default {
         }
       });
     },
-    resetForm (orderTakingForm) {
-      this.$refs[orderTakingForm].resetFields()
+    resetForm () {
+      this.orderTakingForm = {
+        type: 1,
+        required_number: 2,
+        max_age: 45,
+        min_age: 16,
+        is_five_risks: 1,
+        sex: 3,
+        is_fund: 1,
+        job_content: '',
+        uid: localStorage.getItem('uid')
+      }
     }
   }
 }

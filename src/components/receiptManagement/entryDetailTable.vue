@@ -62,7 +62,7 @@
       <el-pagination class="team-pagination" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="formMember.page" :page-sizes="[10, 30, 50, 100]" :page-size="formMember.limit" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
     </div>
     <modal :dialogTableVisible="dialogTableVisible" @handleOk="handleOk" isShow="true" :modalObj="modalObj" @handleClose="visible=false,jobId=''"></modal>
-    <viewJob :dialogTableVisible="dialogJobVisible" @handleClose="dialogJobVisible=fasle"></viewJob>
+    <viewJob :dialogTableVisible="dialogJobVisible" @handleClose="dialogJobVisible=fasle" :id="jobId"></viewJob>
   </div>
 </template>
 
@@ -123,7 +123,8 @@ export default {
         okText: '确定',
         closeText: '取消'
       },
-      status: ''
+      status: '',
+      jobId: ''
     }
   },
   created () {
@@ -152,6 +153,7 @@ export default {
       this.getList(this.formMember)
     },
     viewJob (val) {
+      this.jobId = val.id
       this.dialogJobVisible = true
     },
     handleUser (status, id) {
@@ -168,6 +170,15 @@ export default {
       this.id = id
       this.handleUserResume()
     },
+    handleSelectionChange (val) {
+      let arr = val.map(item => {
+        return item.id
+      })
+      this.id = arr.join(',')
+    },
+    handleOk () {
+      this.handleUserResume()
+    },
     handleUserResume () {
       this.dialogTableVisible = false
       let params = {
@@ -182,32 +193,8 @@ export default {
         this.$message.error(error.status.remind)
       })
     },
-    submitMember (val) {
-      updateTeamUser(val).then(res => {
-        this.dialogTableVisible = false
-        this.getList(this.params)
-      })
-    },
-    handleSelectionChange (val) {
-      let arr = val.map(item => {
-        return item.id
-      })
-      this.id = arr.join(',')
-    },
-    handleOk () {
-      this.handleUserResume()
-    },
-    onSubmit (value) {
-      let params = Object.assign(this.formMember, value)
-      this.getList(params)
-    },
-    submitForm (val) {
-      this.visible = false
-      addTeamUser(val).then(res => {
-        this.getList(this.formMember)
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+    onSubmit () {
+      this.getList(this.formMember)
     }
   }
 }

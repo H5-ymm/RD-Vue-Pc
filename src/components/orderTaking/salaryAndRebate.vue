@@ -36,7 +36,7 @@
                 <span class="moneyType">返利总金额</span>
               </template>
             </el-input>
-            <el-input placeholder="请输入" class="width160 text-input" v-model="orderTakingForm.reward_needatime">
+            <el-input placeholder="请输入" class="width160 text-input" v-model="orderTakingForm.reward_needtime">
               <template slot="prepend">
                 <span class="moneyType">需入职满</span>
               </template>
@@ -61,10 +61,10 @@
             <span class="moneyType">号结算</span>
           </template>
         </el-input>
-        <el-select v-model="orderTakingForm.reward_money_type" @blur="blurInput" @change="changePayType" class="width160" placeholder="结算类型">
+        <el-select v-model="reward_money_type" @blur="blurInput" @change="changePayType" class="width160" placeholder="结算类型">
           <el-option label="长期返利" :value="1"></el-option>
           <div class="width160 reward-input" ref="reward" :value="2">
-            <el-input placeholder="请输入" class="text-input" v-model="orderTakingForm.reward_needatime" @change="changeInput">
+            <el-input placeholder="请输入" class="text-input" v-model="orderTakingForm.reward_needtime" @change="changeInput">
               <template slot="prepend">
                 <span class="moneyType">持续返利</span>
               </template>
@@ -136,7 +136,7 @@ export default {
         reward_money: '', // 返利金额(根据类型修改单位)
         reward_money_type: '', // 1日2周3月(针对日返和时返) 1长期2持续（针对月返）结算类型 
         settlement_time: '', // 结算时间(针对月返：次月第XX多少天；)
-        reward_needatime: '', // 需求入职天数/周数/月数(一次性时：0表示当天返)
+        reward_needtime: '', // 需求入职天数/周数/月数(一次性时：0表示当天返)
         duration_time: '', // 持续 (天数/周数/月数)
         settlement_type: '', // 结算方式（1 当月/当周/当日，2 次月/次周/次日）
       },
@@ -166,12 +166,28 @@ export default {
         for (let key in val) {
           if (val.reward_type == 1) {
             if (val[key] != '' && key != 'reward_needtime' && key != 'duration_time') {
-              this.$emit('submit', val)
+              if (Number(this.orderTakingForm.settlement_time) > 31) {
+                return this.$message.warning('结算时间最大输入31')
+                this.$emit('submit', null)
+              }
+              if (Number(this.orderTakingForm.reward_needtime) > 12) {
+                return this.$message.warning('持续返利最大输入12')
+                this.$emit('submit', null)
+              }
+              else {
+                this.$emit('submit', val)
+              }
             }
           }
           else {
             if (val[key] != '') {
-              this.$emit('submit', val)
+              if (Number(this.orderTakingForm.reward_needtime) > Number(this.orderTakingForm.duration_time)) {
+                this.orderTakingForm.reward_needtime = this.orderTakingForm.duration_time
+                this.$emit('submit', val)
+              }
+              else {
+                this.$emit('submit', val)
+              }
             }
           }
         }
@@ -189,14 +205,17 @@ export default {
       this.rewardTipShow = true
     },
     changePayType (val) {
-      console.log(val)
+      if (val == 1) {
+        this.orderTakingForm.reward_money_type = val
+      }
     },
     blurInput ($event) {
       return false
     },
     changeInput (val) {
       if (val) {
-        this.orderTakingForm.reward_money_type = `持续返利` + val + `月`
+        this.reward_money_type = `持续返利` + val + `月`
+        this.orderTakingForm.reward_money_type = val
         this.blurInput()
       }
     }

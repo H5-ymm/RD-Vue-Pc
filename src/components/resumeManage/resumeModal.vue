@@ -207,7 +207,6 @@ export default {
           value: Number(i)
         }); //属性
       }
-      console.log(arr)
       return arr
     },
     changeDate (val) {
