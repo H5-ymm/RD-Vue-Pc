@@ -7,8 +7,8 @@
       </div>
       <div class="edit-card-comment-col2">
         <p>
-          <span class="user-name">{{item.username}}</span>
-          <span>：{{item.content}}</span>
+          <span class="user-name">{{item.username}}:</span>
+          <span v-html="content(item.content)"></span>
         </p>
         <div class="x-flex-between text-light reply-btn">
           <span>{{item.addTime?$moment.unix(item.addTime).format('YYYY-MM-DD'):'--'}}</span>
@@ -25,8 +25,8 @@
               <p>
                 <span class="user-name">{{val.r_name}}</span>
                 <span class="reply">回复</span>
-                <span class="user-name">{{val.username}}</span>
-                <span>：{{val.content}}</span>
+                <span class="user-name">{{val.username}}:</span>
+                <span v-html="content(val.content)"></span>
               </p>
               <p class="x-flex-between text-light">
                 <span>{{val.addtime?$moment.unix(val.addtime).format('YYYY-MM-DD HH:mm'):'--'}}</span>
@@ -66,6 +66,9 @@ export default {
     }
   },
   methods: {
+    content(val) {
+      return val? unescape(val): ''
+    },
     handleComment (index, item, type, ind, val) {
       this.type = type
       if (type == 2) {

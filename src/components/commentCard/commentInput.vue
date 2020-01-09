@@ -64,7 +64,7 @@ export default {
     restoreSelection (range) {
       if (range) {
         if (window.getSelection) {
-          sel = window.getSelection();
+          let sel = window.getSelection();
           sel.removeAllRanges();
           sel.addRange(range);
         } else if (document.selection && range.select) {
@@ -82,7 +82,9 @@ export default {
       this.comment = e.target.innerHTML
     },
     submitComment () {
-      this.$emit('submitComment', this.content)
+      // unescape()
+      let content = escape(this.content)
+      this.$emit('submitComment', content)
       // this.content = ''
     },
     cancleComment () {

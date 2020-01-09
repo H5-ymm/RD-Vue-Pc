@@ -22,7 +22,7 @@
       </li>
       <li class="edit-card-item x-flex-start border-bottom">
         <p>标题：</p>
-        <p :class="{'add-title':type==0}" :contenteditable="contenteditable" @input="changeInput($event)" class="edit-input">{{comTitle}}</p>
+        <p :class="{'add-title':type==0,'add-title1':ishtmlContent}" :contenteditable="contenteditable" v-html="comTitle" @input="changeInput($event)" @focus="focusInput($event)" class="edit-input"></p>
       </li>
       <li class="edit-card-item x-flex-start border-bottom">
         <p>分类：</p>
@@ -42,7 +42,7 @@
       </li>
       <li class="edit-card-item x-flex-start x-flex-wap border-bottom" v-if="type==2">
         <p>内容：</p>
-        <p class="edit-card-item-content" v-html="commentInfo.content"></p>
+        <p class="edit-card-item-content" v-html="contentunescape"></p>
         <p class="edit-card-comment x-flex-between text-light">
           <span>{{commentInfo.addtime?$moment.unix(commentInfo.addtime).format('YYYY-MM-DD HH:mm'):'--'}}</span>
           <span class="el-icon-chat-dot-square" @click="reply">&nbsp;评论</span>
@@ -52,7 +52,7 @@
       <li class="edit-card-item" v-else>
         <div class="x-flex-start-justify">
           <p>内容：</p>
-          <Editor :content="commentInfo.content" @saveConent="saveConent"></Editor>
+          <Editor :content="contentunescape" @saveConent="saveConent"></Editor>
         </div>
         <div class="edit-btn-box">
           <el-button type="primary" size="mini" @click="submit(type)">提交</el-button>
@@ -96,7 +96,10 @@ export default {
       comTitle: '',
       storeComment: {},
       content: '',
-      isShow: false
+      isShow: false,
+      contentunescape:'',
+      ishtmlContent: false,
+      htmlContent: ''
     }
   },
   computed: {
@@ -125,6 +128,7 @@ export default {
         this.isShow = false
         this.storeComment = JSON.parse(JSON.stringify(val))
         this.comTitle = val.title
+        this.contentunescape = this.getContent(val.content)
         this.sortType = val.type
         this.params.uid = val.uid
         this.params.discuss_id = val.id
@@ -139,6 +143,9 @@ export default {
     }
   },
   methods: {
+    getContent(val) {
+      return val? unescape(val): ''
+    },
     // 获取文章评论列表
     getCommentList (params) {
       getReply(params).then(res => {
@@ -175,8 +182,21 @@ export default {
     reply () {
       this.isShow = !this.isShow
     },
-    changeInput (e) {
-      this.comTitle = '请输入标题'
+    changeInput (range) {
+      this.htmlContent = range.target.innerText
+      if (window.getSelection) {
+        let sel = window.getSelection();
+        if (sel.getRangeAt && sel.rangeCount) {
+          return sel.getRangeAt(0);
+        }
+      } else if (document.selection && document.selection.createRange) {
+        return document.selection.createRange();
+      }
+      console.log(this.comTitle) 
+    },
+    focusInput(e){
+      this.ishtmlContent = true
+      this.comTitle = ''
     },
     setTop (params) {
       setTopComment(params).then(res => {
@@ -259,7 +279,7 @@ export default {
       let params = {
         uid: localStorage.getItem('uid'),
         type: 1,
-        content: val,
+        content: escape(val),
         p_id: 0,
         discuss_id: this.commentInfo.id,
         comment_id: 0
@@ -284,8 +304,8 @@ export default {
       let params = {
         uid: localStorage.getItem('uid'),
         type: this.sortType,
-        content: this.content,
-        title: this.comTitle,
+        content: escape(this.content),
+        title: this.htmlContent,
         is_top: this.is_top
       }
       this.$emit('saveDiscuss', params)
@@ -319,6 +339,9 @@ export default {
     color: #333;
     &.add-title {
       color: #999;
+    }
+    &.add-title1{
+      color: #333;
     }
   }
   .edit-card-title{
