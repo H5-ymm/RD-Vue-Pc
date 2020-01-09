@@ -54,7 +54,7 @@
         <div class="table-query">
           <el-button @click="exportResume">导出简历</el-button>
         </div>
-        <el-table border :data="tableData" ref="multipleTable" style="width: 100%" @sort-change="sortChange" @selection-change="handleSelectionChange">
+        <el-table border :data="tableData" ref="multipleTable" style="width: 100%" @sort-change="sortChange">
           <el-table-column label="序号" align="center" fixed="left" prop="id" width="50"></el-table-column>
           <el-table-column label="姓名" fixed="left" align="center" width="100">
             <template slot-scope="props">
@@ -70,10 +70,16 @@
           <el-table-column label="岗位名称" prop="job_name" align="center" width="150"></el-table-column>
           <el-table-column :label="labelTime" sortable="custom" prop="jddesc" align="center" width="150">
             <template slot-scope="props">
-              <span type="text">{{props.row.addtime?$moment.unix(props.row.addtime).format('YYYY-MM-DD'):'--'}}</span>
+              <span>{{props.row.addtime?$moment.unix(props.row.addtime).format('YYYY-MM-DD HH:mm'):'--'}}</span>
             </template>
           </el-table-column>
-          <el-table-column :label="label" prop="money_m" align="center" width="150"></el-table-column>
+          <el-table-column :label="label" align="center" width="150">
+            <template slot-scope="props">
+              <span v-if="viewType==1" class="status" :class="`status${props.row.status}`">{{props.row.status|checkStatus}}</span>
+              <span v-if="viewType==2" class="status" :class="`status${props.row.entry_status}`">{{props.row.entry_status|entryStatus}}</span>
+              <span v-if="viewType==3" class="status" :class="`status${props.row.interview_status}`">{{props.row.interview_status|viewStatus}}</span>
+            </template>
+          </el-table-column>
           <el-table-column label="跟进记录" align="center" width="100">
             <template slot-scope="props">
               <el-button class="text-line" type="text" @click="viewRecord(props.row)" v-if="props.row.trackList&&props.row.trackList[0]">{{props.row.trackList[0].title}}</el-button>
@@ -81,23 +87,24 @@
           </el-table-column>
           <el-table-column label="跟进时间" prop="msdesc" sortable="custom" align="center" width="160">
             <template slot-scope="props">
-              <span type="text">{{props.row.trackList&&props.row.trackList[0].addtime?$moment.unix(props.row.trackList[0].addtime).format('YYYY-MM-DD HH:mm'):'--'}}</span>
+              <span type="text" v-if="props.row.trackList&&props.row.trackList.length">{{props.row.trackList[0].addtime?$moment.unix(props.row.trackList[0].addtime).format('YYYY-MM-DD HH:mm'):'--'}}</span>
             </template>
           </el-table-column>
           <el-table-column label="意向岗位" prop="desired_position" align="center" width="150"></el-table-column>
-          <el-table-column label="意向工资" prop="money_m" align="center" width="150"></el-table-column>
+          <el-table-column label="意向工资" prop="models" align="center" width="150"></el-table-column>
           <el-table-column label="意向城市" align="center" width="150">
             <template slot-scope="props">
-              <span type="text">{{props.row.expect_provindeid}}{{props.row.expect_cityid}}</span>
+              <span type="text">{{props.row.citys?props.row.citys:'--'}}</span>
             </template>
           </el-table-column>
           <el-table-column label="录入人" prop="input_username" align="center" width="100"></el-table-column>
           <el-table-column label="跟进人" prop="track_name" align="center" width="100"></el-table-column>
           <el-table-column label="操作" fixed="right" align="center" min-width="200">
             <template slot-scope="scope">
-              <el-button @click="abandoned (1,scope.row)" type="text" size="small" v-if="scope.row.status==1">放弃报名</el-button>
-              <el-button @click="abandoned(2,scope.row)" type="text" size="small" v-if="scope.row.status==2">放弃面试</el-button>
-              <el-button @click="abandoned(4,scope.row)" type="text" size="small" v-if="scope.row.status==3">推荐岗位</el-button>
+              <el-button @click="abandoned (4,scope.row)" type="text" size="small" v-if="viewType==2&&!scope.row.entry_status">放弃入职</el-button>
+              <el-button @click="abandoned (1,scope.row)" type="text" size="small" v-if="viewType==1&&!scope.row.status">放弃报名</el-button>
+              <el-button @click="abandoned(2,scope.row)" type="text" size="small" v-if="viewType==3&&!scope.row.interview_status||viewType==1&&scope.row.status&&scope.row.status!=3">放弃面试</el-button>
+              <el-button @click="routerResume(scope.row)" type="text" size="small" v-if="viewType==1&&scope.row.status>=2 || scope.row.interview_status==2 || scope.row.entry_status==2">推荐岗位</el-button>
               <el-button @click="abandoned(3,scope.row)" type="text" size="small">放弃用户</el-button>
             </template>
           </el-table-column>
@@ -112,8 +119,8 @@
   </div>
 </template>
 <script>
-import { teamRecommendResumeList, entryResumeList, addUserResume, selectUserResumeInfo, giveUpResume, exportUserResume } from '@/api/resume'
-import { moneyTypeList, rewardTypeList, followStatusList } from '../../base/base'
+import { teamRecommendResumeList, entryResumeList, interviewTeamResumeList, addUserResume, editRecommendResumeStatus, selectUserResumeInfo, exportUserResume } from '@/api/resume'
+import { moneyTypeList, rewardTypeList, followStatusList, viewStatusList1, checkStatusList1, entryStatusList1 } from '@/base/base'
 import viewResume from './viewResume'
 import followUpRecord from './followUpRecord'
 import leadResumeModal from './leadResumeModal'
@@ -141,9 +148,30 @@ export default {
       })
       return obj ? obj.label : '--'
     },
+    checkStatus (val) {
+      let obj = checkStatusList1.find(item => {
+        return val == item.value
+      })
+      return obj ? obj.label : '--'
+    },
+    viewStatus (val) {
+      let obj = viewStatusList1.find(item => {
+        return val == item.value
+      })
+      return obj ? obj.label : '--'
+    },
+    entryStatus (val) {
+      let obj = entryStatusList1.find(item => {
+        return val == item.value
+      })
+      return obj ? obj.label : '--'
+    }
   },
   data () {
     return {
+      entryStatusList1,
+      checkStatusList1,
+      viewStatusList1,
       moneyTypeList,
       rewardTypeList,
       followStatusList,
@@ -166,10 +194,6 @@ export default {
         page: 1
       },
       total: 0,
-      len: 0,
-      userId: '',
-      multipleSelection: [],
-      form: {},
       statusList: [
         { label: '全部', value: 0 },
         { label: '等待面试', value: 1 },
@@ -185,7 +209,9 @@ export default {
       trackList: [],
       timeList: [],
       isShow: true,
-      viewType: 1
+      viewType: 1,
+      status: 0,
+      id: ''
     }
   },
   created () {
@@ -205,10 +231,10 @@ export default {
   },
   computed: {
     label () {
-      return this.viewType == 1 ? '报名状态' : '入职状态'
+      return this.viewType == 1 ? '报名状态' : this.viewType == 2 ? '入职状态' : '面试状态'
     },
     labelTime () {
-      return this.viewType == 1 ? '报名时间' : '入职时间'
+      return this.viewType == 1 ? '报名时间' : this.viewType == 2 ? '入职时间' : '面试时间'
     }
   },
   methods: {
@@ -226,8 +252,15 @@ export default {
           this.total = data.count
         })
       }
-      else {
+      else if (this.viewType == 2) {
         entryResumeList(params).then(res => {
+          const { data } = res
+          this.tableData = data.data || []
+          this.total = data.count
+        })
+      }
+      else {
+        interviewTeamResumeList(params).then(res => {
           const { data } = res
           this.tableData = data.data || []
           this.total = data.count
@@ -238,6 +271,12 @@ export default {
       this.formMember.beginTime = val[0]
       this.formMember.endTime = val[1]
       // this.getList(this.formMember)
+    },
+    routerResume (val) {
+      let arr = JSON.parse(sessionStorage.getItem('menus'))
+      arr[1] = '推荐岗位'
+      sessionStorage.setItem('menus', JSON.stringify(arr))
+      this.$router.push('/recommendJob?id=' + val.id)
     },
     exportResume () {
       if (!this.tableData.length) {
@@ -286,6 +325,7 @@ export default {
       this.followUpRecordVisible = false
     },
     abandoned (index, val) {
+      this.status = index
       if (index == 1) {
         this.dialogObj.title = '放弃报名'
         this.isShow = true
@@ -299,7 +339,8 @@ export default {
         this.isShow = false
       }
       this.visible = true
-      this.resumeId = val.id
+      this.resumeId = val.resume_id
+      this.id = val.id
     },
     handleClose () {
       this.visible = false
@@ -308,17 +349,17 @@ export default {
     submit (val) {
       let params = {
         uid: localStorage.getItem('uid'),
-        id: this.resumeId,
-        reason: val.reason
+        id: this.id,
+        resumeId: this.resumeId,
+        remark: val.reason,
+        type: this.status
       }
-      this.visible = false
-      giveUpResume(params).then(res => {
+      editRecommendResumeStatus(params).then(res => {
         this.resumeId = ''
+        this.id = ''
+        this.visible = false
         this.getList(this.formMember)
       })
-    },
-    handleSelectionChange (val) {
-      this.len = val
     },
     onSubmit (value) {
       let params = Object.assign(this.formMember, value)

@@ -73,6 +73,10 @@
 .home-main-box {
   width: 1200px;
   margin: 20px auto;
+  .search-main-box {
+    width: 80%;
+    margin: 0 auto;
+  }
   .orderTaking-main-row {
     .orderTaking-main-col1{
       background: #fff;

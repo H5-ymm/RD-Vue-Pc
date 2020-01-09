@@ -294,7 +294,7 @@ let receiptList = [
     }
   },
   {
-    path: '/resumeList',  // 内部审核简历
+    path: '/resumeList',
     name: resumeList,
     component: resumeList,
     meta: {

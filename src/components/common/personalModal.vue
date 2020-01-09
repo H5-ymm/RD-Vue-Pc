@@ -8,11 +8,11 @@
       <section class="member-col3">
         <div class="x-flex-between">
           <el-input type="text" class="width210" v-model="name"></el-input>
-          <el-button type="primary">查询</el-button>
+          <el-button type="primary" @click="query">查询</el-button>
         </div>
         <div class="personal-box">
           <el-checkbox-group v-model="checkList">
-            <el-checkbox :label="item" v-for="(item,index) in personalList" :key="index">{{item.user_name}}</el-checkbox>
+            <el-checkbox :label="item" v-for="(item,index) in list" :key="index">{{item.user_name}}</el-checkbox>
           </el-checkbox-group>
         </div>
       </section>
@@ -35,11 +35,17 @@ export default {
   },
   data () {
     return {
-      list: [
-        'yyy', 'kkkk'
-      ],
+      list: [],
       checkList: [],
       name: ''
+    }
+  },
+  created () {
+    this.list = this.personalList
+  },
+  watch: {
+    personalList (val) {
+      this.list = val
     }
   },
   methods: {
@@ -49,6 +55,15 @@ export default {
     submit () {
       this.$emit('handleOk', this.checkList)
       this.checkList = []
+    },
+    getList (arr) {
+      let newArr = arr.filter((item) => {
+        // 查找newArr中所有name包含c的数据，然后返回
+        return item.name.indexOf(this.name) != -1
+      })
+    },
+    query () {
+      this.list = this.getList(this.name, this.list)
     }
   }
 }

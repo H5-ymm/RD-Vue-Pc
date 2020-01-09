@@ -1,11 +1,6 @@
 <template>
   <div class="view-box-list">
-    <div
-      class="view-box-card"
-      :class="{'view-box-card-active': index==activeIndex}"
-      v-for="(item,index) in list"
-      :key="index"
-    >
+    <div class="view-box-card" :class="{'view-box-card-active': index==activeIndex}" v-for="(item,index) in list" :key="index">
       <section class="view-card-row x-flex-start-justify" @click="selectComment(index,item)">
         <span class="top" v-if="!item.is_top">
           <span>置顶</span>
@@ -19,7 +14,7 @@
             发布者：
             <span class="nick-name">{{item.username}}</span>
           </p>
-          <p class="time">更新时间：{{item.addtime}}</p>
+          <p class="time">更新时间：{{item.uptime?$moment.unix(item.uptime).format('YYYY-MM-DD HH:mm'):'--'}}</p>
         </div>
         <div class="view-card-col3">
           <el-button round size="mini">{{item.type | sortType(item.type)}}</el-button>

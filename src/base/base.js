@@ -80,6 +80,12 @@ export const rewardTypeList = [
   { label: '时返', value: 3 },
   { label: '一次性返利', value: 4 }
 ]
+export const rewardTypeList1 = [
+  { label: '月', value: 1 },
+  { label: '日', value: 2 },
+  { label: '时', value: 3 },
+  { label: '一次性', value: 4 }
+]
 export const requirePersonList = [
   { label: '不限', value: 0 },
   { label: '2-20人', value: 1 },
@@ -124,7 +130,12 @@ export const followStatusList = [
   { label: '已通过', value: 2 },
   { label: '未通过', value: 3 }
 ]
-
+export const entryStatusList1 = [
+  { label: '全部', value: 0 },
+  { label: '待反馈', value: 1 },
+  { label: '已入职', value: 2 },
+  { label: '未入职', value: 3 }
+]
 export const applyStatusList = [
   { label: '全部', value: -1 },
   { label: '待审核', value: 0 },
@@ -182,7 +193,7 @@ export const timeStatusList = [
   { label: '最近一个月', value: 5 }
 ]
 
-export const entryStatusList1 = [
+export const viewStatusList1 = [
   { label: '待审核', value: 0 },
   { label: '已通过', value: 1 },
   { label: '已拒绝', value: 2 },
@@ -191,9 +202,10 @@ export const entryStatusList1 = [
 ]
 export const positionStatusList = [
   { label: '全部', value: 0 },
-  { label: '高薪返利', value: 1 },
-  { label: '企业急招', value: 2 },
-  { label: '精选岗位', value: 3 }
+  { label: '普通岗位', value: 1 },
+  { label: '高薪返利', value: 2 },
+  { label: '企业急招', value: 3 },
+  { label: '精选岗位', value: 4 }
 ]
 
 export const applyStatusList1 = [
@@ -210,7 +222,7 @@ export const entryStatusList2 = [
   { label: '入职结束', value: 5 }
 ]
 export const checkStatusList1 = [
-  { label: '待审核', value: 0 },
+  { label: '待反馈', value: 0 },
   { label: '通过', value: 1 },
   { label: '拒绝', value: 2 },
   { label: '放弃报名', value: 3 }

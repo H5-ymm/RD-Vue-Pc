@@ -4,7 +4,7 @@
 <template>
   <div class="tables-box billingManagement receipt-manage">
     <div class="table-list">
-      <el-form :inline="true" label-width="100px" label-position="right" :model="formMember" class="demo-form-inline">
+      <el-form :inline="true" label-width="100px" label-position="right" :model="formMember" class="demo-form-inline form-item-wrap">
         <el-form-item label="职位名称：">
           <el-input v-model="formMember.where" class="width300" placeholder="请输入职位名称关键字"></el-input>
           <el-button type="primary" @click="onSubmit" class="select-btn">查询</el-button>
@@ -15,8 +15,8 @@
       </el-form>
       <div class="member-table">
         <div class="table-query">
-          <el-button @click="handlResume(1,this.id)">通过</el-button>
-          <el-button @click="handlResume(2,this.id)">未通过</el-button>
+          <el-button @click="handlResume(1,id)">通过</el-button>
+          <el-button @click="handlResume(2,id)">未通过</el-button>
           <span class="select-text">
             已选择
             <el-button type="text">{{multipleSelection.length}}&nbsp;</el-button>项
@@ -61,7 +61,7 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column :label="label" align="center" width="150">
+          <el-table-column :label="label" align="center" min-width="150">
             <template slot-scope="scope">
               <div v-if="viewType==4">
                 <el-button @click="handlResume(1,scope.row.id)" type="text" size="small" v-if="!scope.row.interview_status">通过</el-button>
@@ -153,7 +153,13 @@ export default {
   },
   watch: {
     $route (to, from) {
-      this.formMember.jobId = this.$route.query.id
+      if (this.viewType == 3) {
+        this.formMember.job_id = this.$route.query.id
+      }
+      else {
+        this.formMember.jobId = this.$route.query.id
+
+      }
       this.getList(this.formMember)
     }
   },
@@ -176,8 +182,6 @@ export default {
       this.jobId = this.$route.query.id
     }
     if (this.$route.query.id) {
-      // this.jobId = this.$route.query.id
-      // this.formMember.jobId = this.$route.query.id
       this.getList(this.formMember)
     }
   },
@@ -235,7 +239,6 @@ export default {
       this.checkResume()
     },
     handleOk () {
-      this.visible = false
       this.checkResume()
     },
     checkResume () {
@@ -247,6 +250,7 @@ export default {
       if (this.viewType == 3) {
         auditResumeRecommend(params).then(res => {
           this.$message.success('操作成功')
+          this.dialogTableVisible = false
           this.getList(this.formMember)
         }).catch(error => {
           this.$message.error(error.status.remind)
@@ -268,6 +272,7 @@ export default {
       })
     },
     handleSelectionChange (val) {
+      this.multipleSelection = val
       let arr = val.map(item => {
         return item.id
       })

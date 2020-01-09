@@ -23,7 +23,7 @@
                   <el-input v-model="formMember.work_tel" class="width406" placeholder="请输入合作商务电话"></el-input>
                 </el-form-item>
                 <el-form-item label="面试时间">
-                  <el-date-picker class="width406" format="yyyy-MM-dd" value-format="timestamp" v-model="formMember.meeting_time" type="date" placeholder="选择面试时间"></el-date-picker>
+                  <el-date-picker class="width406" format="yyyy-MM-dd" value-format="timestamp" v-model="meeting_time" type="date" placeholder="选择面试时间"></el-date-picker>
                 </el-form-item>
                 <el-form-item label="面试地址" prop="user_name">
                   <el-input v-model="formMember.meeting_addr" class="width406" placeholder="请输入面试地址"></el-input>
@@ -66,6 +66,7 @@ export default {
   components: {
     personalModal
   },
+  props: ['formJob'],
   data () {
     return {
       dialogTableVisible: false,
@@ -74,7 +75,7 @@ export default {
         is_assign: 1
       },
       assignUids: '',
-      meetingTime: '',
+      meeting_time: '',
       personalList: [],
       list: []
     }
@@ -100,7 +101,8 @@ export default {
       this.dialogTableVisible = false
     },
     submitForm () {
-      this.formMember.meeting_time = this.formMember.meeting_time.splice(0, 10)
+      let meetingTime = this.meeting_time + ''
+      this.formMember.meeting_time = meetingTime.slice(0, 10)
       console.log(this.formMember)
       this.$emit('submitForm', this.formMember)
     }

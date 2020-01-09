@@ -43,13 +43,19 @@
           </el-table-column>
           <el-table-column label="状态" align="center" min-width="150">
             <template slot-scope="props">
-              <span class="status" v-if="!props.row.entry_status">待审核</span>
-              <span class="status" v-else>{{props.row.entry_status==1?'通过':props.row.entry_status==2?'未通过':'未参加'}}</span>
+              <div v-if="viewType==2||viewType==4">
+                <span class="status" v-if="!props.row.entry_status">待审核</span>
+                <span class="status" v-else>{{props.row.entry_status==1?'通过':props.row.entry_status==2?'未通过':'未参加'}}</span>
+              </div>
+              <div v-if="viewType==3">
+                <span class="status" v-if="!props.row.interview_status">待审核</span>
+                <span class="status" v-else>{{props.row.interview_status==1?'通过':props.row.interview_status==2?'未通过':'未参加'}}</span>
+              </div>
             </template>
           </el-table-column>
           <el-table-column label="操作" align="center" min-width="150" v-if="viewType==2">
             <template slot-scope="props">
-              <el-button type="text" @click="handleUser(props.row)" size="small">离职</el-button>
+              <el-button type="text" @click="handleUserQuit(props.row)" size="small">离职</el-button>
             </template>
           </el-table-column>
           <el-table-column label="操作" align="center" min-width="150" v-if="viewType==4">
@@ -63,25 +69,42 @@
           </el-table-column>
           <el-table-column label="操作" align="center" min-width="150" v-if="viewType==3">
             <template slot-scope="props">
-              <div v-if="!props.row.entry_status">
+              <div v-if="props.row.interview_status==0">
                 <el-button type="text" @click="handleResume(1,props.row)" size="small">通过</el-button>
                 <el-button type="text" @click="handleResume(2,props.row)" size="small">未通过</el-button>
                 <el-button type="text" @click="handleResume(3,props.row)" size="small">未参加</el-button>
               </div>
-              <span v-else>{{props.row.entry_status==1?'通过':props.row.entry_status==2?'未通过':'未参加'}}</span>
+              <span v-if="props.row.interview_status&&props.row.interview_status!=4">{{props.row.interview_status==1?'通过':props.row.interview_status==2?'未通过':'未参加'}}</span>
+              <span v-if="props.row.interview_status==4">放弃面试</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="操作" align="center" min-width="150" v-if="viewType==5">
+            <template slot-scope="props">
+              <div v-if="props.row.entry_status==0">
+                <el-button type="text" @click="handleResume(1,props.row)" size="small">通过</el-button>
+                <el-button type="text" @click="handleResume(2,props.row)" size="small">未通过</el-button>
+                <el-button type="text" @click="handleResume(3,props.row)" size="small">未参加</el-button>
+              </div>
+              <span v-if="!props.row.entry_status&&props.row.entry_status!=4">{{props.row.entry_status==1?'通过':props.row.entry_status==2?'未通过':'未参加'}}</span>
+              <span v-if="props.row.entry_status==4">放弃面试</span>
             </template>
           </el-table-column>
         </el-table>
       </div>
       <el-pagination class="team-pagination" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="formMember.page" :page-sizes="[10, 30, 50, 100]" :page-size="formMember.limit" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
     </div>
+    <confirmDialog :dialogTableVisible="visible" @submit="submitQuit" @handleClose="visible=false" :dialogObj="dialogObj"></confirmDialog>
   </div>
 </template>
 
 <script>
-import { incumbencyUserResumeList, entryUserResumeList, entryResumeList, updateEntryUser, auditEntryResume } from '../../api/receipt'
+import { incumbencyUserResumeList, entryUserResumeList, entryResumeList, updateEntryUser, auditEntryResume, quitResumeRecommend } from '../../api/receipt'
 import { moneyTypeList, rewardTypeList, payTypeList } from '../../base/base'
+import confirmDialog from '../common/confirmDialog'
 export default {
+  components: {
+    confirmDialog
+  },
   filters: {
     moneyType (val) {
       let obj = moneyTypeList.find(item => {
@@ -104,7 +127,6 @@ export default {
       visible: false,
       tableData: [],
       currentPage: 1,
-      userType: 1,
       formMember: {
         uid: localStorage.getItem('uid'),
         limit: 10,
@@ -114,7 +136,6 @@ export default {
       len: 0,
       userId: '',
       multipleSelection: [],
-      form: {},
       statusList: [
         { label: '全部', value: 0 },
         { label: '待审核', value: 1 },
@@ -124,8 +145,14 @@ export default {
       ],
       activeIndex: 0,
       viewType: '',
-      jobId: '',
-      id: ''
+      resumeId: '',
+      id: '',
+      dialogObj: {
+        title: '离职',
+        subTitle: '离职理由',
+        okText: '确认离职',
+        placeholder: '请输入离职理由'
+      }
     }
   },
   created () {
@@ -172,6 +199,26 @@ export default {
       }
       this.getList(this.formMember)
     },
+    handleUserQuit (val) {
+      this.id = val.id
+      this.resumeId = val.resume_id
+      this.visible = true
+    },
+    submitQuit (val) {
+      let params = {
+        uid: localStorage.getItem('uid'),
+        id: this.id,
+        resumeId: this.resumeId,
+        content: val
+      }
+      quitResumeRecommend(params).then(res => {
+        this.$message.success('操作成功')
+        this.visible = false
+        this.getList(this.formMember)
+      }).catch(error => {
+        this.$message.error(error.status.remind)
+      })
+    },
     getData (res) {
       const { data } = res
       this.tableData = data.data
@@ -180,6 +227,7 @@ export default {
     selectStatus (item, index) {
       this.activeIndex = index
       this.formMember.status = item.value
+      this.getList(this.formMember)
     },
     handleSizeChange (val) {
       this.formMember.limit = val
@@ -197,7 +245,6 @@ export default {
       }
       updateEntryUser(params).then(res => {
         this.$message.success('操作成功')
-        this.$router.go(-1)
         this.getList(this.formMember)
       }).catch(error => {
         this.$message.error(error.status.remind)

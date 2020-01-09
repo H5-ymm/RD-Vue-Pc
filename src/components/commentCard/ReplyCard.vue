@@ -1,21 +1,9 @@
 <template>
-  <div v-if="showComment">
-    <div
-      class="edit-card-item x-flex-start"
-      v-for="(item,index) in commentList"
-      :key="index"
-    >
+  <div>
+    <div class="edit-card-item x-flex-start" v-for="(item,index) in commentList" :key="index">
       <div class="edit-card-comment-col1">
-        <img
-          src="../../assets/img/img1.png"
-          alt
-          class="head-img"
-          v-if="item.head_img"
-        />
-        <span
-          v-if="!item.head_img"
-          class="head-img"
-        >{{item.username}}</span>
+        <img src="../../assets/img/img1.png" alt class="head-img" v-if="item.head_img" />
+        <span v-if="!item.head_img" class="head-img">{{item.username}}</span>
       </div>
       <div class="edit-card-comment-col2">
         <p>
@@ -23,24 +11,15 @@
           <span>：{{item.content}}</span>
         </p>
         <div class="x-flex-between text-light reply-btn">
-          <span>{{$moment.unix(item.addTime).format('YYYY-MM-DD')}}</span>
+          <span>{{item.addTime?$moment.unix(item.addTime).format('YYYY-MM-DD'):'--'}}</span>
           <!-- <p> -->
           <!-- <span v-if="uid==item.user_id" @click="deleteComment(item.id)">删除</span> -->
           <span @click="handleComment(index,item,1)">{{uid==item.user_id?'删除':'评论'}}</span>
           <!-- </p> -->
         </div>
-        <commentInput
-          :isShow="currentIndex == index&&showFirstComment"
-          @submitComment="submitComment"
-          :createdName="item.username"
-          @cancleComment="cancleComment(1)"
-        ></commentInput>
+        <commentInput :isShow="currentIndex == index&&showFirstComment" @submitComment="submitComment" :createdName="item.username" @cancleComment="cancleComment(1)"></commentInput>
 
-        <section
-          class="edit-card-comment-section"
-          v-for="(val,ind) in item.replyList"
-          :key="ind"
-        >
+        <section class="edit-card-comment-section" v-for="(val,ind) in item.replyList" :key="ind">
           <div class="x-flex-start">
             <div class="edit-card-comment-col2">
               <p>
@@ -50,21 +29,12 @@
                 <span>：{{val.content}}</span>
               </p>
               <p class="x-flex-between text-light">
-                <span>2019-12-01</span>
-                <span
-                  class="reply-active"
-                  @click="handleComment(index,item,2,ind,val)"
-                >{{val.user_id==uid?'删除':'回复'}}</span>
+                <span>{{val.addtime?$moment.unix(val.addtime).format('YYYY-MM-DD HH:mm'):'--'}}</span>
+                <span class="reply-active" @click="handleComment(index,item,2,ind,val)">{{val.user_id==uid?'删除':'回复'}}</span>
               </p>
             </div>
           </div>
-          <commentInput
-            :isShow="currentIndex==index&&currentChildIndex==ind"
-            @submitComment="submitComment"
-            :createdName="val.username"
-            :reName="val.r_name"
-            @cancleComment="cancleComment(2)"
-          ></commentInput>
+          <commentInput :isShow="currentIndex==index&&currentChildIndex==ind" @submitComment="submitComment" :createdName="val.username" :reName="val.r_name" @cancleComment="cancleComment(2)"></commentInput>
         </section>
       </div>
     </div>
@@ -73,7 +43,7 @@
 <script>
 import commentInput from './commentInput'
 export default {
-  props: ['commentList', 'username', 'showComment'],
+  props: ['commentList', 'username'],
   name: 'reply',
   components: {
     commentInput
@@ -85,7 +55,7 @@ export default {
       currentChildIndex: -1,
       type: 0,
       id: '',
-      showFirstComment: false
+      showFirstComment: true
     }
   },
   watch: {

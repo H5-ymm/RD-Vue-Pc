@@ -222,7 +222,7 @@ export default {
   margin:20px 70px;
   color:rgba(153,153,153,1);
 }
-.register-btn  .button{
+.register-btn .button{
    margin-right:10px;
 }
 .register-btn .active {
@@ -335,7 +335,7 @@ export default {
 }
 .register-box .text {
   text-align:right;
-  font-size:14px;
+  font-size:16px;
   margin-right:30px;
   color:#333333;
   margin-top: 20px;

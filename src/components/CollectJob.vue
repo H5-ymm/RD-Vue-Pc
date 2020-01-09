@@ -64,7 +64,7 @@
               <span class="status" :class="`status${props.row.job_status}`">{{props.row.job_status==1?"招聘中":'已下架'}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="推荐状态" align="center" width="110" v-if="userPosition==1">
+          <el-table-column label="推荐状态" align="center" width="110" v-if="userPosition!=1">
             <template slot-scope="props">
               <span class="status" :class="`status${props.row.status}`">{{props.row.status|recommendStatus}}</span>
             </template>
@@ -73,7 +73,7 @@
             <template slot-scope="scope">
               <el-button @click="handleRecommend(scope.row)" v-if="scope.row.status==1&&scope.row.jobStatus==1&&userPosition==3" type="text" size="small">推荐接单</el-button>
               <el-button @click="handleApply(scope.row)" v-if="scope.row.jobStatus==1&&userPosition!=3" type="text" size="small">申请接单</el-button>
-              <el-button @click="handleDel(scope.row)" type="text" size="small">取消收藏</el-button>
+              <el-button @click="handleCancle(scope.row)" type="text" size="small">取消收藏</el-button>
               <span v-if="scope.row.status==2" type="text" size="small">已申请</span>
             </template>
           </el-table-column>
@@ -88,7 +88,7 @@
 
 <script>
 import { getCollectList, teamcollection, recommendList, recommendTeamUserJob } from '../api/collect'
-import { moneyTypeList, rewardTypeList, payTypeList, weekList, recommendStatusList } from '../base/base'
+import { moneyTypeList, rewardTypeList, recommendStatusList, rewardTypeList1 } from '../base/base'
 import modal from './common/modal'
 import viewJob from './common/viewJob'
 export default {
@@ -104,7 +104,7 @@ export default {
       return obj ? obj.label : '--'
     },
     rewardType (val) {
-      let obj = rewardTypeList.find(item => {
+      let obj = rewardTypeList1.find(item => {
         return val == item.value
       })
       return obj ? obj.label : '--'
@@ -119,6 +119,7 @@ export default {
   data () {
     return {
       moneyTypeList,
+      rewardTypeList1,
       rewardTypeList,
       recommendStatusList,
       dialogTableVisible: false,
@@ -198,6 +199,9 @@ export default {
         console.log(error)
         this.$message.error(error.status.remind)
       })
+    },
+    handleCancle (val) {
+
     },
     handleApply (val) {
       let params = {

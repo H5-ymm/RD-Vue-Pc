@@ -36,14 +36,16 @@
           <el-table-column label="推荐时间" prop="addtime" sortable align="center" width="160"></el-table-column>
           <el-table-column label="状态" align="center" width="150">
             <template slot-scope="props">
-              <span class="status" :class="`status${props.row.status}`">{{props.row.status==0?"待审核":props.row.status==1?'通过':'未通过'}}</span>
+              <span class="status" :class="`status${props.row.status}`" v-if="!props.row.interview_status">{{props.row.status==0?"待审核":props.row.status==1?'通过':'未通过'}}</span>
+              <span class="status" v-if="props.row.status==1&&props.row.interview_status!=3">{{props.row.interview_status==1?'通过':'未通过'}}</span>
+              <span class="status status2" v-if="props.row.status==1&&props.row.interview_status==3">未参加</span>
             </template>
           </el-table-column>
           <el-table-column label="操作" align="center" width="180">
             <template slot-scope="scope">
               <el-button @click="handleResume(1,scope.row)" type="text" v-if="scope.row.status==0" size="small">放弃报名</el-button>
-              <el-button @click="handleResume(2,scope.row)" v-if="scope.row.status==1" type="text" size="small">放弃面试</el-button>
-              <el-button @click="handleAppay(scope.row)" v-if="scope.row.entry_status==3||scope.row.status==3" type="text" size="small">推荐岗位</el-button>
+              <el-button @click="handleResume(2,scope.row)" v-if="scope.row.status==1&&scope.row.interview_status==1" type="text" size="small">放弃面试</el-button>
+              <el-button @click="routerResume(scope.row)" v-if="scope.row.entry_status==3||scope.row.status==2||scope.row.interview_status>=2" type="text" size="small">推荐岗位</el-button>
               <!-- <el-button @click="handleResume(3,scope.row)" v-if="scope.row.status==2" type="text" size="small">放弃入职</el-button> -->
             </template>
           </el-table-column>
@@ -128,6 +130,17 @@ export default {
     }
     this.getList(this.formMember)
   },
+  watch: {
+    $route (to, from) {
+      if (from.query.view == 5) {
+        this.formMember.type = 2
+      }
+      else {
+        this.formMember.type = ''
+      }
+      this.getList(this.formMember)
+    }
+  },
   methods: {
     getList (params) {
       getListPut(params).then(res => {
@@ -135,6 +148,12 @@ export default {
         this.tableData = data.data
         this.total = data.count
       })
+    },
+    routerResume (val) {
+      let arr = JSON.parse(sessionStorage.getItem('menus'))
+      arr[1] = '推荐岗位'
+      sessionStorage.setItem('menus', JSON.stringify(arr))
+      this.$router.push('/recommendJob?id=' + val.id)
     },
     selectStatus (item, index) {
       this.activeIndex = index
@@ -194,6 +213,7 @@ export default {
     handleResumeApi1 (params) {
       giveupView(params).then(res => {
         if (res.data) {
+          this.$message.success('操作成功')
           this.getList(this.formMember)
         } else {
           this.$message.error('操作失败')
@@ -206,6 +226,7 @@ export default {
     handleResumeApi2 (params) {
       giveupEntry(params).then(res => {
         if (res.data) {
+          this.$message.success('操作成功')
           this.getList(this.formMember)
         } else {
           this.$message.error('操作失败')

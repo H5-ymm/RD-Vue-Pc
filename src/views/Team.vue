@@ -50,10 +50,10 @@
           <breadcrumb :breadcrumbs="breadcrumb"></breadcrumb>
         </el-header>
         <el-main class="team-main" :class="{'comany-main-page': type==1}">
-          <router-view class="team-box"></router-view>
-          <!-- <keep-alive>
+          <!-- <router-view class="team-box"></router-view> -->
+          <keep-alive>
             <router-view class="team-box"></router-view>
-          </keep-alive> -->
+          </keep-alive>
         </el-main>
       </el-container>
     </el-container>

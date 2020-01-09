@@ -139,13 +139,30 @@ export default {
     districtSelet,
     moneyType
   },
+  props: ['formJob'],
   data () {
     return {
       formMember: {
+        address: '',
+        com_introduction: "",
+        company_logo: "",
+        company_name: "",
+        entry_requirements: "",
+        is_up: 1,
+        job_description: "",
+        job_name: '',
+        number: 0,
+        offermoney: "2",
+        offermoney_type: 1,
+        offtime: '',
+        sex: 0,
+        uid: '',
+        welfare_statement: '',
+        working_hours: '',
         is_five_risks: 2,
         is_fund: 2,
         age_min: 16,
-        age_max: 45,
+        age_max: 65,
         sex: 0,
         job_name: '',
         address: '',
@@ -176,6 +193,15 @@ export default {
           label: '男女不限', value: 0
         }
       ]
+    }
+  },
+  watch: {
+    formJob (val) {
+      if (val) {
+        for (let key in this.formMember) {
+          this.formMember[key] = val[key]
+        }
+      }
     }
   },
   created () {

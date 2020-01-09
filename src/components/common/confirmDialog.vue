@@ -1,10 +1,5 @@
 <template>
-  <el-dialog
-    width="500px"
-    :visible.sync="dialogTableVisible"
-    class="member-dialog"
-    :show-close="false"
-  >
+  <el-dialog width="500px" :visible.sync="dialogTableVisible" class="member-dialog" :show-close="false">
     <div class="member-row">
       <img src="../../assets/img/member/cancel.png" alt class="cancel-icon" @click="handleClose" />
       <section class="member-col1">
@@ -13,12 +8,7 @@
       <section class="member-col3 member-add-col3">
         <el-form :model="form" class="lock-form" :rules="rules" ref="form">
           <el-form-item :label="`${dialogObj.subTitle}`" required prop="reason">
-            <el-input
-              type="textarea"
-              :autosize="{ minRows: 4}"
-              :placeholder="dialogObj.placeholder"
-              v-model="form.reason"
-            ></el-input>
+            <el-input type="textarea" :autosize="{ minRows: 4}" :placeholder="dialogObj.placeholder" v-model="form.reason"></el-input>
           </el-form-item>
           <el-form-item v-if="isShow" class="check-box">
             <el-checkbox v-model="checked">放弃后推荐新岗位</el-checkbox>
@@ -48,7 +38,7 @@ export default {
       checked: false,
       rules: {
         reason: [
-          { required: true, message: '请输入理由', trigger: 'blur' },
+          { message: '请输入理由', trigger: 'blur' },
         ]
       }
     }
@@ -72,7 +62,7 @@ export default {
       this.$refs['form'].validate((valid) => {
         if (valid) {
           this.$emit('submit', this.form)
-          this.form.reason = ''
+          // this.form.reason = ''
         } else {
           return false
         }
@@ -95,6 +85,10 @@ export default {
       position: absolute;
       top: 5px;
       right: 0;
+    }
+     .member-col1 {
+      background: #EBF4FB;
+      padding: 18px 0 17px;
     }
     .member-col3 {
       width: 82%;

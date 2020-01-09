@@ -268,7 +268,10 @@ export default {
       this.visible = false
       giveUpResume(params).then(res => {
         this.resumeId = ''
+        this.$message.success('操作成功')
         this.getList(this.formMember)
+      }).catch(error => {
+        this.$message.error(error.status.remind)
       })
     },
     handleSelectionChange (val) {

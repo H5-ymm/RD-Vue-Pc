@@ -67,9 +67,9 @@
               <span>{{props.row.addtime?$moment.unix(props.row.addtime).format('YYYY-MM-DD HH:mm'):'--'}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="返利模式" align="center" width="110">
+          <el-table-column label="返利模式" align="center" width="150">
             <template slot-scope="props">
-              <span>{{props.row.reward_type|rewardType}}</span>
+              <span>{{props.row.reward_money}}元/{{props.row.reward_type==1?'月':props.row.reward_type==2?'日': props.row.reward_type==3?'时':'一次性'}}</span>
             </template>
           </el-table-column>
           <el-table-column label="入职时间" sortable align="center" width="150">
@@ -215,7 +215,7 @@ export default {
       this.dialogTableVisible = false
       let params = {
         uid: localStorage.getItem('uid'),
-        jobId: val.id
+        jobId: this.jobId
       }
       if (this.overType == 1) {
         this.handleOverEntry(params)

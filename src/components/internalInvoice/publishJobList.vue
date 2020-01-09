@@ -121,10 +121,10 @@
         <el-table border :data="tableData" ref="multipleTable" style="width: 100%">
           <el-table-column label="企业名称" prop="company_name" align="center" width="150"></el-table-column>
           <el-table-column label="岗位名称" prop="job_name" align="center" width="150"></el-table-column>
-          <el-table-column label="岗位类型" align="center" prop="job_type" width="110">
-            <!-- <template slot-scope="props">
-              <span>{{props.row.jobType | jobType}}</span>
-            </template> -->
+          <el-table-column label="岗位类型" align="center" width="110">
+            <template slot-scope="props">
+              <span>{{props.row.job_type ?props.row.job_type:'普通岗位'}}</span>
+            </template>
           </el-table-column>
           <el-table-column label="工作地址" prop="address" align="center" width="110"></el-table-column>
           <el-table-column label="员工薪资" align="center" width="110">
@@ -132,7 +132,11 @@
               <span>{{props.row.offermoney}}元/{{props.row.offermoney_type==1?'月':props.row.offermoney_type==2?'日':'时'}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="招聘类型" prop="type" align="center" width="110"></el-table-column>
+          <el-table-column label="招聘类型" align="center" width="110">
+            <template slot-scope="props">
+              <span>{{props.row.type ?props.row.type:'普通招聘'}}</span>
+            </template>
+          </el-table-column>
           <el-table-column label="薪资类型" align="center" width="110">
             <template slot-scope="props">
               <span>{{props.row.offermoney_type | moneyType}}</span>
@@ -165,30 +169,30 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column label="上架状态" align="center" width="110" v-if="userPosition!=1">
+          <el-table-column label="上架状态" align="center" width="110">
             <template slot-scope="props">
-              <span class="status" :class="`status${props.row.status}`">{{props.row.status|recommendStatus}}</span>
+              <span class="status" :class="`status${props.row.is_up?props.row.is_up:3}`">{{props.row.is_up==1?'已上架':'已下架'}}</span>
             </template>
           </el-table-column>
           <el-table-column label="创建日期" prop="ctime" align="center" width="180"></el-table-column>
-          <el-table-column label="已领取人" align="center" width="180" v-if="viewType==2">
+          <el-table-column label="已领取人" align="center" width="180" v-if="viewType==1">
             <template slot-scope="scope">
               <div class="text-line" @click="handleRecepit(2,scope.row)" v-if="(scope.row&&scope.row.uid==uid)||userPosition==3">
                 <el-button v-for="(item,index) in scope.row.tolist" :key="index" type="text" size="small">{{item.name}}</el-button>
               </div>
             </template>
           </el-table-column>
-          <el-table-column label="操作" align="center" min-width="200">
+          <el-table-column label="操作" align="center" min-width="220">
             <template slot-scope="scope">
               <div v-if="viewType==1">
                 <el-button @click="$router.push('jobDetail?id='+scope.row.id)" type="text" size="small">详情</el-button>
-                <el-button @click="handleRecepit(1,scope.row)" type="text" v-if="scope.row.is_up==1" size="small">分配跟进人</el-button>
-                <el-button @click="changeJobstatus(0,scope.row)" type="text" size="small" v-if="((scope.row&&scope.row.uid==uid)||userPosition==1)&&scope.row.is_up==1">下架</el-button>
-                <el-button @click="changeJobstatus(1,scope.row)" type="text" size="small" v-if="((scope.row&&scope.row.uid==uid)||userPosition==1)&&scope.row.is_up==0">上架</el-button>
+                <el-button @click="$router.push('postJob?id='+scope.row.id)" type="text" size="small" v-if="(scope.row&&scope.row.uid==uid)||userPosition==1">编辑</el-button>
                 <el-button @click="delJob(scope.row)" type="text" size="small" v-if="(scope.row&&scope.row.uid==uid)||userPosition==1">删除</el-button>
-                <el-button @click="$router.push('jobDetail?id='+scope.row.id)" type="text" size="small" v-if="(scope.row&&scope.row.uid==uid)||userPosition==1">编辑</el-button>
+                <el-button @click="changeJobstatus(0,scope.row)" type="text" size="small" v-if="((scope.row&&scope.row.uid==uid)||userPosition==1)&&scope.row.is_up==1">下架</el-button>
+                <el-button @click="changeJobstatus(1,scope.row)" type="text" size="small" v-if="((scope.row&&scope.row.uid==uid)||userPosition==1)&&!scope.row.is_up">上架</el-button>
+                <el-button @click="handleRecepit(1,scope.row)" type="text" v-if="scope.row.uid==uid||userPosition==1" size="small">分配跟进人</el-button>
               </div>
-              <div v-if="viewType!=1">
+              <div v-if="viewType!=1" class="x-flex-center">
                 <el-button @click="$router.push('jobDetail?id='+scope.row.id)" type="text" size="small">详情</el-button>
                 <el-button @click="putResume(scope.row)" v-if="scope.row.is_up==1" type="text" size="small">推荐简历</el-button>
                 <span v-if="!scope.row.is_up" class="default-status">推荐简历</span>
@@ -305,6 +309,12 @@ export default {
     this.viewType = this.$route.query.view
     this.getList(this.formMember)
   },
+  watch: {
+    $route (to, from) {
+      this.viewType = to.query.view
+      this.getList(this.formMember)
+    }
+  },
   methods: {
     getList (params) {
       getJoblist(params).then(res => {
@@ -355,6 +365,7 @@ export default {
       }
       getTomember(params).then(res => {
         this.personalList = res.data || []
+        console.log(this.personalList)
         this.dialogTableVisible = true
       }).catch(error => {
         this.$message.error(error.status.remind)
@@ -363,7 +374,7 @@ export default {
     // 删除
     delJob (val) {
       let params = {
-        job_id: val.id,
+        id: val.id,
         uid: this.uid
       }
       deleteJob(params).then(res => {
@@ -374,13 +385,17 @@ export default {
     },
     // 上下架
     changeJobstatus (status, val) {
+      console.log(status)
       let params = {
-        job_id: val.id,
+        id: val.id,
         uid: this.uid,
         status
       }
       changestatus(params).then(res => {
-        this.getList(this.formMember)
+        console.log(res)
+        if (res.data) {
+          this.getList(this.formMember)
+        }
       }).catch(error => {
         this.$message.error(error.status.remind)
       })
@@ -416,8 +431,8 @@ export default {
     },
     handleOk (val) {
       let params = {
-        jobId: this.jobId,
-        id: val.id,
+        job_id: this.jobId,
+        ids: val.id,
         uid: this.uid
       }
       if (handleStatus == 1) {

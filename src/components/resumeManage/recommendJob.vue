@@ -85,7 +85,7 @@
 </template>
 
 <script>
-import { getResumeList, addUserResume, getMatchingResume, getMatchingJobList } from '@/api/resume'
+import { getResumeList, addUserResume, getMatchingResume, getInternalInvoiceList, getMatchingJobList, getInternalMatchingList } from '@/api/resume'
 import { putResumelist, addPut } from '@/api/internalInvoice'
 import { getListPut } from '@/api/teamReceipt'
 import { moneyTypeList, rewardTypeList, payTypeList, weekList } from '@/base/base'
@@ -156,8 +156,7 @@ export default {
         })
       }
       else {
-        params
-        getListPut(params).then(res => {
+        getInternalMatchingList(params).then(res => {
           const { data } = res
           this.tableData = data.data
           console.log(res)

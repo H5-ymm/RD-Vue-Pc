@@ -125,6 +125,10 @@ export default {
               url: '/applyResume?view=1'
             },
             {
+              title: '面试结果',
+              url: '/applyResume?view=3'
+            },
+            {
               title: '入职结果',
               url: '/applyResume?view=2'
             },
@@ -142,7 +146,7 @@ export default {
               url: '/waiverOfResume?view=1'
             },
             {
-              title: '还原简历',
+              title: '已删除简历',
               url: '/waiverOfResume?view=2'
             },
           ]
@@ -209,7 +213,7 @@ export default {
         submenu: [
           {
             title: '已推荐简历',
-            url: '/applyResume?view=3'
+            url: '/resumeList'
           }
         ]
       },
@@ -247,7 +251,6 @@ export default {
           url: '/receiptTable'
         }
       ],
-      userPosition: 0
     }
   },
   created () {
@@ -265,6 +268,7 @@ export default {
       let len = this.menus.length - 2
       this.menus[len].submenu = this.internalInvoiceRoot.concat(this.menus[len].submenu)
     }
+    console.log(this.menus)
   },
   watch: {
     $route (val) {

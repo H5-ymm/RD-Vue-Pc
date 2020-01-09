@@ -198,7 +198,10 @@ export default {
   methods: {
     changeReward (val) {
       if (val == 1) {
-        this.orderTakingForm.settlement_type = 2
+        this.orderTakingForm.settlement_type = 1
+      }
+      else {
+        this.orderTakingForm.settlement_type = 3
       }
     },
     focusInput () {

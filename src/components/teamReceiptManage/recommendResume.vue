@@ -168,7 +168,7 @@ export default {
       ],
       activeIndex: 0,
       jobId: '',
-      resumeInfo:{},
+      resumeInfo: {},
       percentageNum: 0
     }
   },
@@ -177,10 +177,17 @@ export default {
     this.formMember.id = this.$route.query.id
     if (this.$route.query.jobId) {
       this.jobId = this.$route.query.jobId
-    } 
+    }
     this.getInfo()
     this.getList(this.formMember)
-    
+
+  },
+  watch: {
+    $route (to, from) {
+      this.jobId = from.query.jobId
+      this.getInfo()
+      this.getList(this.formMember)
+    }
   },
   methods: {
     getList (params) {
@@ -192,22 +199,22 @@ export default {
         this.$message.error(error.status.remind)
       })
     },
-    getInfo(){
+    getInfo () {
       let params = {
         apply_id: this.formMember.id,
         uid: localStorage.getItem('uid')
       }
       getapplyInfo(params).then(res => {
         this.resumeInfo = res.data
-        let need_num =  !res.data.need_num ? 0:res.data.need_num
+        let need_num = !res.data.need_num ? 0 : res.data.need_num
         let pass = !res.data.pass ? 0 : res.data.pass
-        console.log(parseInt((pass / Number(need_num))*100))
-        if (!pass&&!need_num) {
+        console.log(parseInt((pass / Number(need_num)) * 100))
+        if (!pass && !need_num) {
           this.percentageNum = 0
         }
-       else {
-          this.percentageNum = parseInt((pass / Number(need_num))*100)
-       }
+        else {
+          this.percentageNum = parseInt((pass / Number(need_num)) * 100)
+        }
       }).catch(error => {
         this.$message.error(error.status.remind)
       })

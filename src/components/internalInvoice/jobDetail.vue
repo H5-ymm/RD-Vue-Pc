@@ -221,38 +221,38 @@
               <div class="resume-card-item">
                 <div class="x-flex-start">
                   <p class="resume-col1">岗位类型</p>
-                  <p v-if="formMember.setinfo.job_type">{{formMember.setinfo.job_type|positionStatus}}</p>
-                  <p v-else>普通</p>
+                  <p v-if="formMember.setinfo&&formMember.setinfo.job_type">{{formMember.setinfo.job_type|positionStatus}}</p>
+                  <p v-else>普通岗位</p>
                 </div>
-                <div class="x-flex-start" v-if="formMember.setinfo.source">
+                <div class="x-flex-start" v-if="formMember.setinfo&&formMember.setinfo.source">
                   <p class="resume-col1">岗位来源</p>
                   <p>{{formMember.setinfo.source}}</p>
                 </div>
-                <div class="x-flex-start" v-if="formMember.setinfo.work_man">
+                <div class="x-flex-start" v-if="formMember.setinfo&&formMember.setinfo.work_man">
                   <p class="resume-col1">合作商务姓名</p>
                   <p>{{formMember.setinfo.work_man}}</p>
                 </div>
-                <div class="x-flex-start" v-if="formMember.setinfo.work_tel">
+                <div class="x-flex-start" v-if="formMember.setinfo&&formMember.setinfo.work_tel">
                   <p class="resume-col1">合作商务电话</p>
                   <p>{{formMember.setinfo.work_tel}}</p>
                 </div>
-                <div class="x-flex-start" v-if="formMember.setinfo.meeting_time">
+                <div class="x-flex-start" v-if="formMember.setinfo&&formMember.setinfo.meeting_time">
                   <p class="resume-col1">面试时间</p>
                   <p>{{formMember.setinfo.meeting_time}}</p>
                 </div>
-                <div class="x-flex-start" v-if="formMember.setinfo.meeting_addr">
+                <div class="x-flex-start" v-if="formMember.setinfo&&formMember.setinfo.meeting_addr">
                   <p class="resume-col1">面试地址</p>
                   <p>{{formMember.setinfo.meeting_addr}}</p>
                 </div>
-                <div class="x-flex-start" v-if="formMember.setinfo.link_man">
+                <div class="x-flex-start" v-if="formMember.setinfo&&formMember.setinfo.link_man">
                   <p class="resume-col1">发单负责人</p>
                   <p>{{formMember.setinfo.link_man}}</p>
                 </div>
-                <div class="x-flex-start" v-if="formMember.setinfo.link_tel">
+                <div class="x-flex-start" v-if="formMember.setinfo&&formMember.setinfo.link_tel">
                   <p class="resume-col1">负责人电话</p>
                   <p>{{formMember.setinfo.link_tel}}</p>
                 </div>
-                <div class="x-flex-start" v-if="formMember.setinfo.is_assign==1">
+                <div class="x-flex-start" v-if="formMember.setinfo&&formMember.setinfo.is_assign==1">
                   <p class="resume-col1">指定招聘人</p>
                   <p>{{formMember.setinfo.assign_uids}}</p>
                 </div>

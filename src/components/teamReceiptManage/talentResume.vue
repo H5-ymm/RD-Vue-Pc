@@ -77,7 +77,7 @@
           <!-- <el-table-column label="联系人" prop="entry_num" align="center" width="150"></el-table-column> -->
           <el-table-column label="操作" align="center" width="180">
             <template slot-scope="props">
-              <el-button @click="$router.push('/commonTableList')" type="text" size="small" v-if="props.row.entry_status==0">面试名单</el-button>
+              <el-button @click="$router.push('/commonTableList?id='+ props.row.id+ '&jobId='+props.row.job_id)" type="text" size="small" v-if="props.row.entry_status==0">面试名单</el-button>
               <el-button @click="dialogTableVisible=true" type="text" size="small" v-if="props.row.entry_status&&props.row.interview_status">联系客服</el-button>
               <el-button @click="routerEntry" v-if="props.row.entry_status>=1" type="text" size="small">入职名单</el-button>
             </template>

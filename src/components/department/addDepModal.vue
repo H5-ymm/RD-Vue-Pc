@@ -1,64 +1,25 @@
 <template>
-  <el-dialog
-    width="500px"
-    :visible="dialogTableVisible"
-    class="member-dialog"
-    :show-close="false"
-  >
+  <el-dialog width="500px" :visible="dialogTableVisible" class="member-dialog" :show-close="false">
     <div class="member-row">
-      <img
-        src="../../assets/img/member/cancel.png"
-        alt
-        class="cancel-icon"
-        @click="handleClose"
-      />
+      <img src="../../assets/img/member/cancel.png" alt class="cancel-icon" @click="handleClose" />
       <section class="member-col1">
         <p>添加部门</p>
       </section>
       <section class="member-col3 department-add-col3">
-        <el-form
-          :model="formMember"
-          :rules="rules"
-          :inline="true"
-          label-position="left"
-          ref="formMember"
-          class="demo-form-inline"
-        >
-          <el-form-item
-            label="部门名称"
-            required
-            prop="depart_name"
-          >
-            <el-input
-              v-model="formMember.depart_name"
-              placeholder="请输入部门名称"
-            ></el-input>
+        <el-form :model="formMember" :rules="rules" :inline="true" label-position="left" ref="formMember" class="demo-form-inline">
+          <el-form-item label="部门名称" required prop="depart_name">
+            <el-input v-model="formMember.depart_name" placeholder="请输入部门名称"></el-input>
           </el-form-item>
-          <el-form-item
-            label="部门经理"
-            required
-            prop="user_id"
-          >
-            <el-select
-              v-model="formMember.user_id"
-              placeholder="请选择部门经理"
-            >
-              <el-option
-                :label="item.user_name"
-                :value="item.uid"
-                v-for="(item,index) in userList"
-                :key="index"
-              ></el-option>
+          <el-form-item label="部门经理" required prop="user_id">
+            <el-select v-model="formMember.user_id" placeholder="请选择部门经理">
+              <el-option :label="item.user_name" :value="item.uid" v-for="(item,index) in userList" :key="index"></el-option>
             </el-select>
           </el-form-item>
         </el-form>
       </section>
     </div>
     <div slot="footer">
-      <el-button
-        type="primary"
-        @click="submitForm"
-      >确定添加</el-button>
+      <el-button type="primary" @click="submitForm">确定添加</el-button>
     </div>
   </el-dialog>
 </template>
@@ -173,11 +134,12 @@ export default {
         }
       }
        &.department-add-col3{
-        //  .el-form-item__label {
-        //   margin-left: 20px;
-        //  }
+         .el-form-item__label {
+          margin-left: 20px;
+         }
         .el-form-item__content {
           display: block;
+          // margin-left: 0!important;
         }
         .el-input,.el-select {    
           width: 300px;

@@ -95,7 +95,7 @@
           <el-button :type="formMember.offermoney_type==item.value ?'primary':''" v-for="(item,index) in moneyTypeList" :key="index" plain @click="selectStatus('offermoney_type',item)" class="select-status">{{item.label}}</el-button>
         </el-form-item>
         <el-form-item label="招聘类型：">
-          <el-button :type="formMember.moneyType==item.value ?'primary':''" v-for="(item,index) in advertisesList" :key="index" plain @click="selectStatus('moneyType',item)" class="select-status">{{item.label}}</el-button>
+          <el-button :type="formMember.job_type==item.value ?'primary':''" v-for="(item,index) in advertisesList" :key="index" plain @click="selectStatus('job_type',item)" class="select-status">{{item.label}}</el-button>
         </el-form-item>
       </el-form>
       <div class="member-table">
@@ -108,7 +108,7 @@
           <el-table-column label="岗位名称" prop="job_name" align="center" width="150"></el-table-column>
           <el-table-column label="岗位类型" align="center" width="110">
             <template slot-scope="props">
-              <span>{{props.row.jobType | jobType}}</span>
+              <span>{{props.row.job_type ?props.row.job_type:'普通岗位'}}</span>
             </template>
           </el-table-column>
           <el-table-column label="工作地址" prop="address" align="center" width="110"></el-table-column>
@@ -119,7 +119,7 @@
           </el-table-column>
           <el-table-column label="招聘类型" align="center" width="110">
             <template slot-scope="props">
-              <span>{{props.row.type}}</span>
+              <span>{{props.row.type?props.row.type:'普通招聘'}}</span>
             </template>
           </el-table-column>
           <el-table-column label="薪资类型" align="center" width="110">
@@ -131,7 +131,7 @@
           </el-table-column>
           <el-table-column label="上架状态" align="center" width="110">
             <template slot-scope="props">
-              <span class="status" :class="`status${props.row.is_up}`">{{props.row.is_up==1?'招聘中':'已下架'}}</span>
+              <span class="status" :class="`status${props.row.is_up?props.row.is_up:3}`">{{props.row.is_up==1?'招聘中':'已下架'}}</span>
             </template>
           </el-table-column>
           <el-table-column label="创建日期" align="center" width="170">
@@ -141,8 +141,8 @@
           </el-table-column>
           <el-table-column label="操作" align="center" min-width="150">
             <template slot-scope="scope">
-              <el-button @click="$router.push('jobDetail')" type="text" size="small">详情</el-button>
-              <el-button @click="handleApply(scope.row)" v-if="scope.row.is_up==1" type="text" size="small">领取</el-button>
+              <el-button @click="$router.push('jobDetail?id='+scope.row.id)" type="text" size="small">详情</el-button>
+              <el-button @click="handleApply(scope.row)" v-if="scope.row.is_up==1 && userPosition==2" type="text" size="small">领取</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -154,7 +154,7 @@
 </template>
 
 <script>
-import { getJoblist, addPut } from '@/api/internalInvoice'
+import { getJoblist, addPut, teamcollection, recvjob } from '@/api/internalInvoice'
 import { moneyTypeList, rewardTypeList, payTypeList, weekList, recommendStatusList, timeStatusList, positionStatusList } from '@/base/base'
 import modal from '../common/modal'
 export default {
@@ -227,7 +227,8 @@ export default {
       },
       userPosition: sessionStorage.getItem('userPosition'), // 1 总经理，2经理，3 成员
       show: false,
-      keyword: ''
+      keyword: '',
+      uid: localStorage.getItem('uid')
     }
   },
   created () {
@@ -273,12 +274,10 @@ export default {
     },
     handleApply (val) {
       let params = {
-        jobId: val.jobId,
-        id: val.id,
-        uid: localStorage.getItem('uid'),
-        collectId: val.id
+        job_id: val.id,
+        uid: localStorage.getItem('uid')
       }
-      teamcollection(params).then(res => {
+      recvjob(params).then(res => {
         this.dialogTableVisible = true
         this.getList(this.formMember)
       }).catch(error => {

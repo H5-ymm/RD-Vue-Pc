@@ -25,7 +25,7 @@
       </section>
     </div>
     <div slot="footer" class="notice-footer-btn">
-      <el-button @click="submitForm">取消</el-button>
+      <el-button @click="handleClose">取消</el-button>
       <el-button type="primary" @click="submitForm">确定</el-button>
     </div>
   </el-dialog>

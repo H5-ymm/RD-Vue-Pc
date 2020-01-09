@@ -61,7 +61,8 @@
           </el-table-column>
           <el-table-column label="发单状态" align="center" width="150">
             <template slot-scope="props">
-              <span class="status" :class="`status${props.row.invoice_status}`">{{props.row.invoice_status}}</span>
+              <span class="status" :class="`status${props.row.status}`">{{props.row.status==0?'收集中':props.row.status==1?'审核中':props.row.status==2?'已通知面试':'未通知面试'}}</span>
+              <!-- <span class="status" v-if="props.row.interview_status" :class="`status${props.row.invoice_status}`">{{props.row.interview_status==1?'面试开始':'面试结束'}}</span> -->
             </template>
           </el-table-column>
           <el-table-column label="岗位城市" prop="entry_num" align="center" width="120">
@@ -112,7 +113,7 @@
   </div>
 </template>
 <script>
-import { applyList } from '../../api/teamReceipt'
+import { applyList, gettalent } from '../../api/teamReceipt'
 import { moneyTypeList, rewardTypeList, payTypeList, weekList } from '../../base/base'
 import receiptModal from './receiptModal'
 import { getConstant } from '../../api/dictionary'

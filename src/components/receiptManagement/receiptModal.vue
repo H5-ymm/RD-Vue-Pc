@@ -6,45 +6,27 @@
         <p>通知入职</p>
       </section>
       <section class="member-col3 bind-col3">
-        <el-form
-          :model="formMember"
-          :rules="rules"
-          :inline="true"
-          label-position="left"
-          ref="formMember"
-          class="demo-form-inline"
-        >
+        <el-form :model="formMember" :rules="rules" :inline="true" label-position="left" ref="formMember" class="demo-form-inline">
           <el-form-item label="入职时间" required prop="depart_name">
             <div class="x-flex-between">
-              <el-date-picker
-                v-model="formMember.date"
-                type="date"
-                class="width195"
-                placeholder="请选择入职日期">
+              <el-date-picker v-model="formMember.date" type="date" class="width195" placeholder="请选择入职日期">
               </el-date-picker>
-              <el-time-select
-                class="width195"
-                v-model="formMember.value"
-                :picker-options="{
+              <el-time-select class="width195" v-model="formMember.value" :picker-options="{
                   start: '08:30',
                   step: '00:15',
                   end: '18:30'
-                }"
-                placeholder="请选择入职时间">
+                }" placeholder="请选择入职时间">
               </el-time-select>
-             </div>
+            </div>
           </el-form-item>
           <el-form-item label="通知内容" required prop="user_id">
-            <el-input v-model="formMember.depart_name"  
-             type="textarea"
-             class="width400"
-             :autosize="{maxRows: 4}" placeholder="请输入通知内容"></el-input>
+            <el-input v-model="formMember.depart_name" type="textarea" class="width400" :autosize="{maxRows: 4}" placeholder="请输入通知内容"></el-input>
           </el-form-item>
         </el-form>
       </section>
     </div>
     <div slot="footer" class="notice-footer-btn">
-      <el-button @click="submitForm">取消</el-button>
+      <el-button @click="handleClose">取消</el-button>
       <el-button type="primary" @click="submitForm">确定</el-button>
     </div>
   </el-dialog>

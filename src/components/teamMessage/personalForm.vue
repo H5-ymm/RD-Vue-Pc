@@ -5,24 +5,12 @@
   <div class="teamMessage">
     <div class="title">基本信息</div>
     <div class="teamMessage-form-row">
-      <el-form
-        :model="personalForm"
-        :rules="rules"
-        ref="personalForm"
-        label-width="110px"
-        class="teamMessage-form"
-      >
+      <el-form :model="personalForm" :rules="rules" ref="personalForm" label-width="110px" class="teamMessage-form">
         <el-form-item label="团队名称" prop="team_name">
           <el-input v-model="personalForm.team_name" class="width408" placeholder="请输入团队名称"></el-input>
         </el-form-item>
         <el-form-item label="团队logo" required>
-          <el-upload
-            class="avatar-uploader"
-            action="customize"
-            ref="upload"
-            :show-file-list="false"
-            :http-request="upload"
-          >
+          <el-upload class="avatar-uploader" action="customize" ref="upload" :show-file-list="false" :http-request="upload">
             <img v-if="imageUrl" :src="imageUrl" class="avatar" />
             <i v-else class="el-icon-circle-plus avatar-uploader-icon"></i>
             <p>上传logo</p>
@@ -31,7 +19,7 @@
         <el-form-item label="申请人姓名" required>
           <el-input v-model="personalForm.user_name" class="width408" placeholder="请输入申请人姓名"></el-input>
         </el-form-item>
-        <el-form-item label="身份证" required>
+        <el-form-item label="身份证" required prop="id_card">
           <el-input v-model="personalForm.id_card" class="width408" placeholder="请输入身份证"></el-input>
         </el-form-item>
         <el-form-item label="性别" prop="delivery">
@@ -54,13 +42,7 @@
           </div>
         </el-form-item>
         <el-form-item label="团队简介" prop="introduction">
-          <el-input
-            type="textarea"
-            class="width408"
-            :autosize="{minRows: 5}"
-            v-model="personalForm.introduction"
-            placeholder="请输入团队介绍"
-          ></el-input>
+          <el-input type="textarea" class="width408" :autosize="{minRows: 5}" v-model="personalForm.introduction" placeholder="请输入团队介绍"></el-input>
         </el-form-item>
         <el-form-item class="teamMessage-btn">
           <el-button type="primary" @click="submitForm('personalForm')">保存</el-button>
@@ -74,7 +56,7 @@
 <script>
 import { getConstant } from '../../api/dictionary'
 import districtSelet from '../districtSelet'
-import { getImg, getImgUrl } from '../../util/util'
+import { getImg, getImgUrl, validateIdCard } from '@/util/util'
 import { updateTeamInfo, getTeamInfo } from '../../api/team'
 import { uploadFile } from '../../api/upload'
 export default {
@@ -82,6 +64,16 @@ export default {
     districtSelet
   },
   data () {
+    var validate = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请输入身份证号码'));
+      } else {
+        if (!validateIdCard(value)) {
+          callback(new Error('请输入正确的身份证号码'));
+        }
+        callback()
+      }
+    };
     return {
       personalForm: {
         type: 2,
@@ -90,7 +82,11 @@ export default {
       imageUrl: '',
       rules: {
         team_name: [
-          { required: true, message: '请输入团队名称', trigger: 'blur' }
+          { message: '请输入团队名称', trigger: 'blur' }
+        ],
+        id_card: [
+          { message: '请输入身份证号码', trigger: 'blur' },
+          { validator: validate, trigger: 'blur' }
         ]
       },
       edu_type: [],

@@ -10,7 +10,7 @@
           <li v-for="(item,index) in hasPersonList" :key="index" class="x-flex-around">
             <span class="item-name">{{index+1}}.{{item.user_name}}</span>
             <span class="item-time">领取时间：{{$moment(item.ctime).format('YYYY-MM-DD HH:mm')}}</span>
-            <el-button :type="index==activeIndex?'default':'primary'" plain @click="handleCancle(item.touid,index)">取消分配</el-button>
+            <el-button :type="index==activeIndex?'default':'primary'" size="mini" class="cancle-btn" plain @click="handleCancle(item.touid,index)">取消分配</el-button>
           </li>
         </ul>
       </section>
@@ -25,7 +25,7 @@ export default {
   props: {
     dialogTableVisible: {
       type: Boolean,
-      default: false
+      value: false
     },
     hasPersonList: {
       type: Array,
@@ -112,6 +112,15 @@ export default {
           color: #6A6A6A;
           // width: 190px;
           // text-align: left;
+        }
+        .cancle-btn {
+          &.el-button {
+            background: #fff;
+            padding: 8px 10px;
+            &:hover {
+               background: #1890ff;
+            }
+          }
         }
       }
     }

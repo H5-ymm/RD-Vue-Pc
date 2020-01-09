@@ -8,6 +8,7 @@ export const getPutresume = data => $post('/teamselfjob/get_putresume', data) //
 export const putResumelist = data => $post('/teamselfjob/put_resumelist', data) // 获取未被推荐的简历列表
 
 export const addjob = data => $post('/teamselfjob/addjob', data) // 新增发单信息
+
 export const savejob = data => $post('/teamselfjob/savejob', data) // 修改职位信息
 export const deleteJob = data => $post('/teamselfjob/delete_job', data) // 删除发单职位
 export const changestatus = data => $post('/teamselfjob/changestatus', data) // 修改职位上下架
@@ -21,3 +22,5 @@ export const entrantResult = data => $post('/teamselfjob/entrant_result', data) 
 export const checkPutresume = data => $post('/teamselfjob/get_putresume', data) //审核简历
 
 export const getJobinfo = data => $post('/teamselfjob/getJobinfo', data) //审核简历
+
+export const recvjob = data => $post('/teamselfjob/recvjob', data) //审核简历

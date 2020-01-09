@@ -63,7 +63,7 @@
           </el-table-column>
           <el-table-column label="审核通过简历" align="center" prop="auditPassResume" width="150">
           </el-table-column>
-          <el-table-column label="岗位薪资" prop="reward_money" align="center" width="150"></el-table-column>
+          <el-table-column label="岗位薪资" prop="money" align="center" width="150"></el-table-column>
           <el-table-column label="薪资模式" align="center" width="150">
             <template slot-scope="props">
               <span>{{props.row.money_type|moneyType}}</span>
@@ -83,7 +83,7 @@
           </el-table-column>
           <el-table-column label="返利模式" align="center" width="150">
             <template slot-scope="props">
-              <span>{{props.row.reward_type|rewardType}}</span>
+              <span>{{props.row.reward_money}}元/{{props.row.reward_type==1?'月':props.row.reward_type==2?'日': props.row.reward_type==3?'时':'一次性'}}</span>
             </template>
           </el-table-column>
           <el-table-column label="面试时间" sortable="custom" prop="jddesc" align="center" width="150">
@@ -159,7 +159,8 @@ export default {
       formMember: {
         uid: localStorage.getItem('uid'),
         limit: 10,
-        page: 1
+        page: 1,
+        jddesc: 'asc'
       },
       total: 0,
       multipleSelection: [],
@@ -211,7 +212,7 @@ export default {
         this.handleNote(val)
       }
       else {
-        this.$router.push({ path: 'checkResume', query: { id: val.id, view: 1 } })
+        this.$router.push({ path: 'checkResume', query: { id: val.id, view: 3 } })
       }
     },
     viewJob (val) {

@@ -46,7 +46,9 @@
     </el-header>
     <el-main class="home-main-content">
       <div class="home-main-box">
-        <searchInput @searchQuery="searchQuery"></searchInput>
+        <div class="search-main-box">
+          <searchInput @searchQuery="searchQuery"></searchInput>
+        </div>
         <el-row class="home-img-box" v-if="imgList.length">
           <el-col :span="16">
             <div class="grid-content bg-purple-img">

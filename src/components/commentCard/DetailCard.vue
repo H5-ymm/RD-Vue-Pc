@@ -8,15 +8,8 @@
           <i class="el-icon-more"></i>
         </el-button>
         <el-dropdown-menu slot="dropdown" class="dropdown-menu">
-          <el-dropdown-item
-            class="el-icon-top"
-            command="0"
-          >&nbsp;{{commentInfo.is_top ? '置顶':'不置顶'}}</el-dropdown-item>
-          <el-dropdown-item
-            class="el-icon-edit-outline"
-            command="1"
-            v-if="commentInfo.uid==uid"
-          >&nbsp;编辑</el-dropdown-item>
+          <el-dropdown-item class="el-icon-top" command="0">&nbsp;{{commentInfo.is_top ? '置顶':'不置顶'}}</el-dropdown-item>
+          <el-dropdown-item class="el-icon-edit-outline" command="1" v-if="commentInfo.uid==uid">&nbsp;编辑</el-dropdown-item>
           <el-dropdown-item class="el-icon-delete" command="2" v-if="commentInfo.uid==uid">&nbsp;删除</el-dropdown-item>
           <el-dropdown-item class="el-icon-refresh-right" command="3">&nbsp;刷新</el-dropdown-item>
         </el-dropdown-menu>
@@ -29,23 +22,12 @@
       </li>
       <li class="edit-card-item x-flex-start border-bottom">
         <p>标题：</p>
-        <p
-          :class="{'add-title':type==0}"
-          :contenteditable="contenteditable"
-          @input="changeInput($event)"
-          class="edit-input"
-        >{{comTitle}}</p>
+        <p :class="{'add-title':type==0}" :contenteditable="contenteditable" @input="changeInput($event)" class="edit-input">{{comTitle}}</p>
       </li>
       <li class="edit-card-item x-flex-start border-bottom">
         <p>分类：</p>
         <p class="sort">
-          <span
-            v-for="(item,index) in commentSort"
-            @click="selectSort(item.value)"
-            :class="{'tag':item.value==sortType}"
-            :key="index"
-            v-show="type!=2"
-          >{{item.label}}</span>
+          <span v-for="(item,index) in commentSort" @click="selectSort(item.value)" :class="{'tag':item.value==sortType}" :key="index" v-show="type!=2">{{item.label}}</span>
           <span class="tag" v-if="commentInfo&&type==2">{{getSortType(commentInfo.type)}}</span>
         </p>
       </li>
@@ -62,15 +44,10 @@
         <p>内容：</p>
         <p class="edit-card-item-content" v-html="commentInfo.content"></p>
         <p class="edit-card-comment x-flex-between text-light">
-          <span>{{commentInfo.addtime}}</span>
+          <span>{{commentInfo.addtime?$moment.unix(commentInfo.addtime).format('YYYY-MM-DD HH:mm'):'--'}}</span>
           <span class="el-icon-chat-dot-square" @click="reply">&nbsp;评论</span>
         </p>
-        <commentInput
-          :createdName="commentInfo.user_name"
-          @submitComment="submitComment"
-          :isShow="isShow"
-          @cancleComment="cancleComment"
-        ></commentInput>
+        <commentInput :createdName="commentInfo.user_name" @submitComment="submitComment" :isShow="isShow" @cancleComment="cancleComment"></commentInput>
       </li>
       <li class="edit-card-item" v-else>
         <div class="x-flex-start-justify">
@@ -84,15 +61,7 @@
       </li>
       <!-- 评论 -->
       <div class="reply-card">
-        <ReplyCard
-          :showComment="type==2&&showComment"
-          :commentList="commentList"
-          :username="commentInfo.user_name"
-          @submit="submitChildComment"
-          @delelteReply="delelteReply"
-          @deleteComment="deleteReplyfirst"
-          @cancelComment="isShow=false"
-        ></ReplyCard>
+        <ReplyCard :showComment="type==2" :commentList="commentList" :username="commentInfo.user_name" @submit="submitChildComment" @delelteReply="delelteReply" @deleteComment="deleteReplyfirst" @cancelComment="isShow=false"></ReplyCard>
       </div>
     </ul>
   </div>
@@ -122,13 +91,12 @@ export default {
       },
       sortType: 0,
       is_top: 1,
-      isShow: false,
       uid: localStorage.getItem('uid'),
       username: localStorage.getItem('userName'),
       comTitle: '',
       storeComment: {},
       content: '',
-      showComment: false
+      isShow: false
     }
   },
   computed: {
@@ -154,7 +122,6 @@ export default {
     commentInfo (val) {
       console.log(val)
       if (val && val.uid) {
-        this.showComment = false
         this.isShow = false
         this.storeComment = JSON.parse(JSON.stringify(val))
         this.comTitle = val.title
@@ -207,7 +174,6 @@ export default {
     },
     reply () {
       this.isShow = !this.isShow
-      this.showComment = !this.showComment
     },
     changeInput (e) {
       this.comTitle = '请输入标题'
@@ -302,9 +268,13 @@ export default {
     },
     saveComment (params) {
       addReply(params).then(res => {
-        this.getCommentList(this.params)
-        this.isShow = false
-        this.showComment = true
+        if (res.data) {
+          this.getCommentList(this.params)
+          this.isShow = false
+        }
+        else {
+          this.$message.error('评论失败')
+        }
       }).catch(error => {
         this.$message.error(error.status.remind)
       })
@@ -324,7 +294,6 @@ export default {
       this.saveComment(val)
     },
     cancleComment () {
-      this.showComment = false
       this.isShow = false
     }
   }

@@ -3,23 +3,11 @@
     <div class="edit-card-textarea border-bottom">
       <div class="textarea x-flex-start">
         <span>{{reName?'回复':'评论'}}{{createdName}}:</span>
-        <div
-          class="contenteditable"
-          contenteditable
-          v-html="content"
-          @click="onfocus($event)"
-          @input="onDivInput($event)"
-          ref="replyContent"
-        ></div>
+        <div class="contenteditable" contenteditable v-html="content" @click="onfocus($event)" @input="onDivInput($event)" ref="replyContent"></div>
       </div>
       <div class="x-flex-between edit-card-emoji">
         <img src="../../assets/img/emjo.png" alt @click="showEmoji=!showEmoji" />
-        <VEmojiPicker
-          :pack="pack.data"
-          v-show="showEmoji"
-          @select="selectEmoji"
-          class="emoji-item"
-        />
+        <VEmojiPicker :pack="pack.data" v-show="showEmoji" @select="selectEmoji" class="emoji-item" />
         <div>
           <el-button size="mini" @click="cancleComment()">取消</el-button>
           <el-button size="mini" type="primary" @click="submitComment()">{{reName?'回复':'评论'}}</el-button>
@@ -47,6 +35,8 @@ export default {
       type: 0,
       id: '',
       username: localStorage.getItem('username'),
+      comment: '',
+      conmentEmoji: ''
     }
   },
   created () {
@@ -84,15 +74,16 @@ export default {
     },
     selectEmoji (info) {
       this.emoji = info.emoji
-      this.comment += this.emoji
+      // this.conmentEmoji += this.emoji
+      this.content = this.comment + this.emoji
       this.showEmoji = false
     },
     onDivInput (e) {
-      this.content = e.target.innerHTML
+      this.comment = e.target.innerHTML
     },
     submitComment () {
       this.$emit('submitComment', this.content)
-      this.content = ''
+      // this.content = ''
     },
     cancleComment () {
       this.content = ''
@@ -106,6 +97,9 @@ export default {
  .edit-card-textarea {
     background: #fff;
     padding: 5px 10px 10px;
+  }
+  .edit-card-emoji {
+    position: relative;
   }
   .edit-card-emoji .emoji-item {
     position: absolute;

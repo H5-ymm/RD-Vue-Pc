@@ -69,7 +69,7 @@
     </ul>
     <div>
       <keep-alive>
-        <component :is="comName" @submitForm="submitForm"></component>
+        <component :is="comName" @submitForm="submitForm" :formJob="formMember"></component>
       </keep-alive>
     </div>
   </div>
@@ -77,9 +77,9 @@
 <script>
 import baseInfo from './baseInfo'
 import rewardRule from './rewardRule'
-import { setjobtouser, addjob } from '@/api/internalInvoice'
+import { setjobtouser, addjob, savejob } from '@/api/internalInvoice'
 import operationInfo from './operationInfo'
-
+import { getJobinfo } from '@/api/internalInvoice'
 export default {
   components: {
     baseInfo,
@@ -96,9 +96,38 @@ export default {
         uid: localStorage.getItem('uid'),
         is_up: 1
       },
-      baseInfo: {},
+      baseInfo: {
+        address: '',
+        age_max: 0,
+        age_min: 0,
+        com_introduction: "",
+        company_logo: "",
+        company_name: "",
+        entry_requirements: "",
+        is_five_risks: 2,
+        is_fund: 2,
+        is_up: '',
+        job_description: "",
+        job_name: '',
+        number: 0,
+        offermoney: "2",
+        offermoney_type: 1,
+        offtime: '',
+        sex: 0,
+        uid: '',
+        welfare_statement: '',
+        working_hours: ''
+      },
       rewardInfo: {},
+      formMember: {},
+      id: ''
 
+    }
+  },
+  created () {
+    if (this.$route.query.id) {
+      this.id = this.$route.query.id
+      this.getInfo(this.id)
     }
   },
   watch: {
@@ -115,6 +144,16 @@ export default {
     }
   },
   methods: {
+    getInfo (id) {
+      getJobinfo({ id }).then(res => {
+        this.formMember = res.data
+        console.log(this.formMember)
+        this.baseInfo = { ...this.formMember }
+        console.log(this.baseInfo)
+      }).catch(error => {
+        this.$message.error(error.status.remind)
+      })
+    },
     submitForm (val) {
       if (this.tabIndex < 2) {
         this.tabIndex = this.tabIndex + 1

@@ -10,30 +10,14 @@
 <template>
   <div class="tables-box billingManagement receipt-manage">
     <div class="table-list">
-      <el-form
-        :inline="true"
-        label-width="100px"
-        label-position="right"
-        :model="formMember"
-        class="demo-form-inline"
-      >
+      <el-form :inline="true" label-width="100px" label-position="right" :model="formMember" class="demo-form-inline">
         <el-form-item label="职位名称：">
           <el-input v-model="formMember.where" class="width300" placeholder="请输入职位名称关键字"></el-input>
           <el-button type="primary" @click="onSubmit" class="select-btn">查询</el-button>
         </el-form-item>
         <el-form-item label="发单状态：">
-          <el-select
-            v-model="formMember.job_status"
-            @change="selectStatus"
-            class="width160"
-            placeholder="请选择"
-          >
-            <el-option
-              :label="item.label"
-              :value="item.value"
-              v-for="item in receiptStatusList"
-              :key="item.value"
-            ></el-option>
+          <el-select v-model="formMember.job_status" @change="selectStatus" class="width160" placeholder="请选择">
+            <el-option :label="item.label" :value="item.value" v-for="item in receiptStatusList" :key="item.value"></el-option>
           </el-select>
           <span class="error el-icon-warning">更改发单状态之后可以操作其他发单状态下的简历</span>
         </el-form-item>
@@ -48,27 +32,21 @@
           </span>
           <el-button type="text" @click="multipleSelection=[],jobId='',resumeId=''">清空</el-button>
         </div>
-        <el-table
-          border
-          :data="tableData"
-          ref="multipleTable"
-          style="width: 100%"
-          @selection-change="handleSelectionChange"
-        >
+        <el-table border :data="tableData" ref="multipleTable" style="width: 100%" @selection-change="handleSelectionChange">
           <el-table-column type="selection" align="center" width="50"></el-table-column>
           <el-table-column label="姓名" align="center" prop="name" width="110">
           </el-table-column>
           <el-table-column label="年龄" align="center" prop="age" width="110">
           </el-table-column>
           <el-table-column label="性别" align="center" width="110">
-             <template slot-scope="props">
+            <template slot-scope="props">
               <span>{{props.row.sex==1?'男':'女'}}</span>
             </template>
           </el-table-column>
           <el-table-column label="学历" align="center" width="110" prop="education">
           </el-table-column>
           <el-table-column label="住址" prop="reward_money" align="center" width="110">
-             <template slot-scope="props">
+            <template slot-scope="props">
               <span>{{props.row.province}}{{props.row.city}}{{props.row.address}}</span>
             </template>
           </el-table-column>
@@ -86,45 +64,21 @@
                 <el-button @click="handlResume(2,scope.row)" type="text" size="small">未通过</el-button>
               </div>
               <div v-else>
-                <el-button
-                  @click="handlResume(1,scope.row)"
-                  type="text"
-                  size="small"
-                  v-if="!scope.row.entry_status"
-                >已入职</el-button>
-                <el-button
-                  @click="handlResume(2,scope.row)"
-                  type="text"
-                  size="small"
-                  v-if="!scope.row.entry_status"
-                >未入职</el-button>
+                <el-button @click="handlResume(1,scope.row)" type="text" size="small" v-if="!scope.row.entry_status">已入职</el-button>
+                <el-button @click="handlResume(2,scope.row)" type="text" size="small" v-if="!scope.row.entry_status">未入职</el-button>
               </div>
             </template>
           </el-table-column>
         </el-table>
       </div>
-      <el-pagination
-        class="team-pagination"
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :current-page="formMember.page"
-        :page-sizes="[10, 30, 50, 100]"
-        :page-size="formMember.limit"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="total"
-      ></el-pagination>
+      <el-pagination class="team-pagination" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="formMember.page" :page-sizes="[10, 30, 50, 100]" :page-size="formMember.limit" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
     </div>
-    <modal
-      :dialogTableVisible="dialogTableVisible"
-      @handleOk="handleOk"
-      :modalObj="modalObj"
-      @handleClose="dialogTableVisible=false,jobId=''"
-    ></modal>
+    <modal :dialogTableVisible="dialogTableVisible" @handleOk="handleOk" :modalObj="modalObj" @handleClose="dialogTableVisible=false,jobId=''"></modal>
   </div>
 </template>
 
 <script>
-import { getPutresume, auditRemuse, entrantResult, checkPutresume } from '../../api/internalInvoice'
+import { getPutresume, auditRemuse, entrantResult, checkPutresume } from '@/api/internalInvoice'
 import { entryStatusList1 } from '@/base/base'
 import modal from '../common/modal'
 export default {
@@ -174,9 +128,12 @@ export default {
   },
   created () {
     // 初始化查询标签数据
-    this.jobId = this.$route.query.jobId
-    this.formMember.job_id = this.jobId
-    this.getList(this.formMember)
+    if (this.$route.query.jobId) {
+      this.jobId = this.$route.query.jobId
+      this.formMember.job_id = this.jobId
+      this.getList(this.formMember)
+    }
+
   },
   methods: {
     getList (params) {

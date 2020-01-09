@@ -28,7 +28,8 @@
           </el-table-column>
           <el-table-column label="岗位薪资" align="center" width="150">
             <template slot-scope="props">
-              <span>{{props.row.money_min}}~{{props.row.money_max}}</span>
+              <span v-if="props.row.money_type==1">{{props.row.money_min}}~{{props.row.money_max}}</span>
+              <span v-else>{{props.row.money_max || 0}}</span>
             </template>
           </el-table-column>
           <el-table-column label="返利类型" align="center" width="150">
@@ -44,7 +45,7 @@
           </el-table-column>
           <el-table-column label="状态" align="center" width="150">
             <template slot-scope="props">
-              <span class="status" :class="`{active-status${props.row.status}}`">{{props.row.status | statusType}}</span>
+              <span class="status" :class="`{status${props.row.status}}`">{{props.row.status | statusType}}</span>
             </template>
           </el-table-column>
           <el-table-column label="操作" align="center" width="150">
@@ -156,6 +157,7 @@ export default {
     selectStatus (item, index) {
       this.activeIndex = index
       this.formMember.status = item.value
+      this.getList(this.formMember)
     },
     handleSizeChange (val) {
       this.formMember.limit = val

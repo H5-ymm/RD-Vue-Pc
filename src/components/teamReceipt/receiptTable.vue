@@ -74,8 +74,9 @@
           </el-table-column>
           <el-table-column label="状态" align="center" width="100" v-if="userPosition==1">
             <template slot-scope="scope">
-              <!-- <span class="status" :class="`active-status${scope.row.status}`">{{scope.row.status==1?"待审核":scope.row.status==1?'未分配':'已分配'}}</span> -->
-              <span class="status" v-if="!scope.row.dsh" :class="`active-status${scope.row.status}`">未分配</span>
+              <span class="status" :class="`status${scope.row.status}`" v-if="scope.row.dsh&&!scope.row.ylq">待审核</span>
+              <span class="status status2" v-if="!scope.row.dsh&&!scope.row.ylq" :class="`active-status${scope.row.status}`">未分配</span>
+              <span class="status status3" v-if="!scope.row.dsh&&scope.row.ylq" :class="`active-status${scope.row.status}`">已分配</span>
             </template>
           </el-table-column>
           <el-table-column label="操作" align="center" min-width="160">
@@ -89,8 +90,8 @@
                 <!-- <el-button @click="dialogVisible=true" type="text" size="small">删除职位</el-button> -->
               </div>
               <div v-if="userPosition==1">
-                <el-button @click="viewJob(scope.row)" type="text" v-if="!scope.row.dsh" size="small">查看职位</el-button>
                 <el-button @click="handleRecepit(1,scope.row)" v-if="!scope.row.dsh" type="text" size="small">分配接单</el-button>
+                <el-button @click="viewJob(scope.row)" type="text" v-if="!scope.row.dsh" size="small">查看职位</el-button>
                 <el-button @click="handleEdit(1,scope.row)" type="text" v-if="scope.row.dsh" size="small">同意</el-button>
                 <el-button @click="handleEdit(2,scope.row)" type="text" v-if="scope.row.dsh" size="small">拒绝</el-button>
               </div>

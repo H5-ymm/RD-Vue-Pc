@@ -118,7 +118,7 @@
           </div>
           <div class="orderTaking-jobDeail-right">
             <el-button type="primary" size="medium" class="orderTarking-btn" @click="applyReceipt" plain>申请接单</el-button>
-            <div class="x-flex-around">
+            <div class="x-flex-around" v-if="userType==2">
               <p class="x-flex-around">
                 <img src="../assets/img/collect.png" alt />
                 <el-link :underline="false" class="orderTarking-link" @click="handleCollect">收藏</el-link>
@@ -226,7 +226,7 @@
               </section>
               <section class="orderTaking-card">
                 <Panel title="推荐接单">
-                  <section slot="content" class="orderTaking-main-card" v-for="(item,index) in list" :key="index" :class="{'orderTaking-main-sectionActive':index==0}">
+                  <section slot="content" class="orderTaking-main-card" v-for="(item,index) in recommendedList" :key="index" :class="{'orderTaking-main-sectionActive':index==0}">
                     <div class="orderTaking-main-section x-flex-between">
                       <div class="orderTaking-main-row orderTaking-main-row1">
                         <ul class="orderTaking-main-item">
@@ -262,7 +262,7 @@
                         </ul>
                       </div>
                       <div>
-                        <el-button type="primary">查看详情</el-button>
+                        <el-button type="primary" @click="viewJobDetail(item)">查看详情</el-button>
                       </div>
                     </div>
                   </section>
@@ -302,7 +302,7 @@
             <div class="bg-purple-light">
               <p class="job-title">该公司的接单职位</p>
               <div>
-                <ul class="orderTaking-main-item orderTaking-main-history" v-for="(item,index) in browsingList" :key="index">
+                <ul class="orderTaking-main-item orderTaking-main-history" v-for="(item,index) in comInvoiceList" :key="index">
                   <li class="x-flex-between">
                     <span class="company-name">{{item.name}}</span>
                     <span class="require-number">{{item.required_number}}人</span>
@@ -324,6 +324,7 @@
     </el-main>
     <FooterView></FooterView>
     <AsideBox :isShow="isShow"></AsideBox>
+    <viewJob :dialogTableVisible="dialogJobVisible" :id="id" @handleClose="dialogJobVisible=false,id=''"></viewJob>
     <Dialog :centerDialogVisible="centerDialogVisible" :modalInfo="modalInfo" @handleClose="handleClose" @handleOk="handleOk"></Dialog>
     <TipDialog :tipDialogVisible="tipDialogVisible" @handleClose="tipDialogVisible=false" @submit="submit"></TipDialog>
   </el-container>
@@ -339,11 +340,12 @@ import TipDialog from '@/components/TipDialog'
 import AsideBox from '@/components/AsideBox'
 import HeaderView from '@/components/HeaderView'
 import FooterView from '@/components/FooterView'
-import { getOrderDetail, getList, addReportInfo, addApply } from '../api/orderTarking'
+import { getOrderDetail, getList, addReportInfo, addApply, companyInvoiceList, jobRecommendedList } from '@/api/orderTarking'
 import { getCompanyDetail, getCompanyInfo } from '../api/company'
 import { teamCollectionJob } from '../api/collect'
 import { moneyTypeList } from '../base/base'
 import { getImgUrl } from '@/util/util'
+import viewJob from '@/components/common/viewJob'
 export default {
   name: 'home',
   components: {
@@ -355,13 +357,15 @@ export default {
     TipDialog,
     FooterView,
     HeaderView,
-    AsideBox
+    AsideBox,
+    viewJob
   },
   data () {
     return {
       tipDialogVisible: false,
       dialogVisible: false,
       centerDialogVisible: false,
+      dialogJobVisible: false,
       total: 0,
       activeIndex: 0,
       keywords: '',
@@ -375,7 +379,6 @@ export default {
       areaList: [],
       moneyTypeList,
       money_type: '',
-      browsingList: [],
       orderTakingDetail: {},
       companyInfo: {},
       id: '',
@@ -390,7 +393,10 @@ export default {
       },
       dialogType: 1,
       token: localStorage.getItem('token'),
-      isShowLogin: false
+      isShowLogin: false,
+      userType: localStorage.getItem('userType'),
+      recommendedList: [], // 推荐岗位
+      comInvoiceList: []
     }
   },
   computed: {
@@ -411,6 +417,8 @@ export default {
     this.uid = this.$route.query.uid
     this.getOrderTakingData()
     this.getCompanyData(this.uid)
+    this.getRecommendedList()
+    this.getCompanyInvoiceList()
   },
   mounted () {
     window.addEventListener('scroll', this.windowScroll)
@@ -443,6 +451,17 @@ export default {
         this.orderTakingDetail = res.data
       })
     },
+    getRecommendedList () {
+      let params = {
+        id: this.id,
+        uid: localStorage.getItem('uid')
+      }
+      jobRecommendedList(params).then(res => {
+        this.recommendedList = res.data
+      }).catch(error => {
+        this.message.$error(error.status.remind)
+      })
+    },
     getCompanyData (uid) {
       getCompanyDetail({ uid }).then(res => {
         console.log(res)
@@ -451,15 +470,27 @@ export default {
         this.message.$error(error.status.remind)
       })
     },
+    getCompanyInvoiceList () {
+      let params = {
+        id: this.id,
+        uid: localStorage.getItem('uid')
+      }
+      companyInvoiceList(params).then(res => {
+        this.comInvoiceList = res.data
+      }).catch(error => {
+        this.message.$error(error.status.remind)
+      })
+    },
     switchNav (item, index) {
       this.activeIndex = index
     },
+    viewJobDetail (val) {
+      this.id = val.id
+      this.dialogJobVisible = true
+    },
     getData (params) {
       getList(params).then(res => {
-        console.log(res.data.count)
         this.list = res.data.data.data
-        console.log(this.list)
-        this.browsingList = res.data.data.data
         this.total = res.data.count
       }).catch(error => {
         this.message.$error(error.status.remind)

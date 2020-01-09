@@ -199,7 +199,7 @@ export default {
 }
 </script>
 
-<style >
+<style lang="scss">
 .header {
   width:100%;
   height:49px;
@@ -244,6 +244,9 @@ export default {
 .register-btn {
   margin:20px 70px;
   color:rgba(153,153,153,1);
+  >.el-button {
+    font-size:18px;
+  }
 }
 .register-btn  .button{
    margin-right:10px;
@@ -267,7 +270,7 @@ export default {
   background-size:cover;
 }
 .form-box {
-  width:90%;
+  width:80%;
   margin:0 auto;
   overflow: hidden;
 }
@@ -351,7 +354,7 @@ export default {
 }
 .register-box .text {
   text-align:right;
-  font-size:14px;
+  font-size:16px;
   margin-right:30px;
   color:#333333;
   margin-top: 20px;

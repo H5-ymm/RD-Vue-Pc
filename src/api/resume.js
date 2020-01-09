@@ -4,6 +4,8 @@ export const addUserResume = data => $post('/resume/addUserResume', data)
 export const selectUserResumeInfo = data => $post('/resume/selectUserResumeInfo', data)
 export const updateUserResume = data => $post('/resume/updateUserResume', data)
 export const giveUpResume = data => $post('/resume/teamGiveUpResume', data)
+
+
 export const importUserResume = data => uploadFile('/resume/importUserResume', data)
 export const exportUserResume = data => postFormData('/resume/exportUserResume', data)
 export const downloadTestTable = () => $get('/testTable.xlsx')
@@ -12,11 +14,11 @@ export const entryResumeList = data => $post('/teamresume/entryTeamRecommendResu
 export const addTrackingInfo = data => $post('/teamresume/addTrackingInfo', data) //添加追踪记录
 export const incumbencyResumeList = data => $post('/teamresume/incumbencyResumeRecommend', data)
 export const exportIncumbencyResume = data => postFormData('/teamresume/exportIncumbencyRecommendResume', data)
-
+export const editRecommendResumeStatus = data => $post('/teamresume/editRecommendResumeStatus', data)
 export const quitUser = data => $post('/teamresume/quitResumeRecommend', data) //离职
 export const quitResumeList = data => $post('/teamresume/quitResumeRecommendList', data) //离职列表
 export const exportDelResumeList = data => $post('/teamresume/exportDelRecommendResume', data) // 导出离职简历
-
+export const interviewTeamResumeList = data => $post('/teamresume/interviewTeamResumeList', data)
 export const delResumeList = data => $post('/teamresume/delResumeRecommend', data)
 export const delResume = data => $post('/teamresume/delResume', data) //删除简历
 export const giveupResumeList = data => $post('/teamresume/giveupResumeRecommend', data)
@@ -27,13 +29,10 @@ export const receiveResume = data => $post('/teamresume/receiveResume', data)// 
 
 export const reductionDelResume = data => $post('/teamresume/reductionDelResume', data)// 还原
 
-export const getMatchingResume = data => $post('/teamtalent/getMatchingResume', data)
+export const getMatchingJobList = data => $post('/teamtalent/getMatchingJobList', data) //简历对应的职位列表(团队接单)
 
-export const getMatchingJobList = data => $post('/teamtalent/getMatchingJobList', data)
+export const getMatchingResume = data => $post('/teamtalent/getMatchingResume', data) // 职位对应匹配的简历列表（团队接单）
 
+export const getInternalMatchingList = data => $post('/teamtalent/getInternalInvoiceMatchingList', data) // 简历对应匹配职位列表（内部发单）
 
-
-
-
-
-
+export const getInternalInvoiceList = data => $post('/teamtalent/getInternalInvoiceList', data) // 职位对应匹配简历列表（内部发单）

@@ -1,16 +1,8 @@
 <template>
-  <div
-    class="job-detail-view reward-rule-row">
+  <div class="job-detail-view reward-rule-row">
     <div class="job-detail-row">
       <section class="resume-col3">
-        <el-form
-          :model="formMember"
-          ref="formMember"
-          class="demo-form-inline"
-          label-position="right"
-          label-width="100px"
-          :inline="true"
-        >
+        <el-form :model="formMember" ref="formMember" class="demo-form-inline" label-position="right" label-width="100px" :inline="true">
           <section class="resume-card">
             <div class="x-flex-between-start resume-card-row">
               <div class="resume-card-item">
@@ -24,7 +16,7 @@
                   <div v-if="formMember.type==1">
                     <rewardType @submit="submit"></rewardType>
                   </div>
-                 </el-form-item>
+                </el-form-item>
               </div>
             </div>
           </section>
@@ -46,10 +38,11 @@ export default {
   components: {
     rewardType
   },
+  props: ['formJob'],
   data () {
     return {
       formMember: {
-        type:1
+        type: 1
       },
       moneyTypeList,
       moneyArray: {}
@@ -80,9 +73,9 @@ export default {
     handleClose () {
       this.$parent.dialogTableVisible = false
     },
-    submit(val){
+    submit (val) {
       console.log(val)
-      this.formMember = Object.assign(this.formMember,val)
+      this.formMember = Object.assign(this.formMember, val)
     },
     submitForm () {
       this.$emit('submitForm', this.formMember)
