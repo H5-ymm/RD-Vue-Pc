@@ -98,7 +98,7 @@
             <template slot-scope="props">
               <div v-if="props.row.invoice_status==0||props.row.invoice_status==1">
                 <el-button @click="checkResume(props.row)" v-if="!props.row.interview_status" type="text" size="small">审核简历</el-button>
-                <el-button @click="handleNote(props.row)" v-if="!props.row.view_time" type="text" size="small">面试通知</el-button>
+                <el-button @click="handleNote(props.row)" v-if="!props.row.view_time||props.row.invoice_status<=1&&props.row.view_time" type="text" size="small">面试通知</el-button>
               </div>
               <div v-if="props.row.interview_status>=1||props.row.interview_status==2">
                 <el-button @click="$router.push({path:'interviewPersonnel',query:{id:props.row.id,view:2}})" v-if="props.row.interview_status>=1" type="text" size="small">查看面试</el-button>
@@ -111,7 +111,7 @@
       <el-pagination class="team-pagination" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="formMember.page" :page-sizes="[10, 30, 50, 100]" :page-size="formMember.limit" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
     </div>
     <viewJob :dialogTableVisible="dialogJobVisible" :id="jobId" @handleClose="dialogJobVisible=false"></viewJob>
-    <noticeModal :dialogTableVisible="dialogTableVisible" noticeType="面试" @submitForm="submitForm"></noticeModal>
+    <noticeModal :dialogTableVisible="dialogTableVisible" :isEdit="view_time" :id="jobId" noticeType="面试" @submitForm="submitForm"></noticeModal>
     <modal :dialogTableVisible="visible" @handleOk="handleOk" isShow="true" :modalObj="modalObj" @handleClose="visible=false,jobId=''"></modal>
   </div>
 </template>
@@ -180,7 +180,8 @@ export default {
       noticeModalInfo: {
         title: '',
         type: '面试'
-      }
+      },
+      view_time:0
     }
   },
   created () {
@@ -190,7 +191,7 @@ export default {
     this.getData(params)
   },
   watch: {
-    $route () {
+    $route (ro,from) {
       this.getList(this.formMember)
     }
   },
@@ -223,7 +224,8 @@ export default {
       this.jobId = val.id
       this.dialogJobVisible = true
     },
-    handleNote (val) {
+    handleNote (val) { 
+      this.view_time = val.view_time
       this.jobId = val.id
       this.dialogTableVisible = true
     },

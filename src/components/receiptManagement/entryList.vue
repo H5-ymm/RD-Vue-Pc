@@ -168,6 +168,15 @@ export default {
     this.getList(this.formMember)
     this.getData(params)
   },
+  watch:{
+    $route(to,from) {
+       if (from.query.id) {
+        this.jobId = from.query.id
+        this.formMember.jobId = this.$route.query.id
+        this.getList(this.formMember)
+      }
+    }
+  },
   methods: {
     getData (filed) {
       getConstant({ filed }).then(res => {
@@ -190,7 +199,7 @@ export default {
     },
     changeDate (val) {
       this.formMember.begintime = val[0]
-      this.formMember.endtime = val[1]
+      this.formMember.endTime =val?val[1]:''
     },
     handleSizeChange (val) {
       this.formMember.limit = val

@@ -8,7 +8,7 @@
           <i class="el-icon-more"></i>
         </el-button>
         <el-dropdown-menu slot="dropdown" class="dropdown-menu">
-          <el-dropdown-item class="el-icon-top" command="0">&nbsp;{{commentInfo.is_top ? '置顶':'不置顶'}}</el-dropdown-item>
+          <el-dropdown-item class="el-icon-top" command="0">&nbsp;{{commentInfo.is_top ? '置顶':'取消置顶'}}</el-dropdown-item>
           <el-dropdown-item class="el-icon-edit-outline" command="1" v-if="commentInfo.uid==uid">&nbsp;编辑</el-dropdown-item>
           <el-dropdown-item class="el-icon-delete" command="2" v-if="commentInfo.uid==uid">&nbsp;删除</el-dropdown-item>
           <el-dropdown-item class="el-icon-refresh-right" command="3">&nbsp;刷新</el-dropdown-item>
@@ -86,7 +86,7 @@ export default {
       contenteditable: false, // 可编辑
       commentList: [], //评论列表
       params: {
-        uid: '',
+        uid: localStorage.getItem('uid'),
         discuss_id: ''
       },
       sortType: 0,
@@ -130,7 +130,6 @@ export default {
         this.comTitle = val.title
         this.contentunescape = this.getContent(val.content)
         this.sortType = val.type
-        this.params.uid = val.uid
         this.params.discuss_id = val.id
         if (this.type == 2) {
           this.commentList = []

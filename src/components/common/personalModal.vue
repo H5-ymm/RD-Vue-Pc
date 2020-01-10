@@ -12,7 +12,7 @@
         </div>
         <div class="personal-box">
           <el-checkbox-group v-model="checkList">
-            <el-checkbox :label="item" v-for="(item,index) in list" :key="index">{{item.user_name}}</el-checkbox>
+            <el-checkbox :label="item" :disabled="item.status!=null" v-for="(item,index) in list" :key="index">{{item.user_name}}</el-checkbox>
           </el-checkbox-group>
         </div>
       </section>

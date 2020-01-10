@@ -87,7 +87,8 @@
           <el-table-column label="意向岗位" prop="desired_position" align="center" width="150"></el-table-column>
           <el-table-column label="意向工资" align="center" width="120">
             <template slot-scope="props">
-              <span>{{props.row.min_expect_money }}~{{props.row.max_expect_money }}</span>
+              <span v-if="props.row.min_expect_money&&props.row.max_expect_money">{{props.row.min_expect_money }}~{{props.row.max_expect_money }}</span>
+              <span v-else>0</span>
             </template>
           </el-table-column>
           <el-table-column label="意向城市" align="center" width="120">

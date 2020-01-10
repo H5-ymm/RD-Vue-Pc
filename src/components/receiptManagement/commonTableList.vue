@@ -11,7 +11,7 @@
         </el-form-item>
       </el-form>
       <div class="member-table">
-        <div class="table-query" v-if="viewType!=5&&viewType!=4">
+        <div class="table-query" v-if="viewType!=5&&viewType!=4&&viewType!=3&&viewType!=2">
           <el-button @click="handleResume(1,id)">通过</el-button>
           <el-button @click="handleResume(2,id)">未通过</el-button>
         </div>
@@ -47,7 +47,7 @@
                 <span class="status" v-if="!props.row.entry_status">待审核</span>
                 <span class="status" v-else :class="`status${props.row.entry_status}`">{{props.row.entry_status==1?'通过':props.row.entry_status==2?'未通过':'未参加'}}</span>
               </div>
-              <div v-if="viewType==3">
+              <div v-if="viewType==3||viewType==6">
                 <span class="status" v-if="!props.row.interview_status">待审核</span>
                 <span class="status" :class="`status${props.row.interview_status}`" v-else>{{props.row.interview_status==1?'通过':props.row.interview_status==2?'未通过':'未参加'}}</span>
               </div>
@@ -67,7 +67,7 @@
               <span v-else>{{props.row.entry_status==1?'已入职':'未入职'}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="操作" align="center" min-width="150" v-if="viewType==3">
+          <el-table-column label="操作" align="center" min-width="150" v-if="viewType==3||viewType==6">
             <template slot-scope="props">
               <div v-if="props.row.interview_status==0">
                 <el-button type="text" @click="handleResume(1,props.row.id)" size="small">通过</el-button>
@@ -165,6 +165,16 @@ export default {
     this.jobId = this.$route.query.id
     this.formMember.jobId = this.jobId
     this.getList(this.formMember)
+  },
+  watch:{
+    $route(to,from) {
+      if (from.query.view&&from.query.id){
+        this.viewType = from.query.view
+        this.jobId = from.query.id
+        this.formMember.jobId = this.jobId
+        this.getList(this.formMember)
+      }
+    }
   },
   methods: {
     getList (params) {

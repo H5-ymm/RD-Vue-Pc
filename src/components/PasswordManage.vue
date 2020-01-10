@@ -33,7 +33,7 @@
       </ul>
     </div>
     <accountDialog :title="title" :dialogTableVisible="dialogTableVisible" :slotName="slotName" @submitForm="submitForm" :isUpdate="isUpdate"></accountDialog>
-    <noBindZfb :dialogTableVisible="visible" @submitForm="$router.push('accountSafe')"></noBindZfb>
+    <noBindZfb :dialogTableVisible="visible" @submitForm="submitFormZfb"></noBindZfb>
   </div>
 </template>
 
@@ -93,7 +93,10 @@ export default {
         }
       })
     },
-
+    submitFormZfb(){
+      this.visible = false,
+      this.$router.push('accountSafe')
+    },
     getMobilePas (uid) {
       getUserMobile({ uid }).then(res => {
         if (res.data) {

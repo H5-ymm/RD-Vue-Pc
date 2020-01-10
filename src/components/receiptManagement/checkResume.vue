@@ -9,7 +9,7 @@
           <el-input v-model="formMember.where" class="width300" placeholder="请输入职位名称关键字"></el-input>
           <el-button type="primary" @click="onSubmit" class="select-btn">查询</el-button>
         </el-form-item>
-        <el-form-item label="状态筛选：">
+        <el-form-item label="状态筛选：" v-if="viewType!=3">
           <el-button :type="activeIndex==index ?'primary':''" v-for="(item,index) in statusList" :key="index" plain @click="selectStatus(item,index)" class="select-status">{{item.label}}</el-button>
         </el-form-item>
       </el-form>
@@ -51,12 +51,12 @@
             <template slot-scope="props">
               <div v-if="viewType==3">
                 <span class="status" :class="`status${props.row.status}`">
-                  {{props.row.status|status}}
+                   {{getStatus(props.row.status)}}
                 </span>
               </div>
               <div v-if="viewType==4">
                 <span class="status" :class="`status${props.row.interview_status}`">
-                  {{props.row.interview_status|status}}
+                  {{getStatus(props.row.interview_status)}}
                 </span>
               </div>
             </template>
@@ -139,6 +139,11 @@ export default {
         { label: '已通过', value: 2 },
         { label: '未通过', value: 3 }
       ],
+       statusList1: [
+        { label: '待审核', value: 0 },
+        { label: '已通过', value: 1 },
+        { label: '未通过', value: 2 }
+      ],
       activeIndex: 0,
       viewType: 1,
       jobId: '',
@@ -203,6 +208,12 @@ export default {
       }
 
     },
+    getStatus(val){
+      let obj = this.statusList1.find(item => {
+        return val == item.value
+      })
+      return obj ? obj.label : '--'
+    },
     sortChange (column) {
       if (column.order == 'ascending') {
         this.formMember[column.prop] = 'asc'
@@ -215,6 +226,7 @@ export default {
     selectStatus (item, index) {
       this.activeIndex = index
       this.formMember.status = item.value
+      this.getList(this.formMember)
     },
     handleSizeChange (val) {
       this.formMember.limit = val

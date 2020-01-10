@@ -28,7 +28,7 @@
         suffix-icon="el-icon-success input-success"
         placeholder="请输入原密码"
       ></el-input>
-      <span class="error el-icon-warning">密码错误</span>
+      <span class="error el-icon-warning" v-if="pasError">密码错误</span>
     </el-form-item>
     <el-form-item :label="label" required prop="password">
       <el-progress
@@ -64,7 +64,7 @@
         suffix-icon="el-icon-success input-success"
         placeholder="请输入和上面相同的密码"
       ></el-input>
-      <span class="error el-icon-warning">两次密码不一致</span>
+      <span class="error el-icon-warning" v-if="pasCheck">两次密码不一致</span>
     </el-form-item>
     <div class="account-btn-box x-flex-end">
       <el-button @click="handleClose">取消</el-button>
@@ -94,7 +94,9 @@ export default {
       uid: localStorage.getItem('uid'),
       content: '发送验证码',
       canClick: false,
-      token: ''
+      token: '',
+      pasError:false,
+      pasCheck: false
     }
   },
   created () {

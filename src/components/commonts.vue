@@ -8,7 +8,7 @@
             placeholder="搜索"
             class="team-input"
             v-model="params.title"
-            @input="getList(params)"
+            @input="handleCommand(3)"
           >
             <i slot="prefix" class="el-input__icon el-icon-search"></i>
           </el-input>
@@ -23,7 +23,12 @@
           </el-dropdown>
         </div>
         <!-- 列表 -->
-        <person-card :list="list" @selectComment="selectComment"></person-card>
+        <person-card :list="list" v-if="list.length!=0" @selectComment="selectComment"></person-card>
+        <div class="no-data" v-else>
+          <img src="../assets/img/nodata.png" class="nodata-bg" alt="">
+          <p class="no-data-title">暂无数据</p>
+          <el-button type="primary" class="add-data" @click="handleCommand(0)">立即新增</el-button>
+        </div>
         <!-- 列表 -->
       </div>
       <div class="team-box-content team-box-right">
@@ -60,10 +65,11 @@ export default {
       activeIndex: 0,
       commentInfo: {},
       params: {
-        uid: 6,
+        uid: localStorage.getItem('uid'),
         title: ''
       },
-      commentId: ''
+      commentId: '',
+      refurbishStatus: ''
     }
   },
   mounted () {
@@ -77,9 +83,12 @@ export default {
         if (res.data.data) {
           this.list = res.data.data || []
           this.commentId = this.list[0].id
-          this.getDetail(this.commentId)
+          if(this.refurbishStatus!=3) {
+            this.getDetail(this.commentId)
+          }     
         }
         else {
+          this.list = []
           this.commentInfo = null
         }
       }).catch(error => {
@@ -94,8 +103,8 @@ export default {
       })
     },
     selectComment (id) {
-      this.getDetail(id)
       this.type = 2
+      this.getDetail(id)
     },
     saveDiscuss (val) {
       addDiscuss(val).then(res => {
@@ -109,9 +118,11 @@ export default {
       this.getList()
     },
     handleCommand (command) {
+      this.refurbishStatus = command
       if (command == 3) {
         this.getList()
       } else {
+        this.commentId = ''
         this.type = command
         this.commentInfo = {}
       }
@@ -128,6 +139,24 @@ export default {
 .team-view {
   .team-box {
     height: 100%;
+    .no-data {
+      width: 100%;
+      margin: 0 auto;
+      text-align: center;
+      background: #fff;
+      width: 540px;
+      min-height: 544px;
+    }
+    .nodata-bg {
+      width: 303px;
+      height: 168px;
+      margin: 20% auto 20px;
+    }
+    .no-data-title {
+      color: #999;
+      font-size: 18px;
+      margin-bottom: 20px;
+    }
   }
 }
 

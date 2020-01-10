@@ -75,17 +75,19 @@ export default {
     selectEmoji (info) {
       this.emoji = info.emoji
       // this.conmentEmoji += this.emoji
-      this.content = this.comment + this.emoji
+      this.content = this.comment+this.emoji
       this.showEmoji = false
     },
     onDivInput (e) {
-      this.comment = e.target.innerHTML
+      console.log( e.target.innerText)
+      this.comment = e.target.innerText
     },
     submitComment () {
       // unescape()
-      let content = escape(this.content)
+     
+      let content = !this.content ? escape(this.comment):escape(this.content)
+      console.log(content)
       this.$emit('submitComment', content)
-      // this.content = ''
     },
     cancleComment () {
       this.content = ''

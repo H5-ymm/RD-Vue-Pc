@@ -117,8 +117,11 @@ export default {
           &.el-button {
             background: #fff;
             padding: 8px 10px;
+           
+          }
+          &.el-button--primary {
             &:hover {
-               background: #1890ff;
+              background: #1890ff;
             }
           }
         }

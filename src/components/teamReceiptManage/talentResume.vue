@@ -175,8 +175,8 @@ export default {
       })
     },
     changeDate (val) {
-      this.formMember.beginTime = val[0]
-      this.formMember.endTime = val[1]
+      this.formMember.beginTime =val?val[0]:''
+      this.formMember.endTime =val?val[1]:''
     },
     selectStatus (item, index) {
       this.activeIndex = index

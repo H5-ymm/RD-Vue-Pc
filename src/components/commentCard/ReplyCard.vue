@@ -8,10 +8,10 @@
       <div class="edit-card-comment-col2">
         <p>
           <span class="user-name">{{item.username}}:</span>
-          <span v-html="content(item.content)"></span>
+          <span v-html="getContent(item.content)"></span>
         </p>
         <div class="x-flex-between text-light reply-btn">
-          <span>{{item.addTime?$moment.unix(item.addTime).format('YYYY-MM-DD'):'--'}}</span>
+          <span>{{item.addtime?$moment.unix(item.addtime).format('YYYY-MM-DD HH:mm'):'--'}}</span>
           <!-- <p> -->
           <!-- <span v-if="uid==item.user_id" @click="deleteComment(item.id)">删除</span> -->
           <span @click="handleComment(index,item,1)">{{uid==item.user_id?'删除':'评论'}}</span>
@@ -26,7 +26,7 @@
                 <span class="user-name">{{val.r_name}}</span>
                 <span class="reply">回复</span>
                 <span class="user-name">{{val.username}}:</span>
-                <span v-html="content(val.content)"></span>
+                <span v-html="getContent(val.content)"></span>
               </p>
               <p class="x-flex-between text-light">
                 <span>{{val.addtime?$moment.unix(val.addtime).format('YYYY-MM-DD HH:mm'):'--'}}</span>
@@ -66,7 +66,9 @@ export default {
     }
   },
   methods: {
-    content(val) {
+    getContent(val) {
+      console.log(val)
+      console.log(unescape(val))
       return val? unescape(val): ''
     },
     handleComment (index, item, type, ind, val) {
@@ -101,6 +103,7 @@ export default {
       this.$emit('deleteComment', id)
     },
     submitComment (val) {
+      console,log(val)
       let params = {
         uid: localStorage.getItem('uid'),
         type: 2,
