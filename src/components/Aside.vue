@@ -272,7 +272,7 @@ export default {
   },
   watch: {
     $route (val) {
-      this.title = JSON.parse(sessionStorage.getItem('menus'))[1]
+      this.title = JSON.parse(sessionStorage.getItem('menus'))[0]
     }
   },
   methods: {

@@ -16,9 +16,10 @@
             </div>
             <div class="x-flex-center" v-if="type==2">
               <el-link :underline="false" href="home">首页</el-link>
-              <el-badge :value="200" :max="99" class="item">
+              <i class="el-icon-bell"></i>
+              <!-- <el-badge :value="200" :max="99" class="item">
                 <i class="el-icon-bell unRead"></i>
-              </el-badge>
+              </el-badge> -->
               <el-dropdown @command="handleCommand">
                 <span class="el-dropdown-link">
                   <span>{{userInfo.user_name?userInfo.user_name:userInfo.mobile}}</span>

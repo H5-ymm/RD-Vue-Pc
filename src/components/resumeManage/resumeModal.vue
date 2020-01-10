@@ -224,12 +224,11 @@ export default {
       this.formMember.expect_cityid = val[1]
     },
     handleClose () {
-      this.$parent.dialogTableVisible = false
+      this.$emit('handleClose')
     },
     submitForm () {
       this.$refs['formMember'].validate((valid) => {
         if (valid) {
-          console.log(this.formMember)
           this.$emit('submitForm', this.formMember)
         } else {
           return false

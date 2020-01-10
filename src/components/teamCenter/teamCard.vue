@@ -143,6 +143,7 @@ export default {
         this.teamCenterCount[2].num = this.teamCenterInfo.put_num
         this.teamCenterCount[3].num = this.teamCenterInfo.view_num
         this.teamCenterCount[4].num = this.teamCenterInfo.entry_num
+
         this.teamCenterCount[0].num = this.teamCenterInfo.put_num + this.teamCenterInfo.entry_num + this.teamCenterInfo.entry_num + this.teamCenterInfo.total_num
       }
     }

@@ -85,7 +85,7 @@
           <el-option :label="`次${rewardType}结算`" :value="1"></el-option>
           <el-option :label="`本${rewardType}结算`" :value="2"></el-option>
         </el-select>
-        <el-select v-model="orderTakingForm.settlement_time" v-if="orderTakingForm.reward_money_type==2&&orderTakingForm.settlement_type" class="width160" placeholder="请选择">
+        <el-select v-model="orderTakingForm.settlement_time" v-if="orderTakingForm.reward_money_type==2&&orderTakingForm.settlement_type" @xhange="changeSettlementTime" class="width160" placeholder="请选择">
           <el-option :label="`${payType}${item.label}`" :value="item.value" v-for="item in weekList" :key="item.label"></el-option>
         </el-select>
       </div>
@@ -100,7 +100,7 @@
             <span class="moneyType">{{rewardType}}</span>
           </template>
         </el-input>
-        <el-input placeholder="请输入" class="width160 text-input" @focus="focusInput" v-model="orderTakingForm.reward_needtime">
+        <el-input placeholder="请输入" class="width160 text-input" @input="changeNeedtime" v-model="orderTakingForm.reward_needtime">
           <template slot="prepend">
             <span class="moneyType">需入职满</span>
           </template>
@@ -170,10 +170,6 @@ export default {
                 return this.$message.warning('结算时间最大输入31')
                 this.$emit('submit', null)
               }
-              if (Number(this.orderTakingForm.reward_needtime) > 12) {
-                return this.$message.warning('持续返利最大输入12')
-                this.$emit('submit', null)
-              }
               else {
                 this.$emit('submit', val)
               }
@@ -181,11 +177,14 @@ export default {
           }
           else {
             if (val[key] != '') {
-              if (Number(this.orderTakingForm.reward_needtime) > Number(this.orderTakingForm.duration_time)) {
+              console.log(this.orderTakingForm.reward_needtime)
+              console.log(this.orderTakingForm.duration_time)
+              if (val.reward_type != 4 && Number(this.orderTakingForm.reward_needtime) > Number(this.orderTakingForm.duration_time)) {
                 this.orderTakingForm.reward_needtime = this.orderTakingForm.duration_time
                 this.$emit('submit', val)
               }
               else {
+                console.log(val)
                 this.$emit('submit', val)
               }
             }
@@ -200,11 +199,15 @@ export default {
       if (val == 1) {
         this.orderTakingForm.settlement_type = 1
       }
-      else {
-        this.orderTakingForm.settlement_type = 3
-      }
     },
-    focusInput () {
+    changeSettlementTime (val) {
+      console.log(val)
+    },
+    changeNeedtime (val) {
+      console.log(val)
+    },
+    focusInput (e) {
+      console.log(e)
       this.rewardTipShow = true
     },
     changePayType (val) {

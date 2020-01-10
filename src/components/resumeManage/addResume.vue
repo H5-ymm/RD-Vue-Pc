@@ -51,10 +51,10 @@
           <el-button type="text" @click="multipleSelection=[]">清空</el-button>
         </div>
         <el-table border :data="tableData" ref="multipleTable" style="width: 100%" @sort-change="sortChange" @selection-change="handleSelectionChange">
-          <el-table-column type="selection" align="center" width="40"></el-table-column>
-          <el-table-column label="姓名" align="center" width="100">
+          <el-table-column type="selection" align="center" width="50"></el-table-column>
+          <el-table-column label="姓名" align="center" width="150">
             <template slot-scope="props">
-              <el-button class="text-line" type="text">{{props.row.name}}</el-button>
+              <el-button class="text-line width140" type="text">{{props.row.name}}</el-button>
             </template>
           </el-table-column>
           <el-table-column label="联系电话" prop="mobile" align="center" width="150"></el-table-column>
@@ -72,7 +72,7 @@
           </el-table-column>
           <el-table-column label="跟进时间" sortable="custom" align="center" width="160">
             <template slot-scope="props">
-              <span type="text">{{props.row.uptime?$moment.unix(props.row.uptime).format('YYYY-MM-DD HH:mm'):'--'}}</span>
+              <span type="text">{{props.row.trackList.length?$moment.unix(props.row.trackList[0].addtime).format('YYYY-MM-DD HH:mm'):'-'}}</span>
             </template>
           </el-table-column>
           <el-table-column label="录入人" prop="input_username" align="center" width="100"></el-table-column>
@@ -88,7 +88,7 @@
       </div>
       <el-pagination class="team-pagination" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="formMember.page" :page-sizes="[10, 30, 50, 100]" :page-size="formMember.limit" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
     </div>
-    <resumeModal :dialogTableVisible="dialogTableVisible" :resumeId="resumeId" @submitForm="submitForm" :resumeInfo="resumeInfo"></resumeModal>
+    <resumeModal :dialogTableVisible="dialogTableVisible" @handleClose="dialogTableVisible=false,remind=''" :resumeId="resumeId" @submitForm="submitForm" :resumeInfo="resumeInfo"></resumeModal>
     <confirmDialog :dialogTableVisible="visible" @submit="submit" @handleClose="handleClose" :dialogObj="dialogObj"></confirmDialog>
     <followUpRecord :dialogTableVisible="followUpRecordVisible" @submitRecord="submitRecord" @handleClose="followUpRecordVisible=false,resumeId= ''" :trackList="trackList" :id="resumeId"></followUpRecord>
     <leadResumeModal @exportResume="exportResumeData" @download="download" :dialogTableVisible="leadResumeVisible" @handleClose="leadResumeVisible=false"></leadResumeModal>
@@ -278,6 +278,7 @@ export default {
       this.multipleSelection = val
     },
     addResume () {
+      this.resumeId = ''
       this.dialogTableVisible = true
     },
     onSubmit (value) {
@@ -301,6 +302,7 @@ export default {
       else {
         addUserResume(val).then(res => {
           this.dialogTableVisible = false
+          this.resumeId = ''
           this.getList(this.formMember)
           this.$message.success('保存成功')
         }).catch(error => {

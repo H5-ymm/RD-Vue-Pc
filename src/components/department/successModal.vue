@@ -1,12 +1,5 @@
 <template>
-  <el-dialog
-    width="380px"
-    top="30vh"
-    :visible="dialogTableVisible"
-    class="member-dialog dep-dialog"
-    :show-close="false"
-    center
-  >
+  <el-dialog width="380px" top="30vh" :visible="dialogTableVisible" class="member-dialog dep-dialog" :show-close="false" center>
     <div class="member-row">
       <img src="../../assets/img/member/cancel.png" alt class="cancel-icon" @click="handleClose" />
       <section class="member-col1 dep-col1"></section>
@@ -18,7 +11,7 @@
       </section>
     </div>
     <div slot="footer" class="dep-footer">
-      <el-button @click="submitForm">取消</el-button>
+      <el-button @click="handleClose">取消</el-button>
       <el-button type="primary" @click="submitForm">人员调整</el-button>
     </div>
   </el-dialog>

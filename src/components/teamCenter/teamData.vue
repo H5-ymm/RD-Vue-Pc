@@ -47,7 +47,7 @@
       <el-col :span="12">
         <teamPanel title="部门日志" class="team-panel-section1" @viewMore="$router.push('logList?view=logTable')">
           <div slot="content">
-            <logTable></logTable>
+            <logTable :tableData="tableTeamData"></logTable>
           </div>
         </teamPanel>
       </el-col>
@@ -75,7 +75,7 @@ import logTable from './logTable'
 import receiptLogTable from './receiptLogTable'
 import orderQuery from './orderQuery'
 import allOrder from './allOrder'
-import { getrank, getCompare, getnumLeader, getmemberList, getapplyLog } from '@/api/teamCenter'
+import { getrank, getCompare, getTeamLog, getnumLeader, getmemberList, getapplyLog } from '@/api/teamCenter'
 import { departmentRoleList } from '@/api/department'
 export default {
   components: {
@@ -136,6 +136,7 @@ export default {
       list: {},
       personList: [],
       tableData: [],
+      tableTeamData: [],
       userPosition: sessionStorage.getItem('userPosition'), // 1 总经理，2经理，3 成员
     }
   },
@@ -146,6 +147,7 @@ export default {
     if (this.userPosition == 1) {
       this.getDep()
     }
+    this.getTeamList(this.paramsLog)
     this.getLogList(this.paramsLog)
   },
   methods: {
@@ -191,7 +193,13 @@ export default {
     getLogList (params) {
       getapplyLog(params).then(res => {
         this.tableData = res.data.data || []
-        this.total = res.data.count
+      }).catch(error => {
+        this.$message.error(error.status.remind)
+      })
+    },
+    getTeamList (params) {
+      getTeamLog(params).then(res => {
+        this.tableTeamData = res.data.data || []
       }).catch(error => {
         this.$message.error(error.status.remind)
       })

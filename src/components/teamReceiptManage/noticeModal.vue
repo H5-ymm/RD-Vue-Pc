@@ -13,10 +13,14 @@
             </div>
           </el-form-item>
           <el-form-item label="面试地点">
-            <span>{{address}}{{viewTimeInfo.view_addr}}</span>
+            <div class="x-flex-start">
+              <span>{{viewTimeInfo.view_time}}</span>
+            </div>
           </el-form-item>
           <el-form-item label="通知内容">
-            <span>{{content}}</span>
+            <div class="x-flex-start">
+              <span>{{content}}</span>
+            </div>
           </el-form-item>
         </el-form>
       </section>

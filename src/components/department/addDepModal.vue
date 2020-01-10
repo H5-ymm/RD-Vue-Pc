@@ -5,7 +5,7 @@
       <section class="member-col1">
         <p>添加部门</p>
       </section>
-      <section class="member-col3 department-add-col3">
+      <section class="member-col3 department-add-col">
         <el-form :model="formMember" :rules="rules" :inline="true" label-position="left" ref="formMember" class="demo-form-inline">
           <el-form-item label="部门名称" required prop="depart_name">
             <el-input v-model="formMember.depart_name" placeholder="请输入部门名称"></el-input>
@@ -133,7 +133,7 @@ export default {
           border-radius: 0;
         }
       }
-       &.department-add-col3{
+       &.department-add-col{
          .el-form-item__label {
           margin-left: 20px;
          }

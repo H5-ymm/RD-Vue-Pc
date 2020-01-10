@@ -40,6 +40,7 @@ export default {
     handleTurnover (row) {
       this.memberInfo = row
       this.teamId = row.uid
+      sessionStorage.setItem('depId', row.id)
       this.$emit('handleTurnover', row.id)
     },
     handleSelectionChange (val) {

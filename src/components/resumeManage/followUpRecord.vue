@@ -56,28 +56,7 @@ export default {
   data () {
     return {
       reason: '',
-      list: [
-        {
-          title: '跟进记录',
-          addtime: 1576569206,
-          id: 7,
-          operator: "人才推荐",
-          reason: "",
-          remark: "内部推送职位",
-          resume_id: 2,
-          uid: 6,
-        },
-        {
-          title: '跟进记录',
-          addtime: 1576569206,
-          id: 7,
-          operator: "人才推荐",
-          reason: "",
-          remark: "内部推送职位",
-          resume_id: 2,
-          uid: 6,
-        }
-      ],
+      list: [],
       show: false,
       resumeId: ''
     }
@@ -104,10 +83,10 @@ export default {
       let params = {
         uid: localStorage.getItem('uid'),
         resumeId: this.resumeId,
-        remark: this.reason
+        title: this.reason
       }
       addTrackingInfo(params).then(res => {
-        console.log(res)
+        this.$emit('submitRecord', this.reason)
         this.reason = ''
       })
     }

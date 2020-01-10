@@ -18,12 +18,12 @@
               <div>
                 <el-form-item>
                   <el-select v-model="formMember.departId" placeholder="所属部门" @change="selectDep" value-key="depart_name" class="width100">
-                    <el-option :label="item.depart_name" :value="item.id" v-for="(item,index) in depList" :key="item.depart_name"></el-option>
+                    <el-option :label="item.depart_name" :value="item.id" v-for="(item,index) in depList" :key="index"></el-option>
                   </el-select>
                 </el-form-item>
                 <el-form-item>
                   <el-select v-model="formMember.gradeId" placeholder="等级" class="width100">
-                    <el-option :label="item.grade_name" :value="item.id" v-for="(item,index) in jobList" :key="index"></el-option>
+                    <el-option :label="item.grade_name" :value="item.id" v-for="(item,index) in jobListAll" :key="index"></el-option>
                   </el-select>
                 </el-form-item>
                 <span class="select-text">
@@ -48,23 +48,23 @@
             <el-table-column label="直属上级" prop="superiorName" align="center" width="150"></el-table-column>
             <el-table-column label="所属部门" align="center" width="150">
               <template slot-scope="props">
-                <span v-if="!isEdit">{{ props.row.depart_name}}</span>
-                <el-select v-else v-model="depart_id" :placeholder="props.row.depart_name" @change="selectDep" class="width100 table-edit">
+                <el-select v-model="depart_id" :placeholder="props.row.depart_name" v-if="activeIndex==props.$index&&isEdit" @change="selectDepName" class="width100 table-edit">
                   <el-option :label="item.depart_name" :value="item.id" v-for="(item,index) in depList" :key="index"></el-option>
                 </el-select>
+                <span v-else>{{ props.row.depart_name}}</span>
               </template>
             </el-table-column>
             <el-table-column label="等级" align="center" width="150">
               <template slot-scope="props">
-                <span v-if="!isEdit">{{ props.row.grade_name}}</span>
-                <el-select v-else v-model="grade_id" :placeholder="props.row.grade_name" @change="selectDep" class="width100 table-edit">
+                <el-select v-model="grade_id" v-if="activeIndex==props.$index&&isEdit" :placeholder="props.row.grade_name" @change="selectDepName" class="width100 table-edit">
                   <el-option :label="item.grade_name" :value="item.id" v-for="(item,index) in jobList" :key="index"></el-option>
                 </el-select>
+                <span v-else>{{ props.row.grade_name}}</span>
               </template>
             </el-table-column>
             <el-table-column label="操作" align="center" min-width="160">
               <template slot-scope="scope">
-                <el-button @click="handleEdit(scope.row,scope.$index)" v-if="!isEdit&&uid!=scope.row.uid" type="text" size="small">调整人员</el-button>
+                <el-button @click="handleEdit(scope.row,scope.$index)" v-if="!isEdit&&uid!=scope.row.uid&&activeIndex!=scope.$index" type="text" size="small">调整人员</el-button>
                 <span v-if="uid==scope.row.uid">团长</span>
                 <div v-if="isEdit&&activeIndex==scope.$index">
                   <el-button @click="handleSubmit" type="text" size="small">确认</el-button>
@@ -103,16 +103,20 @@ export default {
       depInfo: {},
       depart_id: '',
       grade_id: '',
-      uid: localStorage.getItem('uid')
+      uid: localStorage.getItem('uid'),
+      depActiveIndex: -1,
+      jobListAll: [],
+      id: ''
     }
   },
   created () {
     this.getJobList()
+    this.getList(this.formMember)
   },
   watch: {
     departId (val) {
       if (val) {
-        this.formMember.departId = Number(val)
+        // this.formMember.departId = Number(val)
         this.getList(this.formMember)
       }
     }
@@ -126,7 +130,16 @@ export default {
       })
     },
     selectDep (val) {
+      console.log(val)
+      this.jobListAll = this.getArr(this.depList, val)
+      this.getList(this.formMember)
+    },
+    selectDepName (val) {
+      console.log(val)
       this.jobList = this.getArr(this.depList, val)
+    },
+    selectDepGrade (index) {
+      // this.activeIndex = index
     },
     getArr (arr, id) {
       let newArr = []
@@ -167,7 +180,8 @@ export default {
       console.log(this.grade_id)
       let params = {
         userId: this.depInfo.uid,
-        gradeId: this.grade_id
+        gradeId: this.grade_id,
+        uid: this.depInfo.id
       }
       editTeamUserRole(params).then(res => {
         this.isEdit = false
@@ -176,6 +190,8 @@ export default {
         this.activeIndex = -1
         this.getList(this.formMember)
         this.$emit('handleClose', 1)
+      }).catch(error => {
+        this.$message.error(error.status.remind)
       })
     },
     handleClose () {
@@ -204,9 +220,10 @@ export default {
       overflow: auto;
       .el-table {
         height: 300px;
+        overflow: auto;
       }
       .el-table--scrollable-x .el-table__body-wrapper {
-        height: 80%;
+        height:100%;
       }
     }
   }

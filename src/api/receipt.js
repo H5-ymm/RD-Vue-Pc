@@ -28,4 +28,4 @@ export const incumbencyUserResumeList = data => $post('/company/incumbencyUserRe
 export const editEntryTime = data => $post('/company/editEntryTime', data)  //入职时间
 
 export const quitResumeRecommend = data => $post('/company/quitResumeRecommend', data)  //人员离职
-
+export const selectInterviewEntryInfo = data => $post('/company/selectInterviewEntryInfo', data)  //人员离职

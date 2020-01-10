@@ -59,7 +59,8 @@
           </el-table-column>
           <el-table-column label="状态" align="center" width="150">
             <template slot-scope="props">
-              <span class="status" :class="`status${props.row.status}`">{{props.row.status==1?"正常":'锁定'}}</span>
+              <span class="status" v-if="!props.row.entry_status" :class="`status${props.row.entry_status}`">入职开始</span>
+              <span class="status" v-if="props.row.entry_status" :class="`status${props.row.entry_status}`">{{props.row.entry_status==1?"入职开始":props.row.entry_status==2?'入职结束':'审核入职'}}</span>
             </template>
           </el-table-column>
           <el-table-column label="岗位城市" align="center" width="150">
@@ -73,16 +74,20 @@
               <span>{{props.row.reward_type|rewardType}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="入职时间" prop="entry_num" sortable align="center" width="160"></el-table-column>
+          <el-table-column label="入职时间" sortable align="center" width="160">
+            <template slot-scope="props">
+              <span>{{props.row.entry_time?$moment.unix(props.row.entry_time).format('YYYY-MM-DD HH:ss'):'--'}}</span>
+            </template>
+          </el-table-column>
           <el-table-column label="操作" align="center" min-width="160">
             <template slot-scope="scope">
-              <el-button @click="handleDel(scope.row)" type="text" size="small">联系客服</el-button>
-              <el-button @click="$router.push('/commonTableList')" type="text" size="small">
-                入职名单
+              <el-button @click="$router.push('/commonTableList?view=4&id='+scope.row.id)" v-if="scope.row.entry_status>=2" type="text" size="small">入职审核</el-button>
+              <el-button @click="$router.push('/commonTableList?view=3&id='+scope.row.id)" type="text" size="small" v-if="scope.row.entry_status==0">
+                面试名单
                 <!-- <span class="resume-number">(+150)</span> -->
               </el-button>
-              <el-button @click="handleEdit(scope.row)" type="text" size="small">在职名单</el-button>
-              <el-button @click="$router.push('/commonTableList')" type="text" size="small">入职审核</el-button>
+              <!-- <el-button @click="handleEdit(scope.row)" type="text" size="small">在职名单</el-button> -->
+              <el-button @click="handleDel(scope.row)" type="text" size="small">联系客服</el-button>
             </template>
           </el-table-column>
         </el-table>

@@ -59,10 +59,12 @@
               <span>{{props.row.money_type|moneyType}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="发单状态" align="center" width="150">
+          <el-table-column label="状态" align="center" width="150">
             <template slot-scope="props">
-              <span class="status" :class="`status${props.row.status}`">{{props.row.status==0?'收集中':props.row.status==1?'审核中':props.row.status==2?'已通知面试':'未通知面试'}}</span>
-              <!-- <span class="status" v-if="props.row.interview_status" :class="`status${props.row.invoice_status}`">{{props.row.interview_status==1?'面试开始':'面试结束'}}</span> -->
+              <span class="status" :class="`status${props.row.status}`" v-if="!props.row.interview_status&&!props.row.entry_status">{{props.row.invoice_status==0?'收集中':props.row.invoice_status==1?'面试开始':props.row.invoice_status==2?'面试结束':'审核简历'}}</span>
+              <!-- <span class="status" v-if="props.row.entry_status&&props.row.entry_status<3" :class="`status${props.row.entry_status}`">{{props.row.entry_status==1?'面试开始':props.row.entry_status==2?'面试结束':''}}</span> -->
+              <!-- <span class="status" v-if="props.row.status==1" :class="`status${props.row.status}`">面试开始</span> -->
+              <span class="status status3" v-else>面试结束</span>
             </template>
           </el-table-column>
           <el-table-column label="岗位城市" prop="entry_num" align="center" width="120">
@@ -82,21 +84,21 @@
           </el-table-column>
           <el-table-column label="面试时间" prop="msdesc" sortable="custom" align="center" width="160">
             <template slot-scope="props">
-              <span>{{props.row.addtime?props.row.addtime:'--'}}</span>
+              <span>{{props.row.view_time!=0?props.row.view_time:'--'}}</span>
             </template>
           </el-table-column>
           </el-table-column>
           <el-table-column label="操作" align="center" min-width="180">
             <template slot-scope="scope">
-              <div v-if="!scope.row.interview_status">
-                <el-button @click="$router.push('/recommendResume?id='+ scope.row.id + '&jobId='+scope.row.job_id)" type="text" size="small">推荐简历</el-button>
-                <el-button @click="$router.push('/commonTableList?id='+ scope.row.id+ '&jobId='+scope.row.job_id)" type="text" size="small">
+              <div v-if="!scope.row.interview_status&&!scope.row.entry_status">
+                <el-button v-if="scope.row.interview_status>=3||!scope.row.interview_status" @click="$router.push('/recommendResume?id='+ scope.row.id + '&jobId='+scope.row.job_id)" type="text" size="small">推荐简历</el-button>
+                <el-button v-if="!scope.row.interview_status||scope.row.interview_status==4" @click="$router.push('/commonTableList?id='+ scope.row.id+ '&jobId='+scope.row.job_id)" type="text" size="small">
                   推荐名单
                   <!-- <span class="resume-number">(+150)</span> -->
                 </el-button>
               </div>
-              <div v-if="scope.row.interview_status==1||scope.row.interview_status==2">
-                <el-button @click="$router.push('/auditionResult?id='+ scope.row.id)" type="text" size="small">
+              <div v-if="scope.row.interview_status||scope.row.entry_status">
+                <el-button @click="$router.push('/resumeResult?id='+ scope.row.id)" type="text" size="small">
                   面试名单
                   <!-- <span class="resume-number">(+150)</span> -->
                 </el-button>
@@ -172,6 +174,11 @@ export default {
     this.getList(this.formMember)
     let params = 'job_array'
     this.getData(params)
+  },
+  watch: {
+    $route (to, from) {
+      this.getList(this.formMember)
+    }
   },
   methods: {
     getData (filed) {

@@ -72,7 +72,9 @@
           <el-table-column label="发单状态" align="center" width="150">
             <template slot-scope="props">
               <span class="status" v-if="!props.row.interview_status" :class="`status${props.row.invoice_status}`">{{props.row.invoice_status|statusType}}</span>
-              <span class="status" v-if="props.row.interview_status" :class="`status${props.row.invoice_status}`">{{props.row.interview_status==1?'面试开始':props.row.interview_status==2?'面试结束':'等待面试'}}</span>
+              <span class="status" v-if="props.row.interview_status&&props.row.interview_status!=4" :class="`status${props.row.interview_status}`">{{props.row.interview_status==1?'面试开始':'面试结束'}}</span>
+              <span class="status status3" v-if="props.row.interview_status&&props.row.interview_status==4">面试结束</span>
+
             </template>
           </el-table-column>
           <el-table-column label="岗位城市" prop="citys" align="center" width="150"></el-table-column>
@@ -98,8 +100,8 @@
                 <el-button @click="checkResume(props.row)" v-if="!props.row.interview_status" type="text" size="small">审核简历</el-button>
                 <el-button @click="handleNote(props.row)" v-if="!props.row.view_time" type="text" size="small">面试通知</el-button>
               </div>
-              <div v-if="props.row.interview_status==1||props.row.interview_status==2">
-                <el-button @click="$router.push({path:'interviewPersonnel',query:{id:props.row.id,view:2}})" v-if="props.row.interview_status==1" type="text" size="small">查看面试</el-button>
+              <div v-if="props.row.interview_status>=1||props.row.interview_status==2">
+                <el-button @click="$router.push({path:'interviewPersonnel',query:{id:props.row.id,view:2}})" v-if="props.row.interview_status>=1" type="text" size="small">查看面试</el-button>
                 <el-button @click="$router.push({path:'checkResume',query:{id:props.row.id,view:3}})" type="text" size="small">审核结果</el-button>
               </div>
             </template>
@@ -116,7 +118,7 @@
 
 <script>
 import { getResumeList, exportRecommendResume, editInterviewTime } from '../../api/receipt'
-import { moneyTypeList, rewardTypeList, payTypeList, userResumeStatusList } from '../../base/base'
+import { moneyTypeList, rewardTypeList, payTypeList, userResumeStatusList, userResumeStatusList1 } from '../../base/base'
 import noticeModal from './noticeModal'
 import { getConstant } from '../../api/dictionary'
 import modal from '../common/modal'
@@ -141,7 +143,7 @@ export default {
       return obj ? obj.label : '--'
     },
     statusType (val) {
-      let obj = userResumeStatusList.find(item => {
+      let obj = userResumeStatusList1.find(item => {
         return val == item.value
       })
       return obj ? obj.label : '--'
@@ -152,6 +154,7 @@ export default {
       moneyTypeList,
       rewardTypeList,
       userResumeStatusList,
+      userResumeStatusList1,
       dialogTableVisible: false,
       dialogJobVisible: false,
       visible: false,
@@ -160,7 +163,8 @@ export default {
         uid: localStorage.getItem('uid'),
         limit: 10,
         page: 1,
-        jddesc: 'asc'
+        jddesc: 'asc',
+        status: -1
       },
       total: 0,
       multipleSelection: [],

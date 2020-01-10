@@ -37,7 +37,7 @@
           <el-table-column label="状态" align="center" width="150">
             <template slot-scope="props">
               <span class="status" :class="`status${props.row.status}`" v-if="!props.row.interview_status">{{props.row.status==0?"待审核":props.row.status==1?'通过':'未通过'}}</span>
-              <span class="status" v-if="props.row.status==1&&props.row.interview_status!=3">{{props.row.interview_status==1?'通过':'未通过'}}</span>
+              <span class="status" :class="`status${props.row.interview_status}`" v-if="props.row.status==1&&props.row.interview_status!=3">{{props.row.interview_status==1?'通过':'未通过'}}</span>
               <span class="status status2" v-if="props.row.status==1&&props.row.interview_status==3">未参加</span>
             </template>
           </el-table-column>
@@ -125,18 +125,26 @@ export default {
     if (this.$route.query.view == 5) {
       this.formMember.type = 2
     }
+    else if (this.$route.query.view == 4) {
+      this.formMember.type = 3
+    }
     else {
-      this.formMember.type = ''
+      this.formMember.type = 2
     }
     this.getList(this.formMember)
   },
   watch: {
     $route (to, from) {
-      if (from.query.view == 5) {
-        this.formMember.type = 2
-      }
-      else {
-        this.formMember.type = ''
+      if (from) {
+        if (from.query.view == 5) {
+          this.formMember.type = 2
+        }
+        else if (from.query.view == 4) {
+          this.formMember.type = 3
+        }
+        else {
+          this.formMember.type = 2
+        }
       }
       this.getList(this.formMember)
     }

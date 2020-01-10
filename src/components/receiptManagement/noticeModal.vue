@@ -9,39 +9,44 @@
         <el-form :model="formMember" :inline="true" label-position="left" ref="formMember" class="demo-form-inline">
           <el-form-item :label="`${noticeType}时间`" required>
             <div class="x-flex-between">
-              <el-date-picker v-model="formMember.date" type="date" :picker-options="pickerOptions" class="width195" value-format="yyyy-MM-dd" format="yyyy-MM-dd" :placeholder="`请选择${noticeType}日期`"></el-date-picker>
-              <el-time-select class="width195" type="date" value-format="HH:mm" format="HH:mm" v-model="formMember.time" :placeholder="`请选择${noticeType}时间`"></el-time-select>
+              <el-date-picker v-model="formMember.date" type="date" :disabled="interview_status==3" :picker-options="pickerOptions" class="width195" value-format="yyyy-MM-dd" format="yyyy-MM-dd" :placeholder="`请选择${noticeType}日期`"></el-date-picker>
+              <el-time-select class="width195" type="date" :disabled="interview_status==3" value-format="HH:mm" format="HH:mm" v-model="formMember.time" :placeholder="`请选择${noticeType}时间`"></el-time-select>
             </div>
           </el-form-item>
           <el-form-item :label="`${noticeType}地点`" required>
-            <districtSelet class="width400" @changeAddress="changeAddress" :placeholder="`请选择${noticeType}地点`"></districtSelet>
-            <el-input v-model="formMember.address" class="address" placeholder="请输入详细地址"></el-input>
+            <districtSelet class="width400" v-if="!interview_status" @changeAddress="changeAddress" :placeholder="`请选择${noticeType}地点`"></districtSelet>
+            <el-input v-model="formMember.address" :readonly="interview_status==3" class="address" placeholder="请输入详细地址"></el-input>
           </el-form-item>
           <el-form-item label="通知内容" required>
             <span class="error el-icon-warning">审核通过简历会直接发送{{noticeType}}通知，谨慎操作</span>
-            <el-input v-model="formMember.content" type="textarea" class="width400" :autosize="{maxRows: 4}" placeholder="请输入通知内容"></el-input>
+            <districtSelet class="width400" v-if="!interview_status" @changeAddress="changeAddress" :placeholder="`请选择${noticeType}地点`"></districtSelet>
+            <el-input v-model="formMember.content" :readonly="interview_status==3" type="textarea" class="width400" :autosize="{maxRows: 4}" :placeholder="`${interview_status!=3?'请输入通知内容':''}`"></el-input>
           </el-form-item>
         </el-form>
       </section>
     </div>
     <div slot="footer" class="notice-footer-btn">
       <el-button @click="handleClose">取消</el-button>
-      <el-button type="primary" @click="submitForm">确定</el-button>
+      <el-button type="primary" @click="submitForm" v-if="interview_status!=3">确定</el-button>
     </div>
   </el-dialog>
 </template>
 <script>
 
 import districtSelet from '../districtSelet'
+import { selectInterviewEntryInfo } from '@/api/receipt'
 export default {
   components: {
     districtSelet
   },
-  props: ['dialogTableVisible', 'noticeType'],
+  props: ['dialogTableVisible', 'noticeType', 'interview_status', 'id'],
   data () {
     return {
       formMember: {
-
+        date: '',
+        time: '',
+        address: '',
+        content: ''
       },
       pickerOptions: {
         disabledDate (time) {
@@ -49,13 +54,53 @@ export default {
         },
       },
       uid: localStorage.getItem('uid'),
-      address: []
+      address: [],
+      type: ''
     }
   },
   created () {
 
   },
+  watch: {
+    id (val) {
+      if (val && this.interview_status == 3) {
+        this.getTimeInfo(val)
+      }
+    },
+    noticeType (val) {
+      if (val) {
+        console.log(val)
+        this.type = val
+      }
+    }
+  },
   methods: {
+    getTimeInfo (id) {
+      selectInterviewEntryInfo({ id }).then(res => {
+        console.log(res.data)
+        console.log(this.type)
+        if (this.interview_status == 3) {
+          this.formMember.date = this.$moment.unix(res.data.entry_time).format('YYYY-MM-DD')
+          console.log(this.formMember.date)
+          this.formMember.time = this.$moment.unix(res.data.entry_time).format('HH:mm')
+          let content1 = res.data.entry_comtent.split('&')
+          this.formMember.content = content1[1]
+          this.formMember.address = content1[0].split('/').join(',')
+          console.log(this.formMember.address)
+        }
+        else {
+          this.formMember.date = this.$moment.unix(res.data.view_time).format('YYYY-MM-DD')
+          console.log(this.formMember.date)
+          this.formMember.time = this.$moment.unix(res.data.view_time).format('HH:mm')
+          let content1 = res.data.content.split('&')
+          this.formMember.content = content1[1]
+          this.formMember.address = content1[0].split('/').join(',')
+          console.log(this.formMember.address)
+        }
+      }).catch(error => {
+        this.$message.error(error.status.remind)
+      })
+    },
     handleClose () {
       this.$parent.dialogTableVisible = false
     },
@@ -63,13 +108,14 @@ export default {
       this.address = val
     },
     submitForm () {
+      if (this.interview_status == 3) return
       let date = this.formMember.date + this.formMember.time
       let date1 = this.$moment(date, 'YYYY-MM-DD HH:mm').valueOf()
       let address = this.address.join('/')
       date1 = date1 + ''
       let params = {
         time: date1.substring(0, 10),
-        content: address + '/' + this.formMember.content
+        content: address + '/' + this.formMember.address + '&' + this.formMember.content
       }
       this.$refs['formMember'].validate((valid) => {
         if (valid) {

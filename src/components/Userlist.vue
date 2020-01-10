@@ -69,7 +69,7 @@ export default {
         this.teamInfo = data.teamInfo
       })
     },
-    handleView(val){
+    handleView (val) {
       this.userId = val
       this.dialogTableVisible = true
     },
@@ -97,10 +97,9 @@ export default {
       this.getList(params)
     },
     submitForm (val) {
+      this.visible = false
       if (this.userId) {
         updateTeamUser(val).then(res => {
-          this.visible = false
-          // this.userId = ''
           this.getList(this.formMember)
         }).catch(error => {
           this.$message.error(error.status.remind)
@@ -113,7 +112,7 @@ export default {
         }).catch(error => {
           this.$message.error(error.status.remind)
         })
-      }   
+      }
     }
   }
 }

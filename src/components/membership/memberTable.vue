@@ -27,7 +27,7 @@
         <el-table-column label="所属部门" prop="depart_name" align="center" width="150"></el-table-column>
         <el-table-column label="等级" prop="grade_name" sortable align="center" width="150"></el-table-column>
         <el-table-column label="直属上级" prop="grade_name" align="center" width="150"></el-table-column>
-        <el-table-column label="简历数量" prop="entry_num" align="center" width="150"></el-table-column>
+        <el-table-column label="简历数量" prop="export_num" align="center" width="150"></el-table-column>
         <el-table-column label="入职人数" prop="entry_num" align="center" width="150"></el-table-column>
         <el-table-column label="最近登录时间" align="center" width="260">
           <template slot-scope="props">
@@ -67,12 +67,13 @@ export default {
       memberInfo: {},
       teamId: '',
       multipleSelection: [],
-      userPosition:sessionStorage.getItem('userPosition'),
+      userPosition: sessionStorage.getItem('userPosition'),
       uid: ''
     }
   },
   methods: {
     addMember () {
+      this.uid = ''
       this.$emit('addMember')
     },
     handleEdit (val) {
@@ -81,7 +82,7 @@ export default {
       }
       this.$emit('handleEdit', val)
     },
-    handleView(val){
+    handleView (val) {
       this.$emit('handleView', val)
     },
     handleSelectionChange (val) {
@@ -90,7 +91,7 @@ export default {
         return item.uid
       })
       this.uid = arr.join(',')
-      console.log(this.uid )
+      console.log(this.uid)
       this.$emit('handleSelectionChange', this.multipleSelection.length)
     },
     handleDel (val) {

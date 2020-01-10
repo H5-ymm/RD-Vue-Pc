@@ -175,7 +175,11 @@ export const userResumeStatusList = [
   { label: '面试开始', value: 2 },
   { label: '面试结束', value: 3 }
 ]
-
+export const userResumeStatusList1 = [
+  { label: '审核中', value: 0 },
+  { label: '审核中', value: 1 },
+  { label: '审核完毕', value: 2 },
+]
 export const recommendStatusList = [
   { label: '全部', value: -1 },
   { label: '未推荐', value: 0 },

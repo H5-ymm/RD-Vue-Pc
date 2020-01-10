@@ -57,7 +57,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="需求人数" required>
-          <el-input type="number" v-model="orderTakingForm.required_number" class="width408" @input="numberChange(arguments[0])" :min="2" placeholder="请输入申请人姓名"></el-input>
+          <el-input type="number" v-model="orderTakingForm.required_number" class="width408" @input="numberChange(arguments[0])" :min="2" placeholder="请输入需求人数"></el-input>
         </el-form-item>
         <el-form-item label="工作地址" required>
           <div class="width408">
@@ -109,7 +109,7 @@
           </div>
         </el-form-item>
         <el-form-item label="联系人" required>
-          <el-input v-model="orderTakingForm.com_name" class="width408" placeholder="请输入联系人姓名"></el-input>
+          <el-input v-model="orderTakingForm.link_name" class="width408" placeholder="请输入联系人姓名"></el-input>
         </el-form-item>
         <el-form-item label="联系电话" required>
           <el-input v-model="orderTakingForm.tel" class="width408" placeholder="请输入联系电话"></el-input>
@@ -171,7 +171,8 @@ export default {
       jobRequire: '',
       jobTime: '',
       disabled: false,
-      rateInfo: null
+      rateInfo: null,
+      jobContent: ''
     };
   },
   created () {
@@ -186,12 +187,10 @@ export default {
   computed: {
     len () {
       let content = this.content.replace(/<[^>]+>/g, "").replace('/</br>/g', '')
+      let content1 = this.jobContent
       content = content.replace(/(^\s+)|(\s+$)/g, "")
       let length = content.length
-      // if (is_global.toLowerCase() == "g") {
-      //     result = result.replace(/\s/g, "");
-      // }
-      return length ? length : this.orderTakingForm.job_content.length + length
+      return !this.jobContent ? content1.length + length : content1.length
     }
   },
   methods: {
@@ -228,7 +227,6 @@ export default {
       }
     },
     keepLastIndex (obj) {
-      console.log(this.content)
       if (window.getSelection) { //ie11 10 9 ff safari
         // obj.focus(); //解决ff不获取焦点无法定位问题
         let range = window.getSelection().getRangeAt(0);//创建range
@@ -241,11 +239,17 @@ export default {
         range.select();
       }
       console.log(obj)
-      this.orderTakingForm.job_content = obj.target.innerText
-      // this[key] = obj.target.innerHTML
+      this.jobContent = obj.target.innerText
+      if (!this.jobContent) {
+        this.content = ''
+      }
+      console.log(this.jobContent)
+      this.orderTakingForm.job_content = obj.target.innerHTML
     },
     numberChange (val) {
-
+      if (val && Number(val) < 2) {
+        this.orderTakingForm.required_number = 2
+      }
     },
     onDivInput (e, key) {
       console.log(e.target.innerHTML)
@@ -269,8 +273,11 @@ export default {
       }
     },
     submitForm (orderTakingForm) {
-      if (!this.content) {
+      if (!this.orderTakingForm.job_content) {
         return this.$message.warning('请输入职位描述')
+      }
+      if (this.jobContent.length < 30) {
+        return this.$message.warning('职位描述最低输入30个')
       }
       this.$refs[orderTakingForm].validate((valid) => {
         if (valid) {

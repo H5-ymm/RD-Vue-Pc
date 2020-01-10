@@ -40,11 +40,11 @@
         <el-form-item :label="labelTime+':'">
           <el-date-picker class="width300" v-model="timeList" type="daterange" format="yyyy-MM-dd" value-format="yyyy-MM-dd" @change="changeDate" range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期"></el-date-picker>
         </el-form-item>
-        <el-form-item :label="label+':'" v-if="viewType!=3">
+        <!-- <el-form-item :label="label+':'" v-if="viewType!=3">
           <el-select v-model="formMember.status" class="width300" placeholder="请选择报名状态">
             <el-option :label="item.label" :value="item.value" v-for="(item,index) in followStatusList" :key="index"></el-option>
           </el-select>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item>
           <el-button type="primary" @click="onSubmit" class="select-btn">查询</el-button>
           <el-button type="primary" @click="onReset" class="select-btn">重置</el-button>
@@ -56,9 +56,9 @@
         </div>
         <el-table border :data="tableData" ref="multipleTable" style="width: 100%" @sort-change="sortChange">
           <el-table-column label="序号" align="center" fixed="left" prop="id" width="50"></el-table-column>
-          <el-table-column label="姓名" fixed="left" align="center" width="100">
+          <el-table-column label="姓名" fixed="left" align="center" width="150">
             <template slot-scope="props">
-              <el-button class="text-line" type="text" @click="viewResume(props.row)">{{props.row.name}}</el-button>
+              <el-button class="text-line width140" type="text" @click="viewResume(props.row)">{{props.row.name}}</el-button>
             </template>
           </el-table-column>
           <el-table-column label="联系电话" prop="mobile" align="center" width="150"></el-table-column>
@@ -80,9 +80,9 @@
               <span v-if="viewType==3" class="status" :class="`status${props.row.interview_status}`">{{props.row.interview_status|viewStatus}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="跟进记录" align="center" width="100">
+          <el-table-column label="跟进记录" align="center" width="160">
             <template slot-scope="props">
-              <el-button class="text-line" type="text" @click="viewRecord(props.row)" v-if="props.row.trackList&&props.row.trackList[0]">{{props.row.trackList[0].title}}</el-button>
+              <el-button class="text-line" style="width:100px" type="text" @click="viewRecord(props.row)" v-if="props.row.trackList&&props.row.trackList[0]">{{props.row.trackList[0].remark}}</el-button>
             </template>
           </el-table-column>
           <el-table-column label="跟进时间" prop="msdesc" sortable="custom" align="center" width="160">

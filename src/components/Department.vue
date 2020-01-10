@@ -3,22 +3,9 @@
     <div class="table-list">
       <el-button type="primary" class="add-member" @click="visible=true">添加部门</el-button>
       <tableList :tableData="tableData" @handleTurnover="handleEdit" @handleDel="handleDel"></tableList>
-      <el-pagination
-        class="team-pagination"
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :current-page="formMember.page"
-        :page-sizes="[10, 30, 50, 100]"
-        :page-size="formMember.limit"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="total"
-      ></el-pagination>
+      <el-pagination class="team-pagination" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="formMember.page" :page-sizes="[10, 30, 50, 100]" :page-size="formMember.limit" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
     </div>
-    <turnoverModal
-      :dialogTableVisible="dialogTableVisible"
-      :departId="departId"
-      @handleClose="handle"
-    ></turnoverModal>
+    <turnoverModal :dialogTableVisible="dialogTableVisible" :departId="departId" @handleClose="handle"></turnoverModal>
     <addDepModal :dialogTableVisible="visible" @submitForm="submitForm"></addDepModal>
     <successModal :dialogTableVisible="visible1" @handleTurnover="handleEdit"></successModal>
     <outDep :dialogTableVisible="delVisible" @submitForm="handleUser"></outDep>
@@ -90,6 +77,7 @@ export default {
       })
     },
     handleEdit (val) {
+      this.visible1 = false
       this.departId = val || this.tableData[0].id
       this.dialogTableVisible = true
     },

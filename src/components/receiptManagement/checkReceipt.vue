@@ -29,7 +29,7 @@
           <el-table-column label="岗位薪资" align="center" width="150">
             <template slot-scope="props">
               <span v-if="props.row.money_type==1">{{props.row.money_min}}~{{props.row.money_max}}</span>
-              <span v-else>{{props.row.money_max || 0}}</span>
+              <span v-else>{{props.row.money || 0}}</span>
             </template>
           </el-table-column>
           <el-table-column label="返利类型" align="center" width="150">
@@ -112,7 +112,8 @@ export default {
       formMember: {
         uid: localStorage.getItem('uid'),
         limit: 10,
-        page: 1
+        page: 1,
+        desc: 'desc'
       },
       total: 0,
       len: 0,

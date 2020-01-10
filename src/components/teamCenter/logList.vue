@@ -21,7 +21,7 @@
 <script>
 import logTable from './logTable'
 import receiptLogTable from './receiptLogTable'
-import { getapplyLog } from '@/api/teamCenter'
+import { getapplyLog, getTeamLog } from '@/api/teamCenter'
 export default {
   components: {
     logTable,
@@ -45,23 +45,32 @@ export default {
   },
   watch: {
     $route (to, from) {
-      console.log(to)
       this.componentId = to.query.view
       this.getList(this.params)
     }
   },
   methods: {
     getList (params) {
-      getapplyLog(params).then(res => {
-        this.tableData = res.data.data || []
-        this.total = res.data.count
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+      if (this.componentId == 'logTable') {
+        getTeamLog(params).then(res => {
+          this.tableData = res.data.data || []
+          this.total = res.data.count
+        }).catch(error => {
+          this.$message.error(error.status.remind)
+        })
+      }
+      else {
+        getapplyLog(params).then(res => {
+          this.tableData = res.data.data || []
+          this.total = res.data.count
+        }).catch(error => {
+          this.$message.error(error.status.remind)
+        })
+      }
     },
     changeDate (val) {
-      this.params.starttime = val[0]
-      this.params.endtime = val[1]
+      this.params.starttime = val ? val[0] : ''
+      this.params.endtime = val ? val[1] : ''
       this.getList(this.params)
     },
     handleSizeChange (val) {

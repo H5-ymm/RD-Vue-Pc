@@ -12,14 +12,14 @@
       </el-form>
       <div class="member-table">
         <div class="table-query" v-if="viewType!=5&&viewType!=4">
-          <el-button @click="handleUser(1,id)">通过</el-button>
-          <el-button @click="handleUser(2,id)">未通过</el-button>
+          <el-button @click="handleResume(1,id)">通过</el-button>
+          <el-button @click="handleResume(2,id)">未通过</el-button>
         </div>
         <div class="table-query" v-if="viewType==4">
           <el-button @click="handleUser(1,id)">已入职</el-button>
           <el-button @click="handleUser(2,id)">未入职</el-button>
         </div>
-        <el-table border :data="tableData" ref="multipleTable" @sort-change="sortChange" style="width: 100%">
+        <el-table border :data="tableData" ref="multipleTable" @sort-change="sortChange" @selection-change="handleSelectionChange" style="width: 100%">
           <el-table-column type="selection" align="center" width="50" v-if="viewType!=5"></el-table-column>
           <el-table-column label="姓名" align="center" width="150">
             <template slot-scope="props">
@@ -45,11 +45,11 @@
             <template slot-scope="props">
               <div v-if="viewType==2||viewType==4">
                 <span class="status" v-if="!props.row.entry_status">待审核</span>
-                <span class="status" v-else>{{props.row.entry_status==1?'通过':props.row.entry_status==2?'未通过':'未参加'}}</span>
+                <span class="status" v-else :class="`status${props.row.entry_status}`">{{props.row.entry_status==1?'通过':props.row.entry_status==2?'未通过':'未参加'}}</span>
               </div>
               <div v-if="viewType==3">
                 <span class="status" v-if="!props.row.interview_status">待审核</span>
-                <span class="status" v-else>{{props.row.interview_status==1?'通过':props.row.interview_status==2?'未通过':'未参加'}}</span>
+                <span class="status" :class="`status${props.row.interview_status}`" v-else>{{props.row.interview_status==1?'通过':props.row.interview_status==2?'未通过':'未参加'}}</span>
               </div>
             </template>
           </el-table-column>
@@ -61,8 +61,8 @@
           <el-table-column label="操作" align="center" min-width="150" v-if="viewType==4">
             <template slot-scope="props">
               <div v-if="!props.row.entry_status">
-                <el-button type="text" @click="handleUser(1,props.row)" size="small">已入职</el-button>
-                <el-button type="text" @click="handleUser(2,props.row)" size="small">未入职</el-button>
+                <el-button type="text" @click="handleUser(1,props.row.id)" size="small">已入职</el-button>
+                <el-button type="text" @click="handleUser(2,props.row.id)" size="small">未入职</el-button>
               </div>
               <span v-else>{{props.row.entry_status==1?'已入职':'未入职'}}</span>
             </template>
@@ -70,9 +70,9 @@
           <el-table-column label="操作" align="center" min-width="150" v-if="viewType==3">
             <template slot-scope="props">
               <div v-if="props.row.interview_status==0">
-                <el-button type="text" @click="handleResume(1,props.row)" size="small">通过</el-button>
-                <el-button type="text" @click="handleResume(2,props.row)" size="small">未通过</el-button>
-                <el-button type="text" @click="handleResume(3,props.row)" size="small">未参加</el-button>
+                <el-button type="text" @click="handleResume(1,props.row.id)" size="small">通过</el-button>
+                <el-button type="text" @click="handleResume(2,props.row.id)" size="small">未通过</el-button>
+                <el-button type="text" @click="handleResume(3,props.row.id)" size="small">未参加</el-button>
               </div>
               <span v-if="props.row.interview_status&&props.row.interview_status!=4">{{props.row.interview_status==1?'通过':props.row.interview_status==2?'未通过':'未参加'}}</span>
               <span v-if="props.row.interview_status==4">放弃面试</span>
@@ -81,9 +81,9 @@
           <el-table-column label="操作" align="center" min-width="150" v-if="viewType==5">
             <template slot-scope="props">
               <div v-if="props.row.entry_status==0">
-                <el-button type="text" @click="handleResume(1,props.row)" size="small">通过</el-button>
-                <el-button type="text" @click="handleResume(2,props.row)" size="small">未通过</el-button>
-                <el-button type="text" @click="handleResume(3,props.row)" size="small">未参加</el-button>
+                <el-button type="text" @click="handleResume(1,props.row.id)" size="small">通过</el-button>
+                <el-button type="text" @click="handleResume(2,props.row.id)" size="small">未通过</el-button>
+                <el-button type="text" @click="handleResume(3,props.row.id)" size="small">未参加</el-button>
               </div>
               <span v-if="!props.row.entry_status&&props.row.entry_status!=4">{{props.row.entry_status==1?'通过':props.row.entry_status==2?'未通过':'未参加'}}</span>
               <span v-if="props.row.entry_status==4">放弃面试</span>
@@ -199,6 +199,12 @@ export default {
       }
       this.getList(this.formMember)
     },
+    handleSelectionChange (val) {
+      let arr = val.map(item => {
+        return item.id
+      })
+      this.id = arr.join(',')
+    },
     handleUserQuit (val) {
       this.id = val.id
       this.resumeId = val.resume_id
@@ -238,22 +244,33 @@ export default {
       this.getList(this.formMember)
     },
     handleUser (status, val) {
+      if (!val) {
+        return this.$message.warning('请选择简历')
+      }
       let params = {
         uid: localStorage.getItem('uid'),
-        id: val.id,
+        id: val,
         status: status
       }
-      updateEntryUser(params).then(res => {
-        this.$message.success('操作成功')
-        this.getList(this.formMember)
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+      if (this.viewType != 3) {
+        updateEntryUser(params).then(res => {
+          this.$message.success('操作成功')
+          this.getList(this.formMember)
+        }).catch(error => {
+          this.$message.error(error.status.remind)
+        })
+      }
+      else {
+
+      }
     },
     handleResume (status, val) {
+      if (!val) {
+        return this.$message.warning('请选择简历')
+      }
       let params = {
         uid: localStorage.getItem('uid'),
-        id: val.id,
+        id: val,
         status: status
       }
       auditEntryResume(params).then(res => {
