@@ -281,11 +281,6 @@ export default {
       this.menus[len].submenu = this.internalInvoiceRoot.concat(this.menus[len].submenu)
     }
   },
-  watch: {
-    $route (to, from) {
-      this.title = JSON.parse(sessionStorage.getItem('menus'))[0]
-    }
-  },
   methods: {
     handleOpen (key, keyPath) {
       console.log(key, keyPath);
@@ -301,14 +296,16 @@ export default {
     selectMenus (key, keyPath) {
       this.title = key
       let arr = keyPath
+      console.log(arr)
+      console.log(this.title)
       sessionStorage.setItem('menus', JSON.stringify(arr))
     }
   },
   computed: {
     routerli () {
       // 对应路由
-      let pathStr = this.$route.path.split('/')
-      return '/' + pathStr[1]
+      // let pathStr = this.$route.path.split('/')
+      return this.$route.path
     }
   }
 }

@@ -93,16 +93,15 @@ export default {
       this.getLegenData(val)
       this.getData(this.activeIndex)
     },
-    percentList: {
-      handler (val, oldName) {
-        if (val) {
-          this.arrList = val
-          this.getList(this.legendIndex)
-          this.getLegenData(this.legendIndex)
-          this.getData(this.activeIndex)
-        }
-      },
-      deep: true
+    percentList(val){
+      if (val) {
+        this.arrList = val
+        this.getList(this.legendIndex)
+        this.getLegenData(this.legendIndex)
+        this.getData(this.activeIndex)
+      }else {
+        this.arrList = null
+      }
     }
   },
   methods: {
@@ -155,11 +154,11 @@ export default {
     getList (val) {
       let arr = []
       if (this.arrList && this.arrList.total && this.activeIndex == 0) {
-        arr[0] = this.getArray(this.percentList.total)
-        arr[1] = this.getArray(this.percentList.put)
-        arr[2] = this.getArray(this.percentList.view)
-        console.log(this.getArray(this.percentList.entry))
-        arr[3] = this.getArray(this.percentList.entry)
+        arr[0] = this.getArray(this.arrList.total)
+        arr[1] = this.getArray(this.arrList.put)
+        arr[2] = this.getArray(this.arrList.view)
+        console.log(this.getArray(this.arrList.entry))
+        arr[3] = this.getArray(this.arrList.entry)
       }
       if (this.arrList && this.arrList.total && this.list) {
         let key = this.getKey(this.activeIndex)

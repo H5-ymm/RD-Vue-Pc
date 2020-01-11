@@ -85,7 +85,7 @@ export default {
     submitComment () {
       // unescape()
      
-      let content = !this.content ? escape(this.comment):escape(this.content)
+      let content = !this.content ? this.comment:this.content
       console.log(content)
       this.$emit('submitComment', content)
     },

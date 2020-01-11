@@ -58,13 +58,6 @@ export default {
       showFirstComment: true
     }
   },
-  watch: {
-    showComment (val) {
-      if (!val) {
-        this.cancleComment(1)
-      }
-    }
-  },
   methods: {
     getContent(val) {
       console.log(val)

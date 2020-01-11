@@ -51,10 +51,12 @@
           <breadcrumb :breadcrumbs="breadcrumb"></breadcrumb>
         </el-header>
         <el-main class="team-main" :class="{'comany-main-page': type==1}">
-          <!-- <router-view class="team-box"></router-view> -->
-          <keep-alive>
+            <transition name="fade" mode="out-in">
             <router-view class="team-box"></router-view>
-          </keep-alive>
+            <!-- <keep-alive>
+              <router-view class="team-box"></router-view>
+            </keep-alive> -->
+          </transition>
         </el-main>
       </el-container>
     </el-container>
@@ -96,6 +98,9 @@ export default {
     if (sessionStorage.getItem('menus')) {
       this.breadcrumb = JSON.parse(sessionStorage.getItem('menus'))
     }
+  },
+  beforeRouteLeave(){
+    this.$destroy(true)
   },
   watch: {
     type (val) {

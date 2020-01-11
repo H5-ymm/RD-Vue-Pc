@@ -132,7 +132,7 @@ export default {
       legendIndex: 1,
       limit: 10,
       teamCenterInfo: {},
-      percentList: {},
+      percentList: null,
       list: {},
       personList: [],
       tableData: [],

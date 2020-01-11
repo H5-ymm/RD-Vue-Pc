@@ -109,7 +109,14 @@ export default {
     saveDiscuss (val) {
       addDiscuss(val).then(res => {
         console.log(res)
-        this.getList()
+        if (res.data) {
+          this.$message.success('添加成功')
+          this.refurbishStatus = 3
+          this.getList()
+        }
+        else {
+          this.$message.error('添加失败')
+        }
       }).catch(error => {
         this.$message.error(error.status.remind)
       })
@@ -193,7 +200,7 @@ export default {
   overflow: hidden;
 }
 .el-dropdown-menu__item {
-  width: 70px!important;
+  width: 80px!important;
   
 }
 .foots{

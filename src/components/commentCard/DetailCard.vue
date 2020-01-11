@@ -137,6 +137,7 @@ export default {
         }
       }
       else {
+        this.commentList = []
         this.comTitle = '请输入标题'
       }
     }
