@@ -77,9 +77,9 @@
           <!-- <el-table-column label="联系人" prop="entry_num" align="center" width="150"></el-table-column> -->
           <el-table-column label="操作" align="center" width="180">
             <template slot-scope="props">
-              <el-button @click="$router.push('/commonTableList?id='+ props.row.id+ '&jobId='+props.row.job_id)" type="text" size="small" v-if="props.row.entry_status==0||props.row.entry_status==1">入职名单</el-button>
-              <el-button @click="dialogTableVisible=true" type="text" size="small" v-if="props.row.entry_status==1&&props.row.interview_status">入职结束</el-button>
-              <el-button @click="routerEntry" v-if="props.row.entry_status>=2" type="text" size="small">面试名单</el-button>
+              <el-button @click="$router.push('/commonTableList?id='+ props.row.id+ '&jobId='+props.row.job_id)" type="text" size="small" v-if="props.row.interview_status==1&&(props.row.entry_status==0||props.row.entry_status==1)">入职名单</el-button>
+              <el-button @click="dialogTableVisible=true" type="text" size="small" v-if="props.row.entry_status<=1&&props.row.interview_status==1">入职结束</el-button>
+              <el-button @click="routerEntry" v-if="props.row.entry_status>=2||(!props.row.entry_status&&props.row.interview_status==4)" type="text" size="small">面试名单</el-button>
               <el-button @click="dialogTableVisible=true" type="text" size="small" v-if="props.row.interview_status!=1">联系客服</el-button>
             </template>
           </el-table-column>
@@ -175,8 +175,8 @@ export default {
       })
     },
     changeDate (val) {
-      this.formMember.beginTime =val?val[0]:''
-      this.formMember.endTime =val?val[1]:''
+      this.formMember.beginTime = val ? val[0] : ''
+      this.formMember.endTime = val ? val[1] : ''
     },
     selectStatus (item, index) {
       this.activeIndex = index

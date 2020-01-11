@@ -45,7 +45,8 @@
           </el-table-column>
           <el-table-column label="状态" align="center" width="150">
             <template slot-scope="props">
-              <span class="status" :class="`{status${props.row.status}}`">{{props.row.status | statusType}}</span>
+              <span class="status" :class="`{status${props.row.status}}`" v-if="props.row.status!=1&&props.row.job_status==1">{{props.row.status==2?'已通过':'未通过'}}</span>
+              <span class="status" :class="`{status${Number(props.row.job_status)+1}}`" v-if="props.row.status==1">{{props.row.job_status==1?'已上架':'未上架'}}</span>
             </template>
           </el-table-column>
           <el-table-column label="操作" align="center" width="150">
@@ -56,10 +57,11 @@
                 v-if="scope.row.status==1"
                 size="small"
               >修改</el-button> -->
-              <el-button @click="handleRecceipt(scope.row)" type="text" v-if="scope.row.status==1||scope.row.status==3" size="small">删除</el-button>
+              <el-button type="text" size="small" v-if="scope.row.status==1" @click="editJob(scope.row)">修改</el-button>
+              <el-button @click="handleDel(scope.row)" type="text" v-if="scope.row.status!=2" size="small">删除</el-button>
               <el-button @click="viewJob(scope.row)" type="text" size="small">查看</el-button>
-              <el-button @click="handleDel(scope.row)" v-if="scope.row.status==2&&scope.row.job_status==1" type="text" size="small">下架</el-button>
-              <el-button @click="handleDel(scope.row)" type="text" v-if="scope.row.status==2&&scope.row.job_status==2" size="small">上架</el-button>
+              <el-button @click="handleRecceipt(2,scope.row)" v-if="scope.row.status==2&&scope.row.job_status==1" type="text" size="small">下架</el-button>
+              <el-button @click="handleRecceipt(1,scope.row)" type="text" v-if="scope.row.status==2&&scope.row.job_status==2" size="small">上架</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -72,7 +74,7 @@
 
 <script>
 import { getTeamList, loginOutTeam, addTeamUser, updateTeamUser } from '../../api/team'
-import { getReceiptList, companyReceiptShelf } from '../../api/receipt'
+import { getReceiptList, companyReceiptShelf, delReceiptShelf } from '../../api/receipt'
 import { moneyTypeList, rewardTypeList, payTypeList, checkStatusList } from '../../base/base'
 import viewJob from '../common/viewJob'
 export default {
@@ -128,7 +130,7 @@ export default {
     this.getList(this.formMember)
   },
   watch: {
-    $route (to, form) {
+    $route (to, from) {
       this.getList(this.formMember)
     }
   },
@@ -149,6 +151,9 @@ export default {
       }
       this.getList(this.formMember)
     },
+    editJob (val) {
+      this.$router.push('createOrderTaking?id=' + val.id)
+    },
     statusType (val) {
       let obj = this.statusList.find(item => {
         return val == item.value
@@ -168,17 +173,31 @@ export default {
       this.formMember.page = val
       this.getList(this.formMember)
     },
-    handleRecceipt () {
-
+    handleRecceipt (status, val) {
+      let params = {
+        uid: localStorage.getItem('uid'),
+        id: val.id,
+        job_status: status
+      }
+      companyReceiptShelf(params).then(res => {
+        this.$message.success('操作成功')
+        this.getList(this.formMember)
+      }).catch(error => {
+        this.$message.error(error.status.remind)
+      })
     },
     viewJob (val) {
       console.log(val)
       this.id = val.id
       this.dialogJobVisible = true
     },
-    handleDel (uid) {
-      loginOutTeam({ uid }).then(res => {
-        this.$message.success('退出成功')
+    handleDel (val) {
+      let params = {
+        uid: localStorage.getItem('uid'),
+        id: val.id,
+      }
+      delReceiptShelf(params).then(res => {
+        this.$message.success('删除成功')
         this.getList(this.formMember)
       }).catch(error => {
         this.$message.error(error.status.remind)

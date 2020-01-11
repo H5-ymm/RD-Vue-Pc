@@ -82,7 +82,7 @@
           <el-table-column label="操作" align="center" min-width="160">
             <template slot-scope="scope">
               <el-button @click="$router.push('/commonTableList?view=4&id='+scope.row.id)" v-if="scope.row.entry_status>=2" type="text" size="small">入职审核</el-button>
-              <el-button @click="$router.push('/commonTableList?view=3&id='+scope.row.id)" type="text" size="small" v-if="scope.row.entry_status==0">
+              <el-button @click="$router.push('/commonTableList?view=3&id='+scope.row.id)" type="text" size="small" v-if="scope.row.entry_status<=1">
                 面试名单
                 <!-- <span class="resume-number">(+150)</span> -->
               </el-button>

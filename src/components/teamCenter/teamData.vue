@@ -24,7 +24,7 @@
 </style>
 <template>
   <div class="team-center-view">
-    <teamPanel title="部门数据" :moreShow="false">
+    <teamPanel :title="`${titleLog}数据`" :moreShow="false">
       <div slot="content">
         <el-form :inline="true" class="team-center-form" :model="formMember">
           <el-form-item label="搜索类型：">
@@ -45,7 +45,7 @@
     </teamPanel>
     <el-row :gutter="20">
       <el-col :span="12">
-        <teamPanel title="部门日志" class="team-panel-section1" @viewMore="$router.push('logList?view=logTable')">
+        <teamPanel :title="`${titleLog}日志`" class="team-panel-section1" @viewMore="$router.push('logList?view=logTable')">
           <div slot="content">
             <logTable :tableData="tableTeamData"></logTable>
           </div>
@@ -149,6 +149,11 @@ export default {
     }
     this.getTeamList(this.paramsLog)
     this.getLogList(this.paramsLog)
+  },
+  computed: {
+    titleLog () {
+      return this.userPosition == 1 ? '团队' : this.userPosition == 2 ? '部门' : '个人'
+    }
   },
   methods: {
     getPerson (params) {

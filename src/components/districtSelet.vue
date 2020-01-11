@@ -1,15 +1,5 @@
 <template>
-  <el-cascader
-    v-model="districtList"
-    :placeholder="placeholder"
-    :options="options"
-    clearable
-    :props="props"
-    ref="cascader"
-    class="cascader"
-    @change="changeData"
-    @expand-change="handleItemChange"
-  ></el-cascader>
+  <el-cascader v-model="districtList" :placeholder="placeholder" :options="options" clearable :props="props" ref="cascader" class="cascader" @change="changeData" @expand-change="handleItemChange"></el-cascader>
 </template>
 <script>
 import { getProvincesList, getCitysList, getAreasList } from '../api/login'
@@ -47,58 +37,58 @@ export default {
     }
   },
   watch: {
-     address: {
-        handler(val,oldVal){
-          console.log(val)
-          if (val.length) {
-            this.getRegion(val)
-            setTimeout(()=>{
-              this.districtList = this.address.map(item => { return item + '' })
-            },1000)
-            // this.getRegion(val)
-            // this.districtList = this.address.map(item => { return item + '' })
-          }
-          else {
-            this.getRegion([])
-            this.districtList = []
-          }
-        },
-        deep: true  // 可以深度检测到 person 对象的属性值的变化
-      }
+    address: {
+      handler (val, oldVal) {
+        console.log(val)
+        if (val.length) {
+          this.getRegion(val)
+          setTimeout(() => {
+            this.districtList = this.address.map(item => { return item + '' })
+          }, 1000)
+          // this.getRegion(val)
+          // this.districtList = this.address.map(item => { return item + '' })
+        }
+        else {
+          this.getRegion([])
+          this.districtList = []
+        }
+      },
+      deep: true  // 可以深度检测到 person 对象的属性值的变化
+    }
   },
   methods: {
     handleItemChange (val) {
-      this.getCityList(val) 
+      this.getCityList(val)
     },
     getProlist (list) {
       return list.map(item => {
         let obj =
-        {
-          code: item.provinceid,
-          name: item.province,
-          children: []
-        }
+          {
+            code: item.provinceid,
+            name: item.province,
+            children: []
+          }
         return obj
       })
     },
     getProlist1 (list) {
       return list.map(item => {
         let obj =
-        {
-          code: item.code,
-          name: item.name,
-          children: []
-        }
+          {
+            code: item.code,
+            name: item.name,
+            children: []
+          }
         return obj
       })
     },
     getList (list) {
       return list.map(item => {
         let obj =
-        {
-          code: item.code,
-          name: item.name
-        }
+          {
+            code: item.code,
+            name: item.name
+          }
         return obj
       })
     },
@@ -147,7 +137,7 @@ export default {
         this.options.forEach(item => {
           if (item.code == value[0]) {
             this.list.push(item.name)
-           if (item.children.length) {
+            if (item.children.length) {
               item.children.forEach(val => {
                 if (val.code == code) {
                   this.list.push(val.name)
@@ -158,7 +148,6 @@ export default {
             }
           }
         })
-        console.log(this.options)
       })
     },
     changeData (val) {

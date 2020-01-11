@@ -164,7 +164,7 @@ export default {
     },
     // 查看职位
     viewJob (val) {
-      this.jobId = val.id
+      this.jobId = val.job_id
       this.dialogJobVisible = true
     },
     handleCancle (val) {
@@ -173,7 +173,7 @@ export default {
         id: val.id
       }
       cancelApply(params).then(res => {
-        this.$message.success('退出成功')
+        this.$message.success('取消成功')
         this.getList(this.formMember)
       }).catch(error => {
         this.$message.error(error.status.remind)

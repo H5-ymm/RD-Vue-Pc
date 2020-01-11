@@ -9,14 +9,14 @@
           <div class="x-flex-between team-header" :class="{'comany-team-header': type==1}">
             <!-- <i class="el-icon-refresh-right" v-if="type==1"></i> -->
             <el-link :underline="false" href="home" v-if="type==1">首页</el-link>
-            <div class="x-flex-start-justify" v-if="type==2">
+            <div class="x-flex-start-justify" v-if="type==2||type==3">
               <img :src="getImgUrl(baseInfo.log)" alt class="team-logo" v-if="baseInfo&&baseInfo.log" />
               <p class="team-logo no-logo" v-else></p>
               <span>{{baseInfo&&baseInfo.team_name}}</span>
             </div>
-            <div class="x-flex-center" v-if="type==2">
-              <el-link :underline="false" href="home">首页</el-link>
-              <i class="el-icon-bell"></i>
+            <div class="x-flex-center" v-if="type==2||type==3">
+              <el-link :underline="false" href="home" class="home-link">首页</el-link>
+              <!-- <i class="el-icon-bell item"></i> -->
               <!-- <el-badge :value="200" :max="99" class="item">
                 <i class="el-icon-bell unRead"></i>
               </el-badge> -->
@@ -163,11 +163,8 @@ export default {
   /* overflow: auto; */
   overflow: hidden;
   position: relative;
-  .unRead {
-    font-size: 24px;
-  }
-  .el-badge {
-    margin: 0 20px;
+  .home-link {
+    margin: 0 10px;
   }
   .el-header {
     padding: 0;

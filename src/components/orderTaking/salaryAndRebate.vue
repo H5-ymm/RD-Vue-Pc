@@ -64,7 +64,7 @@
         <el-select v-model="reward_money_type" @blur="blurInput" @change="changePayType" class="width160" placeholder="结算类型">
           <el-option label="长期返利" :value="1"></el-option>
           <div class="width160 reward-input" ref="reward" :value="2">
-            <el-input placeholder="请输入" class="text-input" v-model="orderTakingForm.reward_needtime" @change="changeInput">
+            <el-input placeholder="请输入" class="text-input" v-model="orderTakingForm.duration_time" @change="changeInput">
               <template slot="prepend">
                 <span class="moneyType">持续返利</span>
               </template>
@@ -126,7 +126,7 @@
 <script>
 import { moneyTypeList, rewardTypeList, payTypeList, weekList } from '../../base/base'
 export default {
-  props: ['moneyList'],
+  props: ['moneyList', 'from'],
   data () {
     return {
       orderTakingForm: {
@@ -192,6 +192,14 @@ export default {
         }
       },
       deep: true
+    },
+    from (val) {
+      if (val) {
+        for (let key in val) {
+          this.orderTakingForm[key] = val[key]
+          console.log(val)
+        }
+      }
     }
   },
   methods: {
@@ -221,7 +229,8 @@ export default {
     changeInput (val) {
       if (val) {
         this.reward_money_type = `持续返利` + val + `月`
-        this.orderTakingForm.reward_money_type = val
+        this.orderTakingForm.reward_money_type = 2
+        this.orderTakingForm.duration_time = val
         this.blurInput()
       }
     }

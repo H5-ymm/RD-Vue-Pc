@@ -61,7 +61,7 @@
         </el-form-item>
         <el-form-item label="工作地址" required>
           <div class="width408">
-            <districtSelet @change="change"></districtSelet>
+            <districtSelet @change="change" :address="address"></districtSelet>
           </div>
           <el-input v-model="orderTakingForm.address" class="width408 team-address" placeholder="请填写详细地址"></el-input>
         </el-form-item>
@@ -99,7 +99,7 @@
           </el-select>
         </el-form-item>
         <!-- 薪资和返利模式 -->
-        <salaryAndRebate :moneyList="moneyList" @submit="submitSalary"></salaryAndRebate>
+        <salaryAndRebate :moneyList="moneyList" :from="from" @submit="submitSalary"></salaryAndRebate>
         <!-- 薪资和返利模式 -->
         <el-form-item label="职位描述" required>
           <span class="error el-icon-warning error-job" v-if="len<30">职位描述，最低输入30个字。</span>
@@ -133,6 +133,7 @@ import { getConstant } from '@/api/dictionary'
 import districtSelet from './districtSelet'
 import { createInvoice } from '@/api/company'
 import salaryAndRebate from './orderTaking/salaryAndRebate'
+import { invoiceInfo } from '@/api/orderTarking'
 export default {
   components: {
     districtSelet,
@@ -172,17 +173,19 @@ export default {
       jobTime: '',
       disabled: false,
       rateInfo: null,
-      jobContent: ''
+      jobContent: '',
+      id: '',
+      address: [],
+      from: null
     };
   },
   created () {
     let params = 'edu_type,money_array,job_array'
     this.getList(params)
-  },
-  mounted () {
-    // setTimeout(()=>{
-    //   this.keepLastIndex(e.target)
-    // },5)
+    if (this.$route.query.id) {
+      this.id = this.$route.query.id
+      this.getJobInfo()
+    }
   },
   computed: {
     len () {
@@ -194,6 +197,20 @@ export default {
     }
   },
   methods: {
+    getJobInfo () {
+      let params = {
+        id: this.id,
+        uid: localStorage.getItem('uid')
+      }
+      invoiceInfo(params).then(res => {
+        this.from = res.data
+        this.orderTakingForm = res.data
+        if (res.data && res.data.provinceid) {
+          this.address = [res.data.provinceid, res.data.cityid, res.data.three_cityid]
+          this.content = res.data.job_content
+        }
+      })
+    },
     getList (filed) {
       getConstant({ filed }).then(res => {
         const { edu_type, money_array, job_array } = res.data

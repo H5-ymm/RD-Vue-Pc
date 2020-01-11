@@ -28,12 +28,12 @@
             </el-select>
           </el-form-item>
           <el-form-item label="部门">
-            <el-select placeholder="请选择" v-model="depId" @change="selectDep">
+            <el-select placeholder="请选择" :disabled="userPosition==2&&id!=''" v-model="depId" @change="selectDep">
               <el-option :label="item.depart_name" :value="item.id" v-for="(item,index) in depList" :key="index"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="当前职称">
-            <el-select v-model="formMember.grade_id" value-key="grade_name" placeholder="请选择">
+            <el-select v-model="formMember.grade_id" :disabled="userPosition==2&&id!=''" value-key="grade_name" placeholder="请选择">
               <el-option :label="item.grade_name" :value="item.id" v-for="item in jobList" :key="item.grade_name"></el-option>
             </el-select>
           </el-form-item>
@@ -109,7 +109,8 @@ export default {
       },
       edu_type: [],
       jobList: [],
-      address: []
+      address: [],
+      userPosition: sessionStorage.getItem('userPosition')
     }
   },
   created () {

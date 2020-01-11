@@ -174,7 +174,7 @@
               <span class="status" :class="`status${props.row.is_up?props.row.is_up:3}`">{{props.row.is_up==1?'已上架':'已下架'}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="创建日期" prop="ctime" align="center" width="180"></el-table-column>
+          <el-table-column label="创建日期" prop="ctime" align="center" width="160"></el-table-column>
           <el-table-column label="已领取人" align="center" width="180" v-if="viewType==1">
             <template slot-scope="scope">
               <div class="text-line" @click="handleRecepit(2,scope.row)" v-if="(scope.row&&scope.row.uid==uid)||userPosition==3">
@@ -194,7 +194,7 @@
               </div>
               <div v-if="viewType!=1" class="x-flex-center">
                 <el-button @click="$router.push('jobDetail?id='+scope.row.id)" type="text" size="small">详情</el-button>
-                <el-button @click="putResume(scope.row)" v-if="scope.row.is_up==1" type="text" size="small">推荐简历</el-button>
+                <el-button @click="$router.push('/recommendJob?id=' + val.id)+'&index=1'" v-if="scope.row.is_up==1" type="text" size="small">推荐简历</el-button>
                 <span v-if="!scope.row.is_up" class="default-status">推荐简历</span>
                 <el-button @click="$router.push('applyResume?view=3')" type="text" size="small">已推荐简历</el-button>
               </div>

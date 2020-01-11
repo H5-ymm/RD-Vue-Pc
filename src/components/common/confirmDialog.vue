@@ -8,16 +8,16 @@
       <section class="member-col3 member-add-col3">
         <el-form :model="form" class="lock-form" :rules="rules" ref="form">
           <el-form-item :label="`${dialogObj.subTitle}`" required prop="reason">
-            <el-input type="textarea" :autosize="{ minRows: 4}" :placeholder="dialogObj.placeholder" v-model="form.reason"></el-input>
+            <el-input type="textarea" :disabled="reason!=''" :autosize="{ minRows: 4}" :placeholder="dialogObj.placeholder" v-model="form.reason"></el-input>
           </el-form-item>
-          <el-form-item v-if="isShow" class="check-box">
+          <el-form-item v-if="isShow&&!reason" class="check-box">
             <el-checkbox v-model="checked">放弃后推荐新岗位</el-checkbox>
           </el-form-item>
         </el-form>
       </section>
     </div>
     <span slot="footer" class="dialog-footer">
-      <el-button @click="handleClose">取消</el-button>
+      <el-button @click="handleClose" v-if="!reason">取消</el-button>
       <el-button type="primary" @click="submit">{{dialogObj.okText}}</el-button>
     </span>
   </el-dialog>
@@ -25,7 +25,7 @@
 <script>
 export default {
   props: {
-    dialogTableVisible: false,
+    dialogTableVisible: { type: Boolean, default: false },
     dialogObj: { type: Object, default: {} },
     isShow: false,
     reason: { type: String, default: '' }

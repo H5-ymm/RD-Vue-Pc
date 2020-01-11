@@ -250,14 +250,26 @@ export default {
           title: '接单分配',
           url: '/receiptTable'
         }
-      ],
+      ]
     }
   },
   created () {
     let userPosition = sessionStorage.getItem('userPosition')
+    let teamType = localStorage.getItem('teamType')
+    let teamId = localStorage.getItem('uid')
     if (userPosition == 1) {
+      if (teamType == 1) {
+        this.root.submenu[0].url = `/teamCompanyForm?teamId=${teamId}&type=${teamType}`
+      }
+      else if (teamType == 2) {
+        this.root.submenu[0].url = `/personalForm?teamId=${teamId}&type=${teamType}`
+      }
+      else {
+        this.root.submenu[0].url = `/teamSetting`
+      }
       this.menus.splice(4, 0, this.root)
       this.menus.splice(9, 0, this.receipt)
+
       this.menus[3].submenu = this.receiptRoot.concat(this.menus[3].submenu)
     }
     if (userPosition == 2) {
@@ -268,10 +280,9 @@ export default {
       let len = this.menus.length - 2
       this.menus[len].submenu = this.internalInvoiceRoot.concat(this.menus[len].submenu)
     }
-    console.log(this.menus)
   },
   watch: {
-    $route (val) {
+    $route (to, from) {
       this.title = JSON.parse(sessionStorage.getItem('menus'))[0]
     }
   },

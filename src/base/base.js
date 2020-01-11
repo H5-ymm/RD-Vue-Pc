@@ -136,6 +136,14 @@ export const entryStatusList1 = [
   { label: '已入职', value: 2 },
   { label: '未入职', value: 3 }
 ]
+export const entryStatusList4 = [
+  { label: '待反馈', value: 0 },
+  { label: '已入职', value: 1 },
+  { label: '未入职', value: 2 },
+  { label: '未入职', value: 2 },
+  { label: '放弃入职', value: 3 },
+  { label: '离职', value: 4 }
+]
 export const applyStatusList = [
   { label: '全部', value: -1 },
   { label: '待审核', value: 0 },

@@ -161,16 +161,18 @@ export default {
     // 4.面试结果
     // 5.入职审核
     // 2.在职名单
-    this.viewType = this.$route.query.view
-    this.jobId = this.$route.query.id
-    this.formMember.jobId = this.jobId
-    this.getList(this.formMember)
+    // this.viewType = this.$route.query.view
+    // console.log(this.viewType)
+    // this.jobId = this.$route.query.id
+    // this.formMember.jobId = this.jobId
+    // this.getList(this.formMember)
   },
-  watch:{
-    $route(to,from) {
-      if (from.query.view&&from.query.id){
-        this.viewType = from.query.view
-        this.jobId = from.query.id
+  watch: {
+    $route (to, from) {
+      console.log(to)
+      if (to.query.view && to.query.id) {
+        this.viewType = to.query.view
+        this.jobId = to.query.id
         this.formMember.jobId = this.jobId
         this.getList(this.formMember)
       }

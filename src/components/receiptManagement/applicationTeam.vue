@@ -6,21 +6,21 @@
     <div class="table-list">
       <el-form :inline="true" label-width="100px" label-position="right" :model="formMember" class="demo-form-inline">
         <el-form-item label="职位名称：">
-          <el-input v-model="formMember.name" class="width300" placeholder="请输入职位名称关键字"></el-input>
+          <el-input v-model="formMember.job_name" class="width300" placeholder="请输入职位名称关键字"></el-input>
         </el-form-item>
         <el-form-item label="团队名称：">
-          <el-input v-model="formMember.name" class="width300" placeholder="请输入团队名称关键字"></el-input>
+          <el-input v-model="formMember.team_name" class="width300" placeholder="请输入团队名称关键字"></el-input>
         </el-form-item>
         <el-form-item label="团队负责人：">
           <el-input v-model="formMember.name" class="width300" placeholder="请输入团队负责人姓名"></el-input>
         </el-form-item>
         <el-form-item label="团队性质：">
-          <el-select v-model="formMember.industry" class="width300" placeholder="请选择">
+          <el-select v-model="formMember.team_type" class="width300" placeholder="请选择">
             <el-option :label="item.label" :value="item.value" v-for="(item,index) in teamTypeList" :key="index"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="状态：">
-          <el-select v-model="formMember.industry" class="width300" placeholder="请选择">
+          <el-select v-model="formMember.status" class="width300" placeholder="请选择">
             <el-option :label="item.label" :value="item.value" v-for="(item,index) in applyStatusList" :key="index"></el-option>
           </el-select>
         </el-form-item>

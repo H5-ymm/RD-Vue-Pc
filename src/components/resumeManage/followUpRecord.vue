@@ -1,14 +1,14 @@
 <template>
   <el-dialog width="500px" :visible="dialogTableVisible" center class="member-dialog record-dialog" :show-close="false">
-    <div class="member-row" id="top">
+    <div class="member-row record-box" id="topContent" ref="topContent">
       <img src="../../assets/img/member/cancel.png" alt class="cancel-icon" @click="handleClose" />
       <section class="member-col1">
         <p>跟进记录</p>
       </section>
       <section class="record-col3">
-        <ul class="record-box">
+        <ul>
           <li v-for="(item,index) in trackList" :key="index" class="record-item">
-            <p class="record-time">{{$moment(item.addtime).format('YYYY-MM-DD')}}</p>
+            <p class="record-time">{{$moment.unix(item.addtime).format('YYYY-MM-DD')}}</p>
             <el-divider>
               <img src="../../assets/img/icon9.png" class="line-icon" alt />
             </el-divider>
@@ -19,12 +19,12 @@
               <span class="record-text">{{item.username}}</span>
               {{item.remark}}
             </div>
-            <p class="record-footer">{{$moment(item.addtime).format('HH:mm:ss')}}</p>
+            <p class="record-footer">{{$moment.unix(item.addtime).format('HH:mm:ss')}}</p>
           </li>
         </ul>
         <div class="resume-btn">
-          <a href="#top">
-            <el-button>返回顶部</el-button>
+          <a href="#topContent">
+            <el-button @click="backTop">返回顶部</el-button>
           </a>
           <el-button type="primary" @click="submitForm">确定</el-button>
         </div>
@@ -58,7 +58,8 @@ export default {
       reason: '',
       list: [],
       show: false,
-      resumeId: ''
+      resumeId: '',
+      list: []
     }
   },
   watch: {
@@ -66,12 +67,19 @@ export default {
       if (val) {
         this.resumeId = val
       }
+    },
+    trackList (val) {
+      this.list = val || []
     }
   },
   created () {
-
+    this.list = this.trackList
   },
   methods: {
+    backTop () {
+      let dom = this.$refs.topContent
+      dom.scrollTop = 0
+    },
     handleClose () {
       this.$emit('handleClose')
     },
@@ -144,6 +152,10 @@ export default {
     color: #333333;
     padding: 0 0 10px;
     position: relative;
+    &.record-box {
+      height:400px;
+      overflow: auto;
+    }
     .cancel-icon {
       position: absolute;
       top: 5px;
@@ -154,10 +166,6 @@ export default {
       border-top: 1px solid #eee;
       padding-top: 20px;
       margin: 0 auto;
-      .record-box {
-        height: 300px;
-        overflow: auto;
-      }
       .record-item {
         margin-bottom: 10px;
       }

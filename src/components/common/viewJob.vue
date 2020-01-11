@@ -76,12 +76,12 @@
               <div class="team-info-card-item" v-if="jobInfo.reward_type==2||jobInfo.reward_type==3">
                 <span>持续时长</span>
                 <span v-if="jobInfo.duration_time">{{jobInfo.duration_time}}{{jobInfo.reward_money_type==1?'天':jobInfo.reward_money_type==2?'周': '月'}}</span>
-                <span v-else>1{{jobInfo.reward_money_type==1?'天':jobInfo.reward_money_type==2?'周': '个月'}}</span>
+                <span v-else>一{{jobInfo.reward_money_type==1?'天':jobInfo.reward_money_type==2?'周': '个月'}}</span>
               </div>
               <div class="team-info-card-item" v-if="jobInfo.reward_type==4">
                 <span>需入职满</span>
                 <span v-if="jobInfo.reward_needtime">{{jobInfo.reward_needtime}}{{jobInfo.reward_money_type==1?'天':jobInfo.reward_money_type==2?'周': '月'}}</span>
-                <span v-else>1{{jobInfo.reward_money_type==1?'天':jobInfo.reward_money_type==2?'周': '个月'}}</span>
+                <span v-else>一{{jobInfo.reward_money_type==1?'天':jobInfo.reward_money_type==2?'周': '个月'}}</span>
               </div>
             </li>
             <li class="team-info-card-row">
@@ -92,13 +92,13 @@
               <div class="team-info-card-item" v-if="jobInfo.reward_type==1">
                 <span>返利时长</span>
                 <span v-if="jobInfo.reward_money_type==1">长期返利</span>
-                <span v-if="jobInfo.reward_money_type==2&&jobInfo.settlement_time">持续返利{{jobInfo.settlement_time}}个月</span>
-                <span v-if="jobInfo.reward_money_type==2&&!jobInfo.settlement_time">1{{jobInfo.reward_money_type==1?'天':jobInfo.reward_money_type==2?'周': '个月'}}</span>
+                <span v-if="jobInfo.reward_money_type==2&&jobInfo.duration_time">持续返利{{jobInfo.duration_time}}个月</span>
+                <span v-if="jobInfo.reward_money_type==2&&!jobInfo.duration_time">一{{jobInfo.reward_money_type==1?'天':jobInfo.reward_money_type==2?'周': '个月'}}</span>
               </div>
               <div class="team-info-card-item" v-if="jobInfo.reward_type==2||jobInfo.reward_type==3">
                 <span>需入职满</span>
                 <span v-if="jobInfo.reward_needtime">{{jobInfo.reward_needtime}}{{jobInfo.reward_money_type==1?'天':jobInfo.reward_money_type==2?'周': '个月'}}</span>
-                <span v-else>1{{jobInfo.reward_money_type==1?'天':jobInfo.reward_money_type==2?'周': '个月'}}</span>
+                <span v-else>一{{jobInfo.reward_money_type==1?'天':jobInfo.reward_money_type==2?'周': '个月'}}</span>
               </div>
             </li>
           </ul>

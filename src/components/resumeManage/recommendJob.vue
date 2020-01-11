@@ -21,9 +21,9 @@
           <el-input v-model="formMember.name" class="width300" placeholder="请输入职位名称关键字"></el-input>
           <el-button type="primary" @click="onSubmit" class="select-btn">查询</el-button>
         </el-form-item>
-        <el-form-item label="状态筛选：">
+        <!-- <el-form-item label="状态筛选：">
           <el-button :type="activeIndex==index ?'primary':''" v-for="(item,index) in statusList" :key="index" plain @click="selectStatus(item,index)" class="select-status">{{item.label}}</el-button>
-        </el-form-item>
+        </el-form-item> -->
       </el-form>
       <div class="member-table resume-table resume-table1">
         <div class="table-query">
@@ -36,35 +36,41 @@
         </div>
         <el-table border :data="tableData" ref="multipleTable" style="width: 100%" @selection-change="handleSelectionChange">
           <el-table-column type="selection" align="center" width="60"></el-table-column>
-          <el-table-column label="企业名称" align="center" width="180">
+          <el-table-column label="企业名称" align="center" width="150">
             <template slot-scope="props">
-              <span>{{props.row.company_name}}</span>
+              <span class="text-line width140">{{props.row.com_name}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="岗位名称" align="center" width="180">
+          <el-table-column label="岗位名称" align="center" width="150">
             <template slot-scope="props">
-              <span class="text-line">{{props.row.job_name}}</span>
+              <span class="text-line width140">{{props.row.name}}</span>
             </template>
           </el-table-column>
           <!-- <el-table-column label="返利模式" prop="offermoney_type" align="center" width="120"></el-table-column> -->
-          <el-table-column label="返利模式" align="center" width="100">
+          <el-table-column label="返利模式" align="center" width="150">
             <template slot-scope="props">
-              <span>{{props.row.offermoney_type | moneyType}}</span>
+              <span>{{props.row.reward_type | moneyType}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="工资" align="center" width="100">
+          <el-table-column label="岗位城市" align="center" width="150">
             <template slot-scope="props">
-              <span>{{props.row.offermoney || 0}}</span>
+              <span>{{props.row.citysName}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="接单状态" align="center" width="120">
+          <el-table-column label="工资" align="center" width="150">
             <template slot-scope="props">
-              <span class="status" :class="{'status3':props.row.is_up !=1}">{{props.row.is_up ==1 ? '进行中': '已下架'}}</span>
+              <span v-if="props.row.reward_type==1">{{props.row.money_min}} ~ {{props.row.money_max}}</span>
+              <span v-else>{{props.row.money}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="岗位匹配度" prop="entry_num" align="center" width="150">
+          <el-table-column label="接单状态" align="center" width="150">
             <template slot-scope="props">
-              <el-rate v-model="value1"></el-rate>
+              <span class="status">{{props.row.job_status ==1 ? '进行中': '已下架'}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="岗位匹配度" align="center" width="150">
+            <template slot-scope="props">
+              <el-rate :value="Number(props.row.sumNumber)"></el-rate>
             </template>
           </el-table-column>
           <el-table-column label="岗位匹配项" align="center" min-width="170">
@@ -86,8 +92,8 @@
 
 <script>
 import { getResumeList, addUserResume, getMatchingResume, getInternalInvoiceList, getMatchingJobList, getInternalMatchingList } from '@/api/resume'
-import { putResumelist, addPut } from '@/api/internalInvoice'
-import { getListPut } from '@/api/teamReceipt'
+import { putResumelist } from '@/api/internalInvoice'
+import { getListPut, addPut } from '@/api/teamReceipt'
 import { moneyTypeList, rewardTypeList, payTypeList, weekList } from '@/base/base'
 import { recommendTeamUserJob } from '@/api/collect'
 import jobMate from './jobMate'
@@ -132,18 +138,41 @@ export default {
       activeIndex: 0,
       tabIndex: 0,
       value1: 5,
-      resumeId: ''
+      resumeId: '',
+      viewType: '',
+      apply_id: ''
     }
   },
   created () {
     this.resumeId = this.$route.query.id
+    if (this.$route.query.index) {
+      this.tabIndex = this.$route.query.index
+    }
+    else {
+      this.tabIndex = 0
+    }
+    // 职位匹配简历
     this.formMember.resumeId = this.$route.query.id
-    console.log(this.jobId)
     this.getList(this.formMember)
+
   },
   watch: {
     tabIndex (val) {
-      this.getList(this.formMember)
+      if (this.viewType) {
+        this.byJobMatchingList(this.formMember)
+      }
+      else {
+        this.getList(this.formMember)
+      }
+    },
+    $route (to, from) {
+      if (from.query.viewType) {
+        this.viewType = from.query.viewType
+        this.byJobMatchingList(this.formMember)
+      }
+      else {
+        this.getList(this.formMember)
+      }
     }
   },
   methods: {
@@ -164,6 +193,23 @@ export default {
         })
       }
     },
+    byJobMatchingList () {
+      if (this.tabIndex == 0) {
+        getMatchingResume(params).then(res => {
+          const { data } = res
+          this.tableData = data.data
+          this.total = res.data.count
+        })
+      }
+      else {
+        getInternalInvoiceList(params).then(res => {
+          const { data } = res
+          this.tableData = data.data
+          console.log(res)
+          this.total = res.data.count
+        })
+      }
+    },
     selectStatus (item, index) {
       this.activeIndex = index
       this.formMember.status = item.value
@@ -177,22 +223,30 @@ export default {
       this.formMember.page = val
       this.getList(this.formMember)
     },
-    handleApply (jobId) {
-      if (!jobId) {
+    handleApply (apply_id) {
+      if (!apply_id) {
         return this.$message.warning('请选择职位')
       }
       let params = {
-        jobId: jobId,
-        uid: localStorage.getItem('uid')
+        apply_id: apply_id,
+        uid: localStorage.getItem('uid'),
+        resume_id: this.resumeId
       }
       addPut(params).then(res => {
-        this.dialogTableVisible = true
-        this.getList(this.formMember)
+        if (res.data) {
+          this.dialogTableVisible = true
+          this.$message.error('推荐成功')
+          this.getList(this.formMember)
+        }
+        else {
+          this.$message.error('推荐失败')
+        }
       }).catch(error => {
         this.$message.error(error.status.remind)
       })
     },
     handleSelectionChange (val) {
+      this.multipleSelection = val
       let arr = val.map(item => {
         return item.uid
       })

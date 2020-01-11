@@ -125,12 +125,20 @@ export default {
           label: 'entryNum',
           rate: 0
         }
-      ]
+      ],
+      userPosition: sessionStorage.getItem('userPosition'), // 1 总经理，2经理，3 成员
     }
   },
   created () {
-
-    // this.teamCenterCount[0].num = this.teamCenterInfo.total_num
+    if (this.userPosition == 1) {
+      this.cardInfo.depNum = '团队数据'
+    }
+    else if (this.userPosition == 2) {
+      this.cardInfo.depNum = '部门数据'
+    }
+    else {
+      this.cardInfo.depNum = '个人数据'
+    }
   },
   watch: {
     teamCenterInfo (val) {

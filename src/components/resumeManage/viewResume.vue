@@ -3,7 +3,7 @@
     <div class="member-row">
       <img src="../../assets/img/member/cancel.png" alt class="cancel-icon" @click="handleClose" />
       <section class="member-col1">
-        <p>{{resumeId?'修改简历':'添加简历'}}</p>
+        <p>查看简历</p>
       </section>
       <section class="resume-col3">
         <div class="demo-form-inline resume-info-card">
@@ -32,7 +32,7 @@
                 </div>
                 <div class="x-flex-start-justify">
                   <p class="resume-col1">学历</p>
-                  <p>{{formMember.education}}</p>
+                  <p>{{formMember.eduName}}</p>
                 </div>
                 <div class="x-flex-start-justify">
                   <p class="resume-col1">详细地址</p>
@@ -46,7 +46,7 @@
               <img src="../../assets/img/icon8.png" />
               <span>意向信息</span>
             </p>
-            <div class="resume-card-row">
+            <div class="resume-card-row" v-if="formMember">
               <div class="resume-card-item view-resume-item">
                 <div class="x-flex-start-justify">
                   <p class="resume-col1">期望城市</p>
@@ -54,19 +54,22 @@
                 </div>
                 <div class="x-flex-start-justify">
                   <p class="resume-col1">期望岗位</p>
-                  <p>{{formMember.address}}</p>
+                  <p>{{formMember.desired_position}}</p>
                 </div>
                 <div class="x-flex-start-justify">
                   <p class="resume-col1">薪资模式</p>
-                  <p>{{formMember.address}}</p>
+                  <p>{{formMember.salary_type==1?'月薪':formMember.salary_type==2?'日薪':'时薪'}}</p>
                 </div>
                 <div class="x-flex-start-justify">
                   <p class="resume-col1">期望薪资</p>
-                  <p>{{formMember.money}}</p>
+                  <p v-if="formMember.salary_type==1">{{formMember.min_expect_money}}~{{formMember.max_expect_money}}</p>
+                  <p v-else>{{formMember.money}}}}</p>
                 </div>
                 <div class="x-flex-start-justify">
                   <p class="resume-col1">预计入职时间</p>
-                  <p>1012-12-01</p>
+                  <p>{{formMember.entry_begintime?$moment.unix(formMember.entry_begintime).format('YYYY-MM-DD HH:mm'):''}}
+                    ~{{formMember.entry_endtime?$moment.unix(formMember.entry_endtime).format('YYYY-MM-DD HH:mm'):''}}
+                  </p>
                 </div>
                 <div class="x-flex-start-justify">
                   <p class="resume-col1">缴纳公积金</p>
@@ -87,8 +90,8 @@
       </section>
     </div>
     <div slot="footer" class="resume-footer-btn">
-      <el-button type="primary" @click="submitForm">关闭</el-button>
-      <el-button @click="handleClose">编辑</el-button>
+      <el-button type="primary" @click="handleClose">关闭</el-button>
+      <!-- <el-button @click="handleClose">编辑</el-button> -->
     </div>
   </el-dialog>
 </template>
@@ -98,8 +101,7 @@
 // 总经理可以编辑部门 职称 状态
 import { getConstant } from '../../api/dictionary'
 import districtSelet from '../districtSelet'
-import { selectUserResumeInfo } from '../../api/resume'
-import { validateIdCard } from '../../util/util'
+import { selectUserResumeInfo } from '@/api/resume'
 import { moneyTypeList } from '@/base/base'
 export default {
   components: {
@@ -107,38 +109,20 @@ export default {
   },
   props: ['dialogTableVisible', 'resumeId', 'resumeInfo'],
   data () {
-    var validate = (rule, value, callback) => {
-      let reg = /^1[3456789]\d{9}$/
-      if ((!reg.test(value))) {
-        callback(new Error('手机号格式不正确'));
-      } else {
-        console.log(value)
-        callback();
-      }
-    };
     return {
       formMember: {
-        is_five_risks: 1,
-        is_fund: 1,
-        age: 18,
-        sex: 1,
-        name: 'ddddddd',
+        is_five_risks: 0,
+        is_fund: 0,
+        age: 0,
+        sex: 0,
+        name: '',
         mobile: '',
-        education: '高中',
+        education: '',
         address: '',
         provinceid: '',
         cityid: '',
         uid: localStorage.getItem('uid'),
-        remark: '职位要求严格，手动阀打的费阿萨德个短发的法 地方阿道夫阿道夫阿斯顿发手动阀阿斯顿发地方 阿道夫'
-      },
-      rules: {
-        name: [
-          { required: true, message: '请输入姓名', trigger: 'blur' },
-        ],
-        mobile: [
-          { required: true, message: '请输入手机号', trigger: 'blur' },
-          { validator: validate, trigger: 'blur' }
-        ]
+        remark: ''
       },
       edu_type: [],
       jobList: [],
@@ -156,8 +140,9 @@ export default {
     this.getList(params)
   },
   watch: {
-    resumeId (val) {
-      if (val) {
+    resumeId (val, oldVal) {
+      console.log(oldVal)
+      if (val && val != oldVal) {
         this.getInfo()
       }
     }

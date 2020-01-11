@@ -89,7 +89,7 @@
       <el-pagination class="team-pagination" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="formMember.page" :page-sizes="[10, 30, 50, 100]" :page-size="formMember.limit" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
     </div>
     <resumeModal :dialogTableVisible="dialogTableVisible" @handleClose="dialogTableVisible=false,remind=''" :resumeId="resumeId" @submitForm="submitForm" :resumeInfo="resumeInfo"></resumeModal>
-    <confirmDialog :dialogTableVisible="visible" @submit="submit" @handleClose="handleClose" :dialogObj="dialogObj"></confirmDialog>
+    <confirmDialog :dialogTableVisible="visible" @submit="submit" @handleClose="visible=false" :dialogObj="dialogObj"></confirmDialog>
     <followUpRecord :dialogTableVisible="followUpRecordVisible" @submitRecord="submitRecord" @handleClose="followUpRecordVisible=false,resumeId= ''" :trackList="trackList" :id="resumeId"></followUpRecord>
     <leadResumeModal @exportResume="exportResumeData" @download="download" :dialogTableVisible="leadResumeVisible" @handleClose="leadResumeVisible=false"></leadResumeModal>
   </div>
@@ -164,8 +164,6 @@ export default {
         { label: '等待面试结果', value: 4 },
         { label: '完成面试结果', value: 5 }
       ],
-      activeIndex: 0,
-      jobList: {},
       resumeId: '',
       resumeInfo: {},
       trackList: [],
@@ -175,16 +173,8 @@ export default {
   created () {
     // 初始化查询标签数据
     this.getList(this.formMember)
-    let params = 'job_array'
-    this.getData(params)
   },
   methods: {
-    getData (filed) {
-      getConstant({ filed }).then(res => {
-        const { job_array } = res.data
-        this.jobList = job_array
-      })
-    },
     getList (params) {
       getResumeList(params).then(res => {
         const { data } = res
@@ -218,8 +208,8 @@ export default {
       this.getList(this.formMember)
     },
     changeDate (val) {
-      this.formMember.beginTime =val?val[0]:''
-      this.formMember.endTime =val?val[1]:''
+      this.formMember.beginTime = val ? val[0] : ''
+      this.formMember.endTime = val ? val[1] : ''
     },
     routerResume (val) {
       let arr = JSON.parse(sessionStorage.getItem('menus'))
@@ -228,8 +218,8 @@ export default {
       this.$router.push('/recommendJob?id=' + val.id)
     },
     change (val) {
-      this.formMember.provinceid = val[0]
-      this.formMember.cityid = val[1]
+      this.formMember.provinceid = val ? val[0] : ''
+      this.formMember.cityid = val ? val[1] : ''
     },
     handleSizeChange (val) {
       this.formMember.limit = val
@@ -246,6 +236,7 @@ export default {
     },
     submitRecord (val) {
       this.followUpRecordVisible = false
+      this.getList(this.formMember)
     },
     handleEdit (val) {
       this.dialogTableVisible = true
@@ -265,9 +256,9 @@ export default {
         id: this.resumeId,
         reason: val.reason
       }
-      this.visible = false
       giveUpResume(params).then(res => {
         this.resumeId = ''
+        this.visible = false
         this.$message.success('操作成功')
         this.getList(this.formMember)
       }).catch(error => {

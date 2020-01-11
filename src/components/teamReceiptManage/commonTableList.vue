@@ -36,17 +36,26 @@
           <el-table-column label="推荐时间" prop="addtime" sortable align="center" width="160"></el-table-column>
           <el-table-column label="状态" align="center" width="150">
             <template slot-scope="props">
-              <span class="status" :class="`status${props.row.status}`" v-if="!props.row.interview_status">{{props.row.status==0?"待审核":props.row.status==1?'通过':'未通过'}}</span>
-              <span class="status" :class="`status${props.row.interview_status}`" v-if="props.row.status==1&&props.row.interview_status!=3">{{props.row.interview_status==1?'通过':'未通过'}}</span>
-              <span class="status status2" v-if="props.row.status==1&&props.row.interview_status==3">未参加</span>
+              <div v-if="viewType!=4">
+                <span class="status" :class="`status${props.row.status}`" v-if="!props.row.interview_status">{{props.row.status==0?"待审核":props.row.status==1?'通过':'未通过'}}</span>
+                <span class="status" :class="`status${props.row.interview_status}`" v-if="props.row.status==1&&props.row.interview_status!=3">{{props.row.interview_status==1?'通过':'未通过'}}</span>
+                <span class="status status2" v-if="props.row.status==1&&props.row.interview_status==3">未参加</span>
+              </div>
+              <div v-else>
+                <span class="status" :class="`status${props.row.entry_status}`" v-if="!props.row.entry_status">待审核</span>
+                <span class="status" :class="`status${props.row.entry_status}`" v-else>{{props.row.entry_status==1?'通过':props.row.entry_status==2?'未通过':'未参加'}}</span>
+              </div>
             </template>
           </el-table-column>
           <el-table-column label="操作" align="center" width="180">
             <template slot-scope="scope">
               <el-button @click="handleResume(1,scope.row)" type="text" v-if="scope.row.status==0" size="small">放弃报名</el-button>
-              <el-button @click="handleResume(2,scope.row)" v-if="scope.row.status==1&&scope.row.interview_status==1" type="text" size="small">放弃面试</el-button>
-              <el-button @click="routerResume(scope.row)" v-if="scope.row.entry_status==3||scope.row.status==2||scope.row.interview_status>=2" type="text" size="small">推荐岗位</el-button>
-              <!-- <el-button @click="handleResume(3,scope.row)" v-if="scope.row.status==2" type="text" size="small">放弃入职</el-button> -->
+              <el-button @click="handleResume(2,scope.row)" v-if="scope.row.status==1&&scope.row.interview_status==1&&!scope.row.entry_status" type="text" size="small">放弃面试</el-button>
+              <el-button @click="routerResume(scope.row)" v-if="scope.row.status==2||scope.row.interview_status>=2||scope.row.entry_status>=2" type="text" size="small">推荐岗位</el-button>
+              <el-button @click="handleResume(3,scope.row)" v-if="scope.row.interview_status==1&&scope.row.entry_status==1" type="text" size="small">放弃入职</el-button>
+              <span v-if="scope.row.status==1&&scope.row.interview_status!=3&&!scope.row.entry_status">{{scope.row.interview_status==1?'通过':'未通过'}}</span>
+              <span v-if="scope.row.status==1&&scope.row.interview_status==3&&!scope.row.entry_status">未参加</span>
+              <!-- <el-button @click="handleResume(3,scope.row)" v-if="scope.row.interview_status==1&&props.row.entry_status==1" type="text" size="small">放弃入职</el-button> -->
             </template>
           </el-table-column>
         </el-table>
@@ -114,7 +123,8 @@ export default {
         placeholder: '请输入放弃理由'
       },
       resumeId: '',
-      jobId: ''
+      jobId: '',
+      viewType: ''
     }
   },
   created () {
@@ -122,30 +132,12 @@ export default {
     this.apply_id = this.$route.query.id
     this.formMember.apply_id = this.apply_id
     this.jobId = this.$route.query.jobId
-    if (this.$route.query.view == 5) {
-      this.formMember.type = 2
-    }
-    else if (this.$route.query.view == 4) {
-      this.formMember.type = 3
-    }
-    else {
-      this.formMember.type = 2
-    }
+    this.viewType = this.$route.query.view
     this.getList(this.formMember)
   },
   watch: {
     $route (to, from) {
-      if (from) {
-        if (from.query.view == 5) {
-          this.formMember.type = 2
-        }
-        else if (from.query.view == 4) {
-          this.formMember.type = 3
-        }
-        else {
-          this.formMember.type = 2
-        }
-      }
+      this.viewType = from.query.view
       this.getList(this.formMember)
     }
   },

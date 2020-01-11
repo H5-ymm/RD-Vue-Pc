@@ -14,9 +14,7 @@
           <el-input v-model="formMember.mobile" class="width300" placeholder="请输入联系电话"></el-input>
         </el-form-item>
         <el-form-item label="意向岗位：">
-          <el-select v-model="formMember.industry" class="width300" placeholder="请输入意向岗位关键字">
-            <el-option :label="item" :value="key" v-for="(item,key) in jobList" :key="key"></el-option>
-          </el-select>
+          <el-input v-model="formMember.job" class="width300" placeholder="请输入意向岗位关键字"></el-input>
         </el-form-item>
         <el-form-item label="录入人：">
           <el-input v-model="formMember.name" class="width300" placeholder="请输入录入人关键字"></el-input>
@@ -55,18 +53,18 @@
           </el-table-column>
           <el-table-column label="联系电话" prop="mobile" align="center" width="150"></el-table-column>
           <el-table-column label="意向岗位" prop="desired_position" align="center" width="150"></el-table-column>
-          <el-table-column label="意向工资" prop="money_m" align="center" width="150"></el-table-column>
+          <el-table-column label="意向工资" prop="models" align="center" width="150"></el-table-column>
           <el-table-column label="意向城市" align="center" width="150">
             <template slot-scope="props">
-              <span type="text">{{props.row.expect_provindeid}}{{props.row.expect_cityid}}</span>
+              <span type="text">{{props.row.citys}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="放弃时间" sortable="custom" align="center" width="150" v-if="viewType==1">
+          <el-table-column label="放弃时间" prop="timeDesc" sortable="custom" align="center" width="150" v-if="viewType==1">
             <template slot-scope="props">
-              <span type="text">{{props.row.uptime?$moment.unix(props.row.uptime).format('YYYY-MM-DD'):'--'}}</span>
+              <span type="text">{{props.row.givetime?$moment.unix(props.row.givetime).format('YYYY-MM-DD HH:mm'):'--'}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="放弃原因" v-if="viewType==1" align="center" width="150">
+          <el-table-column :label="viewType==1?'放弃原因':'删除原因'" align="center" width="150">
             <template slot-scope="props">
               <el-button type="text" class="text-line" @click="viewReason(props.row)">{{props.row.name}}</el-button>
             </template>
@@ -76,9 +74,9 @@
               <el-button class="text-line" type="text" @click="viewRecord(props.row)">{{props.row.name}}</el-button>
             </template>
           </el-table-column>
-          <el-table-column label="跟进时间" sortable="custom" align="center" width="150">
+          <el-table-column label="跟进时间" align="center" width="150">
             <template slot-scope="props">
-              <span type="text">{{props.row.uptime?$moment.unix(props.row.uptime).format('YYYY-MM-DD'):'--'}}</span>
+              <span type="text" v-if="props.row.trackList&&props.row.trackList.length">{{props.row.trackList[0].addtime?$moment.unix(props.row.trackList[0].addtime).format('YYYY-MM-DD HH:mm'):'--'}}</span>
             </template>
           </el-table-column>
           <el-table-column label="录入人" prop="input_username" align="center" width="100"></el-table-column>
@@ -98,19 +96,18 @@
       </div>
       <el-pagination class="team-pagination" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="formMember.page" :page-sizes="[10, 30, 50, 100]" :page-size="formMember.limit" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
     </div>
-    <confirmDialog :dialogTableVisible="visible" @submit="submit" @handleClose="handleClose" :dialogObj="dialogObj" isShow="true"></confirmDialog>
+    <confirmDialog :dialogTableVisible="visible" @submit="submit" @handleClose="handleClose" :reason="reason" :dialogObj="dialogObj" isShow="true"></confirmDialog>
     <followUpRecord :dialogTableVisible="followUpRecordVisible" @submitRecord="submitRecord" @handleClose="followUpRecordVisible=false" :trackList="trackList"></followUpRecord>
     <modal :dialogTableVisible="dialogTableVisible" @handleOk="handleOk" :modalObj="modalObj" :isShow="isShow" @handleClose="dialogTableVisible=false"></modal>
   </div>
 </template>
 <script>
-import { giveupResumeList, exportGiveUpResume, delResumeList, exportDelResume, delResum, receiveResume, reductionDelResume } from '@/api/resume'
+import { giveupResumeList, exportGiveUpResume, delResumeList, exportDelResume, delResum, receiveResume, reductionDelResume, delResume } from '@/api/resume'
 import { moneyTypeList, rewardTypeList, followStatusList } from '../../base/base'
 import followUpRecord from './followUpRecord'
 import confirmDialog from '../common/confirmDialog'
 import modal from '../common/modal'
 import districtSelet from '../districtSelet'
-import { getConstant } from '../../api/dictionary'
 export default {
   components: {
     districtSelet,
@@ -141,7 +138,7 @@ export default {
       dialogTableVisible: false,
       followUpRecordVisible: false,
       dialogObj: {
-        title: '删除简历',
+        title: '删除',
         subTitle: '删除简历理由',
         okText: '关闭',
         placeholder: '请输入删除简历理由'
@@ -161,10 +158,6 @@ export default {
       },
       total: 0,
       len: 0,
-      userId: '',
-      form: {},
-      activeIndex: 0,
-      jobList: {},
       resumeId: '',
       trackList: [],
       timeList: [],
@@ -173,28 +166,22 @@ export default {
       viewType: 1
     }
   },
-  created () {
+  mounted () {
     // 初始化查询标签数据
-
-    let params = 'job_array'
-    this.getData(params)
+    this.viewType = this.$route.query.view
+    console.log(this.viewType)
+    this.getList(this.formMember)
   },
   watch: {
-    $route () {
-      this.viewType = this.$route.query.view
-      console.log(this.viewType)
-      this.getList(this.formMember)
+    $route (to, from) {
+      console.log(to)
+      if (to) {
+        this.viewType = to.query.view
+        this.getList(this.formMember)
+      }
     }
   },
   methods: {
-    getData (filed) {
-      getConstant({ filed }).then(res => {
-        const { job_array } = res.data
-        this.jobList = job_array
-      }).catch(error => {
-        this.$message.waring(error.status.remind)
-      })
-    },
     getList (params) {
       if (this.viewType == 1) {
         giveupResumeList(params).then(res => {
@@ -217,8 +204,8 @@ export default {
       }
     },
     changeDate (val) {
-      this.formMember.beginTime =val?val[0]:''
-      this.formMember.endTime =val?val[1]:''
+      this.formMember.beginTime = val ? val[0] : ''
+      this.formMember.endTime = val ? val[1] : ''
     },
     exportResume () {
       let uid = localStorage.getItem('uid')
@@ -231,20 +218,16 @@ export default {
     },
     sortChange (column) {
       if (column.order == 'ascending') {
-        this.formMember.timeDesc = 'asc'
+        this.formMember[column.prop] = 'asc'
       }
       else {
-        this.formMember.timeDesc = 'desc'
+        this.formMember[column.prop] = 'desc'
       }
       this.getList(this.formMember)
     },
     change (val) {
       this.formMember.provinceid = val[0]
       this.formMember.cityid = val[1]
-    },
-    selectStatus (item, index) {
-      this.activeIndex = index
-      this.formMember.status = item.value
     },
     handleSizeChange (val) {
       this.formMember.limit = val
@@ -268,19 +251,22 @@ export default {
     handleOk () {
       let params = {
         uid: localStorage.getItem('uid'),
-        id: this.resumeId
+        resumeId: this.resumeId
       }
       if (this.viewType == 1) {
-        receiveResume(params).then(res => {
-          this.resumeId = ''
-          this.getList(this.formMember)
-        }).catch(error => {
-          this.$message.waring(error.status.remind)
-        })
+        this.dialogTableVisible = false
+        this.getList(this.formMember)
+        // receiveResume(params).then(res => {
+        //   this.resumeId = ''
+        //   this.getList(this.formMember)
+        // }).catch(error => {
+        //   this.$message.waring(error.status.remind)
+        // })
       }
       else {
         reductionDelResume(params).then(res => {
           this.resumeId = ''
+          this.dialogTableVisible = false
           this.getList(this.formMember)
         }).catch(error => {
           this.$message.waring(error.status.remind)
@@ -289,8 +275,22 @@ export default {
     },
     handleResume (index, val) {
       if (index == 1) {
-        this.isShow = true
-        this.dialogTableVisible = true
+        let params = {
+          uid: localStorage.getItem('uid'),
+          resumeId: val.id
+        }
+        receiveResume(params).then(res => {
+          if (res.data) {
+            this.isShow = true
+            this.dialogTableVisible = true
+          }
+          else {
+            this.$message.waring('领取失败')
+          }
+          // this.getList(this.formMember)
+        }).catch(error => {
+          this.$message.waring(error.status.remind)
+        })
       }
       else if (index == 3) {
         this.modalObj = {
@@ -310,12 +310,13 @@ export default {
     handleClose () {
       this.visible = false
       this.resumeId = ''
+      this.reason = ''
     },
     submit (val) {
       this.visible = false
       let params = {
         uid: localStorage.getItem('uid'),
-        id: this.resumeId,
+        resumeId: this.resumeId,
         reason: val.reason
       }
       delResume(params).then(res => {

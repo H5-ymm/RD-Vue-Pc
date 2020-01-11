@@ -12,12 +12,9 @@
         <el-form-item label="联系电话：">
           <el-input v-model="formMember.mobile" class="width300" placeholder="请输入联系电话"></el-input>
         </el-form-item>
-        <el-form-item label="企业名称：" v-if="viewType==3">
+        <!-- <el-form-item label="企业名称：" v-if="viewType==3">
           <el-input v-model="formMember.name" class="width300" placeholder="请输入企业名称"></el-input>
-        </el-form-item>
-        <el-form-item label="岗位名称：" v-if="viewType==3">
-          <el-input v-model="formMember.job" class="width300" placeholder="请输入岗位名称"></el-input>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="意向岗位：" v-if="viewType!=3">
           <el-input v-model="formMember.job" class="width300" placeholder="请输入意向岗位关键字"></el-input>
         </el-form-item>
@@ -30,15 +27,15 @@
           </div>
         </el-form-item>
         <el-form-item label="跟进人：">
-          <el-input v-model="formMember.inputName" class="width300" placeholder="请输入跟进人关键字"></el-input>
+          <el-input v-model="formMember.track_name" class="width300" placeholder="请输入跟进人关键字"></el-input>
         </el-form-item>
         <el-form-item label="意向工资：" v-if="viewType!=3">
           <el-select v-model="formMember.money" class="width300" placeholder="请选择意向工资">
             <el-option :label="item.label" :value="item.value" v-for="(item,index) in moneyTypeList" :key="index"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item :label="labelTime+':'">
-          <el-date-picker class="width300" v-model="timeList" type="daterange" format="yyyy-MM-dd" value-format="yyyy-MM-dd" @change="changeDate" range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期"></el-date-picker>
+        <el-form-item :label="labelTime+'：'">
+          <el-date-picker class="width300" v-model="timeList" type="daterange" format="yyyy-MM-dd" value-format="timestamp" @change="changeDate" range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期"></el-date-picker>
         </el-form-item>
         <!-- <el-form-item :label="label+':'" v-if="viewType!=3">
           <el-select v-model="formMember.status" class="width300" placeholder="请选择报名状态">
@@ -68,7 +65,7 @@
             </template>
           </el-table-column>
           <el-table-column label="岗位名称" prop="job_name" align="center" width="150"></el-table-column>
-          <el-table-column :label="labelTime" sortable="custom" prop="jddesc" align="center" width="150">
+          <el-table-column :label="labelTime" sortable="custom" prop="msdesc" align="center" width="150">
             <template slot-scope="props">
               <span>{{props.row.addtime?$moment.unix(props.row.addtime).format('YYYY-MM-DD HH:mm'):'--'}}</span>
             </template>
@@ -85,7 +82,7 @@
               <el-button class="text-line" style="width:100px" type="text" @click="viewRecord(props.row)" v-if="props.row.trackList&&props.row.trackList[0]">{{props.row.trackList[0].remark}}</el-button>
             </template>
           </el-table-column>
-          <el-table-column label="跟进时间" prop="msdesc" sortable="custom" align="center" width="160">
+          <el-table-column label="跟进时间" prop="jddesc" sortable="custom" align="center" width="160">
             <template slot-scope="props">
               <span type="text" v-if="props.row.trackList&&props.row.trackList.length">{{props.row.trackList[0].addtime?$moment.unix(props.row.trackList[0].addtime).format('YYYY-MM-DD HH:mm'):'--'}}</span>
             </template>
@@ -112,7 +109,7 @@
       </div>
       <el-pagination class="team-pagination" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="formMember.page" :page-sizes="[10, 30, 50, 100]" :page-size="formMember.limit" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
     </div>
-    <viewResume :dialogTableVisible="dialogTableVisible" :resumeId="resumeId" @submitForm="submitForm" :resumeInfo="resumeInfo"></viewResume>
+    <viewResume :dialogTableVisible="dialogTableVisible" :resumeId="resumeId" @handleClose="dialogTableVisible=false" @submitForm="submitForm" :resumeInfo="resumeInfo"></viewResume>
     <confirmDialog :dialogTableVisible="visible" @submit="submit" @handleClose="handleClose" :dialogObj="dialogObj" :isShow="isShow"></confirmDialog>
     <followUpRecord :dialogTableVisible="followUpRecordVisible" @submitRecord="submitRecord" @handleClose="followUpRecordVisible=false" :trackList="trackList"></followUpRecord>
     <leadResumeModal :dialogTableVisible="leadResumeVisible" @handleClose="leadResumeVisible=false"></leadResumeModal>
@@ -120,7 +117,7 @@
 </template>
 <script>
 import { teamRecommendResumeList, entryResumeList, interviewTeamResumeList, addUserResume, editRecommendResumeStatus, selectUserResumeInfo, exportUserResume } from '@/api/resume'
-import { moneyTypeList, rewardTypeList, followStatusList, viewStatusList1, checkStatusList1, entryStatusList1 } from '@/base/base'
+import { moneyTypeList, rewardTypeList, followStatusList, viewStatusList1, checkStatusList1, entryStatusList4 } from '@/base/base'
 import viewResume from './viewResume'
 import followUpRecord from './followUpRecord'
 import leadResumeModal from './leadResumeModal'
@@ -161,7 +158,7 @@ export default {
       return obj ? obj.label : '--'
     },
     entryStatus (val) {
-      let obj = entryStatusList1.find(item => {
+      let obj = entryStatusList4.find(item => {
         return val == item.value
       })
       return obj ? obj.label : '--'
@@ -169,7 +166,7 @@ export default {
   },
   data () {
     return {
-      entryStatusList1,
+      entryStatusList4,
       checkStatusList1,
       viewStatusList1,
       moneyTypeList,
@@ -202,8 +199,6 @@ export default {
         { label: '等待面试结果', value: 4 },
         { label: '完成面试结果', value: 5 }
       ],
-      activeIndex: 0,
-      jobList: {},
       resumeId: '',
       resumeInfo: {},
       trackList: [],
@@ -214,19 +209,17 @@ export default {
       id: ''
     }
   },
-  created () {
+  mounted () {
     // 初始化查询标签数据
     this.viewType = this.$route.query.view
     this.getList(this.formMember)
-    let params = 'job_array'
-    this.getData(params)
   },
   watch: {
     $route (to, from) {
-      console.log(to)
-      console.log(from)
-      this.viewType = this.$route.query.view
-      this.getList(this.formMember)
+      if (to) {
+        this.viewType = to.query.view
+        this.getList(this.formMember)
+      }
     }
   },
   computed: {
@@ -238,12 +231,6 @@ export default {
     }
   },
   methods: {
-    getData (filed) {
-      getConstant({ filed }).then(res => {
-        const { job_array } = res.data
-        this.jobList = job_array
-      })
-    },
     getList (params) {
       if (this.viewType == 1) {
         teamRecommendResumeList(params).then(res => {
@@ -268,8 +255,8 @@ export default {
       }
     },
     changeDate (val) {
-      this.formMember.beginTime =val?val[0]:''
-      this.formMember.endTime =val?val[1]:''
+      this.formMember.beginTime = val ? val[0] : ''
+      this.formMember.endTime = val ? val[1] : ''
       // this.getList(this.formMember)
     },
     routerResume (val) {
@@ -320,6 +307,7 @@ export default {
     viewResume (val) {
       this.dialogTableVisible = true
       this.resumeInfo = val
+      this.resumeId = val.resume_id
     },
     submitRecord (val) {
       this.followUpRecordVisible = false

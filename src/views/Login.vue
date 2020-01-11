@@ -168,6 +168,7 @@ export default {
             localStorage.setItem('uid', res.data.uid)
             localStorage.setItem('userName', res.data.username)
             localStorage.setItem('departName', res.data.departName)
+            localStorage.setItem('teamType', res.data.team_type)
             // 登录人身份
             sessionStorage.setItem('userPosition', res.data.gradeNum)
             localStorage.setItem('userPosition', res.data.gradeNum)
