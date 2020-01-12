@@ -241,15 +241,13 @@ export default {
     getList (params) {
       getPutresume(params).then(res => {
         const { data } = res
-        this.tableData = data.data
+        this.tableData = data.data|| []
         this.total = data.count
       }).catch(error => {
         this.$message.error(error.status.remind)
       })
     },
     changeStatus (val, index) {
-      console.log(val)
-      console.log(index)
       this.$set( this.tableList , 'jobStatus' , val )
       this.activeIndex = index
       this.statusName = this.receiptStatusList[index].label

@@ -67,10 +67,11 @@
           </el-table-column>
           <el-table-column label="申请状态" align="center" width="110" v-if="userPosition==2">
             <template slot-scope="scope">
-              <span v-if="scope.row.apportion_status&&scope.row.apportion_action==1" class="status" :class="`status${scope.row.apportion_status}`">{{scope.row.apportion_status | applyStatus}}</span>
+              <span v-if="scope.row.apportion_status&&scope.row.apportion_status!=3&&!scope.row.apportion_action" class="status" :class="`status${scope.row.apportion_status}`">{{scope.row.apportion_status | applyStatus}}</span>
               <span class="status status2" v-if="!scope.row.apportion_status">未申请</span>
+              <span class="status status2" v-if="scope.row.apportion_status==3&&scope.row.apportion_action">已取消申请</span>
               <span class="status status2" v-if="scope.row.apportion_status==1&&!scope.row.apportion_status">已申请</span>
-              <span class="status status3" v-if="scope.row.apportion_action==1&&scope.row.apportion_status==1">分配接单</span>
+              <span class="status status4" v-if="scope.row.apportion_action==1&&scope.row.apportion_status==1">分配接单</span>
             </template>
           </el-table-column>
           <el-table-column label="状态" align="center" width="100" v-if="userPosition==1">
