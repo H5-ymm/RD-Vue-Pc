@@ -5,7 +5,7 @@
         <div class="bg-purple-dark">
           <el-breadcrumb class="breadcrumb-bre-li">
             <el-breadcrumb-item v-for="(item,index) in breadcrumbs" :key="index">
-              <el-tag closable>{{item}}</el-tag>
+              <el-tag closable @close="closeView(item,index)">{{item}}</el-tag>
             </el-breadcrumb-item>
           </el-breadcrumb>
         </div>
@@ -27,6 +27,14 @@ export default {
       this.breadcrumbs = sessionStorage.getItem('menus') ? JSON.parse(sessionStorage.getItem('menus')) : ['新建接单']
     } else {
       this.breadcrumbs = sessionStorage.getItem('menus') ? JSON.parse(sessionStorage.getItem('menus')) : ['论坛列表']
+    }
+  },
+  methods:{
+    closeView(item,index) {
+      if (index) {
+        let url =  sessionStorage.getItem('menusUrl')
+        this.breadcrumbs.splice(index,1)
+      }
     }
   },
   watch: {

@@ -52,7 +52,8 @@
               </el-form-item>
               <p class="text">
                 点击注册即表示同意
-                <a>用户协议及隐私保护规则</a>
+                <a href="#" class="login-primary" @click="dialogTableVisible=true">用户协议及隐私保护规则</a>及
+                <a href="#" class="login-primary">《个人信息保护政策》</a>
               </p>
             </el-form>
           </el-col>
@@ -68,6 +69,7 @@
             </div>
           </el-col>
         </el-row>
+        <registerRule :dialogTableVisible="dialogTableVisible" @handleClose="dialogTableVisible=false"></registerRule>
       </div>
     </el-main>
   </el-container>
@@ -76,9 +78,11 @@
 <script>
 import { userRegister, getCode } from '@/api/login'
 import districtSelet from '@/components/districtSelet'
+import registerRule from '@/components/common/registerRule'
 export default {
   components: {
-    districtSelet
+    districtSelet,
+    registerRule
   },
   name: 'register',
   data () {
@@ -173,7 +177,8 @@ export default {
       content: '发送验证码',  // 按钮里显示的内容
       totalTime: 60,
       timer: null,
-      canClick: true
+      canClick: true,
+      dialogTableVisible:false
     }
   },
   methods: {
@@ -281,15 +286,12 @@ export default {
 }
 .loads{
   width: 100vw;
-  /* height: 100vh; */
-  /* overflow: hidden;  */
 }
 .login-page {
   height: 100%;
 }
 .loads .el-main {
   padding:0;
-  /* overflow:hidden; */
   overflow-x: hidden;
   overflow-y: auto;
 }
@@ -409,11 +411,13 @@ export default {
   font-size:12px;
   position: absolute;
   bottom: 55px;
-  right: 30px
+  right: 30px;
+  font-size: 18px;
 }
 .text .loginRight {
   margin-top: 2px;
   margin-left: 5px;
+  width: 18px;
 }
 .grid-content img {
   max-width: 1200px;

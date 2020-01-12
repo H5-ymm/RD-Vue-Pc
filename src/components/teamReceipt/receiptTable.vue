@@ -65,11 +65,12 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column label="申请状态" align="center" width="100" v-if="userPosition==2">
+          <el-table-column label="申请状态" align="center" width="110" v-if="userPosition==2">
             <template slot-scope="scope">
-              <span v-if="scope.row.apportion_status!='null'&&scope.row.apportion_action!=1" class="status" :class="`active-status${scope.row.status}`">{{scope.row.apportion_status | applyStatus}}</span>
-              <span class="status status2" v-if="scope.row.apportion_status=='null'">未申请</span>
-              <span class="status status2" v-if="scope.row.apportion_action==1">分配接单</span>
+              <span v-if="scope.row.apportion_status&&scope.row.apportion_action==1" class="status" :class="`status${scope.row.apportion_status}`">{{scope.row.apportion_status | applyStatus}}</span>
+              <span class="status status2" v-if="!scope.row.apportion_status">未申请</span>
+              <span class="status status2" v-if="scope.row.apportion_status==1&&!scope.row.apportion_status">已申请</span>
+              <span class="status status3" v-if="scope.row.apportion_action==1&&scope.row.apportion_status==1">分配接单</span>
             </template>
           </el-table-column>
           <el-table-column label="状态" align="center" width="100" v-if="userPosition==1">
@@ -82,11 +83,11 @@
           <el-table-column label="操作" align="center" min-width="160">
             <template slot-scope="scope">
               <div v-if="userPosition==2">
-                <el-button @click="handleApply(scope.row)" type="text" v-if="!scope.row.apportion_status&&scope.row.apportion_action==1" size="small">申请推荐</el-button>
-                <el-button @click="viewJob(scope.row)" type="text" size="small">查看职位</el-button>
+                <el-button @click="handleApply(scope.row)" type="text" v-if="!scope.row.apportion_status" size="small">申请推荐</el-button>
                 <el-button @click="handleRecepit(2,scope.row)" type="text" size="small" v-if="scope.row.apportion_status==1&&scope.row.apportion_action==1">分配组员</el-button>
-                <el-button @click="handleRecepitManagers(0,scope.row)" type="text" size="small" v-if="scope.row.apportion_status==3">重新申请</el-button>
-                <el-button @click="handleRecepitManagers(3,scope.row)" type="text" size="small" v-if="scope.row.apportion_status==1">取消申请</el-button>
+                <el-button @click="handleRecepitManagers(0,scope.row)" type="text" size="small" v-if="scope.row.apportion_status==2">重新申请</el-button>
+                <el-button @click="handleRecepitManagers(3,scope.row)" type="text" size="small" v-if="scope.row.apportion_status==1&&!scope.row.apportion_action">取消申请</el-button>
+                <el-button @click="viewJob(scope.row)" type="text" size="small">查看职位</el-button>
                 <!-- <el-button @click="dialogVisible=true" type="text" size="small">删除职位</el-button> -->
               </div>
               <div v-if="userPosition==1">

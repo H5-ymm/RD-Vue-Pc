@@ -22,8 +22,8 @@
                   </el-select>
                 </el-form-item>
                 <el-form-item>
-                  <el-select v-model="formMember.gradeId" placeholder="等级" class="width100">
-                    <el-option :label="item.grade_name" :value="item.id" v-for="(item,index) in jobListAll" :key="index"></el-option>
+                  <el-select v-model="formMember.gradeId" value-key="grade_name" placeholder="等级" class="width100">
+                    <el-option :label="item.grade_name" :value="item.id" v-for="(item,index) in jobListAll" :key="item.grade_name"></el-option>
                   </el-select>
                 </el-form-item>
                 <span class="select-text">
@@ -105,7 +105,6 @@ export default {
       grade_id: '',
       uid: localStorage.getItem('uid'),
       depActiveIndex: -1,
-      jobListAll: [],
       id: ''
     }
   },
@@ -113,10 +112,14 @@ export default {
     this.getJobList()
     this.getList(this.formMember)
   },
+  computed:{
+    jobListAll(){
+      return  this.getArr(this.depList, this.depart_id)
+    }
+  },
   watch: {
     departId (val) {
       if (val) {
-        // this.formMember.departId = Number(val)
         this.getList(this.formMember)
       }
     }
@@ -125,17 +128,16 @@ export default {
     getJobList () {
       let uid = localStorage.getItem('uid')
       departmentRoleList({ uid }).then(res => {
-        console.log(res)
         this.depList = res.data
+      }).catch(error => {
+        this.$message.error(error.status.remind)
       })
     },
     selectDep (val) {
-      console.log(val)
-      this.jobListAll = this.getArr(this.depList, val)
+      // this.jobListAll = this.getArr(this.depList, val)
       this.getList(this.formMember)
     },
     selectDepName (val) {
-      console.log(val)
       this.jobList = this.getArr(this.depList, val)
     },
     selectDepGrade (index) {
@@ -154,6 +156,8 @@ export default {
       adjustmentList(params).then(res => {
         this.tableData = res.data.data
         this.total = res.data.count
+      }).catch(error => {
+        this.$message.error(error.status.remind)
       })
     },
     handleSizeChange (val) {
@@ -168,9 +172,6 @@ export default {
       this.activeIndex = index
       this.isEdit = true
       this.depInfo = row
-      console.log(this.depInfo)
-      // this.teamId = row.uid
-      // this.$emit('handleEdit', row.uid)
     },
     handleCloseEdit () {
       this.activeIndex = -1
@@ -184,12 +185,18 @@ export default {
         uid: this.depInfo.id
       }
       editTeamUserRole(params).then(res => {
-        this.isEdit = false
-        this.depart_id = ''
-        this.grade_id = ''
-        this.activeIndex = -1
-        this.getList(this.formMember)
-        this.$emit('handleClose', 1)
+        if (res.data) {
+          this.isEdit = false
+          this.depart_id = ''
+          this.grade_id = ''
+          this.activeIndex = -1
+          this.$message.success('操作成功')
+          this.getList(this.formMember)
+          this.$emit('handleClose', 1)
+        }
+        else {
+           this.$message.error('操作失败')
+        }
       }).catch(error => {
         this.$message.error(error.status.remind)
       })
@@ -203,8 +210,6 @@ export default {
     },
     dismissTeam () {
       this.$emit('dismissTeam')
-    },
-    submitForm () {
     },
     querySearch () {
       this.getList(this.formMember)

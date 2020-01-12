@@ -39,7 +39,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="招聘类型：">
-          <el-select v-model="formMember.job_type" class="width300" placeholder="请选择返利模式">
+          <el-select v-model="formMember.type" class="width300" placeholder="请选择返利模式">
             <el-option :label="item.label" :value="item.value" v-for="(item,index) in advertisesList" :key="index"></el-option>
           </el-select>
         </el-form-item>
@@ -66,12 +66,12 @@
           <el-button type="text" @click="multipleSelection=[]">清空</el-button>
           <p class="error el-icon-warning">更改发单状态之后可以操作其他发单状态下的简历</p>
         </div>
-        <el-table border :data="tableData" ref="multipleTable" style="width: 100%">
+        <el-table border :data="tableList" ref="multipleTable" style="width: 100%">
           <el-table-column type="selection" align="center" width="50"></el-table-column>
           <el-table-column label="发单状态" align="center" width="180">
             <template slot-scope="props">
-              <el-select v-model="formMember.status" value-key="label" class="width150" placeholder="请选择">
-                <el-option :label="item.label" :value="item.value" v-show="index" @change="changeStatus($event,scope.$index)" v-for="(item,index) in receiptStatusList" :key="item.label"></el-option>
+              <el-select v-model="props.row.jobStatus" value-key="label" class="width150" placeholder="请选择" @change="changeStatus($event,props.$index)">
+                <el-option :label="item.label" :value="item.value" v-show="index"  v-for="(item,index) in props.row.receiptStatusList" :key="item.label"></el-option>
               </el-select>
             </template>
           </el-table-column>
@@ -112,7 +112,11 @@
               <span class="status" :class="`status${props.row.is_up}`">{{props.row.is_up==1?'招聘中':'已下架'}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="创建日期" prop="ctime" align="center" width="170"></el-table-column>
+          <el-table-column label="创建日期" prop="ctime" align="center" width="170">
+             <template slot-scope="props">
+              <span>{{props.row.addtime?$moment(props.row.addtime).format('YYYY-MM-DD HH:mm'):''}}</span>
+            </template>
+          </el-table-column>
           <el-table-column label="操作" align="center" min-width="150">
             <template slot-scope="scope">
               <el-button @click="$router.push({path:'resumeList',query:{jobId:scope.row.id}})" type="text" size="small">简历列表</el-button>
@@ -173,7 +177,7 @@ export default {
         uid: localStorage.getItem('uid'),
         limit: 10,
         page: 1,
-        status: 1
+        job_status: 1
       },
       type: '',
       total: 0,
@@ -215,7 +219,18 @@ export default {
   },
   created () {
     // 初始化查询标签数据
+    // jobStatus 0 审核简历
+              // 1 面试结果
+              // 2 入职结果
     this.getList(this.formMember)
+  },
+  computed:{
+    tableList(){
+      return this.tableData.map(item=>{
+        let obj = Object.assign(item,{receiptStatusList:this.receiptStatusList,jobStatus:1})
+        return obj
+      })
+    }
   },
   wacth: {
     $route (to, from) {
@@ -233,6 +248,9 @@ export default {
       })
     },
     changeStatus (val, index) {
+      console.log(val)
+      console.log(index)
+      this.$set( this.tableList , 'jobStatus' , val )
       this.activeIndex = index
       this.statusName = this.receiptStatusList[index].label
     },

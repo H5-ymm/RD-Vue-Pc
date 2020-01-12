@@ -26,8 +26,8 @@
                   <i class="el-icon-caret-bottom"></i>
                 </span>
                 <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item command="0">账户信息</el-dropdown-item>
-                  <el-dropdown-item command="1">退出登录</el-dropdown-item>
+                  <el-dropdown-item command="accountSettings">账户信息</el-dropdown-item>
+                  <el-dropdown-item command="login">退出登录</el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
             </div>
@@ -42,8 +42,8 @@
                   <i class="el-icon-caret-bottom"></i>
                 </span>
                 <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item command="0">账户信息</el-dropdown-item>
-                  <el-dropdown-item command="1">退出登录</el-dropdown-item>
+                  <el-dropdown-item command="companyForm">账户信息</el-dropdown-item>
+                  <el-dropdown-item command="login">退出登录</el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
             </div>
@@ -139,19 +139,12 @@ export default {
         sessionStorage.setItem('userInfo', JSON.stringify(this.userInfo))
       })
     },
-    handleCommand (val) {
-      if (val) {
+    handleCommand (val) { 
+      if (val=='login') {
         localStorage.clear('')
         sessionStorage.clear('')
-        this.$router.push({
-          path: 'login',
-          // 登录成功后跳入浏览的当前页面
-          query: { redirect: 1 }
-        })
       }
-      else {
-        this.$router.push('companyForm')
-      }
+      this.$router.push(val)
     }
   },
 }

@@ -11,7 +11,7 @@
               <i class="el-icon-collection"></i>
               <span>{{item.title}}</span>
             </template>
-            <el-menu-item :index="val.title" :class="{'is-active':title==val.title}" v-for="(val,ind) in item.submenu" :key="ind" :route="val.url">{{val.title}}</el-menu-item>
+            <el-menu-item :index="val.url" :class="{'is-active':url==val.url}" v-for="(val,ind) in item.submenu" :key="ind" :route="val.url">{{val.title}}</el-menu-item>
           </el-submenu>
         </el-menu>
       </el-col>
@@ -192,7 +192,6 @@ export default {
           ]
         }
       ],
-      title: '',
       root: {
         title: '团队设置',
         icon: 'el-icon-collection-tag',
@@ -250,7 +249,9 @@ export default {
           title: '接单分配',
           url: '/receiptTable'
         }
-      ]
+      ],
+      title: '',
+      url: ''
     }
   },
   created () {
@@ -288,17 +289,25 @@ export default {
     handleClose (key, keyPath) {
       //console.log(key, keyPath);
     },
-    escUser () {
-      window.localStorage.clear()
-      window.sessionStorage.clear()
-      this.$router.push('/load')
-    },
     selectMenus (key, keyPath) {
-      this.title = key
-      let arr = keyPath
-      console.log(arr)
-      console.log(this.title)
+      this.url = key
+      console.log(this.url)
+      let arr = this.getMenusTitle(key,this.menus)
+      sessionStorage.setItem('menusUrl', this.url)
       sessionStorage.setItem('menus', JSON.stringify(arr))
+    },
+    getMenusTitle(url,arr){
+      let title = ''
+      let list = []
+      arr.forEach(item=>{
+        item.submenu.forEach(val=>{
+          if (val.url == url) {
+            title = val.title
+            list.push(item.title,title)
+          }
+        })
+      })
+      return list
     }
   },
   computed: {

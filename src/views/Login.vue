@@ -49,6 +49,7 @@
             </p>
           </el-form>
         </div>
+          <Dialog :centerDialogVisible="dialogVisible" :modalInfo="modalInfo" @handleClose="dialogVisible=false"></Dialog>
       </div>
     </el-main>
   </el-container>
@@ -56,8 +57,11 @@
 <script>
 import { goLogin, getCode, userRegister } from '../api/login'
 import { setTimeout } from 'timers';
-// import Dialog from '../compontents/Dialog'
+import Dialog from '../components/Dialog'
 export default {
+  components:{
+    Dialog
+  },
   data () {
     let validatereg = function (rule, value, callback) {   //验证用户名是否合法
       let reg = /^1[3456789]\d{9}$/;
@@ -98,7 +102,14 @@ export default {
       canClick: true,
       token: '',
       isShowError: false,
-      isCodeError: false
+      isCodeError: false,
+      dialogVisible:false,
+      modalInfo: {
+        title: '账号已锁定',
+        okText: '',
+        closeText: '',
+        imgBg: require('../assets/img/lock.png')
+      }
     }
   },
   watch: {

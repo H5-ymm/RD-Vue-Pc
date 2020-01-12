@@ -54,11 +54,11 @@
 </template>
 
 <script>
-import { getConstant } from '../../api/dictionary'
+import { getConstant } from '@/api/dictionary'
 import districtSelet from '../districtSelet'
 import { getImg, getImgUrl, validateIdCard } from '@/util/util'
-import { updateTeamInfo, getTeamInfo } from '../../api/team'
-import { uploadFile } from '../../api/upload'
+import { updateTeamInfo, getTeamInfo } from '@/api/team'
+import { uploadFile } from '@/api/upload'
 export default {
   components: {
     districtSelet

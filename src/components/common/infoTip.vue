@@ -6,16 +6,16 @@
     width="340px"
     center
     :before-close="handleClose"
-    class="dialog"
+    class="dialog info-dialog"
   >
     <div class="dialog-centent">
       <img :src="modalInfo.imgBg" class="dialog-img" alt />
-      <p class="dialog-title">{{modalInfo.title}}</p>
-      <p v-if="!modalInfo.closeText&&!modalInfo.okText" class="dialog-subtitle">账号已锁定，不能登录，请后台设置登录权限</p>
-      <p v-if="modalInfo.okText=='前去完善'" class="dialog-subtitle">请先完善您的资料，才能进行下一步操作。</p>
+      <div class="dialog-row">
+        <p class="dialog-title">{{modalInfo.title}}</p>
+        <p class="dialog-subtitle">请先完善您的资料，才能进行下一步操作。</p>
+      </div>
     </div>
-    <span slot="footer" class="dialog-footer" v-if="modalInfo.closeText&&modalInfo.okText">
-      <el-button  @click="handleClose" type="primary" plain>{{modalInfo.closeText}}</el-button>
+    <span slot="footer" class="dialog-footer">
       <el-button type="primary" v-if="modalInfo.okText" @click="handleOk">{{modalInfo.okText}}</el-button>
     </span>
   </el-dialog>
@@ -33,8 +33,19 @@ export default {
       this.$emit('handleClose')
     },
     handleOk () {
-      this.$emit('handleOk')
-    },
+      let teamType = localStorage.getItem('teamType')
+      let teamId = localStorage.getItem('uid')
+      if (teamType == 1) {
+        this.$router.push(`/teamCompanyForm?teamId=${teamId}&type=${teamType}`)
+      }
+      else if (teamType == 2) {
+        this.$router.push(`/personalForm?teamId=${teamId}&type=${teamType}`)
+      }
+      else {
+        this.$router.push('/teamSetting')
+      }
+      this.$emit('handleClose')
+    }
   },
 };
 </script>
@@ -42,19 +53,30 @@ export default {
 .dialog {
   box-shadow:0px 6px 14px 1px rgba(134,133,133,0.3);
   border-radius:5px;
+  .el-dialog__headerbtn {
+    z-index: 222;
+  }
 }
 .dialog-centent {
   width: 100%;
   margin: 0 auto;
+  position: relative;
   text-align: center;
   .dialog-img {
-    
+    width: 100%;
+    height: 203px;
+    margin: -20px auto 20px;
+  }
+  .dialog-row {
+    position: absolute;
+    left: 8%;
+    bottom: 0;
   }
   .dialog-title {
     font-size: 18px;
     color:#333;
     font-weight: bold;
-    padding-top: 25px;
+    padding-top: 0
   }
   .dialog-subtitle {
     color: #333333;
@@ -63,8 +85,10 @@ export default {
     margin: 10px auto;
   }
 }
-.dialog .el-dialog__body {
-  padding: 25px
+.info-dialog {
+  .el-dialog__body {
+    padding:  0 25px
+  }
 }
 .dialog-footer {
   padding: 0 20px 20px;

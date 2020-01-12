@@ -121,6 +121,14 @@
         <el-select v-model="orderTakingForm.settlement_time" v-if="orderTakingForm.reward_money_type==2&&orderTakingForm.settlement_type" class="width160 width198" placeholder="请选择">
           <el-option :label="`${payType}${item.label}`" :value="item.value" v-for="item in weekList" :key="item.label"></el-option>
         </el-select>
+        <el-input placeholder="请输入" v-if="orderTakingForm.reward_money_type==3&&orderTakingForm.settlement_type" class="width160 width198 text-input" v-model="orderTakingForm.settlement_time">
+          <template slot="prepend">
+            <span class="moneyType">{{payType}}月</span>
+          </template>
+          <template slot="append">
+            <span class="moneyType">号</span>
+          </template>
+        </el-input>
       </div>
     </el-form-item>
     <el-form-item class="reward_type" label-width="96px" v-if="(orderTakingForm.reward_type==2||orderTakingForm.reward_type==3)&&orderTakingForm.reward_money_type">

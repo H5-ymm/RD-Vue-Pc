@@ -174,7 +174,11 @@
               <span class="status" :class="`status${props.row.is_up?props.row.is_up:3}`">{{props.row.is_up==1?'已上架':'已下架'}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="创建日期" prop="ctime" align="center" width="160"></el-table-column>
+          <el-table-column label="创建日期" prop="ctime" align="center" width="160">
+             <template slot-scope="props">
+              <span>{{props.row.ctime?$moment(props.row.ctime).format('YYYY-MM-DD HH:mm'):''}}</span>
+            </template>
+          </el-table-column>
           <el-table-column label="已领取人" align="center" width="180" v-if="viewType==1">
             <template slot-scope="scope">
               <div class="text-line" @click="handleRecepit(2,scope.row)" v-if="(scope.row&&scope.row.uid==uid)||userPosition==3">

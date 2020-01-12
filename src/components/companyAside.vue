@@ -46,8 +46,8 @@
               <span>{{item.title}}</span>
             </template>
             <el-menu-item
-              :index="val.title"
-              :class="{'is-active':title==val.title}"
+              :index="val.url"
+              :class="{'is-active':url==val.url}"
               v-for="(val,ind) in item.submenu"
               :key="ind"
               :route="val.url"
@@ -161,12 +161,12 @@ export default {
         }
       ],
       title: '',
+      url:'',
       uid: localStorage.getItem('uid'),
       baseInfo: {}
     }
   },
   created () {
-    // this.getCompanyBind(this.uid)
     this.baseInfo = sessionStorage.getItem('baseInfo') ? JSON.parse(sessionStorage.getItem('baseInfo')) : null
   },
   methods: {
@@ -181,16 +181,25 @@ export default {
     handleClose (key, keyPath) {
       //console.log(key, keyPath);
     },
-    escUser () {
-      window.localStorage.clear()
-      window.sessionStorage.clear()
-      this.$router.push('/load')
-    },
     selectMenus (key, keyPath) {
-      console.log(key, keyPath)
-      this.title = key
-      let arr = [key]
+      this.url = key
+      console.log(this.url)
+      let arr = this.getMenusTitle(key,this.menus)
+      sessionStorage.setItem('menusUrl', this.url)
       sessionStorage.setItem('menus', JSON.stringify(arr))
+    },
+    getMenusTitle(url,arr){
+      let title = ''
+      let list = []
+      arr.forEach(item=>{
+        item.submenu.forEach(val=>{
+          if (val.url == url) {
+            title = val.title
+            list.push(item.title,title)
+          }
+        })
+      })
+      return list
     }
   },
   computed: {

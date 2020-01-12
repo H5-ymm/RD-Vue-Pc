@@ -98,7 +98,7 @@
           </el-table-column>
           <el-table-column label="录入人" prop="input_username" align="center" width="100"></el-table-column>
           <el-table-column label="跟进人" prop="track_name" align="center" width="100"></el-table-column>
-          <el-table-column label="操作" fixed="right" align="center" min-width="200">
+          <el-table-column label="操作" align="center" min-width="200">
             <template slot-scope="scope">
               <el-button @click="abandoned (4,scope.row)" type="text" size="small" v-if="viewType==2&&!scope.row.entry_status">放弃入职</el-button>
               <el-button @click="abandoned (1,scope.row)" type="text" size="small" v-if="!scope.row.status">放弃报名</el-button>

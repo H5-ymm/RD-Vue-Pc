@@ -14,10 +14,11 @@ const OrderTaking = resolve => (require(['./views/OrderTaking.vue'], resolve))
 const OrderTakingDetail = resolve => (require(['./views/OrderTakingDetail.vue'], resolve)) // 接单详情
 const Information = resolve => (require(['./views/Information.vue'], resolve)) // 资讯
 const InformationDetail = resolve => (require(['./views/InformationDetail.vue'], resolve)) //  资讯详情
-
+const routerPush = Router.prototype.push
+Router.prototype.push = function push(location) {
+  return routerPush.call(this, location).catch(error=> error)
+}
 Vue.use(Router)
-let routerList = []
-let userType = localStorage.getItem('userType')
 // 企业和团队路由
 let publiceRouters = [
   {

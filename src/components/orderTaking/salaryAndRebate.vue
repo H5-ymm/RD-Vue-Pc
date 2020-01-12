@@ -86,8 +86,16 @@
           <el-option :label="`本${rewardType}结算`" :value="2"></el-option>
         </el-select>
         <el-select v-model="orderTakingForm.settlement_time" v-if="orderTakingForm.reward_money_type==2&&orderTakingForm.settlement_type" @xhange="changeSettlementTime" class="width160" placeholder="请选择">
-          <el-option :label="`${payType}${item.label}`" :value="item.value" v-for="item in weekList" :key="item.label"></el-option>
+          <el-option :label="`${item.label}`" :value="item.value" v-for="item in weekList" :key="item.label"></el-option>
         </el-select>
+        <el-input placeholder="请输入" v-if="orderTakingForm.reward_money_type==3&&orderTakingForm.settlement_type" class="width160 text-input" v-model="orderTakingForm.settlement_time">
+          <template slot="prepend">
+            <span class="moneyType">{{payType}}月</span>
+          </template>
+          <template slot="append">
+            <span class="moneyType">号</span>
+          </template>
+        </el-input>
       </div>
     </el-form-item>
     <el-form-item class="reward_type" v-if="(orderTakingForm.reward_type==2||orderTakingForm.reward_type==3)&&orderTakingForm.reward_money_type">
@@ -177,11 +185,14 @@ export default {
           }
           else {
             if (val[key] != '') {
-              console.log(this.orderTakingForm.reward_needtime)
-              console.log(this.orderTakingForm.duration_time)
               if (val.reward_type != 4 && Number(this.orderTakingForm.reward_needtime) > Number(this.orderTakingForm.duration_time)) {
                 this.orderTakingForm.reward_needtime = this.orderTakingForm.duration_time
                 this.$emit('submit', val)
+              }
+              else if (val.reward_money_type==3&&Number(val.settlement_time>31)) {
+                this.orderTakingForm.settlement_time = 31
+                return this.$message.warning('最大输入31')
+                this.$emit('submit', null)
               }
               else {
                 console.log(val)

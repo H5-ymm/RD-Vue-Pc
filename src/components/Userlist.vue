@@ -8,34 +8,40 @@
     </div>
     <memberAdd :dialogTableVisible="visible" :id="userId" @submitForm="submitForm"></memberAdd>
     <memberInfo :dialogTableVisible="dialogTableVisible" :userId="userId"></memberInfo>
+    <infoTip :centerDialogVisible="dialogVisible" :modalInfo="modalInfo" @handleClose="dialogVisible=false"></infoTip>
   </div>
 </template>
 
 <script>
-// import Breadcrumb from './breadcrumb/Breadcrumb'
 import memberCard from './membership/memberCard'
 import memberQuery from './membership/memberQuery'
 import memberTable from './membership/memberTable'
 import memberInfo from './membership/memberInfo'
 import memberAdd from './membership/memberAdd'
+import infoTip from './common/infoTip'
 import { getTeamList, loginOutTeam, addTeamUser, updateTeamUser } from '../api/team'
 import memberInfoVue from './membership/memberInfo.vue';
 export default {
   components: {
-    // Breadcrumb,
     memberCard,
     memberQuery,
     memberTable,
     memberInfo,
-    memberAdd
+    memberAdd,
+    infoTip
   },
   data () {
     return {
       dialogTableVisible: false,
       visible: false,
+      dialogVisible:false,
+      modalInfo: {
+        title: '您的信息未完善！',
+        okText: '前去完善',
+        closeText: '',
+        imgBg: require('../assets/img/info.png')
+      },
       tableData: [],
-      currentPage: 1,
-      userType: 1,
       formMember: {
         uid: localStorage.getItem('uid'),
         limit: 10,
@@ -44,7 +50,8 @@ export default {
       total: 0,
       len: 0,
       userId: '',
-      teamInfo: {}
+      teamInfo: {},
+      userType:localStorage.getItem('userType')
     }
   },
   created () {
@@ -74,11 +81,18 @@ export default {
       this.dialogTableVisible = true
     },
     handleEdit (val) {
+      if (!localStorage.getItem('teamType')) {
+        this.dialogVisible = true
+        return false
+      }
       this.userId = val
       this.visible = true
-      console.log(this.userId)
     },
     handleDel (uid) {
+      if (!localStorage.getItem('teamType')) {
+        this.dialogVisible = true
+        return false
+      }
       loginOutTeam({ uid }).then(res => {
         this.$message.success('退出成功')
         this.getList(this.formMember)
@@ -90,7 +104,13 @@ export default {
       this.len = val
     },
     addMember () {
-      this.visible = true
+      // 如果没有认证 团队性质
+      if (!localStorage.getItem('teamType')) {
+        this.dialogVisible = true
+      }
+      else {
+        this.visible = true
+      }  
     },
     onSubmit (value) {
       let params = Object.assign(this.formMember, value)
