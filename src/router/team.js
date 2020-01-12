@@ -23,9 +23,10 @@ const userRecommend = resolve => (require(['../components/collectManage/userReco
 const publishJobList = resolve => (require(['../components/internalInvoice/publishJobList.vue'], resolve)) // 内部发单
 const jobDetail = resolve => (require(['../components/internalInvoice/jobDetail.vue'], resolve)) // 内部发单详情
 const postJob = resolve => (require(['../components/internalInvoice/postJob.vue'], resolve)) // 内部发单详情
+const putList = resolve => (require(['../components/internalInvoice/putList.vue'], resolve)) // 内部发单详情
 
 const collectingInvoice = resolve => (require(['../components/internalInvoice/collectingInvoice.vue'], resolve)) // 领取发单
-const checkResume = resolve => (require(['../components/internalInvoice/checkResume.vue'], resolve)) // 内部审核简历
+const checkResumeInvoice = resolve => (require(['../components/internalInvoice/checkResume.vue'], resolve)) // 内部审核简历
 
 const resumeList = resolve => (require(['../components/internalInvoice/resumeList.vue'], resolve)) // 内部审核简历
 const transfer = resolve => (require(['../components/finance/transfer.vue'], resolve)) // 
@@ -214,6 +215,13 @@ let children = [{  // 团队论坛
   meta: {
     requiresAuth: 1
   }
+},
+{
+  path: '/putList',  // 日志
+  component: putList,
+  meta: {
+    requiresAuth: 1
+  }
 }
 ]
 
@@ -286,9 +294,9 @@ let receiptList = [
     }
   },
   {
-    path: '/checkResume',  // 内部审核简历
-    name: checkResume,
-    component: checkResume,
+    path: '/checkResumeInvoice',  // 内部审核简历
+    name: checkResumeInvoice,
+    component: checkResumeInvoice,
     meta: {
       requiresAuth: 1
     }

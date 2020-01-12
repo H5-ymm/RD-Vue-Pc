@@ -25,7 +25,7 @@
                 </el-form-item>
               </div>
               <div class="resume-card-item">
-                <el-form-item label="用工企业名称" required>
+                <el-form-item label="用工企业名称" required prop="company_name">
                   <el-input v-model="formMember.company_name" class="width406" placeholder="请输入用工企业名称"></el-input>
                 </el-form-item>
                 <el-form-item label="招工截止日期">
@@ -55,7 +55,7 @@
             </p>
             <div class="x-flex-between-start resume-card-row">
               <div class="resume-card-item">
-                <el-form-item label="工作地址" prop="user_name">
+                <el-form-item label="工作地址">
                   <el-input v-model="formMember.address" class="width406" placeholder="请输入工作地址"></el-input>
                 </el-form-item>
                 <el-form-item label="入职条件">
@@ -79,7 +79,7 @@
             </p>
             <div class="x-flex-between-start resume-card-row">
               <div class="resume-card-item">
-                <el-form-item label="性别要求" prop="user_name">
+                <el-form-item label="性别要求">
                   <el-select v-model="formMember.sex" class="width406" placeholder="请选择">
                     <el-option :label="item.label" :value="item.value" v-for="item in sexList" :key="item.label"></el-option>
                   </el-select>
@@ -139,7 +139,7 @@ export default {
     districtSelet,
     moneyType
   },
-  props: ['formJob'],
+  props: ['formJob', 'tabIndex'],
   data () {
     return {
       formMember: {
@@ -151,8 +151,8 @@ export default {
         is_up: 1,
         job_description: "",
         job_name: '',
-        number: 0,
-        offermoney: "2",
+        number: 1,
+        offermoney: '',
         offermoney_type: 1,
         offtime: '',
         sex: 0,
@@ -171,6 +171,9 @@ export default {
       rules: {
         job_name: [
           { required: true, message: '请输入岗位名称', trigger: 'blur' },
+        ],
+        company_name: [
+          { required: true, message: '请输入用工企业名称', trigger: 'blur' }
         ],
         number: [
           { required: true, message: '请输入招聘人数', trigger: 'blur' }
@@ -201,6 +204,11 @@ export default {
         for (let key in this.formMember) {
           this.formMember[key] = val[key]
         }
+      }
+    },
+    tabIndex (val) {
+      if (val == 1) {
+        this.submitForm()
       }
     }
   },
@@ -242,8 +250,8 @@ export default {
       })
     },
     changeDate (val) {
-      this.formMember.entry_begintime = val[0]
-      this.formMember.entry_endtime = val[1]
+      this.formMember.entry_begintime = val ? val[0] : ''
+      this.formMember.entry_endtime = val ? val[1] : ''
     },
     change (val) {
       this.formMember.provinceid = val[0]
@@ -261,15 +269,18 @@ export default {
       this.$parent.dialogTableVisible = false
     },
     submitForm () {
+      if (!this.formMember.offermoney_type
+        && this.formMember.offermoney) {
+        return this.$message.warning('请选择薪资')
+      }
       if (this.formMember.age_max < this.formMember.age_min) {
         return this.$message.warning('最大年龄应该大于最小年龄')
       }
       this.$refs['formMember'].validate((valid) => {
         if (valid) {
-          console.log(this.formMember)
           this.$emit('submitForm', this.formMember)
         } else {
-          return false
+          this.$emit('submitForm', null)
         }
       })
     }

@@ -152,7 +152,7 @@
             <template slot-scope="props">
               <div>
                 {{props.row.view_num}}
-                <span class="fail-color">
+                <span class="fail-color" v-if="props.row.view_dcl">
                   (待处理{{
                   props.row.view_dcl}})</span>
               </div>
@@ -178,25 +178,25 @@
           <el-table-column label="已领取人" align="center" width="180" v-if="viewType==1">
             <template slot-scope="scope">
               <div class="text-line" @click="handleRecepit(2,scope.row)" v-if="(scope.row&&scope.row.uid==uid)||userPosition==3">
-                <el-button v-for="(item,index) in scope.row.tolist" :key="index" type="text" size="small">{{item.name}}</el-button>
+                <el-button type="text" size="small">{{scope.row.tolist}}</el-button>
               </div>
             </template>
           </el-table-column>
-          <el-table-column label="操作" align="center" min-width="220">
+          <el-table-column label="操作" align="center" min-width="220" fixed="right">
             <template slot-scope="scope">
-              <div v-if="viewType==1">
-                <el-button @click="$router.push('jobDetail?id='+scope.row.id)" type="text" size="small">详情</el-button>
+              <div v-if="viewType==1" class="x-flex-around">
+                <!-- <el-button @click="$router.push('jobDetail?id='+scope.row.id)" type="text" size="small">详情</el-button> -->
                 <el-button @click="$router.push('postJob?id='+scope.row.id)" type="text" size="small" v-if="(scope.row&&scope.row.uid==uid)||userPosition==1">编辑</el-button>
                 <el-button @click="delJob(scope.row)" type="text" size="small" v-if="(scope.row&&scope.row.uid==uid)||userPosition==1">删除</el-button>
+                <el-button @click="handleRecepit(1,scope.row)" type="text" v-if="scope.row.uid==uid||userPosition==1" size="small">分配跟进人</el-button>
                 <el-button @click="changeJobstatus(0,scope.row)" type="text" size="small" v-if="((scope.row&&scope.row.uid==uid)||userPosition==1)&&scope.row.is_up==1">下架</el-button>
                 <el-button @click="changeJobstatus(1,scope.row)" type="text" size="small" v-if="((scope.row&&scope.row.uid==uid)||userPosition==1)&&!scope.row.is_up">上架</el-button>
-                <el-button @click="handleRecepit(1,scope.row)" type="text" v-if="scope.row.uid==uid||userPosition==1" size="small">分配跟进人</el-button>
               </div>
               <div v-if="viewType!=1" class="x-flex-center">
                 <el-button @click="$router.push('jobDetail?id='+scope.row.id)" type="text" size="small">详情</el-button>
-                <el-button @click="$router.push('/recommendJob?id=' + val.id)+'&index=1'" v-if="scope.row.is_up==1" type="text" size="small">推荐简历</el-button>
+                <el-button @click="$router.push('recommendResume?jobId='+scope.row.id+'&index=1')" v-if="scope.row.is_up==1" type="text" size="small">推荐简历</el-button>
                 <span v-if="!scope.row.is_up" class="default-status">推荐简历</span>
-                <el-button @click="$router.push('applyResume?view=3')" type="text" size="small">已推荐简历</el-button>
+                <el-button @click="$router.push('putList?id='+scope.row.id)" type="text" size="small">已推荐简历</el-button>
               </div>
             </template>
           </el-table-column>
@@ -210,7 +210,7 @@
 </template>
 
 <script>
-import { getJoblist, addPut, cancelrecv, setjobtouser, getTomember, deleteJob, changestatus } from '@/api/internalInvoice'
+import { getJoblist, addPut, getobedistributedList, cancelrecvList, cancelrecv, setjobtouser, getTomember, deleteJob, changestatus, getTeamManage } from '@/api/internalInvoice'
 import { moneyTypeList, rewardTypeList, payTypeList, weekList, recommendStatusList, timeStatusList, positionStatusList } from '@/base/base'
 import personalModal from '../common/personalModal'
 import havePersonModal from './havePersonModal'
@@ -358,13 +358,28 @@ export default {
         }
       })
     },
+    getArray (arr) {
+      let arr1 = []
+      arr.forEach(item => {
+        console.log(item.isget)
+        let obj = {
+          user_name: item.user_name,
+          uid: item.uid,
+          status: item.isget ? item.isget : null
+        }
+        arr1.push(obj)
+      })
+      return arr1
+    },
+    // 分配跟进人列表
     getPersonList () {
       let params = {
         job_id: this.jobId,
         uid: this.uid
       }
-      getTomember(params).then(res => {
-        this.personalList = res.data || []
+      getobedistributedList(params).then(res => {
+        let arr = res.data || []
+        this.personalList = this.getArray(arr)
         console.log(this.personalList)
         this.dialogTableVisible = true
       }).catch(error => {
@@ -378,7 +393,13 @@ export default {
         uid: this.uid
       }
       deleteJob(params).then(res => {
-        this.getList(this.formMember)
+        if (res.data) {
+          this.$message.success('删除成功')
+          this.getList(this.formMember)
+        }
+        else {
+          this.$message.error('删除失败')
+        }
       }).catch(error => {
         this.$message.error(error.status.remind)
       })
@@ -408,23 +429,54 @@ export default {
         this.getPersonList()
       }
       else {
-        this.personalModal = true
+        this.getCancelrecvList()
+
       }
     },
     // 取消分配
     cancleAssigned (params) {
       cancelrecv(params).then(res => {
-        this.personalModal = false
+        this.personVisible = false
         this.getList(this.formMember)
       }).catch(error => {
         this.$message.error(error.status.remind)
       })
     },
+    // 已经领取人列表
+    getCancelrecvList () {
+      let params = {
+        job_id: this.jobId,
+        uid: this.uid
+      }
+      cancelrecvList(params).then(res => {
+        let arr = res.data || []
+        this.personVisible = true
+        this.hasPersonList = this.getHasList(arr)
+      })
+    },
+    getHasList (arr) {
+      let arr1 = []
+      arr.forEach(item => {
+        console.log(item)
+        let obj = {
+          user_name: item.user_name,
+          touid: item.uid,
+          ctime: item.ctime
+        }
+        arr1.push(obj)
+      })
+      return arr1
+    },
     // 分配跟进人
     setAssigned (params) {
-      (params).then(res => {
-        this.dialogTableVisible = true
-        this.getList(this.formMember)
+      setjobtouser(params).then(res => {
+        if (res.data) {
+          this.dialogTableVisible = false
+          this.getList(this.formMember)
+        }
+        else {
+          this.$message.error('分配跟进人失败')
+        }
       }).catch(error => {
         this.$message.error(error.status.remind)
       })
@@ -432,13 +484,18 @@ export default {
     handleOk (val) {
       let params = {
         job_id: this.jobId,
-        ids: val.id,
         uid: this.uid
       }
-      if (handleStatus == 1) {
+      if (this.handleStatus == 1) {
+        let arr = val.map(item => {
+          return item.uid
+        })
+        params.uids = arr.join(',')
+        // 分配跟进人接口
         this.setAssigned(params)
       }
       else {
+        params.ids = val
         this.cancleAssigned(params)
       }
     },

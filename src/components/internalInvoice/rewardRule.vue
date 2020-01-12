@@ -14,7 +14,7 @@
                 </el-form-item>
                 <el-form-item>
                   <div v-if="formMember.type==1">
-                    <rewardType @submit="submit"></rewardType>
+                    <rewardType @submit="submit" :type="formMember.type"></rewardType>
                   </div>
                 </el-form-item>
               </div>
@@ -38,19 +38,36 @@ export default {
   components: {
     rewardType
   },
-  props: ['formJob'],
+  props: ['formJob', 'tabIndex'],
   data () {
     return {
       formMember: {
         type: 1
       },
       moneyTypeList,
-      moneyArray: {}
+      moneyArray: {},
+      rewardForm: {
+        reward_type: '', // 返利类型(1月返 2日返 3时返 4一次性返)
+        reward_money: '', // 返利金额(根据类型修改单位)
+        reward_money_type: '', // 1日2周3月(针对日返和时返) 1长期2持续（针对月返）结算类型 
+        settlement_time: '', // 结算时间(针对月返：次月第XX多少天；)
+        reward_needtime: '', // 需求入职天数/周数/月数(一次性时：0表示当天返)
+        duration_time: '', // 持续 (天数/周数/月数)
+        settlement_type: '',
+      }
     }
   },
   created () {
     let params = 'edu_type,money_array'
     this.getList(params)
+  },
+  watch: {
+    tabIndex (val) {
+      if (val == 2) {
+        console.log(val)
+        this.submitForm()
+      }
+    }
   },
   methods: {
     getInfo () {
@@ -74,10 +91,29 @@ export default {
       this.$parent.dialogTableVisible = false
     },
     submit (val) {
-      console.log(val)
+      this.rewardForm = val
       this.formMember = Object.assign(this.formMember, val)
     },
+    checkReward (obj) {
+      let flag = false
+      for (let key in obj) {
+        if (obj[key] == '') {
+          flag = false
+          break;
+        }
+        else {
+          flag = true
+        }
+      }
+      return flag
+    },
     submitForm () {
+      if (this.formMember.type == 1) {
+        if (!this.checkReward(this.rewardForm)) {
+          this.$emit('submitForm', null)
+          return this.$message.warning('请完善返利模式规则')
+        }
+      }
       this.$emit('submitForm', this.formMember)
     }
   }

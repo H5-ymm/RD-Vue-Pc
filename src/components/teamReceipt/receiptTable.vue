@@ -109,8 +109,8 @@
 </template>
 
 <script>
-import { getcurapply, apportionJob, auditRecv, getpartMember, curapportionList, addApportion, changeApportion } from '../../api/teamReceipt'
-import { moneyTypeList, rewardTypeList, payTypeList, entryStatusList, applyStatusList1 } from '../../base/base'
+import { getcurapply, apportionJob, auditRecv, getpartMember, curapportionList, addApportion, changeApportion, getTeamManage } from '@/api/teamReceipt'
+import { moneyTypeList, rewardTypeList, payTypeList, entryStatusList, applyStatusList1 } from '@/base/base'
 import viewJob from '../common/viewJob'
 import modal from '../common/modal'
 import personalModal from '../common/personalModal'
@@ -207,11 +207,29 @@ export default {
       this.handleStatus = status
       this.jobId = val.job_id
       if (status == 1) {
-        this.getPersonList()
+        if (this.userPosition == 2) {
+          this.getPersonList()
+        }
+        else {
+          this.getManagerList()
+        }
       }
       else {
         this.getCurapportionList()
       }
+    },
+    // 团长获取所有列表
+    getManagerList () {
+      let params = {
+        job_id: this.jobId,
+        uid: localStorage.getItem('uid')
+      }
+      getTeamManage(params).then(res => {
+        this.personalList = res.data || []
+        this.dialogTableVisible = true
+      }).catch(error => {
+        this.$message.error(error.status.remind)
+      })
     },
     // 经理操作
     handleRecepitManagers (status, val) {
@@ -232,12 +250,24 @@ export default {
         uid: localStorage.getItem('uid')
       }
       getpartMember(params).then(res => {
-        this.personalList = res.data || []
-        console.log(res.data)
+        this.personalList = this.getArray(res.data)
+        console.log(this.personalList)
         this.dialogTableVisible = true
       }).catch(error => {
         this.$message.error(error.status.remind)
       })
+    },
+    getArray (arr) {
+      let arr1 = []
+      arr.forEach(item => {
+        let obj = {
+          user_name: item.user_name,
+          uid: item.uid,
+          status: item.isget ? item.isget : null
+        }
+        arr1.push(obj)
+      })
+      return arr1
     },
     getCurapportionList () {
       let params = {

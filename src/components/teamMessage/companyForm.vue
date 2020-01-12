@@ -5,51 +5,29 @@
 <template>
   <div class="teamMessage">
     <div class="teamMessage-form-row">
-      <el-form
-        :model="companyForm"
-        :rules="rules"
-        ref="companyForm"
-        label-width="140px"
-        label-position="right"
-        class="teamMessage-form"
-      >
+      <el-form :model="companyForm" :rules="rules" ref="companyForm" label-width="140px" label-position="right" class="teamMessage-form">
         <el-form-item :label="`企业名称`" prop="companyName">
           <el-input v-model="companyForm.companyName" class="width408" :placeholder="`请输入企业名称`"></el-input>
         </el-form-item>
         <el-form-item :label="`企业logo`" required>
-          <el-upload
-            class="avatar-uploader"
-            action="customize"
-            ref="upload"
-            :show-file-list="false"
-            :http-request="upload"
-          >
+          <el-upload class="avatar-uploader" action="customize" ref="upload" :show-file-list="false" :http-request="upload">
             <img v-if="imageUrl" :src="imageUrl" class="avatar" />
             <i v-else class="el-icon-circle-plus avatar-uploader-icon"></i>
             <p>上传logo</p>
           </el-upload>
         </el-form-item>
         <el-form-item label="营业执照" required>
-          <el-upload
-            class="uploader-card avatar-uploader"
-            action="customize"
-            :show-file-list="false"
-            :http-request="uploadLicense"
-          >
+          <el-upload class="uploader-card avatar-uploader" action="customize" :show-file-list="false" :http-request="uploadLicense">
             <img v-if="license_img" :src="license_img" class="avatar" />
             <i v-else class="el-icon-circle-plus avatar-uploader-icon"></i>
-            <p>上传logo</p>
+            <p>上传营业执照</p>
           </el-upload>
         </el-form-item>
         <el-form-item label="营业执照号">
           <el-input v-model="companyForm.business_licence" class="width408" placeholder="请输入营业执照号"></el-input>
         </el-form-item>
         <el-form-item label="统一社会信用代码">
-          <el-input
-            v-model="companyForm.unified_social_credit_code"
-            class="width408"
-            placeholder="请输入统一社会信用代码"
-          ></el-input>
+          <el-input v-model="companyForm.unified_social_credit_code" class="width408" placeholder="请输入统一社会信用代码"></el-input>
         </el-form-item>
         <el-form-item label="从事行业" prop="com_sort" required>
           <el-select v-model="companyForm.com_sort" class="width408" placeholder="请选择企业从事行业">
@@ -58,33 +36,19 @@
         </el-form-item>
         <el-form-item label="企业性质" required>
           <el-select v-model="companyForm.com_type" class="width408" placeholder="请选择企业性质">
-            <el-option
-              :label="item"
-              :value="index+1"
-              v-for="(item,index) in comTypeList"
-              :key="index"
-            ></el-option>
+            <el-option :label="item" :value="index+1" v-for="(item,index) in comTypeList" :key="index"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="企业规模" required>
           <el-select v-model="companyForm.com_scale" class="width408" placeholder="请选择企业规模">
-            <el-option
-              :label="item"
-              :value="index+1"
-              v-for="(item,index) in comScaleList"
-              :key="index"
-            ></el-option>
+            <el-option :label="item" :value="index+1" v-for="(item,index) in comScaleList" :key="index"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="公司地址" required>
           <div class="width408">
             <districtSelet @change="change" :address="address"></districtSelet>
           </div>
-          <el-input
-            v-model="companyForm.address"
-            class="width408 team-address"
-            placeholder="请填写详细地址"
-          ></el-input>
+          <el-input v-model="companyForm.address" class="width408 team-address" placeholder="请填写详细地址"></el-input>
         </el-form-item>
         <el-form-item label="公司座机">
           <div class="x-flex-start-justify width408 company-tel">
@@ -101,13 +65,7 @@
           <el-input v-model="companyForm.link_phone" class="width408" placeholder="请输入联系电话"></el-input>
         </el-form-item>
         <el-form-item label="企业简介" required>
-          <el-input
-            type="textarea"
-            class="width408"
-            :autosize="{minRows: 5}"
-            v-model="companyForm.content"
-            placeholder="请输入企业介绍"
-          ></el-input>
+          <el-input type="textarea" class="width408" :autosize="{minRows: 5}" v-model="companyForm.content" placeholder="请输入企业介绍"></el-input>
         </el-form-item>
         <el-form-item class="teamMessage-btn">
           <el-button type="primary" @click="submitForm('companyForm')">保存</el-button>
@@ -231,9 +189,12 @@ export default {
       this.companyForm.license_url = this.license_img
       this.companyForm.logo_url = this.imageUrl
       addCompanyInfo(this.companyForm).then(res => {
-        if (res.status.code == 200) {
+        if (res.data) {
           this.$message.success('保存成功')
           sessionStorage.setItem('baseInfo', JSON.stringify(this.companyForm))
+        }
+        else {
+          this.$message.success('保存失败')
         }
       }).catch(error => {
         this.$message.error(error.status.remind)

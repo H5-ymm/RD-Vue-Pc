@@ -17,8 +17,8 @@
           </el-select>
         </el-form-item>
         <el-form-item label="性别：">
-          <el-select v-model="formMember.sex" class="width300" placeholder="请选择性别">
-            <el-option :label="item.label" :value="item.value" v-for="(item,index) in sexList" :key="index"></el-option>
+          <el-select v-model="formMember.sex" value-key="label" class="width300" placeholder="请选择性别">
+            <el-option :label="item.label" :value="item.value" v-for="(item,index) in sexList" :key="item.label"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="入职时间：">
@@ -137,9 +137,9 @@ export default {
       multipleSelection: [],
       viewType: 1,
       sexList: [
-        { lable: '全部', value: 0 },
-        { lable: '男', value: 1 },
-        { lable: '女', value: 2 },
+        { label: '全部', value: 0 },
+        { label: '男', value: 1 },
+        { label: '女', value: 2 },
       ],
       staffId: '',
       timeList: []
@@ -187,8 +187,8 @@ export default {
       }
     },
     changeDate (val) {
-      this.formMember.beginTime =val?val[0]:''
-      this.formMember.endTime = val?val[1]: ''
+      this.formMember.beginTime = val ? val[0] : ''
+      this.formMember.endTime = val ? val[1] : ''
     },
     handleSelectionChange (val) {
       let arr = val.map(item => {

@@ -2,28 +2,6 @@
 <style lang="scss">
 @import '@/assets/css/resume.scss';
 .billingManagement {
-  .tab-box {
-    margin: 10px 0 25px;
-    >li {
-      width:200px;
-      height:40px;
-      background:#fff;
-      box-shadow:2px 5px 17px 0px rgba(51,51,51,0.2);
-      border-radius:5px;
-      color: #333333;
-      margin-right: 40px;
-      text-align: center;
-      line-height: 40px;
-      img {
-        width: 34px;
-        height: 14px;
-      }
-      &.tab-active {
-        background:#1890FF;
-        color: #fff;
-      }
-    }
-  }
   .el-rate__icon {
     font-size: 20px;
   }
@@ -57,6 +35,25 @@
       }
     }
   }
+  .recomment-card-col3 {
+    width: 50%;
+    .progress {
+      width:100%;
+      height: 4px;
+      border-radius: 2px;
+      background: #eee;
+      position: relative;
+      margin-right: 10px;
+      .progress-item {
+        background: #1890FF;
+        height: 4px;
+        border-radius: 2px;
+        position: absolute;
+        top: 0;
+        left:0;  
+      }
+    }
+  }
 }
 </style>
 
@@ -81,24 +78,13 @@
           <p>{{resumeInfo.pass?resumeInfo.pass:'--'}}</p>
         </div>
       </div>
-      <div>
+      <div class="recomment-card-col3 x-flex-start-justify">
         <div class="progress">
-          <p class="progress-item"></p>
+          <p class="progress-item" :style="{width:percentageNum}"></p>
         </div>
+        <p>{{percentageNum}}</p>
       </div>
       <!-- <el-progress :percentage="percentageNum"></el-progress> -->
-    </div>
-    <div>
-      <ul class="x-flex-start tab-box">
-        <li :class="{'tab-active':tabIndex==0}" @click="tabIndex=0">
-          <p>团队接单</p>
-          <img src="../../assets/img/icon6.png" v-if="tabIndex==0" alt />
-        </li>
-        <li :class="{'tab-active':tabIndex==1}" @click="tabIndex=1">
-          <p>内部发单</p>
-          <img src="../../assets/img/icon6.png" v-if="tabIndex==1" alt />
-        </li>
-      </ul>
     </div>
     <div class="table-list recommend-table">
       <el-form :inline="true" label-width="75px" label-position="right" :model="formMember" class="demo-form-inline">
@@ -164,9 +150,10 @@
 
 <script>
 // import { getTeamList, loginOutTeam, addTeamUser, updateTeamUser } from '../../api/team'
-import { gettalent, addPut, getapplyInfo } from '../../api/teamReceipt'
+import { gettalent, addPut, getapplyInfo } from '@/api/teamReceipt'
+import { addPutSelf } from '@/api/internalInvoice'
 import { getResumeList, addUserResume, getMatchingResume, getInternalInvoiceList, getMatchingJobList, getInternalMatchingList } from '@/api/resume'
-import { moneyTypeList, rewardTypeList, payTypeList, weekList } from '../../base/base'
+import { moneyTypeList, rewardTypeList, payTypeList, weekList } from '@/base/base'
 import jobMate from '../resumeManage/jobMate'
 export default {
   components: {
@@ -223,9 +210,17 @@ export default {
   created () {
     // 初始化查询标签数据
     this.formMember.jobId = this.$route.query.jobId
-    this.apply_id = this.$route.query.id
+    if (this.$route.query.index) {
+      this.activeIndex = this.$route.query.index
+    }
+    else {
+      this.activeIndex = 0
+    }
     if (this.$route.query.jobId) {
       this.jobId = this.$route.query.jobId
+    }
+    if (this.$route.query.id) {
+      this.apply_id = this.$route.query.id
     }
     this.getInfo()
     this.byJobMatchingList(this.formMember)
@@ -278,12 +273,12 @@ export default {
       getapplyInfo(params).then(res => {
         this.resumeInfo = res.data
         let need_num = !res.data.need_num ? 0 : res.data.need_num
-        let put = !res.data.put ? 0 : res.data.put
-        if (!put && !need_num) {
+        let pass = !res.data.pass ? 0 : res.data.pass
+        if (!pass && !need_num) {
           this.percentageNum = 0
         }
         else {
-          this.percentageNum = parseInt((put / Number(need_num) * 100))
+          this.percentageNum = parseInt((pass / Number(need_num) * 100)) + '%'
         }
       }).catch(error => {
         this.$message.error(error.status.remind)
@@ -305,17 +300,42 @@ export default {
       if (!resume_id) {
         return this.$message.success('请选择简历')
       }
-      let param = {
-        resume_id: resume_id,
-        uid: localStorage.getItem('uid'),
-        apply_id: this.apply_id
+      if (!this.tabIndex) {
+        let param = {
+          resume_id: resume_id,
+          uid: localStorage.getItem('uid'),
+          apply_id: this.apply_id
+        }
+        addPut(param).then(res => {
+          if (res.data) {
+            this.$message.success('推荐成功')
+            this.byJobMatchingList(this.formMember)
+          }
+          else {
+            this.$message.error('推荐失败')
+          }
+        }).catch(error => {
+          this.$message.error(error.status.remind)
+        })
       }
-      addPut(param).then(res => {
-        this.$message.success('推荐成功')
-        this.byJobMatchingList(this.formMember)
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+      else {
+        let param = {
+          resume_id: resume_id,
+          uid: localStorage.getItem('uid'),
+          job_id: this.formMember.jobId
+        }
+        addPutSelf(param).then(res => {
+          if (res.data) {
+            this.$message.success('推荐成功')
+            this.byJobMatchingList(this.formMember)
+          }
+          else {
+            this.$message.error('推荐失败')
+          }
+        }).catch(error => {
+          this.$message.error(error.status.remind)
+        })
+      }
     },
     handleSelectionChange (val) {
       this.multipleSelection = val

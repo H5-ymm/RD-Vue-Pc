@@ -51,7 +51,7 @@
           <breadcrumb :breadcrumbs="breadcrumb"></breadcrumb>
         </el-header>
         <el-main class="team-main" :class="{'comany-main-page': type==1}">
-            <transition name="fade" mode="out-in">
+          <transition name="fade" mode="out-in">
             <router-view class="team-box"></router-view>
             <!-- <keep-alive>
               <router-view class="team-box"></router-view>
@@ -99,9 +99,6 @@ export default {
       this.breadcrumb = JSON.parse(sessionStorage.getItem('menus'))
     }
   },
-  beforeRouteLeave(){
-    this.$destroy(true)
-  },
   watch: {
     type (val) {
       console.log(val)
@@ -143,14 +140,18 @@ export default {
       })
     },
     handleCommand (val) {
-      localStorage.clear('')
-      sessionStorage.clear('')
-      this.$router.replace({
-        path: 'login',
-        // 登录成功后跳入浏览的当前页面
-        query: { redirect: 1 }
-      })
-      // this.$router.replace('login')
+      if (val) {
+        localStorage.clear('')
+        sessionStorage.clear('')
+        this.$router.push({
+          path: 'login',
+          // 登录成功后跳入浏览的当前页面
+          query: { redirect: 1 }
+        })
+      }
+      else {
+        this.$router.push('companyForm')
+      }
     }
   },
 }

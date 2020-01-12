@@ -1,5 +1,5 @@
 <template>
-  <el-dialog width="500px" title :visible.sync="dialogTableVisible" class="member-dialog" :show-close="false">
+  <el-dialog width="500px" title :visible="dialogTableVisible" class="member-dialog" :show-close="false">
     <div class="member-row personal-row">
       <img src="../../assets/img/member/cancel.png" alt class="cancel-icon" @click="handleClose" />
       <section class="member-col1">
@@ -9,8 +9,8 @@
         <ul class="personal-box">
           <li v-for="(item,index) in hasPersonList" :key="index" class="x-flex-around">
             <span class="item-name">{{index+1}}.{{item.user_name}}</span>
-            <span class="item-time">领取时间：{{$moment(item.ctime).format('YYYY-MM-DD HH:mm')}}</span>
-            <el-button :type="index==activeIndex?'default':'primary'" size="mini" class="cancle-btn" plain @click="handleCancle(item.touid,index)">取消分配</el-button>
+            <span class="item-time">领取时间：{{item.ctime?$moment(item.ctime).format('YYYY-MM-DD HH:mm'):''}}</span>
+            <el-button type="primary" size="mini" class="cancle-btn" plain @click="handleCancle(item.touid,index)">{{checkHas(item.touid,currentId)==index?'分配接单':'取消分配'}}</el-button>
           </li>
         </ul>
       </section>
@@ -25,7 +25,7 @@ export default {
   props: {
     dialogTableVisible: {
       type: Boolean,
-      value: false
+      default: false
     },
     hasPersonList: {
       type: Array,
@@ -49,18 +49,30 @@ export default {
       ids: [],
       type: 'primary',
       isCancel: false,
-      activeIndex: -1
+      currentId: []
     }
   },
   methods: {
     handleClose () {
       this.$emit('handleClose')
     },
+    checkHas (id, arr) {
+      let ret = arr.findIndex((v) => {
+        return v == id
+      })
+      return ret
+    },
     handleCancle (id, index) {
-      this.activeIndex = index
-      let arr = []
-      arr.push(id)
-      this.ids = [...new Set(arr)]
+      let flag = this.currentId.indexOf(id)
+      if (flag) {
+        this.currentId.push(id)
+      } else {
+        let ret = this.currentId.findIndex((v) => {
+          return v == id
+        })
+        this.currentId.splice(ret, 1)
+      }
+      this.ids = [...new Set(this.currentId)]
     },
     submit () {
       this.$emit('handleOk', this.ids.join(','))
@@ -110,18 +122,17 @@ export default {
         }
         .item-time{
           color: #6A6A6A;
-          // width: 190px;
-          // text-align: left;
         }
         .cancle-btn {
           &.el-button {
             background: #fff;
             padding: 8px 10px;
-           
+            color: #1890ff;
           }
           &.el-button--primary {
             &:hover {
               background: #1890ff;
+              color: #fff;
             }
           }
         }

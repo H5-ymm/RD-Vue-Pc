@@ -67,9 +67,9 @@
         </el-form-item>
         <el-form-item label="年龄" required>
           <div class="x-flex-start-justify width408">
-            <el-input type="number" class="width80" :min="16" @input="changeInput($event,'min_age')" v-model="orderTakingForm.min_age" placeholder="请输入"></el-input>
+            <el-input class="width80" @input="changeInput(arguments[0])" v-model="orderTakingForm.min_age" placeholder="请输入"></el-input>
             <span class="landline"></span>
-            <el-input type="number" class="width80" :max="65" @input="changeInput($event,'max_age')" v-model="orderTakingForm.max_age" placeholder="请输入"></el-input>
+            <el-input class="width80" @input="changeInputmax_age(arguments[0])" v-model="orderTakingForm.max_age" placeholder="请输入"></el-input>
           </div>
         </el-form-item>
         <el-form-item label="性别" required>
@@ -229,18 +229,24 @@ export default {
         this.orderTakingForm.name = this.jobName
       }
     },
-    changeInput (val, key) {
-      if (val) {
-        if (key == 'min_age') {
-          if (Number(val) < 16) {
-            this.orderTakingForm[key] = 16
-          }
-        }
-        else {
-          if (Number(val) > 65) {
-            this.orderTakingForm[key] = 65
-          }
-        }
+    changeInput (val) {
+      console.log(val)
+      if (val && val.length >= 2 && Number(val) < 16) {
+        this.orderTakingForm.min_age = 16
+      }
+      if (Number(val) > 65) {
+        this.orderTakingForm.min_age = 65
+      }
+    },
+    changeInputmax_age (val) {
+      if (val.length == 1 && Number(val) < 17) {
+        this.orderTakingForm.max_age = 17
+      }
+      if (val && val.length >= 2 && Number(val) < 16) {
+        this.orderTakingForm.max_age = 17
+      }
+      if (val && val.length >= 2 && Number(val) > 65) {
+        this.orderTakingForm.max_age = 65
       }
     },
     keepLastIndex (obj) {
@@ -255,12 +261,10 @@ export default {
         range.collapse(false); //光标移至最后
         range.select();
       }
-      console.log(obj)
       this.jobContent = obj.target.innerText
       if (!this.jobContent) {
         this.content = ''
       }
-      console.log(this.jobContent)
       this.orderTakingForm.job_content = obj.target.innerHTML
     },
     numberChange (val) {

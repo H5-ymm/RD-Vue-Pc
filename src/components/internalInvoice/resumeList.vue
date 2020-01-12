@@ -131,9 +131,8 @@ export default {
     if (this.$route.query.jobId) {
       this.jobId = this.$route.query.jobId
       this.formMember.job_id = this.jobId
-      this.getList(this.formMember)
     }
-
+    this.getList(this.formMember)
   },
   methods: {
     getList (params) {

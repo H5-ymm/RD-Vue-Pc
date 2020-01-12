@@ -44,22 +44,22 @@
 <template>
   <div class="post-job-view">
     <ul class="x-flex-start tab-box">
-      <li :class="{'tab-active':tabIndex==0}" @click="tabIndex=0">
+      <li :class="{'tab-active':tabIndex==0}" @click="switchTab(0)">
         <p class="x-flex-center">
           基本信息
-          <span v-if="tabIndex!=0" class="el-icon-circle-check has-info-icon">已完善</span>
-          <!-- <span v-if="tabIndex!=0" class="el-icon-warning no-info-icon">未填写</span> -->
+          <span v-if="tabIndex!=0" class="el-icon-circle-check " :class="!isCheck(baseInfo)?'no-info-icon':'has-info-icon'">{{isCheck(baseInfo)?'已完善':'未完善'}}</span>
+          <!-- <span v-if="tabIndex!=0&&!isBaseInfo" class="el-icon-warning no-info-icon">未填写</span> -->
         </p>
         <img src="../../assets/img/icon6.png" v-if="tabIndex==0" alt />
       </li>
-      <li :class="{'tab-active':tabIndex==1}" @click="tabIndex=1">
+      <li :class="{'tab-active':tabIndex==1}" @click="switchTab(1)">
         <p class="x-flex-center">
           返利规则
           <span v-if="tabIndex!=1" class="el-icon-warning no-info-icon">未填写</span>
         </p>
         <img src="../../assets/img/icon6.png" v-if="tabIndex==1" alt />
       </li>
-      <li :class="{'tab-active':tabIndex==2}" @click="tabIndex=2">
+      <li :class="{'tab-active':tabIndex==2}" @click="switchTab(2)">
         <p class="x-flex-center">
           运营信息
           <span v-if="tabIndex!=2" class="el-icon-warning no-info-icon">未填写</span>
@@ -69,7 +69,7 @@
     </ul>
     <div>
       <keep-alive>
-        <component :is="comName" @submitForm="submitForm" :formJob="formMember"></component>
+        <component :is="comName" @submitForm="submitForm" :tabIndex="tabIndex" :formJob="formMember"></component>
       </keep-alive>
     </div>
   </div>
@@ -100,18 +100,12 @@ export default {
         address: '',
         age_max: 0,
         age_min: 0,
-        com_introduction: "",
-        company_logo: "",
-        company_name: "",
-        entry_requirements: "",
+        com_introduction: '',
+        company_logo: '',
+        entry_requirements: '',
         is_five_risks: 2,
         is_fund: 2,
-        is_up: '',
-        job_description: "",
-        job_name: '',
-        number: 0,
-        offermoney: "2",
-        offermoney_type: 1,
+        job_description: '',
         offtime: '',
         sex: 0,
         uid: '',
@@ -130,20 +124,51 @@ export default {
       this.getInfo(this.id)
     }
   },
-  watch: {
-    tabIndex (val) {
-      if (val == 0) {
-        this.comName = 'baseInfo'
+  computed: {
+    isCheckBaseInfo () {
+      let flag = false
+      for (let key in this.baseInfo) {
+        if (this.rewardInfo[key] == '') {
+          flag = false
+          break;
+        }
+        else {
+          flag = true
+        }
       }
-      else if (val == 1) {
-        this.comName = 'rewardRule'
-      }
-      else {
-        this.comName = 'operationInfo'
-      }
+      return flag
     }
   },
+  watch: {
+    // tabIndex (val) {
+    //   if (val == 0) {
+    //     this.comName = 'baseInfo'
+    //   }
+    //   else if (val == 1) {
+    //     this.comName = 'rewardRule'
+    //   }
+    //   else {
+    //     this.comName = 'operationInfo'
+    //   }
+    // }
+  },
   methods: {
+    switchTab (index) {
+      this.tabIndex = index
+    },
+    isCheck (obj) {
+      let flag = false
+      for (let key in obj) {
+        if (obj[key] == '') {
+          flag = false
+          break;
+        }
+        else {
+          flag = true
+        }
+      }
+      return flag
+    },
     getInfo (id) {
       getJobinfo({ id }).then(res => {
         this.formMember = res.data
@@ -155,11 +180,25 @@ export default {
       })
     },
     submitForm (val) {
-      if (this.tabIndex < 2) {
-        this.tabIndex = this.tabIndex + 1
+      if (!val) {
+        this.tabIndex = this.tabIndex - 1
+        console.log(this.tabIndex)
+        return
       }
+      if (this.tabIndex <= 2) {
+        this.tabIndex = this.tabIndex
+        if (this.tabIndex == 0) {
+          this.comName = 'baseInfo'
+        }
+        else if (this.tabIndex == 1) {
+          this.comName = 'rewardRule'
+        }
+        else {
+          this.comName = 'operationInfo'
+        }
+      }
+      this.baseInfo = { ...val }
       this.formInfo = Object.assign(this.formInfo, val)
-      console.log(this.formInfo)
       if (this.comName == 'operationInfo') {
         addjob(this.formInfo).then(res => {
           console.log(res)

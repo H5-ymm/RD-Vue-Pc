@@ -1,7 +1,7 @@
 import { $post } from '../axios'
 
 export const getJoblist = data => $post('/teamselfjob/get_joblist', data) // 团队职位列表
-export const addPut = data => $post('/teamselfjob/add_put', data) // 推送简历（可批量）
+export const addPutSelf = data => $post('/teamselfjob/add_put', data) // 推送简历（可批量）
 export const getTomember = data => $post('/teamselfjob/getTomember', data) // 获取跟进人列表
 export const getassignlist = data => $post('/teamselfjob/getassignlist', data) // 获取指定人列表
 export const getPutresume = data => $post('/teamselfjob/get_putresume', data) // 根据发单状态获取简历列表
@@ -24,3 +24,9 @@ export const checkPutresume = data => $post('/teamselfjob/get_putresume', data) 
 export const getJobinfo = data => $post('/teamselfjob/getJobinfo', data) //审核简历
 
 export const recvjob = data => $post('/teamselfjob/recvjob', data) //审核简历
+export const getobedistributedList = data => $post('/Teamselfjob/getobedistributed_list', data) //获取 待分配跟进人列表
+
+export const cancelrecvList = data => $post('/Teamselfjob/cancelrecv_list', data) //已分配 领取/跟进列表（取消分配用）
+export const giveupPut = data => $post('/Teamselfjob/giveup_put', data) // 取消推送
+export const giveupView = data => $post('/Teamselfjob/giveup_view', data) // 放弃面试
+export const giveEntry = data => $post('/Teamselfjob/give_entry', data) // 放弃入职

@@ -213,7 +213,7 @@ export default {
         submenu: [
           {
             title: '已推荐简历',
-            url: '/resumeList'
+            url: '/putList'
           }
         ]
       },
@@ -232,7 +232,7 @@ export default {
         },
         {
           title: '内部审核简历',
-          url: '/checkResume'
+          url: '/checkResumeInvoice'
         }
       ],
       receiptRoot: [

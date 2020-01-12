@@ -56,6 +56,7 @@
 <script>
 import { goLogin, getCode, userRegister } from '../api/login'
 import { setTimeout } from 'timers';
+// import Dialog from '../compontents/Dialog'
 export default {
   data () {
     let validatereg = function (rule, value, callback) {   //验证用户名是否合法

@@ -8,9 +8,9 @@
               <div class="resume-card-item">
                 <el-form-item label="岗位类型">
                   <el-radio-group v-model="formMember.job_type">
-                    <el-radio :label="1" border class="width126">精选岗位</el-radio>
-                    <el-radio :label="2" border class="width126">高额返利</el-radio>
-                    <el-radio :label="3" border class="width126">企业急招</el-radio>
+                    <el-radio :label="1" border @click.native.prevent="changeType(1)" class="width126">精选岗位</el-radio>
+                    <el-radio :label="2" border @click.native.prevent="changeType(2)" class="width126">高额返利</el-radio>
+                    <el-radio :label="3" border @click.native.prevent="changeType(3)" class="width126">企业急招</el-radio>
                   </el-radio-group>
                 </el-form-item>
                 <el-form-item label="岗位来源">
@@ -66,7 +66,7 @@ export default {
   components: {
     personalModal
   },
-  props: ['formJob'],
+  props: ['formJob', 'tabIndex'],
   data () {
     return {
       dialogTableVisible: false,
@@ -80,6 +80,13 @@ export default {
       list: []
     }
   },
+  watch: {
+    tabIndex (val) {
+      if (val == 2) {
+        this.submitForm()
+      }
+    }
+  },
   created () {
   },
   methods: {
@@ -91,6 +98,9 @@ export default {
       }).catch(error => {
         this.$message.error(error.status.remind)
       })
+    },
+    changeType (e) {
+      e === this.formMember.job_type ? this.formMember.job_type = '' : this.formMember.job_type = e
     },
     handleOk (val) {
       this.list = val

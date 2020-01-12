@@ -69,7 +69,7 @@
                 <span class="moneyType">返利总金额</span>
               </template>
             </el-input>
-            <el-input placeholder="请输入" class="width160 width198 text-input" v-model="orderTakingForm.reward_needatime">
+            <el-input placeholder="请输入" class="width160 width198 text-input" v-model="orderTakingForm.reward_needtime">
               <template slot="prepend">
                 <span class="moneyType">需入职满</span>
               </template>
@@ -97,7 +97,7 @@
         <el-select v-model="orderTakingForm.reward_money_type" @blur="blurInput" @change="changePayType" class="width160 width198" placeholder="结算类型">
           <el-option label="长期返利" :value="1"></el-option>
           <div class="width160 width198 reward-input" ref="reward" :value="2">
-            <el-input placeholder="请输入" class="text-input width110" v-model="orderTakingForm.reward_needatime" @change="changeInput">
+            <el-input placeholder="请输入" class="text-input width110" v-model="orderTakingForm.reward_needtime" @change="changeInput">
               <template slot="prepend">
                 <span class="moneyType">持续返利</span>
               </template>
@@ -123,7 +123,7 @@
         </el-select>
       </div>
     </el-form-item>
-    <el-form-item class="reward_type" label-width="96px"  v-if="(orderTakingForm.reward_type==2||orderTakingForm.reward_type==3)&&orderTakingForm.reward_money_type">
+    <el-form-item class="reward_type" label-width="96px" v-if="(orderTakingForm.reward_type==2||orderTakingForm.reward_type==3)&&orderTakingForm.reward_money_type">
       <div class="x-flex-start-justify width500 duration_time">
         <el-input placeholder="请输入" @focus="focusInput" class="width160 width198 text-input" v-model="orderTakingForm.duration_time">
           <template slot="prepend">
@@ -159,7 +159,7 @@
 <script>
 import { moneyTypeList, rewardTypeList, payTypeList, weekList } from '../../base/base'
 export default {
-  props: ['moneyList'],
+  props: ['moneyList', 'type'],
   data () {
     return {
       orderTakingForm: {
@@ -167,9 +167,9 @@ export default {
         reward_money: '', // 返利金额(根据类型修改单位)
         reward_money_type: '', // 1日2周3月(针对日返和时返) 1长期2持续（针对月返）结算类型 
         settlement_time: '', // 结算时间(针对月返：次月第XX多少天；)
-        reward_needatime: '', // 需求入职天数/周数/月数(一次性时：0表示当天返)
+        reward_needtime: '', // 需求入职天数/周数/月数(一次性时：0表示当天返)
         duration_time: '', // 持续 (天数/周数/月数)
-        settlement_type: '', 
+        settlement_type: '',
       },
       comTypeList: [],
       moneyTypeList,
@@ -189,17 +189,26 @@ export default {
       return this.orderTakingForm.reward_money_type == 1 ? '日' : this.orderTakingForm.reward_money_type == 2 ? '周' : '月'
     }
   },
-   watch: {
+  watch: {
     orderTakingForm: {
       handler (val, oldName) {
         for (let key in val) {
           if (val.reward_type == 1) {
-            if (val[key] != '' && key != 'reward_needtime' && key != 'duration_time') {
+            if (Number(val.settlement_time) > 31) {
+              return this.$message.warning('结算时间最大输入31')
+              this.$emit('submit', null)
+            }
+            else {
               this.$emit('submit', val)
             }
           }
           else {
-            if (val[key] != '') {
+            if (val.reward_type != 4 && Number(val.reward_needtime) > Number(this.orderTakingForm.duration_time)) {
+              this.orderTakingForm.reward_needtime = val.duration_time
+              this.$emit('submit', val)
+            }
+            else {
+              console.log(val)
               this.$emit('submit', val)
             }
           }
@@ -211,21 +220,25 @@ export default {
   methods: {
     changeReward (val) {
       if (val == 1) {
-        this.orderTakingForm.settlement_type = 2
+        this.orderTakingForm.settlement_type = 1
       }
     },
     focusInput () {
       this.rewardTipShow = true
     },
     changePayType (val) {
-      console.log(val)
+      if (val == 1) {
+        this.orderTakingForm.reward_money_type = val
+      }
     },
     blurInput ($event) {
       return false
     },
     changeInput (val) {
       if (val) {
-        this.orderTakingForm.reward_money_type = `持续返利` + val + `月`
+        this.reward_money_type = `持续返利` + val + `月`
+        this.orderTakingForm.reward_money_type = 2
+        this.orderTakingForm.duration_time = val
         this.blurInput()
       }
     }

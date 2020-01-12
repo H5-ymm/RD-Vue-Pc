@@ -21,24 +21,13 @@
 <template>
   <div class="tables-box billingManagement receipt-manage internal-invoice">
     <div class="table-list">
-      <el-form
-        :inline="true"
-        label-width="96px"
-        label-position="right"
-        :model="formMember"
-        class="internal-invoice-form"
-      >
+      <el-form :inline="true" label-width="96px" label-position="right" :model="formMember" class="internal-invoice-form">
         <el-form-item label="岗位名称：">
           <el-input v-model="formMember.job_name" class="width300" placeholder="请输入岗位名称关键字"></el-input>
         </el-form-item>
         <el-form-item label="岗位类型：">
           <el-select v-model="formMember.job_type" class="width300" placeholder="选择相应的岗位类型">
-            <el-option
-              :label="item.label"
-              :value="item.value"
-              v-for="(item,index) in positionStatusList"
-              :key="index"
-            ></el-option>
+            <el-option :label="item.label" :value="item.value" v-for="(item,index) in positionStatusList" :key="index"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="企业名称：">
@@ -46,43 +35,21 @@
         </el-form-item>
         <el-form-item label="薪资类型：">
           <el-select v-model="formMember.offermoney_type" class="width300" placeholder="请选择薪资模式">
-            <el-option
-              :label="item.label"
-              :value="item.value"
-              v-for="(item,index) in moneyTypeList"
-              :key="index"
-            ></el-option>
+            <el-option :label="item.label" :value="item.value" v-for="(item,index) in moneyTypeList" :key="index"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="招聘类型：">
           <el-select v-model="formMember.job_type" class="width300" placeholder="请选择返利模式">
-            <el-option
-              :label="item.label"
-              :value="item.value"
-              v-for="(item,index) in advertisesList"
-              :key="index"
-            ></el-option>
+            <el-option :label="item.label" :value="item.value" v-for="(item,index) in advertisesList" :key="index"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="发单状态：">
           <el-select v-model="formMember.is_up" class="width300" placeholder="请选择">
-            <el-option
-              :label="item.label"
-              :value="item.value"
-              v-for="(item,index) in receiptStatusList"
-              :key="index"
-            ></el-option>
+            <el-option :label="item.label" :value="item.value" v-for="(item,index) in receiptStatusList" :key="index"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="创建时间：">
-          <el-date-picker
-            class="width300"
-            v-model="timeList"
-            type="daterange"
-            range-separator="-"
-            start-placeholder="开始日期区间"
-            end-placeholder="结束日期"
-          ></el-date-picker>
+          <el-date-picker class="width300" v-model="timeList" type="daterange" range-separator="-" start-placeholder="开始日期区间" end-placeholder="结束日期"></el-date-picker>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="handleSearch" class="select-btn">查询</el-button>
@@ -101,30 +68,31 @@
         </div>
         <el-table border :data="tableData" ref="multipleTable" style="width: 100%">
           <el-table-column type="selection" align="center" width="50"></el-table-column>
-          <el-table-column label="发单状态" align="center" min-width="160">
+          <el-table-column label="发单状态" align="center" width="180">
             <template slot-scope="props">
-              <el-select v-model="formMember.status" class="width150" placeholder="请选择">
-                <el-option
-                  :label="item.label"
-                  :value="item.value"
-                  v-for="(item,index) in receiptStatusList"
-                  :key="index"
-                  v-show="index"
-                ></el-option>
+              <el-select v-model="formMember.status" value-key="label" class="width150" placeholder="请选择">
+                <el-option :label="item.label" :value="item.value" v-show="index" @change="changeStatus($event,scope.$index)" v-for="(item,index) in receiptStatusList" :key="item.label"></el-option>
               </el-select>
             </template>
           </el-table-column>
           <el-table-column label="企业名称" prop="company_name" align="center" width="150"> </el-table-column>
           <el-table-column label="岗位名称" prop="job_name" align="center" width="150"></el-table-column>
           <el-table-column label="岗位类型" align="center" width="110">
-           <template slot-scope="props">
-              <span>{{props.row.jobType | jobType}}</span>
-            </template>  
-          </el-table-column>
-          <el-table-column label="工作地址" prop="address" align="center" width="110"></el-table-column>
-          <el-table-column label="员工薪资" align="center" width="110">
             <template slot-scope="props">
-              <span>{{props.row.offermoney}}元/{{props.row.offermoney_type==1?'月':props.row.offermoney_type==2?'日':'时'}}</span>
+              <span>{{props.row.jobType | jobType}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="招聘人数" prop="put_num" align="center" width="110"></el-table-column>
+          <el-table-column label="已推荐简历" prop="view_dcl" align="center" width="110">
+            <template slot-scope="props">
+              <span>{{props.row.view_dcl}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="通过简历" align="center" width="110">
+            <template slot-scope="props">
+              <div>
+                {{props.row.view_num}}
+              </div>
             </template>
           </el-table-column>
           <el-table-column label="招聘类型" prop="type" align="center" width="110"></el-table-column>
@@ -133,84 +101,33 @@
               <span>{{props.row.offermoney_type | moneyType}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="招聘人数" prop="number" align="center" width="110"></el-table-column>
-          <el-table-column label="报名人数" prop="view_dcl" align="center" width="110">
-          </el-table-column>
-          <el-table-column label="面试人数" align="center" min-width="110">
+          <el-table-column label="工作地址" prop="address" align="center" width="110"></el-table-column>
+          <el-table-column label="员工薪资" align="center" width="110">
             <template slot-scope="props">
-              <div>
-                {{
-                props.row.view_num}}
-                <span class="fail-color">
-                 (待处理{{
-                  props.row.view_dcl}})
-                </span>
-              </div>
-            </template>
-          </el-table-column>
-          <el-table-column label="面试情况" prop="depart_name" align="center" min-width="150">
-            <template slot-scope="props">
-              <div>
-                <span class="el-icon-circle-check success-color">
-                  {{
-                  props.row.view_yes}}
-                </span>
-                <el-divider direction="vertical"></el-divider>
-                <span class="el-icon-circle-close fail-color">
-                  {{
-                  props.row.view_nopass}}
-                </span>
-                <el-divider direction="vertical"></el-divider>
-                <span class="el-icon-remove-outline outline-color">
-                  {{
-                  props.row.view_no}}
-                </span>
-              </div>
+              <span>{{props.row.offermoney}}元/{{props.row.offermoney_type==1?'月':props.row.offermoney_type==2?'日':'时'}}</span>
             </template>
           </el-table-column>
           <el-table-column label="上架状态" align="center" width="110" v-if="userPosition!=1">
             <template slot-scope="props">
-              <span
-                class="status"
-                :class="`status${props.row.is_up}`"
-              >{{props.row.is_up==1?'招聘中':'已下架'}}</span>
+              <span class="status" :class="`status${props.row.is_up}`">{{props.row.is_up==1?'招聘中':'已下架'}}</span>
             </template>
           </el-table-column>
           <el-table-column label="创建日期" prop="ctime" align="center" width="170"></el-table-column>
           <el-table-column label="操作" align="center" min-width="150">
             <template slot-scope="scope">
-              <el-button
-                @click="$router.push({path:'resumeList',query:{jobId:scope.row.id}})"
-                type="text"
-                size="small"
-              >简历列表</el-button>
+              <el-button @click="$router.push({path:'resumeList',query:{jobId:scope.row.id}})" type="text" size="small">简历列表</el-button>
             </template>
           </el-table-column>
         </el-table>
       </div>
-      <el-pagination
-        class="team-pagination"
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :current-page="formMember.page"
-        :page-sizes="[10, 30, 50, 100]"
-        :page-size="formMember.limit"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="total"
-      ></el-pagination>
+      <el-pagination class="team-pagination" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="formMember.page" :page-sizes="[10, 30, 50, 100]" :page-size="formMember.limit" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
     </div>
-    <modal
-      :dialogTableVisible="dialogTableVisible"
-      @handleOk="handleOk"
-      isShow="true"
-      :modalObj="modalObj"
-      @handleClose="dialogTableVisible=false"
-    ></modal>
+    <modal :dialogTableVisible="dialogTableVisible" @handleOk="handleOk" isShow="true" :modalObj="modalObj" @handleClose="dialogTableVisible=false"></modal>
   </div>
 </template>
 
 <script>
-import { getJoblist, addPut } from '@/api/internalInvoice'
+import { putResumelist, addPutSelf, getJoblist, getPutresume } from '@/api/internalInvoice'
 import { moneyTypeList, rewardTypeList, payTypeList, weekList, recommendStatusList, positionStatusList } from '@/base/base'
 import modal from '../common/modal'
 export default {
@@ -222,25 +139,25 @@ export default {
       let obj = moneyTypeList.find(item => {
         return val == item.value
       })
-      return  obj?obj.label:'--'
+      return obj ? obj.label : '--'
     },
     rewardType (val) {
       let obj = rewardTypeList.find(item => {
         return val == item.value
       })
-      return  obj?obj.label:'--'
+      return obj ? obj.label : '--'
     },
     recommendStatus () {
       let obj = recommendStatusList.find(item => {
         return val == item.value
       })
-      return obj?obj.label:'--'
+      return obj ? obj.label : '--'
     },
-    jobType(val){
+    jobType (val) {
       let obj = positionStatusList.find(item => {
         return val == item.value
       })
-      return obj? obj.label: '-'    
+      return obj ? obj.label : '-'
     }
   },
   data () {
@@ -255,7 +172,8 @@ export default {
       formMember: {
         uid: localStorage.getItem('uid'),
         limit: 10,
-        page: 1
+        page: 1,
+        status: 1
       },
       type: '',
       total: 0,
@@ -287,18 +205,26 @@ export default {
         { label: '全部', value: 0 },
         { label: '审核简历', value: 1 },
         { label: '面试结果', value: 2 },
-        { label: '面试结果', value: 3 }
+        { label: '入职结果', value: 3 }
       ],
-      timeList: []
+      timeList: [],
+      activeIndex: -1,
+      statusName: '',
+      statusList: []
     }
   },
   created () {
     // 初始化查询标签数据
     this.getList(this.formMember)
   },
+  wacth: {
+    $route (to, from) {
+      this.getList(this.formMember)
+    }
+  },
   methods: {
     getList (params) {
-      getJoblist(params).then(res => {
+      getPutresume(params).then(res => {
         const { data } = res
         this.tableData = data.data
         this.total = data.count
@@ -306,9 +232,13 @@ export default {
         this.$message.error(error.status.remind)
       })
     },
+    changeStatus (val, index) {
+      this.activeIndex = index
+      this.statusName = this.receiptStatusList[index].label
+    },
     changeDate (val) {
-      this.formMember.beginTime =val?val[0]:''
-      this.formMember.endTime =val?val[1]:''
+      this.formMember.beginTime = val ? val[0] : ''
+      this.formMember.endTime = val ? val[1] : ''
     },
     changeInput (val) {
       this.formMember[this.type] = val
