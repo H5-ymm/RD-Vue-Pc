@@ -166,8 +166,6 @@ export default {
         is_fund: 2,
         age_min: 16,
         age_max: 65,
-        sex: 0,
-        job_name: '',
         uid: localStorage.getItem('uid'),
       },
       address: [],
@@ -210,7 +208,11 @@ export default {
       }
     },
     tabIndex (val) {
-      if (val == 1) {
+      console.log(val)
+      if(val==0) {
+        this.$emit('submitForm', 0)
+      }
+      else {
         this.submitForm()
       }
     }
@@ -275,19 +277,20 @@ export default {
       this.$parent.dialogTableVisible = false
     },
     submitForm () {
-      if (!this.formMember.offermoney_type
-        && this.formMember.offermoney) {
-        return this.$message.warning('请选择薪资')
-      }
-      if (this.formMember.age_max < this.formMember.age_min) {
-        return this.$message.warning('最大年龄应该大于最小年龄')
-      }
       this.$refs['formMember'].validate((valid) => {
         if (valid) {
+          if (this.formMember.offermoney_type
+            && !this.formMember.offermoney) {
+            this.$emit('submitForm', 0)
+            return this.$message.warning('请选择薪资')
+          }
+          if (this.formMember.age_max < this.formMember.age_min) {
+            return this.$message.warning('最大年龄应该大于最小年龄')
+          }
           console.log(this.formMember)
           this.$emit('submitForm', this.formMember)
         } else {
-          this.$emit('submitForm', null)
+          this.$emit('submitForm', 0)
         }
       })
     }

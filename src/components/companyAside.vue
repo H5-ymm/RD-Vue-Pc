@@ -151,7 +151,8 @@ export default {
     },
     selectMenus (key, keyPath) {
       this.url = key
-      console.log(this.url)
+      console.log(key)
+      console.log(keyPath)
       let arr = this.getMenusTitle(key, this.menus)
       sessionStorage.setItem('menusUrl', this.url)
       sessionStorage.setItem('menus', JSON.stringify(arr))
@@ -168,6 +169,20 @@ export default {
         })
       })
       return list
+    }
+  },
+  watch:{
+    $route(to,from) {
+      console.log(to)
+      console.log(from)
+      if(to.path=='/interviewPersonnel'&&from.path=='/talentResume'){
+        // this.url = to.path
+        this.selectMenus(to.path,this.menus)
+      }
+      if (to.path == '/entryList'&&from.path=='/interviewPersonnel'){
+        this.url = to.path
+        this.selectMenus(to.path,this.menus)
+      }
     }
   },
   computed: {

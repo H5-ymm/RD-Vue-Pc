@@ -103,7 +103,8 @@ export default {
         uid: localStorage.getItem('uid'),
         limit: 10,
         page: 1,
-        apply_id: ''
+        job_id: '',
+        type:2
       },
       total: 0,
       len: 0,
@@ -117,7 +118,6 @@ export default {
         { label: '未通过', value: 3 }
       ],
       activeIndex: 0,
-      apply_id: '',
       dialogObj: {
         title: '放弃报名',
         subTitle: '放弃理由',
@@ -131,17 +131,13 @@ export default {
   },
   created () {
     // 初始化查询标签数据
-    this.apply_id = this.$route.query.id
-    this.formMember.apply_id = this.apply_id
-    this.jobId = this.$route.query.jobId
+    // this.apply_id = this.$route.query.id
+    // this.formMember.apply_id = this.apply_id
+    this.jobId = this.$route.query.id
+    console.log( this.jobId)
+    this.formMember.job_id = this.jobId 
     this.viewType = this.$route.query.view
     this.getList(this.formMember)
-  },
-  watch: {
-    $route (to, from) {
-      this.viewType = from.query.view
-      this.getList(this.formMember)
-    }
   },
   methods: {
     getList (params) {
@@ -149,6 +145,8 @@ export default {
         const { data } = res
         this.tableData = data.data
         this.total = data.count
+      }).catch(error => {
+        this.$message.error(error.status.remind)
       })
     },
     routerResume (val) {

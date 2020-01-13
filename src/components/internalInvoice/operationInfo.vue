@@ -8,9 +8,11 @@
               <div class="resume-card-item">
                 <el-form-item label="岗位类型">
                   <el-radio-group v-model="formMember.job_type">
-                    <el-radio :label="1" border @click.native.prevent="changeType(1)" class="width126">精选岗位</el-radio>
-                    <el-radio :label="2" border @click.native.prevent="changeType(2)" class="width126">高额返利</el-radio>
-                    <el-radio :label="3" border @click.native.prevent="changeType(3)" class="width126">企业急招</el-radio>
+                    <!-- @click.native.prevent="changeType(2)"  -->
+                    <el-radio :label="0" border class="width126">普通岗位</el-radio>
+                    <el-radio :label="1" border class="width126">精选岗位</el-radio>
+                    <el-radio :label="2" border class="width126">高额返利</el-radio>
+                    <el-radio :label="3" border class="width126">企业急招</el-radio>
                   </el-radio-group>
                 </el-form-item>
                 <el-form-item label="岗位来源">
@@ -71,19 +73,28 @@ export default {
     return {
       dialogTableVisible: false,
       formMember: {
-        job_type: 1,
-        is_assign: 1
+        job_type: 0,
+        is_assign: 1,
+        meeting_time: ''
       },
       assignUids: '',
       meeting_time: '',
       personalList: [],
-      list: []
+      list: [],
+      index:2
     }
   },
   watch: {
     tabIndex (val) {
-      if (val == 2) {
-        this.submitForm()
+      this.index = val
+      if (val==0){
+        this.$emit('submitForm', 0)
+      }
+      else if(val==1){
+        this.$emit('submitForm', 1)
+      }
+      else {
+        this.$emit('submitForm', 2)
       }
     }
   },
@@ -111,9 +122,11 @@ export default {
       this.dialogTableVisible = false
     },
     submitForm () {
-      let meetingTime = this.meeting_time + ''
-      this.formMember.meeting_time = meetingTime.slice(0, 10)
-      console.log(this.formMember)
+      if (this.meeting_time) {
+        let meetingTime = this.meeting_time + ''
+        this.formMember.meeting_time = meetingTime.slice(0, 10)
+        console.log(this.formMember)
+      }
       this.$emit('submitForm', this.formMember)
     }
   }

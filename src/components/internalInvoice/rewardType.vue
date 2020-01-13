@@ -94,7 +94,7 @@
             <span class="moneyType">号结算</span>
           </template>
         </el-input>
-        <el-select v-model="orderTakingForm.reward_money_type" @blur="blurInput" @change="changePayType" class="width160 width198" placeholder="结算类型">
+        <el-select v-model="reward_money_type" @blur="blurInput" @change="changePayType" class="width160 width198" placeholder="结算类型">
           <el-option label="长期返利" :value="1"></el-option>
           <div class="width160 width198 reward-input" ref="reward" :value="2">
             <el-input placeholder="请输入" class="text-input width110" v-model="orderTakingForm.reward_needtime" @change="changeInput">

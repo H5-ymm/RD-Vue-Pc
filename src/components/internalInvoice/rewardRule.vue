@@ -54,7 +54,8 @@ export default {
         reward_needtime: '', // 需求入职天数/周数/月数(一次性时：0表示当天返)
         duration_time: '', // 持续 (天数/周数/月数)
         settlement_type: '',
-      }
+      },
+      index: 1
     }
   },
   created () {
@@ -63,9 +64,15 @@ export default {
   },
   watch: {
     tabIndex (val) {
-      if (val == 2) {
-        console.log(val)
-        this.submitForm()
+      this.index = val
+      if (val==0){
+        this.$emit('submitForm', val)
+      }
+      else if(val==1){
+        this.submitForm(val)
+      }
+      else {
+        this.submitForm(val)
       }
     }
   },
@@ -94,25 +101,47 @@ export default {
       this.rewardForm = val
       this.formMember = Object.assign(this.formMember, val)
     },
-    checkReward (obj) {
+    checkReward(info){
       let flag = false
-      for (let key in obj) {
-        if (obj[key] == '') {
-          flag = false
-          break;
-        }
-        else {
-          flag = true
+      if (info.type==2) {
+        flag = true
+      }
+      else {
+        for (let key in info) {
+          if (info.reward_type == 1) {
+            if (info[key] != '' && key != 'reward_needtime' && key != 'duration_time') {
+              flag = true
+              break;
+            }
+            else {
+              flag = false
+            }
+          }
+          else {
+            if (info[key] != '') {
+              flag = true
+              break;
+            }
+            else {
+              flag = false
+            }
+          }
         }
       }
-      return flag
+      return flag 
     },
-    submitForm () {
+    submitForm (index) {
       if (this.formMember.type == 1) {
-        if (!this.checkReward(this.rewardForm)) {
-          this.$emit('submitForm', null)
-          return this.$message.warning('请完善返利模式规则')
+        if (this.index==2) {
+          if (!this.checkReward(this.rewardForm)) {
+            this.$emit('submitForm', index)
+            return this.$message.warning('请设置返利模式规则')
+          }
         }
+        else {
+          this.$emit('submitForm', {tabIndex:1})
+          return 
+        }     
       }
       this.$emit('submitForm', this.formMember)
     }

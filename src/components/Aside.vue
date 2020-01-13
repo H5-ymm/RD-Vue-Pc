@@ -67,14 +67,6 @@ export default {
           title: '接单管理',
           icon: 'el-icon-collection-tag',
           submenu: [
-            // {
-            //   title: '申请接单',
-            //   url: '/teamApplication'
-            // },
-            // {
-            //   title: '接单分配',
-            //   url: '/receiptTable'
-            // },
             {
               title: '输送人才',
               url: '/teamInterviewPersonnel'
@@ -252,7 +244,7 @@ export default {
         }
       ],
       title: '',
-      url: ''
+      url: '/teamData'
     }
   },
   created () {
@@ -308,6 +300,19 @@ export default {
         })
       })
       return list
+    }
+  },
+   watch:{
+    $route(to,from) {
+       if(to.path=='/commonTableList'&&from.path=='/teamEntryList'){
+        // this.selectMenus(to.path,this.menus)
+        this.url = '/teamEntryList'
+      }else {
+        this.selectMenus(to.fullPath,this.menus)
+      }
+      // if(to.path=='/teamEntryList'&&from.path=='/resumeResult'){
+      //   this.selectMenus(to.path,this.menus)
+      // }
     }
   },
   computed: {

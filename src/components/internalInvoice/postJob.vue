@@ -55,7 +55,7 @@
       <li :class="{'tab-active':tabIndex==1}" @click="switchTab(1)">
         <p class="x-flex-center">
           返利规则
-          <span v-if="tabIndex!=1" class="el-icon-warning no-info-icon">未填写</span>
+          <span v-if="tabIndex!=1" :class="!isCheckReward(rewardInfo)?'no-info-icon':'has-info-icon'">{{!isCheckReward(rewardInfo)?'未填写':'已完善'}}</span>
         </p>
         <img src="../../assets/img/icon6.png" v-if="tabIndex==1" alt />
       </li>
@@ -113,7 +113,15 @@ export default {
         welfare_statement: '',
         working_hours: ''
       },
-      rewardInfo: {},
+      rewardInfo: {
+        reward_type: '', // 返利类型(1月返 2日返 3时返 4一次性返)
+        reward_money: '', // 返利金额(根据类型修改单位)
+        reward_money_type: '', // 1日2周3月(针对日返和时返) 1长期2持续（针对月返）结算类型 
+        settlement_time: '', // 结算时间(针对月返：次月第XX多少天；)
+        reward_needtime: '', // 需求入职天数/周数/月数(一次性时：0表示当天返)
+        duration_time: '', // 持续 (天数/周数/月数)
+        settlement_type: ''
+      },
       formMember: {},
       id: '',
       modalInfo: {
@@ -123,6 +131,14 @@ export default {
         imgBg: require('../../assets/img/info.png')
       },
       dialogVisible: false,
+      baserRequireInfo:{
+        job_name:'',
+        company_name:'',
+        number:'',
+        offermoney_type:'',
+        offermoney:''
+      },
+      otherInfo: null
     }
   },
   created () {
@@ -130,34 +146,6 @@ export default {
       this.id = this.$route.query.id
       this.getInfo(this.id)
     }
-  },
-  computed: {
-    isCheckBaseInfo () {
-      let flag = false
-      for (let key in this.baseInfo) {
-        if (this.rewardInfo[key] == '') {
-          flag = false
-          break;
-        }
-        else {
-          flag = true
-        }
-      }
-      return flag
-    }
-  },
-  watch: {
-    // tabIndex (val) {
-    //   if (val == 0) {
-    //     this.comName = 'baseInfo'
-    //   }
-    //   else if (val == 1) {
-    //     this.comName = 'rewardRule'
-    //   }
-    //   else {
-    //     this.comName = 'operationInfo'
-    //   }
-    // }
   },
   methods: {
     switchTab (index) {
@@ -179,37 +167,96 @@ export default {
     getInfo (id) {
       getJobinfo({ id }).then(res => {
         this.formMember = res.data
-        console.log(this.formMember)
         this.baseInfo = { ...this.formMember }
-        console.log(this.baseInfo)
       }).catch(error => {
         this.$message.error(error.status.remind)
       })
     },
-    submitForm (val) {
-      if (!val) {
-        this.tabIndex = this.tabIndex - 1
-        console.log(this.tabIndex)
-        return
+    isCheckReward(info){
+      let flag = false
+      if (info.type==2) {
+        flag = true
       }
-      console.log(val)
-      if (this.tabIndex <= 2) {
-        this.tabIndex = this.tabIndex
-        if (this.tabIndex == 0) {
-          this.comName = 'baseInfo'
+      else if (info.tabIndex) {
+        return false
+      }
+      else {
+        console.log(info)
+        for (let key in info) {
+          if (info.reward_type == 1) {
+            if (info[key] != '' && key != 'reward_needtime' && key != 'duration_time') {
+              flag = true
+              break;
+            }
+            else {
+              flag = false
+            }
+          }
+          else {
+            if (info[key] != '') {
+              flag = true
+              break;
+            }
+            else {
+              flag = false
+            }
+          }
         }
-        else if (this.tabIndex == 1) {
-          this.comName = 'rewardRule'
+      }
+      console.log(flag)
+      return flag 
+    },
+    submitForm (val) {
+      let index = 0
+      if (typeof val == 'number') {      
+        if (val==2) {
+          index = val - 1
         }
         else {
-          this.comName = 'operationInfo'
+          index = val
+        }
+        this.switchTab(index)
+      }
+      else {
+        if(val&&val.type==2) {
+          index = 2
+          this.tabIndex = 2
+        }
+        else {
+          index = this.tabIndex
         }
       }
-      this.baseInfo = { ...val }
+      if (index == 0) {
+        this.comName = 'baseInfo'
+        this.baseInfo = val
+        if (!this.isCheck( this.baseInfo)) {
+          this.tabIndex = 1
+          this.comName = 'rewardRule'
+        }
+      }
+      else if (index == 1) {
+        this.comName = 'rewardRule'
+        this.rewardInfo = val
+      }
+      else {
+        this.otherInfo = val
+        this.comName = 'operationInfo'
+      }
+      console.log(this.tabIndex)
+      if (val.tabIndex) {
+        this.tabIndex = 0
+      }
+      let isSave = val.job_type
+      console.log(isSave)
       this.formInfo = Object.assign(this.formInfo, val)
-      if (this.comName == 'operationInfo') {
+      if (this.comName == 'operationInfo'&&isSave!=undefined) {
         addjob(this.formInfo).then(res => {
-          console.log(res)
+          if (res.data) {
+            this.$message.success('发布成功')
+            this.$router.push('publishJobList?view=1')
+          } else {
+            this.$message.error('发布失败')
+          }
         }).catch(error => {
           this.$message.error(error.status.remind)
         })

@@ -39,7 +39,17 @@ export default {
   },
   watch: {
     $route (to, from) {
-      this.breadcrumbs = JSON.parse(sessionStorage.getItem('menus'))
+      if(to.path=='/resumeResult'&&from.path=='/teamInterviewPersonnel'){
+        this.breadcrumbs =  ["接单管理", "面试结果"]
+      }
+      else if(to.path=='/teamEntryList'&&from.path=='/resumeResult'){
+        this.breadcrumbs =  ["接单管理", "入职结果"]
+      }
+     else {
+        let arr = JSON.parse(sessionStorage.getItem('menus'))
+        console.log(arr)
+        this.breadcrumbs = arr.splice(0)
+     }
     }
   }
 }
