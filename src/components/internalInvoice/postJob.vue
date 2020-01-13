@@ -242,9 +242,9 @@ export default {
         this.otherInfo = val
         this.comName = 'operationInfo'
       }
-      console.log(this.tabIndex)
-      if (val.tabIndex) {
+      if (val.tabIndex&&this.tabIndex==1) {
         this.tabIndex = 0
+        this.comName = 'rewardRule'
       }
       let isSave = val.job_type
       console.log(isSave)

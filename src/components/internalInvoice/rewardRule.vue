@@ -24,7 +24,7 @@
       </section>
     </div>
     <div class="resume-footer-btn">
-      <el-button type="primary" @click="submitForm">下一步</el-button>
+      <el-button type="primary" @click="submitForm(2)">下一步</el-button>
     </div>
   </div>
 </template>
@@ -65,8 +65,9 @@ export default {
   watch: {
     tabIndex (val) {
       this.index = val
-      if (val==0){
-        this.$emit('submitForm', val)
+      console.log(val)
+      if (val==0){  
+        this.$emit('submitForm', {tabIndex:1})
       }
       else if(val==1){
         this.submitForm(val)
@@ -131,19 +132,15 @@ export default {
       return flag 
     },
     submitForm (index) {
-      if (this.formMember.type == 1) {
-        if (this.index==2) {
-          if (!this.checkReward(this.rewardForm)) {
-            this.$emit('submitForm', index)
-            return this.$message.warning('请设置返利模式规则')
-          }
+      if (index==2) {
+        if (!this.checkReward(this.rewardForm)) {
+          this.$emit('submitForm', index)
+          return this.$message.warning('请设置返利模式规则')
         }
-        else {
-          this.$emit('submitForm', {tabIndex:1})
-          return 
-        }     
       }
-      this.$emit('submitForm', this.formMember)
+      else {
+        this.$emit('submitForm', this.formMember)
+      }
     }
   }
 }

@@ -208,7 +208,6 @@ export default {
       }
     },
     tabIndex (val) {
-      console.log(val)
       if(val==0) {
         this.$emit('submitForm', 0)
       }
