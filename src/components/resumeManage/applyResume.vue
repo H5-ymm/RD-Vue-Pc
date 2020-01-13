@@ -49,7 +49,7 @@
       </el-form>
       <div class="member-table resume-table">
         <div class="table-query">
-          <el-button @click="exportResume">导出简历</el-button>
+          <el-button @click="exportResume" type="primary">导出简历</el-button>
         </div>
         <el-table border :data="tableData" ref="multipleTable" style="width: 100%" @sort-change="sortChange">
           <el-table-column label="序号" align="center" fixed="left" prop="id" width="50"></el-table-column>
@@ -79,12 +79,12 @@
           </el-table-column>
           <el-table-column label="跟进记录" align="center" width="160">
             <template slot-scope="props">
-              <el-button class="text-line" style="width:100px" type="text" @click="viewRecord(props.row)" v-if="props.row.trackList&&props.row.trackList[0]">{{props.row.trackList[0].remark}}</el-button>
+              <el-button class="text-line" style="width:100px" type="text" @click="viewRecord(props.row)" v-if="props.row.trackList">{{props.row.trackList.remark}}</el-button>
             </template>
           </el-table-column>
           <el-table-column label="跟进时间" prop="jddesc" sortable="custom" align="center" width="160">
             <template slot-scope="props">
-              <span type="text" v-if="props.row.trackList&&props.row.trackList.length">{{props.row.trackList[0].addtime?$moment.unix(props.row.trackList[0].addtime).format('YYYY-MM-DD HH:mm'):'--'}}</span>
+              <span type="text" v-if="props.row.trackList">{{props.row.trackList.addtime?$moment.unix(props.row.trackList.addtime).format('YYYY-MM-DD HH:mm'):'--'}}</span>
             </template>
           </el-table-column>
           <el-table-column label="意向岗位" prop="desired_position" align="center" width="150"></el-table-column>
@@ -111,7 +111,7 @@
     </div>
     <viewResume :dialogTableVisible="dialogTableVisible" :resumeId="resumeId" @handleClose="dialogTableVisible=false" @submitForm="submitForm" :resumeInfo="resumeInfo"></viewResume>
     <confirmDialog :dialogTableVisible="visible" @submit="submit" @handleClose="handleClose" :dialogObj="dialogObj" :isShow="isShow"></confirmDialog>
-    <followUpRecord :dialogTableVisible="followUpRecordVisible" @submitRecord="submitRecord" @handleClose="followUpRecordVisible=false" :trackList="trackList"></followUpRecord>
+    <followUpRecord :dialogTableVisible="followUpRecordVisible" @submitRecord="submitRecord" @handleClose="followUpRecordVisible=false,resumeId=''" :id="resumeId"></followUpRecord>
     <leadResumeModal :dialogTableVisible="leadResumeVisible" @handleClose="leadResumeVisible=false"></leadResumeModal>
   </div>
 </template>
@@ -309,7 +309,8 @@ export default {
     },
     viewRecord (val) {
       this.followUpRecordVisible = true
-      this.trackList = val.trackList
+      // this.trackList = val.trackList
+      this.resumeId = val.resume_id
     },
     viewResume (val) {
       this.dialogTableVisible = true

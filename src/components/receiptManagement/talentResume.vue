@@ -101,7 +101,7 @@
                 <el-button @click="handleNote(props.row)" v-if="!props.row.view_time||props.row.invoice_status<=1&&props.row.view_time" type="text" size="small">面试通知</el-button>
               </div>
               <div v-if="props.row.interview_status>=1||props.row.interview_status==2">
-                <el-button @click="$router.push({path:'interviewPersonnel',query:{id:props.row.id,view:2}})" v-if="props.row.interview_status>=1" type="text" size="small">查看面试</el-button>
+                <el-button @click="$router.push({path:'/interviewPersonnel',query:{id:props.row.id,view:2}})" v-if="props.row.interview_status>=1" type="text" size="small">查看面试</el-button>
                 <el-button @click="$router.push({path:'checkResume',query:{id:props.row.id,view:3}})" type="text" size="small">审核结果</el-button>
               </div>
             </template>
@@ -181,7 +181,7 @@ export default {
         title: '',
         type: '面试'
       },
-      view_time:0
+      view_time: 0
     }
   },
   created () {
@@ -191,7 +191,7 @@ export default {
     this.getData(params)
   },
   watch: {
-    $route (ro,from) {
+    $route (ro, from) {
       this.getList(this.formMember)
     }
   },
@@ -224,7 +224,7 @@ export default {
       this.jobId = val.id
       this.dialogJobVisible = true
     },
-    handleNote (val) { 
+    handleNote (val) {
       this.view_time = val.view_time
       this.jobId = val.id
       this.dialogTableVisible = true

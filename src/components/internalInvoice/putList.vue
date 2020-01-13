@@ -49,7 +49,7 @@
       </el-form>
       <div class="member-table resume-table">
         <div class="table-query">
-          <el-button @click="exportResume">导出简历</el-button>
+          <el-button @click="exportResume" type="primary">导出简历</el-button>
         </div>
         <el-table border :data="tableData" ref="multipleTable" style="width: 100%" @sort-change="sortChange">
           <el-table-column label="序号" align="center" prop="id" width="50"></el-table-column>
@@ -251,9 +251,9 @@ export default {
       // this.getList(this.formMember)
     },
     routerResume (val) {
-      let arr = JSON.parse(sessionStorage.getItem('menus'))
-      arr[1] = '推荐岗位'
-      sessionStorage.setItem('menus', JSON.stringify(arr))
+      // let arr = JSON.parse(sessionStorage.getItem('menus'))
+      // arr[1] = '推荐岗位'
+      // sessionStorage.setItem('menus', JSON.stringify(arr))
       this.$router.push('/recommendJob?id=' + val.id)
     },
     exportResume () {

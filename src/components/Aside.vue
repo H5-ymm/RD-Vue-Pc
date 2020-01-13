@@ -8,7 +8,8 @@
         <el-menu class="el-menu-vertical-demo" background-color="#000" active-text-color="#1890FF" text-color="#fff" @open="handleOpen" :unique-opened="true" @close="handleClose" @select="selectMenus" router :default-active="routerli">
           <el-submenu :index="item.title" class="acts" v-for="(item,index) in menus" :key="index">
             <template slot="title">
-              <i class="el-icon-collection"></i>
+              <img :src="require(`../assets/img/teamIcon/icon${index+1}.png`)" alt="" class="aside-icon">
+              <!-- <i class="el-icon-collection"></i> -->
               <span>{{item.title}}</span>
             </template>
             <el-menu-item :index="val.url" :class="{'is-active':url==val.url}" v-for="(val,ind) in item.submenu" :key="ind" :route="val.url">{{val.title}}</el-menu-item>
@@ -291,19 +292,18 @@ export default {
     },
     selectMenus (key, keyPath) {
       this.url = key
-      console.log(this.url)
-      let arr = this.getMenusTitle(key,this.menus)
+      let arr = this.getMenusTitle(key, this.menus)
       sessionStorage.setItem('menusUrl', this.url)
       sessionStorage.setItem('menus', JSON.stringify(arr))
     },
-    getMenusTitle(url,arr){
+    getMenusTitle (url, arr) {
       let title = ''
       let list = []
-      arr.forEach(item=>{
-        item.submenu.forEach(val=>{
+      arr.forEach(item => {
+        item.submenu.forEach(val => {
           if (val.url == url) {
             title = val.title
-            list.push(item.title,title)
+            list.push(item.title, title)
           }
         })
       })
@@ -328,6 +328,11 @@ export default {
 }
 .el-submenu {
   padding-right: 20px;
+  font-size: 16px;
+}
+.el-submenu  .aside-icon {
+  width: 18px;
+  margin-right: 10px;
 }
 .el-menu-vertical-demo{
   border: 0px solid #ffffff;
@@ -336,6 +341,7 @@ export default {
 }
 .el-submenu .el-menu-item {
   min-width: 170px;
+  font-size: 16px;
 }
 .el-menu-item {
   background-color: rgba(0, 0, 0, 0.1) !important;

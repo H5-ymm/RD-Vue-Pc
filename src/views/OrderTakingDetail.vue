@@ -18,7 +18,7 @@
   font-weight:400;
 }
 .orderTaking-main-col1 .orderTaking-card {
-  margin-bottom: 20px;
+  margin-bottom: 14px;
   background: #fff;
 }
 .orderTaking-jobDeail .job-name-top .job-status{
@@ -35,6 +35,7 @@
 }
 .panel-content {
   padding: 20px 28px 0;
+  font-size: 14px;
 }
 .orderTaking-info {
   color: #6A6A6A;
@@ -49,9 +50,10 @@
 }
 .orderTaking-info span:nth-of-type(1){
   text-align: right;
-  font-size:14px;
+  // font-size:14px;
   width: 100px;
   margin-left: -30px;
+  color: #6a6a6a;
 }
 .orderTaking-jobDeail .orderTarking-btn {
   width: 298px;
@@ -68,35 +70,38 @@
   font-size: 14px;
   color: #6A6A6A;
   padding: 0 28px 0;
-}
-.company-detail .company-logo {
-  width:82px;
-  height:82px;
-  margin: 20px auto 10px;
-}
-.company-detail .company-name {
-  font-size:16px;
-  text-align: center;
-  font-weight:bold;
-}
-.company-detail .company-profile {
-  text-align: left;
-  line-height: 23px;
-  margin-top: 10px;
-  padding-bottom: 10px;
-}
-.company-detail .company-profile-content {
-  overflow : hidden;
-  text-overflow: ellipsis;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-}
-.company-detail .company-profile>span {
-  color: #999999;
-  font-size: 14px;
-}
-.company-detail .profile-more {
-  margin: 0 5px;
+  .company-item {
+    margin-bottom: 10px;
+  }
+  .company-logo {
+    width:82px;
+    height:82px;
+    margin: 20px auto 10px;
+  }
+  .company-name {
+    font-size:16px;
+    text-align: center;
+    font-weight:bold;
+  }
+  .company-profile {
+    text-align: left;
+    line-height: 23px;
+    margin-top: 10px;
+    padding-bottom: 10px;
+  }
+  .company-profile-content {
+    overflow : hidden;
+    text-overflow: ellipsis;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+  .company-profile>span {
+    color: #999999;
+    font-size: 14px;
+  }
+  .profile-more {
+    margin: 0 5px;
+  }
 }
 </style>
 <template>
@@ -113,19 +118,19 @@
               {{orderTakingDetail.name}}
               <span class="job-status">招聘中</span>
             </p>
-            <p>职位类别</p>
-            <p>发布时间：2019-12-01 15:32</p>
+            <p>{{orderTakingDetail.job_type}}</p>
+            <p>发布时间：{{$moment.unix(orderTakingDetail.ctime).format('YYYY-MM-DD HH:mm')}}</p>
           </div>
           <div class="orderTaking-jobDeail-right">
             <el-button type="primary" size="medium" class="orderTarking-btn" @click="applyReceipt" plain>申请接单</el-button>
             <div class="x-flex-around" v-if="userType==2">
               <p class="x-flex-around">
                 <img src="../assets/img/collect.png" alt />
-                <el-link :underline="false" class="orderTarking-link" @click="handleCollect">收藏</el-link>
+                <el-link :underline="false" class="orderTarking-link" @click="handleCollect">{{orderTakingDetail.checkCollect?'取消收藏':'收藏'}}</el-link>
               </p>
               <p class="x-flex-around">
                 <img src="../assets/img/tip.png" alt />
-                <el-link :underline="false" class="orderTarking-link" @click="tipDialogVisible = true">举报</el-link>
+                <el-link :underline="false" class="orderTarking-link" @click="handleReport">{{orderTakingDetail.checkReport?'已举报':'举报'}}</el-link>
               </p>
             </div>
           </div>
@@ -151,7 +156,7 @@
                       </p>
                       <p>
                         <span>工作地址：</span>
-                        <span>{{orderTakingDetail.address}}</span>
+                        <span>{{orderTakingDetail.provinceName}}{{orderTakingDetail.cityName}}{{orderTakingDetail.address}}</span>
                       </p>
                     </div>
                     <div class="orderTaking-info">
@@ -169,7 +174,7 @@
                       </p>
                       <p>
                         <span>要求学历：</span>
-                        <span>{{orderTakingDetail.education}}</span>
+                        <span>{{orderTakingDetail.educationName}}</span>
                       </p>
                     </div>
                   </div>
@@ -194,11 +199,11 @@
                       </p>
                       <p class="team-info-card-item" v-else>
                         <span>结算时间：</span>
-                        <span>{{orderTakingDetail.settlement_type==1?'本':'次'}}{{orderTakingDetail.reward_money_type==1?'天':orderTakingDetail.reward_money_type==2?'周': '月'}}{{orderTakingDetail.settlement_time?orderTakingDetail.settlement_time:'第一天'}}</span>
+                        <span>{{orderTakingDetail.settlement_type==1?'当':'次'}}{{orderTakingDetail.reward_money_type==1?'天':orderTakingDetail.reward_money_type==2?'周': '月'}}{{orderTakingDetail.settlement_time?orderTakingDetail.settlement_time:'第一天'}}</span>
                       </p>
                       <p v-if="orderTakingDetail.reward_type==2||orderTakingDetail.reward_type==3">
                         <span>持续时长：</span>
-                        <span>{{orderTakingDetail.settlement_time?orderTakingDetail.settlement_time:'1'}}{{orderTakingDetail.reward_continuous==1?'天':orderTakingDetail.reward_continuous==2?'周': '个月'}}</span>
+                        <span>{{orderTakingDetail.settlement_time?orderTakingDetail.settlement_time:'一'}}{{orderTakingDetail.reward_continuous==1?'天':orderTakingDetail.reward_continuous==2?'周': '个月'}}</span>
                       </p>
                       <p class="team-info-card-item" v-if="orderTakingDetail.reward_type==4">
                         <span>需入职满：</span>
@@ -209,7 +214,8 @@
                     <div class="orderTaking-info">
                       <p>
                         <span>返利金额：</span>
-                        <span>{{orderTakingDetail.reward_money}}元/人/{{rewardMoney}}</span>
+                        <span v-if="orderTakingDetail.reward_type!=4">{{orderTakingDetail.reward_money}}元/人/{{rewardMoney}}</span>
+                        <span v-else>{{orderTakingDetail.reward_money}}元/人</span>
                       </p>
                       <p v-if="orderTakingDetail.reward_money_type==1">
                         <span>返利时长：</span>
@@ -218,7 +224,7 @@
                       </p>
                       <p v-if="orderTakingDetail.reward_type==2||orderTakingDetail.reward_type==3">
                         <span>需入职满：</span>
-                        <span>{{orderTakingDetail.reward_needtime?orderTakingDetail.reward_needtime:'1'}}{{orderTakingDetail.reward_continuous==1?'天':orderTakingDetail.reward_continuous==2?'周': '个月'}}</span>
+                        <span>{{orderTakingDetail.reward_needtime?orderTakingDetail.reward_needtime:'一'}}{{orderTakingDetail.reward_continuous==1?'天':orderTakingDetail.reward_continuous==2?'周': '个月'}}</span>
                       </p>
                     </div>
                   </div>
@@ -239,10 +245,12 @@
                           <li>返利方式：{{getRewardType(item.reward_type)}}</li>
                         </ul>
                         <ul class="orderTaking-main-item">
-                          <li>{{getmoneyType(item.money_type)}}薪: {{item.money}}/人/{{getmoneyType(item.money_type)}}</li>
-                          <li>返利：{{item.reward_money_type}}/人/{{getmoneyType(item.money_type)}}</li>
-                          <li v-if="item.reward_money_type==3">持续时间：{{item.reward_money_type==1?'长期返利':'持续返利'}}</li>
-                          <li v-if="item.reward_money_type!=3&&item.reward_continuous">持续时间：{{item.reward_continuous}}{{getmoneyType(item.money_type)}}</li>
+                          <li v-if="item.money_type==1">月薪: {{item.money_min}} ~ {{item.money_max}}/人</li>
+                          <li v-else>{{getmoneyType(item.money_type)}}薪: {{item.money}}/人}}</li>
+                          <li v-if="item.reward_type!=4">返利：{{item.reward_money}}/人/{{getmoneyType(item.reward_type)}}</li>
+                          <li v-else>返利：{{item.reward_money}}/人</li>
+                          <li v-if="item.reward_type==1">持续时间：{{item.reward_money_type==1?'长期返利':'持续返利'}}</li>
+                          <li v-if="item.else&&item.reward_duration">持续时间：{{item.reward_duration}}{{getmoneyType(item.reward_money_type)}}</li>
                         </ul>
                       </div>
                       <div class="orderTaking-main-col">
@@ -258,7 +266,7 @@
                             <el-tag size="small" v-if="item.is_fund==1">公积金</el-tag>
                             <el-tag size="small" v-if="item.is_fund==2">试用期过后</el-tag>
                           </li>
-                          <li>地点：{{item.address}}</li>
+                          <li>地点：{{item.provinceName}}{{item.cityName}}{{item.address}}</li>
                         </ul>
                       </div>
                       <div>
@@ -272,30 +280,31 @@
           </div>
           <div class="orderTaking-main-col2">
             <div class="company-detail">
-              <img :src="logoUrl" alt class="company-logo" />
+              <img :src="logoUrl" alt class="company-logo" v-if="companyInfo.logoUrl" />
+              <img src="../assets/img/headIcon2.png" alt="" class="company-logo" v-else>
               <p class="company-name">{{companyInfo.com_name}}</p>
               <div class="x-flex-between">
-                <p class="x-flex-around">
+                <p class="x-flex-around company-item">
                   <img src="../assets/img/hy.png" alt />
-                  <span :underline="false" class="orderTarking-link">{{companyInfo.com_sort}}</span>
+                  <span :underline="false" class="orderTarking-link">{{companyInfo.com_typeName}}</span>
                 </p>
                 <p class="x-flex-around">
                   <img src="../assets/img/my.png" alt />
-                  <span :underline="false" class="orderTarking-link">{{companyInfo.com_scale}}</span>
+                  <span :underline="false" class="orderTarking-link">{{companyInfo.com_scaleName}}</span>
                 </p>
               </div>
               <div class="x-flex-between">
                 <p class="x-flex-around">
                   <img src="../assets/img/address.png" alt />
-                  <span :underline="false" class="orderTarking-link">{{companyInfo.address}}</span>
+                  <span :underline="false" class="orderTarking-link">{{companyInfo.citys}}</span>
                 </p>
               </div>
               <div class="company-profile">
                 <span>公司简介</span>
-                <p class="company-profile-content" ref="content" v-html="companyInfo.content+'哈哈哈哈哈哈哈哈哈哈哈剋坎坎坷坷坎坎坷坷'"></p>
+                <p class="company-profile-content" ref="content" v-html="companyInfo.content"></p>
                 <p class="x-flex-center" @click="showMore()">
-                  <img src="../assets/img/moreDown.png" alt />
-                  <span class="profile-more">查看更多</span>
+                  <img src="../assets/img/moreDown.png" alt v-if="textShow" />
+                  <span class="profile-more" v-if="textShow">查看更多</span>
                 </p>
               </div>
             </div>
@@ -308,10 +317,10 @@
                     <span class="require-number">{{item.required_number}}人</span>
                   </li>
                   <li class="x-flex-between">
-                    <span class="require-number">{{getmoneyType(item.money_type)}}薪:</span>
-                    <span>{{item.money}}/人/{{getmoneyType(item.money_type)}}</span>
+                    <span v-if="item.money_type==1" class="require-number">月薪: {{item.money_min}}~{{item.money_max}}/人/{{getmoneyType(item.money_type)}}</span>
+                    <span v-else class="require-number">{{getmoneyType(item.money_type)}}薪: {{item.money}}/人/{{getmoneyType(item.money_type)}}</span>
+                    <span>返利: {{item.reward_money}}/人/{{getmoneyType(item.money_type)}}</span>
                   </li>
-                  <li class="x-flex-between">{{item.com_name}}</li>
                 </ul>
               </div>
             </div>
@@ -340,9 +349,9 @@ import TipDialog from '@/components/TipDialog'
 import AsideBox from '@/components/AsideBox'
 import HeaderView from '@/components/HeaderView'
 import FooterView from '@/components/FooterView'
-import { getOrderDetail, getList, addReportInfo, addApply, companyInvoiceList, jobRecommendedList } from '@/api/orderTarking'
-import { getCompanyDetail, getCompanyInfo } from '../api/company'
-import { teamCollectionJob } from '../api/collect'
+import { getOrderDetail, getList, addReportInfo, addApply, companyInvoiceList, jobRecommendedList, invoiceInfo, getCompanyInfo } from '@/api/orderTarking'
+import { getTeamInfo } from '../api/team'
+import { teamCollectionJob } from '@/api/collect'
 import { moneyTypeList } from '../base/base'
 import { getImgUrl } from '@/util/util'
 import viewJob from '@/components/common/viewJob'
@@ -402,7 +411,7 @@ export default {
   computed: {
     rewardMoney () {
       if (this.id) {
-        return this.orderTakingDetail.money_type == 1 ? '月' : this.orderTakingDetail.money_type == 2 ? '日' : '时'
+        return this.orderTakingDetail.reward_money_type == 1 ? '月' : this.orderTakingDetail.money_type == 2 ? '日' : '时'
       }
     },
     logoUrl () {
@@ -443,11 +452,13 @@ export default {
         this.isShow = false
       }
     },
+    // 获取接单详情
     getOrderTakingData () {
       let params = {
-        id: this.id
+        id: this.id,
+        uid: localStorage.getItem('uid')
       }
-      getOrderDetail(params).then(res => {
+      invoiceInfo(params).then(res => {
         this.orderTakingDetail = res.data
       })
     },
@@ -463,9 +474,9 @@ export default {
       })
     },
     getCompanyData (uid) {
-      getCompanyDetail({ uid }).then(res => {
+      getCompanyInfo({ uid }).then(res => {
         console.log(res)
-        this.companyInfo = res.data
+        this.companyInfo = res.data || {}
       }).catch(error => {
         this.message.$error(error.status.remind)
       })
@@ -525,6 +536,10 @@ export default {
         this.isShowLogin = true
       }
     },
+    handleReport () {
+      if (this.orderTakingDetail.checkCollect) return
+      this.tipDialogVisible = true
+    },
     // 收藏
     handleCollect () {
       this.dialogType = 2
@@ -533,13 +548,23 @@ export default {
         jobId: this.orderTakingDetail.id
       }
       teamCollectionJob(params).then(res => {
-        this.centerDialogVisible = true
+        if (res.data && !this.orderTakingDetail.checkCollect) {
+          this.orderTakingDetail.checkCollect = 1
+          this.centerDialogVisible = true
+        }
+        else if (res.data && this.orderTakingDetail.checkCollect) {
+          this.message.$error('操作成功')
+        }
+        else {
+          this.message.$error('操作失败')
+        }
       }).catch(error => {
         this.message.$error(error.status.remind)
       })
     },
     // 举报
     submit (val) {
+      if (this.orderTakingDetail.checkReport) return
       let parasm = {
         uid: localStorage.getItem('uid'),
         jobId: this.orderTakingDetail.id,
@@ -547,7 +572,12 @@ export default {
       }
       parasm = Object.assign(parasm, val)
       addReportInfo(parasm).then(res => {
-        this.tipDialogVisible = false
+        if (res.data) {
+          this.orderTakingDetail.checkReport = 1
+          this.tipDialogVisible = false
+        } else {
+          this.message.$error('举报失败')
+        }
       }).catch(error => {
         this.$message.error(error.status.remind)
       })
@@ -565,7 +595,7 @@ export default {
       }
     },
     getmoneyType (type) {
-      return type === 1 ? '日' : type === 2 ? '月' : '时'
+      return type === 1 ? '月' : type === 2 ? '日' : '时'
     },
     getRewardType (type) {
       let text = ''
@@ -576,7 +606,7 @@ export default {
         text = '日返'
       }
       else if (type == 3) {
-        text = '周返'
+        text = '时返'
       }
       else {
         text = '一次性返利'

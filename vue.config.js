@@ -20,7 +20,7 @@ module.exports = {
     hotOnly: false, //是否热更新
   },
   chainWebpack: () => { },
-  productionSourceMap: true,
+  productionSourceMap: false,
   // css相关配置
   css: {
     // 是否使用css分离插件 ExtractTextPlugin

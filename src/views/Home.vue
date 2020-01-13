@@ -5,44 +5,7 @@
 <template>
   <el-container>
     <el-header class="header x-flex-around home" height="50px" id="header">
-      <div class="orderTaking-header">
-        <div class="bg-purple">
-          <span class="header-left">人事达</span>
-          <span class="home-purple-left">
-            <i class="el-icon-location-outline"></i>
-            <a class="welcome">全国站</a>
-          </span>
-          <ul class="nav">
-            <li v-for="(item, index) in menus" class="nav-item" :key="index" @click="switchNav(item, index)" :class="{'active': activeIndex==index}">
-              {{item.title}}
-              <span class="line" v-if="activeIndex==index"></span>
-            </li>
-          </ul>
-        </div>
-        <div class="bg-purple-light x-flex-between">
-          <!-- <span class="home-purple-left" v-if="!userInfo">
-            <i class="el-icon-user-solid"></i>
-            <a class="welcome" href="login">登录</a>
-            <a class="divider">|</a>
-            <a class="welcome" href="register">注册</a>
-          </span> -->
-          <P class="home-purple-left">
-            <el-dropdown @command="handleCommand">
-              <div class="el-dropdown-link x-flex-center" style="margin-right:10px">
-                <p> <img :src="userInfo.head_img" alt v-if="userInfo.head_img" />
-                  <i class="el-icon-user-solid" v-else></i>&nbsp;
-                  <span v-if="userInfo.user_name">{{userInfo.user_name?userInfo.user_name:userInfo.mobile}}</span>
-                  <span v-else>{{userName}}</span></p>
-                <i class="el-icon-caret-bottom"></i>
-              </div>
-              <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item :command="item.url" v-for="(item,index) in ommandList" :key="index">{{item.name}}</el-dropdown-item>
-              </el-dropdown-menu>
-            </el-dropdown>
-          </P>
-          <a class="el-icon-phone-outline">&nbsp;021-51991869</a>
-        </div>
-      </div>
+      <headerView :activeIndex="0"></headerView>
     </el-header>
     <el-main class="home-main-content">
       <div class="home-main-box">
@@ -69,12 +32,14 @@
           </p>
           <el-row :gutter="20" class="home-main-list">
             <el-col :span="8" v-for="(item, index) in list" :key="index">
-              <el-card class="box-card" shadow="hover">
+              <el-card class="box-card">
                 <div slot="header" class="clearfix">
                   <p class="home-main-list-title" @click="$router.push({path:'orderTakingDetail',query:{id:item.id,uid:item.uid}})" :class="{'home-list-title-active':index==0}">{{item.name}}</p>
                   <el-row type="flex" justify="space-between" class="home-list-clearfix home-list-clearfix-active">
                     <el-col :span="14">
-                      <div class="bg-purple">{{getmoneyType(item.money_type)}}薪: {{item.money}}元</div>
+                      <div class="bg-purple" v-if="item.money_type==1">{{getmoneyType(item.money_type)}}薪: {{item.money_min}} ~ {{item.money_max}}元</div>
+                      <div class="bg-purple" v-else>{{getmoneyType(item.money_type)}}薪: {{item.money}}元</div>
+
                     </el-col>
                     <el-col :span="10">
                       <div class="bg-purple-light">需求人数: {{item.required_number}}人</div>
@@ -82,19 +47,21 @@
                   </el-row>
                   <el-row type="flex" justify="space-between" class="home-list-clearfix">
                     <el-col :span="14">
-                      <div class="bg-purple">返利:{{item.reward_money_type}}/人/{{getmoneyType(item.money_type)}}</div>
+                      <div class="bg-purple">返利: {{item.reward_money}}/人/{{getRewardType(item.reward_type)}}</div>
                     </el-col>
                     <el-col :span="10">
                       <div class="bg-purple-light">返利方式: {{getRewardType(item.reward_type)}}</div>
                     </el-col>
                   </el-row>
                 </div>
-                {{item.com_name}}
-                <el-button type="primary" @click="handleApply(item)" size="medium" plain class="handle-btn">接单</el-button>
+                <div class="clearfix-bottom x-flex-between">
+                  <span> {{item.com_name}}</span>
+                  <el-button type="primary" @click="handleApply(item)" size="medium" plain class="handle-btn">接单</el-button>
+                </div>
               </el-card>
             </el-col>
           </el-row>
-          <el-button class="home-main-more" @click="$router.push('OrderTaking')">查看更多</el-button>
+          <el-button class="home-main-more" v-if="list&&list.length" @click="$router.push('OrderTaking')">查看更多</el-button>
         </section>
         <section class="home-main-section">
           <div class="home-main-title x-flex-between">
@@ -129,6 +96,7 @@ import searchInput from '@/components/searchInput'
 import { homeList, advertisementList } from '../api/home'
 import { addApply } from '@/api/orderTarking'
 import Dialog from '@/components/Dialog'
+import HeaderView from '@/components/HeaderView'
 import FooterView from '@/components/FooterView'
 import AsideBox from '@/components/AsideBox'
 import { inquiryList } from '@/api/information'
@@ -139,7 +107,8 @@ export default {
     FooterView,
     searchInput,
     AsideBox,
-    Dialog
+    Dialog,
+    HeaderView
   },
   data () {
     return {
@@ -206,7 +175,6 @@ export default {
     this.getImgList()
     this.getList(this.params)
     this.getInfoList(this.paramsInfo)
-    // this.token = localStorage.getItem('token')
     if (sessionStorage.getItem('userInfo')) {
       this.userInfo = JSON.parse(sessionStorage.getItem('userInfo'))
     }
@@ -230,7 +198,6 @@ export default {
       }
       advertisementList(params).then(res => {
         this.imgList = res.data.data
-        console.log(res.data.data)
       }).catch(error => {
         this.$message.error(error.status.remind)
       })
@@ -241,7 +208,6 @@ export default {
     },
     windowScroll () {
       let scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
-      console.log(scrollTop - document.documentElement.clientHeight)
       if (scrollTop - document.documentElement.clientHeight + 500 >= 0) {
         this.isShow = true
       }
@@ -262,9 +228,7 @@ export default {
     },
     getList (params) {
       homeList(params).then(res => {
-        console.log(res)
         this.list = res.data.data.data
-        console.log(this.list)
       }).catch(error => {
         this.$message.error(error.status.remind)
       })
@@ -306,7 +270,7 @@ export default {
         text = '日返'
       }
       else if (type == 3) {
-        text = '周返'
+        text = '时返'
       }
       else {
         text = '一次性返利'
@@ -315,7 +279,6 @@ export default {
     },
   },
   destroyed () {
-    console.log(2)
     window.removeEventListener('scroll', this.windowScroll)
   }
 }

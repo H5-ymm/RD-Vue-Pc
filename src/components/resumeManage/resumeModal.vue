@@ -55,7 +55,7 @@
                 <el-form-item label="期望城市" prop="user_name">
                   <districtSelet @change="changeExpect" :disabled="true" :address="addressExpect" :placeholder="'请选择省市'"></districtSelet>
                 </el-form-item>
-                 <el-form-item label="薪资模式">
+                <el-form-item label="薪资模式">
                   <el-select v-model="formMember.salary_type" placeholder="请选择薪资模式">
                     <el-option :label="item.label" :value="item.value" v-show="index" v-for="(item,index) in moneyTypeList" :key="item.label"></el-option>
                   </el-select>
@@ -79,10 +79,10 @@
                   <el-input v-model="formMember.desired_position" placeholder="请输入期望岗位"></el-input>
                 </el-form-item>
                 <el-form-item label="期望薪资">
-                  <el-select v-model="formMember.money"  v-if="formMember.salary_type==1"  value-key="label" placeholder="请选择期望薪资">
+                  <el-select v-model="formMember.money" v-if="formMember.salary_type==1" value-key="label" placeholder="请选择期望薪资">
                     <el-option :label="item.label" :value="item.value" v-for="(item,index) in moneyArray" :key="item.label"></el-option>
                   </el-select>
-                  <el-input v-model="formMember.money" v-else  placeholder="请输入薪资"></el-input>
+                  <el-input v-model="formMember.money" v-else placeholder="请输入薪资"></el-input>
                 </el-form-item>
                 <el-form-item label="缴纳公积金">
                   <el-radio-group v-model="formMember.is_fund">
@@ -139,7 +139,7 @@ export default {
         address: '',
         provinceid: '',
         cityid: '',
-        salary_type:1,
+        salary_type: '',
         uid: localStorage.getItem('uid')
       },
       rules: {

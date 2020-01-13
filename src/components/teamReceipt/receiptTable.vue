@@ -227,7 +227,9 @@ export default {
         uid: localStorage.getItem('uid')
       }
       getTeamManage(params).then(res => {
-        this.personalList = res.data || []
+        console.log(res.data)
+        this.personalList = this.getArray1(res.data)
+        console.log(this.personalList)
         this.dialogTableVisible = true
       }).catch(error => {
         this.$message.error(error.status.remind)
@@ -253,7 +255,6 @@ export default {
       }
       getpartMember(params).then(res => {
         this.personalList = this.getArray(res.data)
-        console.log(this.personalList)
         this.dialogTableVisible = true
       }).catch(error => {
         this.$message.error(error.status.remind)
@@ -265,7 +266,19 @@ export default {
         let obj = {
           user_name: item.user_name,
           uid: item.uid,
-          status: item.isget ? item.isget : null
+          status: item.isget
+        }
+        arr1.push(obj)
+      })
+      return arr1
+    },
+    getArray1 (arr) {
+      let arr1 = []
+      arr.forEach(item => {
+        let obj = {
+          user_name: item.user_name,
+          uid: item.uid,
+          status: item.isset ? item.isset : 0
         }
         arr1.push(obj)
       })

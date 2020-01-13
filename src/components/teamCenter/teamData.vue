@@ -29,10 +29,15 @@
         <el-form :inline="true" class="team-center-form" :model="formMember">
           <el-form-item label="搜索类型：">
             <div class="x-flex-center">
-              <el-select v-model="formMember.depart_id" class="width120" placeholder="部门" v-if="userPosition==1">
+              <el-select v-model="formMember.depart_id" class="width120" placeholder="部门" @change="changeDep" v-if="userPosition==1">
                 <el-option :label="item.depart_name" :value="item.id" v-for="(item,index) in depList" :key="index"></el-option>
               </el-select>
-              <el-input v-if="userPosition==1" v-model="formMember.search_uid" class="width300" placeholder="请输入职位名称关键字"></el-input>
+              <el-autocomplete v-if="userPosition==1" v-model="userName" class="width300" :fetch-suggestions="querySearchAsync" placeholder="请输入你要搜索的关键字" @select="handleSelect">
+                <template slot-scope="{ item }">
+                  <div class="name">{{ item.user_name }}</div>
+                </template>
+              </el-autocomplete>
+              <!-- <el-input v-if="userPosition==1" v-model="formMember.search_uid" class="width300" placeholder="请输入职位名称关键字"></el-input> -->
               <el-input v-if="userPosition==2" v-model="formMember.name" class="width300" placeholder="请输入组员姓名"></el-input>
               <el-button type="primary" @click="querySearch" class="select-btn">查询</el-button>
             </div>
@@ -137,6 +142,9 @@ export default {
       personList: [],
       tableData: [],
       tableTeamData: [],
+      timeout: null,
+      userName: '',
+      depId: '',
       userPosition: sessionStorage.getItem('userPosition'), // 1 总经理，2经理，3 成员
     }
   },
@@ -144,11 +152,13 @@ export default {
     this.getList(this.params)
     this.getCompareInfo(this.paramsInfo)
     this.getData(this.paramsEchart)
+    this.getTeamList(this.paramsLog)
+    this.getLogList(this.paramsLog)
+  },
+  mounted () {
     if (this.userPosition == 1) {
       this.getDep()
     }
-    this.getTeamList(this.paramsLog)
-    this.getLogList(this.paramsLog)
   },
   computed: {
     titleLog () {
@@ -156,9 +166,38 @@ export default {
     }
   },
   methods: {
+    querySearchAsync (queryString, cb) {
+      let params = {
+        uid: localStorage.getItem('uid'),
+        depart_id: this.depId,
+        name: queryString
+      }
+      this.getPerson(params)
+      var restaurants = this.personList;
+      console.log(restaurants)
+      var results = queryString ? restaurants.filter(this.createStateFilter(queryString)) : restaurants;
+      console.log(results)
+      clearTimeout(this.timeout);
+      this.timeout = setTimeout(() => {
+        cb(results);
+      }, 3000 * Math.random());
+    },
+    createStateFilter (queryString) {
+      return (restaurant) => {
+        return (restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+      };
+    },
+    handleSelect (item) {
+      console.log(item);
+    },
+    changeDep (val) {
+      console.log(val)
+      this.depId = val
+    },
     getPerson (params) {
       getmemberList(params).then(res => {
         this.personList = res.data || []
+        console.log(this.personList)
       }).catch(error => {
         this.$message.error(error.status.remind)
       })
@@ -168,7 +207,6 @@ export default {
         params.last = last
       }
       getnumLeader(params).then(res => {
-        console.log(res.data)
         if (last) {
           this.list = res.data
         }

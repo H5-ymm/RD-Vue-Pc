@@ -72,121 +72,49 @@
 <template>
   <div class="teamMessage account-settings">
     <div class="teamMessage-form-row account-settings-row">
-      <el-form
-        :model="personalForm"
-        ref="personalForm"
-        label-width="110px"
-        class="teamMessage-form x-flex-start"
-      >
+      <el-form :model="personalForm" ref="personalForm" label-width="110px" class="teamMessage-form x-flex-start">
         <div>
           <el-form-item label="姓名 :" prop="user_name">
-            <el-input
-              v-model="personalForm.user_name"
-              class="width408"
-              :readonly="!isEdit"
-              :class="{'input-readonly':!isEdit}"
-              :placeholder="!isEdit?'--':'请输入姓名'"
-            ></el-input>
+            <el-input v-model="personalForm.user_name" class="width408" :readonly="!isEdit" :class="{'input-readonly':!isEdit}" :placeholder="!isEdit?'--':'请输入姓名'"></el-input>
           </el-form-item>
           <el-form-item label="所在省市 :">
             <div class="width408">
-              <districtSelet
-                v-if="isEdit"
-                @change="change"
-                :placeholder="!isEdit?'--':'请选择省市区'"
-                :class="{'input-readonly':!isEdit}"
-                :address="address"
-              ></districtSelet>
-              <el-input
-                v-else
-                v-model="place"
-                :readonly="!isEdit"
-                :class="{'input-readonly':!isEdit}"
-                class="width408"
-                :placeholder="!isEdit?'--':'请选择省市区'"
-              ></el-input>
+              <districtSelet v-if="isEdit" @change="change" :placeholder="!isEdit?'--':'请选择省市区'" :class="{'input-readonly':!isEdit}" :address="address"></districtSelet>
+              <el-input v-else v-model="place" :readonly="!isEdit" :class="{'input-readonly':!isEdit}" class="width408" :placeholder="!isEdit?'--':'请选择省市区'"></el-input>
             </div>
           </el-form-item>
           <el-form-item label="街道地址 :">
-            <el-input
-              v-model="personalForm.address"
-              :readonly="!isEdit"
-              :class="{'input-readonly':!isEdit}"
-              class="width408"
-              :placeholder="!isEdit?'--':'请输入详细地址'"
-            ></el-input>
+            <el-input v-model="personalForm.address" :readonly="!isEdit" :class="{'input-readonly':!isEdit}" class="width408" :placeholder="!isEdit?'--':'请输入详细地址'"></el-input>
           </el-form-item>
           <el-form-item label="联系电话 :">
-            <el-input
-              v-model="personalForm.mobile"
-              :readonly="!isEdit"
-              :class="{'input-readonly':!isEdit}"
-              class="width408"
-              placeholder="--"
-            ></el-input>
+            <el-input v-model="personalForm.mobile" :readonly="!isEdit" :class="{'input-readonly':!isEdit}" class="width408" placeholder="--"></el-input>
           </el-form-item>
           <el-form-item label="邮箱 :">
-            <el-input
-              v-model="personalForm.email"
-              :readonly="!isEdit"
-              :class="{'input-readonly':!isEdit}"
-              class="width408"
-              :placeholder="!isEdit?'--':'请输入邮箱'"
-            ></el-input>
+            <el-input v-model="personalForm.email" :readonly="!isEdit" :class="{'input-readonly':!isEdit}" class="width408" :placeholder="!isEdit?'--':'请输入邮箱'"></el-input>
           </el-form-item>
           <el-form-item label="认证信息 :" v-if="!isEdit">
             <div class="x-flex-start-justify member-status">
-              <el-tooltip
-                class="item"
-                effect="light"
-                :content="personalForm.mobile?'已认证':'未认证'"
-                placement="bottom-start"
-              >
+              <el-tooltip class="item" effect="light" :content="personalForm.mobile?'已认证':'未认证'" placement="bottom-start">
                 <img src="../assets/img/member/phone.png" v-if="personalForm.mobile" alt />
                 <img src="../assets/img/member/phone1.png" v-else alt />
               </el-tooltip>
-              <el-tooltip
-                class="item"
-                effect="light"
-                :content="personalForm.idcard_status?'已认证':'未认证'"
-                placement="bottom-start"
-              >
+              <el-tooltip class="item" effect="light" :content="personalForm.idcard_status?'已认证':'未认证'" placement="bottom-start">
                 <img src="../assets/img/member/IDCard.png" alt v-if="personalForm.idcard_status" />
                 <img src="../assets/img/member/IDCard1.png" alt v-else />
               </el-tooltip>
-              <el-tooltip
-                class="item"
-                effect="light"
-                :content="personalForm.alipay_status?'已认证':'未认证'"
-                placement="bottom-start"
-              >
+              <el-tooltip class="item" effect="light" :content="personalForm.alipay_status?'已认证':'未认证'" placement="bottom-start">
                 <img src="../assets/img/member/zfb.png" alt v-if="personalForm.alipay_status" />
                 <img src="../assets/img/member/zfb1.png" alt v-else />
               </el-tooltip>
-              <el-tooltip
-                class="item"
-                effect="light"
-                :content="personalForm.wx_status?'已认证':'未认证'"
-                placement="bottom-start"
-              >
+              <el-tooltip class="item" effect="light" :content="personalForm.wx_status?'已认证':'未认证'" placement="bottom-start">
                 <img src="../assets/img/member/wx.png" alt v-if="personalForm.wx_status" />
                 <img src="../assets/img/member/wx1.png" alt v-else />
               </el-tooltip>
-              <el-tooltip
-                class="item"
-                effect="light"
-                :content="personalForm.bank_status?'已认证':'未认证'"
-                placement="bottom-start"
-              >
+              <el-tooltip class="item" effect="light" :content="personalForm.bank_status?'已认证':'未认证'" placement="bottom-start">
                 <img src="../assets/img/member/card.png" alt v-if="personalForm.bank_status" />
                 <img src="../assets/img/member/card1.png" alt v-else />
               </el-tooltip>
-              <el-tooltip
-                class="item"
-                effect="light"
-                :content="personalForm.email_status?'已认证':'未认证'"
-                placement="bottom-start"
-              >
+              <el-tooltip class="item" effect="light" :content="personalForm.email_status?'已认证':'未认证'" placement="bottom-start">
                 <img src="../assets/img/member/email.png" alt v-if="personalForm.email_status" />
                 <img src="../assets/img/member/email1.png" alt v-else />
               </el-tooltip>
@@ -199,14 +127,7 @@
           </el-form-item>
         </div>
         <div class="user-avatar-box" v-if="isEdit||imageUrl">
-          <el-upload
-            class="avatar-uploader"
-            action="customize"
-            ref="upload"
-            :disabled="!isEdit"
-            :show-file-list="false"
-            :http-request="upload"
-          >
+          <el-upload class="avatar-uploader" action="customize" ref="upload" :disabled="!isEdit" :show-file-list="false" :http-request="upload">
             <el-avatar size="large" class="avatar" :src="imageUrl"></el-avatar>
             <el-button class="avatar-btn" v-if="isEdit">更换头像</el-button>
           </el-upload>
@@ -263,7 +184,6 @@ export default {
           if (form.provinceid) {
             this.place = form.provinceName + form.cityName + form.three_cityName
             this.address = [this.personalForm.provinceid, this.personalForm.cityid, this.personalForm.three_cityid]
-            console.log(this.address)
           }
         }
       })

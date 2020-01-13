@@ -36,3 +36,6 @@ export const getMatchingResume = data => $post('/teamtalent/getMatchingResume', 
 export const getInternalMatchingList = data => $post('/teamtalent/getInternalInvoiceMatchingList', data) // 简历对应匹配职位列表（内部发单）
 
 export const getInternalInvoiceList = data => $post('/teamtalent/getInternalInvoiceList', data) // 职位对应匹配简历列表（内部发单）
+export const getTrackList = data => $post('/resume/getTrackList', data) // 查询简历跟进记录
+
+export const exportEntryResume = data => postFormData('/teamresume/exportEntryRecommendResume', data) //入职简历导出

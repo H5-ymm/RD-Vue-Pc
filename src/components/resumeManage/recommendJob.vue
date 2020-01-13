@@ -27,7 +27,7 @@
       </el-form>
       <div class="member-table resume-table resume-table1">
         <div class="table-query">
-          <el-button @click="handleApply(resumeId)">批量推荐</el-button>
+          <el-button @click="handleApply()">批量推荐</el-button>
           <span class="select-text">
             已选择
             <el-button type="text">{{multipleSelection.length}}&nbsp;</el-button>项
@@ -165,15 +165,15 @@ export default {
         this.getList(this.formMember)
       }
     },
-    $route (to, from) {
-      if (from.query.viewType) {
-        this.viewType = from.query.viewType
-        this.byJobMatchingList(this.formMember)
-      }
-      else {
-        this.getList(this.formMember)
-      }
-    }
+    // $route (to, from) {
+    //   if (from.query.viewType) {
+    //     this.viewType = from.query.viewType
+    //     this.byJobMatchingList(this.formMember)
+    //   }
+    //   else {
+    //     this.getList(this.formMember)
+    //   }
+    // }
   },
   methods: {
     getList (params) {
@@ -188,7 +188,6 @@ export default {
         getInternalMatchingList(params).then(res => {
           const { data } = res
           this.tableData = data.data
-          console.log(res)
           this.total = res.data.count
         })
       }
@@ -205,7 +204,6 @@ export default {
         getInternalInvoiceList(params).then(res => {
           const { data } = res
           this.tableData = data.data
-          console.log(res)
           this.total = res.data.count
         })
       }
@@ -224,7 +222,7 @@ export default {
       this.getList(this.formMember)
     },
     handleApply (apply_id) {
-      if (!apply_id) {
+      if (!this.multipleSelection.length && !apply_id) {
         return this.$message.warning('请选择职位')
       }
       let params = {
@@ -235,7 +233,7 @@ export default {
       addPut(params).then(res => {
         if (res.data) {
           this.dialogTableVisible = true
-          this.$message.error('推荐成功')
+          this.$message.success('推荐成功')
           this.getList(this.formMember)
         }
         else {

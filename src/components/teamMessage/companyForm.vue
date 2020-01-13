@@ -194,7 +194,7 @@ export default {
           sessionStorage.setItem('baseInfo', JSON.stringify(this.companyForm))
         }
         else {
-          this.$message.success('保存失败')
+          this.$message.error('保存失败')
         }
       }).catch(error => {
         this.$message.error(error.status.remind)

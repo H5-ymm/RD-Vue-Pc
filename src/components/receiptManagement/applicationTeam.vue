@@ -74,7 +74,7 @@
     </div>
     <customerService :dialogTableVisible="dialogTableVisible"></customerService>
     <viewJob :dialogTableVisible="dialogJobVisible" :id="id" @handleClose="dialogJobVisible=false"></viewJob>
-    <viewTeam :dialogTableVisible="dialogTeamVisible" @handleClose="dialogTeamVisible=false" :teamId="teamId"></viewTeam>
+    <viewTeam :dialogTableVisible="dialogTeamVisible" :addTime="addTime" @handleClose="dialogTeamVisible=false" :teamId="teamId"></viewTeam>
   </div>
 </template>
 
@@ -132,7 +132,8 @@ export default {
         { label: '企业', value: 1 },
       ],
       teamId: '',
-      id: ''
+      id: '',
+      addTime: ''
     }
   },
   created () {
@@ -158,6 +159,8 @@ export default {
     },
     viewTeam (val) {
       this.teamId = val.team_id
+      this.addTime = val.addtime
+      console.log(val)
       this.dialogTeamVisible = true
     },
     viewJob (val) {

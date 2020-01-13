@@ -78,12 +78,12 @@
           <p>{{resumeInfo.pass?resumeInfo.pass:'--'}}</p>
         </div>
       </div>
-      <div class="recomment-card-col3 x-flex-start-justify">
+      <!-- <div class="recomment-card-col3 x-flex-start-justify">
         <div class="progress">
           <p class="progress-item" :style="{width:percentageNum}"></p>
         </div>
         <p>{{percentageNum}}</p>
-      </div>
+      </div> -->
       <!-- <el-progress :percentage="percentageNum"></el-progress> -->
     </div>
     <div class="table-list recommend-table">
@@ -202,7 +202,6 @@ export default {
       activeIndex: 0,
       jobId: '',
       resumeInfo: {},
-      percentageNum: 0,
       apply_id: '',
       resume_id: ''
     }
@@ -272,14 +271,6 @@ export default {
       }
       getapplyInfo(params).then(res => {
         this.resumeInfo = res.data
-        let need_num = !res.data.need_num ? 0 : res.data.need_num
-        let pass = !res.data.pass ? 0 : res.data.pass
-        if (!pass && !need_num) {
-          this.percentageNum = 0
-        }
-        else {
-          this.percentageNum = parseInt((pass / Number(need_num) * 100)) + '%'
-        }
       }).catch(error => {
         this.$message.error(error.status.remind)
       })

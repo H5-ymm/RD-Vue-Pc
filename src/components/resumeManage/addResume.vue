@@ -41,7 +41,7 @@
       </el-form>
       <div class="member-table resume-table">
         <div class="table-query">
-          <el-button @click="addResume">添加简历</el-button>
+          <el-button @click="addResume" type="primary">添加简历</el-button>
           <el-button @click="leadResumeVisible=true">导入简历</el-button>
           <el-button @click="exportResume">导出简历</el-button>
           <span class="select-text">
@@ -67,12 +67,12 @@
           </el-table-column>
           <el-table-column label="跟进记录" align="center" width="100">
             <template slot-scope="props">
-              <el-button class="text-line" type="text" @click="viewRecord(props.row)">{{props.row.trackList.length?props.row.trackList[0].title:'-'}}</el-button>
+              <el-button class="text-line" type="text" @click="viewRecord(props.row)">{{props.row.trackList?props.row.trackList.title:'-'}}</el-button>
             </template>
           </el-table-column>
           <el-table-column label="跟进时间" sortable="custom" align="center" width="160">
             <template slot-scope="props">
-              <span type="text">{{props.row.trackList.length?$moment.unix(props.row.trackList[0].addtime).format('YYYY-MM-DD HH:mm'):'-'}}</span>
+              <span type="text">{{props.row.trackList?$moment.unix(props.row.trackList.addtime).format('YYYY-MM-DD HH:mm'):'-'}}</span>
             </template>
           </el-table-column>
           <el-table-column label="录入人" prop="input_username" align="center" width="100"></el-table-column>
@@ -80,7 +80,8 @@
           <el-table-column label="操作" align="center" min-width="200">
             <template slot-scope="scope">
               <el-button @click="handleEdit(scope.row)" type="text" size="small">编辑简历</el-button>
-              <el-button @click="routerResume(scope.row)" type="text" size="small">推荐岗位</el-button>
+              <el-button @click="routerResume(scope.row)" v-if="!scope.row.push_status" type="text" size="small">推荐岗位</el-button>
+              <span style="margin:0 8px;fontSize:12px;" v-if="scope.row.push_status">已推荐</span>
               <el-button @click="abandoned(scope.row)" type="text" size="small">放弃用户</el-button>
             </template>
           </el-table-column>
@@ -90,7 +91,7 @@
     </div>
     <resumeModal :dialogTableVisible="dialogTableVisible" @handleClose="dialogTableVisible=false,remind=''" :resumeId="resumeId" @submitForm="submitForm" :resumeInfo="resumeInfo"></resumeModal>
     <confirmDialog :dialogTableVisible="visible" @submit="submit" @handleClose="visible=false" :dialogObj="dialogObj"></confirmDialog>
-    <followUpRecord :dialogTableVisible="followUpRecordVisible" @submitRecord="submitRecord" @handleClose="followUpRecordVisible=false,resumeId= ''" :trackList="trackList" :id="resumeId"></followUpRecord>
+    <followUpRecord :dialogTableVisible="followUpRecordVisible" @submitRecord="submitRecord" @handleClose="followUpRecordVisible=false,resumeId= ''" :id="resumeId"></followUpRecord>
     <leadResumeModal @exportResume="exportResumeData" @download="download" :dialogTableVisible="leadResumeVisible" @handleClose="leadResumeVisible=false"></leadResumeModal>
   </div>
 </template>
@@ -99,7 +100,7 @@ import {  getResumeList, addUserResume, selectUserResumeInfo, giveUpResume, expo
   importUserResume, downloadTestTable, updateUserResume} from '@/api/resume'
 
 import { addPut } from '@/api/internalInvoice'
-import { moneyTypeList, rewardTypeList, payTypeList, weekList } from '../../base/base'
+import { moneyTypeList, rewardTypeList } from '../../base/base'
 import resumeModal from './resumeModal'
 import followUpRecord from './followUpRecord'
 import leadResumeModal from './leadResumeModal'
@@ -155,7 +156,6 @@ export default {
       len: 0,
       userId: '',
       multipleSelection: [],
-      form: {},
       statusList: [
         { label: '全部', value: 0 },
         { label: '等待面试', value: 1 },
@@ -231,7 +231,7 @@ export default {
     },
     viewRecord (val) {
       this.followUpRecordVisible = true
-      this.trackList = val.trackList
+      // this.trackList = val.trackList
       this.resumeId = val.id
     },
     submitRecord (val) {
@@ -279,9 +279,14 @@ export default {
     updateResume (val) {
       val.uid = localStorage.getItem('uid')
       updateUserResume(val).then(res => {
-        this.dialogTableVisible = false
-        this.$message.success('保存成功')
-        this.getList(this.formMember)
+        if (res.data) {
+          this.dialogTableVisible = false
+          this.$message.success('保存成功')
+          this.getList(this.formMember)
+        }
+        else {
+          this.$message.error('保存失败')
+        }
       }).catch(error => {
         this.$message.error(error.status.remind)
       })
@@ -292,10 +297,15 @@ export default {
       }
       else {
         addUserResume(val).then(res => {
-          this.dialogTableVisible = false
-          this.resumeId = ''
-          this.getList(this.formMember)
-          this.$message.success('保存成功')
+          if (res.data) {
+            this.dialogTableVisible = false
+            this.resumeId = ''
+            this.getList(this.formMember)
+            this.$message.success('保存成功')
+          }
+          else {
+            this.$message.error('保存失败')
+          }
         }).catch(error => {
           this.$message.error(error.status.remind)
         })

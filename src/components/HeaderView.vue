@@ -5,12 +5,18 @@
   display: flex;
   justify-content: space-between;
 }
-.home .header-left{
-  display: inline-block;
+.home {
+  .header-left{
+    display: inline-block;
+  }
+  .bg-purple .welcome {
+    font-size:14px;
+    margin-left:8px;
+  }
 }
-.home .bg-purple .welcome {
-  font-size:14px;
-  margin-left:8px;
+.head-icon {
+  width: 30px;
+  height: 30px;
 }
 .home-aside{
   height: 100vh;
@@ -22,6 +28,10 @@
   <div class="orderTaking-header">
     <div class="x-flex-between">
       <span class="header-left">人事达</span>
+      <span class="home-purple-left" v-if="!activeIndex">
+        <i class="el-icon-location-outline"></i>
+        <a class="welcome">全国站</a>
+      </span>
       <ul class="nav">
         <li v-for="(item, index) in menus" class="nav-item" :key="index" @click="switchNav(item, index)" :class="{'active': activeIndex==index}">
           {{item.title}}
@@ -39,10 +49,12 @@
       <P class="home-purple-left" v-else>
         <el-dropdown @command="handleCommand">
           <div class="el-dropdown-link x-flex-center" style="margin-right:10px">
-            <p> <img :src="userInfo.head_img" alt v-if="userInfo.head_img" />
-              <i class="el-icon-user-solid" v-else></i>&nbsp;
+            <p class="x-flex-between">
+              <img :src="userInfo.head_img" alt v-if="userInfo.head_img" class="head-icon" />
+              <img src="../assets/img/headIcon.png" v-else class="head-icon"></i>&nbsp;
               <span v-if="userInfo.user_name">{{userInfo.user_name?userInfo.user_name:userInfo.mobile}}</span>
-              <span v-else>{{userName}}</span></p>
+              <span v-else>{{userName}}</span>
+            </p>
             <i class="el-icon-caret-bottom"></i>
           </div>
           <el-dropdown-menu slot="dropdown">
@@ -82,6 +94,7 @@ export default {
   created () {
     if (sessionStorage.getItem('userInfo')) {
       this.userInfo = JSON.parse(sessionStorage.getItem('userInfo'))
+      console.log(this.userInfo)
     }
   },
   computed: {

@@ -1,6 +1,6 @@
 import axios from 'axios';
 import QS from 'qs';
-import { Message } from 'element-ui'; 
+import { Message } from 'element-ui';
 const $axios = axios.create({
   baseURL: process.env.REACT_APP_BASE_URL,
   timeout: 4000
@@ -15,10 +15,10 @@ $axios.interceptors.request.use(
     // 在发送请求之前做些什么
     // 通过reudx的store拿到拿到全局状态树的token ，添加到请求报文，后台会根据该报文返回status
     // 此处应根据具体业务写token
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('token')
     if (localStorage.getItem('token')) {
-    config.headers['HTTP_TOKEN'] = token
-    config.headers['HTTP-USERID'] = localStorage.getItem('uid')
+      config.headers['http-userid'] = token
+      config.headers['http-token'] = localStorage.getItem('uid')
     }
     config.headers = { 'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8' }
     return config;
@@ -62,11 +62,17 @@ $axios.interceptors.response.use(
           break;
         // 404请求不存在    
         case 404:
-          Message.error('网络请求不存在');   
+          Message.error('网络请求不存在');
+          break;
+        case 1003:
+          Message.error('登录过期，请重新登录!');
+          localStorage.clear('')
+          sessionStorage.clear('')
+          this.$router.push('/login')
           break;
         // 其他错误，直接抛出错误提示    
         default:
-        return Promise.reject(error.response);
+          return Promise.reject(error.response);
       }
     }
   }
@@ -85,7 +91,7 @@ export function post (url, data) {
       .catch(err => {
         reject(err.data)
       })
-    })
+  })
 }
 export function $post (url, params) {
   return new Promise((resolve, reject) => {

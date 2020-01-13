@@ -49,7 +49,7 @@
             </p>
           </el-form>
         </div>
-          <Dialog :centerDialogVisible="dialogVisible" :modalInfo="modalInfo" @handleClose="dialogVisible=false"></Dialog>
+        <Dialog :centerDialogVisible="dialogVisible" :modalInfo="modalInfo" @handleClose="dialogVisible=false"></Dialog>
       </div>
     </el-main>
   </el-container>
@@ -59,7 +59,7 @@ import { goLogin, getCode, userRegister } from '../api/login'
 import { setTimeout } from 'timers';
 import Dialog from '../components/Dialog'
 export default {
-  components:{
+  components: {
     Dialog
   },
   data () {
@@ -103,7 +103,7 @@ export default {
       token: '',
       isShowError: false,
       isCodeError: false,
-      dialogVisible:false,
+      dialogVisible: false,
       modalInfo: {
         title: '账号已锁定',
         okText: '',
@@ -193,11 +193,20 @@ export default {
           }).catch(error => {
             if (error.status.code == 3010) {
               this.isShowError = true
+              this.dialogVisible = false
+              this.isCodeError = false
+            }
+            else if (error.status.code == 1008) {
+              this.dialogVisible = true
+              this.isShowError = false
             }
             else if (error.status.code == 3008) {
               this.isCodeError = true
+              this.isShowError = false
+              this.dialogVisible = false
             }
             else {
+              this.dialogVisible = false
               this.isShowError = false
               this.isCodeError = false
               return this.$message.error(error.status.remind)

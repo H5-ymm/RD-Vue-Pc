@@ -53,7 +53,8 @@
           <el-table-column label="已推荐简历" align="center" prop="put_num" width="100">
           </el-table-column>
           <el-table-column label="审核通过简历" prop="pass_num" align="center" width="120"></el-table-column>
-          <el-table-column label="岗位薪资" prop="money" align="center" width="150"></el-table-column>
+          <el-table-column label="岗位薪资" prop="money" align="center" width="150">
+          </el-table-column>
           <el-table-column label="薪资模式" align="center" width="100">
             <template slot-scope="props">
               <span>{{props.row.money_type|moneyType}}</span>
@@ -101,7 +102,7 @@
                   面试名单
                   <!-- <span class="resume-number">(+150)</span> -->
                 </el-button>
-                <el-button @click="$router.push('/viewResume')" type="text" size="small">联系客服</el-button>
+                <el-button @click="dialogTableVisible=true" type="text" size="small">联系客服</el-button>
               </div>
             </template>
           </el-table-column>
@@ -109,7 +110,8 @@
       </div>
       <el-pagination class="team-pagination" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="formMember.page" :page-sizes="[10, 30, 50, 100]" :page-size="formMember.limit" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
     </div>
-    <receiptModal :dialogTableVisible="dialogTableVisible"></receiptModal>
+    <customerService :dialogTableVisible="dialogTableVisible"></customerService>
+    <receiptModal :dialogTableVisible="visible"></receiptModal>
     <viewJob :dialogTableVisible="dialogJobVisible" :id="jobId" @handleClose="dialogJobVisible=false"></viewJob>
   </div>
 </template>
@@ -119,10 +121,12 @@ import { moneyTypeList, rewardTypeList, payTypeList, weekList } from '../../base
 import receiptModal from './receiptModal'
 import { getConstant } from '../../api/dictionary'
 import viewJob from '../common/viewJob'
+import customerService from '../common/customerService'
 export default {
   components: {
     receiptModal,
-    viewJob
+    viewJob,
+    customerService
   },
   filters: {
     moneyType (val) {
@@ -146,8 +150,6 @@ export default {
       dialogJobVisible: false,
       visible: false,
       tableData: [],
-      currentPage: 1,
-      userType: 1,
       formMember: {
         uid: localStorage.getItem('uid'),
         limit: 10,
@@ -163,7 +165,6 @@ export default {
         { label: '面试开始', value: 3 },
         { label: '面试结束', value: 4 }
       ],
-      activeIndex: 0,
       jobList: {},
       timeList: []
     }
@@ -174,11 +175,11 @@ export default {
     let params = 'job_array'
     this.getData(params)
   },
-  watch: {
-    $route (to, from) {
-      this.getList(this.formMember)
-    }
-  },
+  // watch: {
+  //   $route (to, from) {
+  //     this.getList(this.formMember)
+  //   }
+  // },
   methods: {
     getData (filed) {
       getConstant({ filed }).then(res => {
@@ -206,10 +207,6 @@ export default {
       this.formMember.beginTime = val ? val[0] : ''
       this.formMember.endTime = val ? val[1] : ''
     },
-    selectStatus (item, index) {
-      this.activeIndex = index
-      this.formMember.status = item.value
-    },
     handleSizeChange (val) {
       this.formMember.limit = val
       this.getList(this.formMember)
@@ -220,24 +217,10 @@ export default {
     },
     handleEdit (val) {
       this.dialogJobVisible = true
-      this.jobId = val
-    },
-    submitMember (val) {
-      updateTeamUser(val).then(res => {
-        this.dialogTableVisible = false
-        this.getList(this.params)
-      })
+      this.jobId = val.job_id
     },
     onSubmit () {
       this.getList(this.formMember)
-    },
-    submitForm (val) {
-      this.visible = false
-      addTeamUser(val).then(res => {
-        this.getList(this.formMember)
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
     },
     reset () {
       this.formMember = {

@@ -10,7 +10,7 @@
           <li v-for="(item,index) in hasPersonList" :key="index" class="x-flex-around">
             <span class="item-name">{{index+1}}.{{item.user_name}}</span>
             <span class="item-time">领取时间：{{item.ctime?$moment(item.ctime).format('YYYY-MM-DD HH:mm'):''}}</span>
-            <el-button type="primary" size="mini" class="cancle-btn" plain @click="handleCancle(item.touid,index)">{{checkHas(item.touid,currentId)==index?'分配接单':'取消分配'}}</el-button>
+            <el-button type="primary" size="mini" class="cancle-btn" plain @click="handleCancle(item.touid,index)">{{checkHas(item.touid,currentId)?'分配接单':'取消分配'}}</el-button>
           </li>
         </ul>
       </section>
@@ -57,14 +57,17 @@ export default {
       this.$emit('handleClose')
     },
     checkHas (id, arr) {
-      let ret = arr.findIndex((v) => {
-        return v == id
-      })
-      return ret
+      let flag = arr.indexOf(id)
+      if (flag == -1) {
+        return false
+      }
+      else {
+        return true
+      }
     },
     handleCancle (id, index) {
       let flag = this.currentId.indexOf(id)
-      if (flag) {
+      if (flag == -1) {
         this.currentId.push(id)
       } else {
         let ret = this.currentId.findIndex((v) => {

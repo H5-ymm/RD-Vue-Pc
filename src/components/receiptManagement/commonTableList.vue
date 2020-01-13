@@ -74,7 +74,10 @@
                 <el-button type="text" @click="handleResume(2,props.row.id)" size="small">未通过</el-button>
                 <el-button type="text" @click="handleResume(3,props.row.id)" size="small">未参加</el-button>
               </div>
-              <span v-if="props.row.interview_status&&props.row.interview_status!=4">{{props.row.interview_status==1?'通过':props.row.interview_status==2?'未通过':'未参加'}}</span>
+              <div v-else>
+                <span v-if="!props.row.entry_status&&props.row.interview_status">{{props.row.interview_status==1?'通过':props.row.interview_status==2?'未通过':'未参加'}}</span>
+              </div>
+              <span v-if="props.row.entry_status&&props.row.entry_status!=4">{{props.row.entry_status==1?'通过':props.row.entry_status==2?'未通过':'未参加'}}</span>
               <span v-if="props.row.interview_status==4">放弃面试</span>
             </template>
           </el-table-column>
@@ -161,22 +164,11 @@ export default {
     // 4.面试结果
     // 5.入职审核
     // 2.在职名单
-    // this.viewType = this.$route.query.view
-    // console.log(this.viewType)
-    // this.jobId = this.$route.query.id
-    // this.formMember.jobId = this.jobId
-    // this.getList(this.formMember)
-  },
-  watch: {
-    $route (to, from) {
-      console.log(to)
-      if (to.query.view && to.query.id) {
-        this.viewType = to.query.view
-        this.jobId = to.query.id
-        this.formMember.jobId = this.jobId
-        this.getList(this.formMember)
-      }
-    }
+    this.viewType = this.$route.query.view
+    console.log(this.viewType)
+    this.jobId = this.$route.query.id
+    this.formMember.jobId = this.jobId
+    this.getList(this.formMember)
   },
   methods: {
     getList (params) {

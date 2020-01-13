@@ -189,13 +189,12 @@ export default {
                 this.orderTakingForm.reward_needtime = this.orderTakingForm.duration_time
                 this.$emit('submit', val)
               }
-              else if (val.reward_money_type==3&&Number(val.settlement_time>31)) {
+              else if (val.reward_money_type == 3 && Number(val.settlement_time > 31)) {
                 this.orderTakingForm.settlement_time = 31
                 return this.$message.warning('最大输入31')
                 this.$emit('submit', null)
               }
               else {
-                console.log(val)
                 this.$emit('submit', val)
               }
             }
@@ -208,7 +207,6 @@ export default {
       if (val) {
         for (let key in val) {
           this.orderTakingForm[key] = val[key]
-          console.log(val)
         }
       }
     }

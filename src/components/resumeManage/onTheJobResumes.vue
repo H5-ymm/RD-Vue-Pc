@@ -41,7 +41,7 @@
       </el-form>
       <div class="member-table resume-table">
         <div class="table-query">
-          <el-button @click="exportResume">导出简历</el-button>
+          <el-button @click="exportResume" type="primary">导出简历</el-button>
         </div>
         <el-table border :data="tableData" ref="multipleTable" style="width: 100%" @sort-change="sortChange">
           <el-table-column label="序号" align="center" prop="id" width="50"></el-table-column>
@@ -69,12 +69,12 @@
           </el-table-column>
           <el-table-column label="跟进记录" align="center" width="100">
             <template slot-scope="props">
-              <el-button class="text-line" type="text" @click="viewRecord(props.row)">{{props.row.name}}</el-button>
+              <el-button class="text-line" v-if="props.row.trackList" type="text" @click="viewRecord(props.row)">{{props.row.trackList.title}}</el-button>
             </template>
           </el-table-column>
           <el-table-column label="跟进时间" align="center" width="150">
             <template slot-scope="props">
-              <span type="text" v-if="props.row.trackList&&props.row.trackList.length">{{props.row.trackList[0].addtime?$moment.unix(props.row.trackList[0].addtime).format('YYYY-MM-DD HH:mm'):'--'}}</span>
+              <span type="text" v-if="props.row.trackList">{{props.row.trackList.addtime?$moment.unix(props.row.trackList.addtime).format('YYYY-MM-DD HH:mm'):'--'}}</span>
             </template>
           </el-table-column>
           <el-table-column label="录入人" prop="input_username" align="center" width="100"></el-table-column>

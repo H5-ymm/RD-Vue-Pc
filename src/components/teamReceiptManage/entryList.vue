@@ -43,7 +43,7 @@
         <el-table border :data="tableData" ref="multipleTable" style="width: 100%">
           <el-table-column label="职位名称" align="center" width="150">
             <template slot-scope="props">
-              <el-button type="text" @click="handleEdit(props.row)">{{props.row.job_name}}</el-button>
+              <el-button type="text" @click="handleViewJob(props.row)">{{props.row.job_name}}</el-button>
             </template>
           </el-table-column>
           <el-table-column label="企业名称" prop="com_name" align="center" width="150">
@@ -87,21 +87,29 @@
                 <!-- <span class="resume-number">(+150)</span> -->
               </el-button>
               <!-- <el-button @click="handleEdit(scope.row)" type="text" size="small">在职名单</el-button> -->
-              <el-button @click="handleDel(scope.row)" type="text" size="small">联系客服</el-button>
+              <el-button @click="dialogTableVisible=true" type="text" size="small">联系客服</el-button>
             </template>
           </el-table-column>
         </el-table>
       </div>
       <el-pagination class="team-pagination" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="formMember.page" :page-sizes="[10, 30, 50, 100]" :page-size="formMember.limit" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
     </div>
+    <customerService :dialogTableVisible="dialogTableVisible"></customerService>
+    <viewJob :dialogTableVisible="dialogJobVisible" :id="jobId" @handleClose="dialogJobVisible=false"></viewJob>
   </div>
 </template>
 
 <script>
-import { applyList } from '../../api/teamReceipt'
-import { moneyTypeList, rewardTypeList, payTypeList, weekList, entryStatusList } from '../../base/base'
-import { getConstant } from '../../api/dictionary'
+import { applyList } from '@/api/teamReceipt'
+import { moneyTypeList, rewardTypeList, entryStatusList } from '@/base/base'
+import { getConstant } from '@/api/dictionary'
+import viewJob from '../common/viewJob'
+import customerService from '../common/customerService'
 export default {
+  components: {
+    viewJob,
+    customerService
+  },
   filters: {
     moneyType (val) {
       let obj = moneyTypeList.find(item => {
@@ -122,6 +130,7 @@ export default {
       rewardTypeList,
       entryStatusList,
       dialogTableVisible: false,
+      dialogJobVisible: false,
       visible: false,
       tableData: [],
       currentPage: 1,
@@ -133,10 +142,6 @@ export default {
         type: 3
       },
       total: 0,
-      len: 0,
-      userId: '',
-      multipleSelection: [],
-      form: {},
       statusList: [
         { label: '全部', value: 0 },
         { label: '等待入职', value: 1 },
@@ -145,7 +150,9 @@ export default {
       ],
       activeIndex: 0,
       jobList: {},
-      timeList: []
+      timeList: [],
+      jobId: '',
+
     }
   },
   created () {
@@ -159,6 +166,8 @@ export default {
       getConstant({ filed }).then(res => {
         const { job_array } = res.data
         this.jobList = job_array
+      }).catch(error => {
+        this.$message.error(error.status.remind)
       })
     },
     getList (params) {
@@ -166,11 +175,13 @@ export default {
         const { data } = res
         this.tableData = data.data
         this.total = data.count
+      }).catch(error => {
+        this.$message.error(error.status.remind)
       })
     },
     changeDate (val) {
-      this.formMember.timemin = val[0]
-      this.formMember.timemax = val[1]
+      this.formMember.timemin = val ? val[0] : ''
+      this.formMember.timemax = val ? val[1] : ''
     },
     selectStatus (item, index) {
       this.activeIndex = index
@@ -184,10 +195,9 @@ export default {
       this.formMember.page = val
       this.getList(this.formMember)
     },
-    handleEdit (val) {
-      this.dialogTableVisible = true
-      this.userId = val
-      console.log(this.userId)
+    handleViewJob (val) {
+      this.dialogJobVisible = true
+      this.jobId = val.job_id
     },
     handleDel (uid) {
       loginOutTeam({ uid }).then(res => {
@@ -202,12 +212,6 @@ export default {
         this.dialogTableVisible = false
         this.getList(this.formMember)
       })
-    },
-    handleSelectionChange (val) {
-      this.len = val
-    },
-    addMember () {
-      this.visible = true
     },
     onSubmit () {
       this.getList(this.formMember)

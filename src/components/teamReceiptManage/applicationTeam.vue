@@ -77,6 +77,7 @@
       </div>
       <el-pagination class="team-pagination" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="formMember.page" :page-sizes="[10, 30, 50, 100]" :page-size="formMember.limit" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
     </div>
+    <customerService :dialogTableVisible="dialogTableVisible"></customerService>
     <viewJob :dialogTableVisible="dialogJobVisible" :id="jobId" @handleClose="dialogJobVisible=false"></viewJob>
   </div>
 </template>
@@ -150,10 +151,6 @@ export default {
       }
       this.getList(this.formMember)
     },
-    selectStatus (item, index) {
-      this.activeIndex = index
-      this.formMember.status = item.value
-    },
     handleSizeChange (val) {
       this.formMember.limit = val
       this.getList(this.formMember)
@@ -185,7 +182,13 @@ export default {
         id: val.id
       }
       delApply(params).then(res => {
-        this.getList(this.formMember)
+        if (res.data) {
+          this.$message.success('删除成功')
+          this.getList(this.formMember)
+        }
+        else {
+          this.$message.error('删除失败')
+        }
       }).catch(error => {
         this.$message.error(error.status.remind)
       })

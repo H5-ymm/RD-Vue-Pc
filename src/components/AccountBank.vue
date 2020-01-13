@@ -74,12 +74,10 @@ export default {
         if (res.data) {
           this.list = res.data
           this.list.unshift({})
-          console.log(this.list)
         }
       })
     },
     submitForm (val) {
-      console.log(val)
       this.dialogTableVisible = false
     }
   }

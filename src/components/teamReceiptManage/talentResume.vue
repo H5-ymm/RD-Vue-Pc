@@ -43,7 +43,7 @@
         <el-table border :data="tableData" ref="multipleTable" style="width: 100%" @selection-change="handleSelectionChange">
           <el-table-column label="职位名称" align="center" width="150">
             <template slot-scope="props">
-              <el-button type="text" @click="handleEdit(props.row)">{{props.row.job_name}}</el-button>
+              <el-button type="text" @click="handleViewJob(props.row)">{{props.row.job_name}}</el-button>
             </template>
           </el-table-column>
           <el-table-column label="企业名称" prop="com_name" align="center" width="150">
@@ -52,7 +52,11 @@
           <el-table-column label="面试通过" align="center" prop="put_num" width="150">
           </el-table-column>
           <el-table-column label="岗位薪资" prop="money" align="center" width="150"></el-table-column>
-          <el-table-column label="薪资模式" align="center" prop="money" width="150"></el-table-column>
+          <el-table-column label="薪资模式" align="center" width="150">
+            <template slot-scope="props">
+              <span>{{props.row.money_type|moneyType}}</span>
+            </template>
+          </el-table-column>
           <el-table-column label="状态" align="center" width="150">
             <template slot-scope="props">
               <span class="status" :class="`status${props.row.interview_status}`" v-if="props.row.entry_status">{{props.row.interview_status==1?"面试开始":props.row.interview_status==2?'审核面试':'面试结束'}}</span>
@@ -89,6 +93,7 @@
     </div>
     <noticeModal :dialogTableVisible="visible" :viewTimeInfo="viewTimeInfo"></noticeModal>
     <customerService :dialogTableVisible="dialogTableVisible"></customerService>
+    <viewJob :dialogTableVisible="dialogJobVisible" :id="jobId" @handleClose="dialogJobVisible=false"></viewJob>
   </div>
 </template>
 
@@ -98,10 +103,12 @@ import { moneyTypeList, rewardTypeList, payTypeList, weekList, entryStatusList2 
 import noticeModal from './noticeModal'
 import customerService from '../common/customerService'
 import { getConstant } from '../../api/dictionary'
+import viewJob from '../common/viewJob'
 export default {
   components: {
     noticeModal,
-    customerService
+    customerService,
+    viewJob
   },
   filters: {
     moneyType (val) {
@@ -151,7 +158,9 @@ export default {
       jobList: {},
       timeList: [],
       apply_id: '',
-      viewTimeInfo: {}
+      viewTimeInfo: {},
+      jobId: '',
+      dialogJobVisible: false
     }
   },
   created () {
@@ -183,10 +192,10 @@ export default {
       this.formMember.status = item.value
     },
     routerEntry () {
-      let arr = JSON.parse(sessionStorage.getItem('menus'))
-      arr[1] = '入职名单'
-      sessionStorage.setItem('menus', JSON.stringify(arr))
-      this.$router.push('teamEntryList')
+      // let arr = JSON.parse(sessionStorage.getItem('menus'))
+      // arr[1] = '入职名单'
+      // sessionStorage.setItem('menus', JSON.stringify(arr))
+      this.$router.push('/teamEntryList')
     },
     viewTime (val) {
       this.visible = true
@@ -205,10 +214,9 @@ export default {
       this.formMember.page = val
       this.getList(this.formMember)
     },
-    handleEdit (val) {
-      this.dialogTableVisible = true
-      this.userId = val
-      console.log(this.userId)
+    handleViewJob (val) {
+      this.dialogJobVisible = true
+      this.jobId = val.job_id
     },
     handleDel (uid) {
       loginOutTeam({ uid }).then(res => {

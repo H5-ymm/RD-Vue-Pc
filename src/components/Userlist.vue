@@ -1,3 +1,43 @@
+
+<style lang="scss">
+.table-list {
+  background: #fff;
+  border-radius:10px;
+  padding: 15px;
+  .team-pagination {
+    margin-top: 20px;
+  }
+ .member-table {
+    .action-btn {
+      color: #333333;
+      margin-bottom: 15px;
+      .el-button {
+        height: 38px;
+      }
+      .select-text {
+        font-size: 14px;
+        margin: 0 5px;
+        color: #6A6A6A;
+      }
+    }
+  }
+}
+.tables-box{
+  overflow: hidden;
+  margin-bottom: 60px;
+}
+.team-info-row {
+  margin: 20px 0;
+}
+.box-card p {
+  font-size:16px;
+}
+.box-card p:nth-of-type(2) {
+  font-size:34px;
+  margin-top: 10px;
+}
+</style>
+
 <template>
   <div class="tables-box">
     <memberCard :userType="userType" :teamInfo="teamInfo"></memberCard>
@@ -34,7 +74,7 @@ export default {
     return {
       dialogTableVisible: false,
       visible: false,
-      dialogVisible:false,
+      dialogVisible: false,
       modalInfo: {
         title: '您的信息未完善！',
         okText: '前去完善',
@@ -51,7 +91,7 @@ export default {
       len: 0,
       userId: '',
       teamInfo: {},
-      userType:localStorage.getItem('userType')
+      userType: localStorage.getItem('userType')
     }
   },
   created () {
@@ -81,7 +121,7 @@ export default {
       this.dialogTableVisible = true
     },
     handleEdit (val) {
-      if (!localStorage.getItem('teamType')) {
+      if (localStorage.getItem('teamType') == 0) {
         this.dialogVisible = true
         return false
       }
@@ -89,7 +129,7 @@ export default {
       this.visible = true
     },
     handleDel (uid) {
-      if (!localStorage.getItem('teamType')) {
+      if (localStorage.getItem('teamType') == 0) {
         this.dialogVisible = true
         return false
       }
@@ -105,12 +145,12 @@ export default {
     },
     addMember () {
       // 如果没有认证 团队性质
-      if (!localStorage.getItem('teamType')) {
+      if (localStorage.getItem('teamType') == 0) {
         this.dialogVisible = true
       }
       else {
         this.visible = true
-      }  
+      }
     },
     onSubmit (value) {
       let params = Object.assign(this.formMember, value)
@@ -137,43 +177,3 @@ export default {
   }
 }
 </script>
-
-<style lang="scss">
-.table-list {
-  background: #fff;
-  border-radius:10px;
-  padding: 15px;
-  .team-pagination {
-    margin-top: 20px;
-  }
- .member-table {
-    .action-btn {
-      color: #333333;
-      margin-bottom: 15px;
-      .el-button {
-        border-radius: 0;
-        height: 38px;
-      }
-      .select-text {
-        font-size: 14px;
-        margin: 0 5px;
-        color: #6A6A6A;
-      }
-    }
-  }
-}
-.tables-box{
-  overflow: hidden;
-  margin-bottom: 60px;
-}
-.team-info-row {
-  margin: 20px 0;
-}
-.box-card p {
-  font-size:16px;
-}
-.box-card p:nth-of-type(2) {
-  font-size:34px;
-  margin-top: 10px;
-}
-</style>

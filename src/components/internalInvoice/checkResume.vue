@@ -58,7 +58,7 @@
       </el-form>
       <div class="member-table">
         <div class="table-query">
-          <el-button>导出简历</el-button>
+          <el-button type="primary">导出简历</el-button>
           <span class="select-text">
             已选择
             <el-button type="text">{{multipleSelection.length}}&nbsp;</el-button>项
@@ -71,7 +71,7 @@
           <el-table-column label="发单状态" align="center" width="180">
             <template slot-scope="props">
               <el-select v-model="props.row.jobStatus" value-key="label" class="width150" placeholder="请选择" @change="changeStatus($event,props.$index)">
-                <el-option :label="item.label" :value="item.value" v-show="index"  v-for="(item,index) in props.row.receiptStatusList" :key="item.label"></el-option>
+                <el-option :label="item.label" :value="item.value" v-show="index" v-for="(item,index) in props.row.receiptStatusList" :key="item.label"></el-option>
               </el-select>
             </template>
           </el-table-column>
@@ -113,7 +113,7 @@
             </template>
           </el-table-column>
           <el-table-column label="创建日期" prop="ctime" align="center" width="170">
-             <template slot-scope="props">
+            <template slot-scope="props">
               <span>{{props.row.addtime?$moment(props.row.addtime).format('YYYY-MM-DD HH:mm'):''}}</span>
             </template>
           </el-table-column>
@@ -220,14 +220,14 @@ export default {
   created () {
     // 初始化查询标签数据
     // jobStatus 0 审核简历
-              // 1 面试结果
-              // 2 入职结果
+    // 1 面试结果
+    // 2 入职结果
     this.getList(this.formMember)
   },
-  computed:{
-    tableList(){
-      return this.tableData.map(item=>{
-        let obj = Object.assign(item,{receiptStatusList:this.receiptStatusList,jobStatus:1})
+  computed: {
+    tableList () {
+      return this.tableData.map(item => {
+        let obj = Object.assign(item, { receiptStatusList: this.receiptStatusList, jobStatus: 1 })
         return obj
       })
     }
@@ -241,14 +241,14 @@ export default {
     getList (params) {
       getPutresume(params).then(res => {
         const { data } = res
-        this.tableData = data.data|| []
+        this.tableData = data.data || []
         this.total = data.count
       }).catch(error => {
         this.$message.error(error.status.remind)
       })
     },
     changeStatus (val, index) {
-      this.$set( this.tableList , 'jobStatus' , val )
+      this.$set(this.tableList, 'jobStatus', val)
       this.activeIndex = index
       this.statusName = this.receiptStatusList[index].label
     },

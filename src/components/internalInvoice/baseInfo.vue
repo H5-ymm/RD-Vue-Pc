@@ -56,7 +56,10 @@
             <div class="x-flex-between-start resume-card-row">
               <div class="resume-card-item">
                 <el-form-item label="工作地址">
-                  <el-input v-model="formMember.address" class="width406" placeholder="请输入工作地址"></el-input>
+                  <div class="width406">
+                    <districtSelet @change="change" :disabled="true" placeholder="请选择省市区" :address="address"></districtSelet>
+                  </div>
+                  <!-- <el-input v-model="formMember.address" class="width406" placeholder="请输入工作地址"></el-input> -->
                 </el-form-item>
                 <el-form-item label="入职条件">
                   <el-input v-model="formMember.entry_requirements" class="width406" placeholder="请输入期望岗位"></el-input>
@@ -165,9 +168,9 @@ export default {
         age_max: 65,
         sex: 0,
         job_name: '',
-        address: '',
         uid: localStorage.getItem('uid'),
       },
+      address: [],
       rules: {
         job_name: [
           { required: true, message: '请输入岗位名称', trigger: 'blur' },
@@ -229,6 +232,9 @@ export default {
         this.formMember = res.data
         this.entryTime[0] = res.data.entry_begintime
         this.entryTime[1] = res.data.entry_endtime
+        if (this.formMember.provinceid) {
+          this.address = [this.formMember.provinceid, this.formMember.provinceid.cityid]
+        }
       })
     },
     upload (params) {
@@ -278,6 +284,7 @@ export default {
       }
       this.$refs['formMember'].validate((valid) => {
         if (valid) {
+          console.log(this.formMember)
           this.$emit('submitForm', this.formMember)
         } else {
           this.$emit('submitForm', null)

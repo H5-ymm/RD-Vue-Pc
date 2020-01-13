@@ -37,8 +37,8 @@
           <el-table-column label="状态" align="center" width="150">
             <template slot-scope="props">
               <div v-if="viewType!=4">
-                <span class="status" :class="`status${props.row.status}`" v-if="!props.row.interview_status">{{props.row.status==0?"待审核":props.row.status==1?'通过':'未通过'}}</span>
-                <span class="status" :class="`status${props.row.interview_status}`" v-if="props.row.status==1&&props.row.interview_status!=3">{{props.row.interview_status==1?'通过':'未通过'}}</span>
+                <span class="status" :class="`status${props.row.status}`" v-if="!props.row.interview_status">待审核</span>
+                <span class="status" :class="`status${props.row.interview_status}`" v-if="props.row.status&&props.row.interview_status!=3">{{props.row.interview_status==1?'通过':'未通过'}}</span>
                 <span class="status status2" v-if="props.row.status==1&&props.row.interview_status==3">未参加</span>
               </div>
               <div v-else>
@@ -53,8 +53,10 @@
               <el-button @click="handleResume(2,scope.row)" v-if="scope.row.status==1&&scope.row.interview_status==1&&!scope.row.entry_status" type="text" size="small">放弃面试</el-button>
               <el-button @click="routerResume(scope.row)" v-if="scope.row.status==2||scope.row.interview_status>=2||scope.row.entry_status>=2" type="text" size="small">推荐岗位</el-button>
               <el-button @click="handleResume(3,scope.row)" v-if="scope.row.interview_status==1&&scope.row.entry_status==1" type="text" size="small">放弃入职</el-button>
-              <span v-if="scope.row.status==1&&scope.row.interview_status!=3&&!scope.row.entry_status">{{scope.row.interview_status==1?'通过':'未通过'}}</span>
-              <span v-if="scope.row.status==1&&scope.row.interview_status==3&&!scope.row.entry_status">未参加</span>
+              <div v-if="viewType!=4">
+                <span v-if="scope.row.status==1&&scope.row.interview_status!=3&&!scope.row.entry_status">{{scope.row.interview_status==1?'通过':'未通过'}}</span>
+                <span v-if="scope.row.status==1&&scope.row.interview_status==3&&!scope.row.entry_status">未参加</span>
+              </div>
               <!-- <el-button @click="handleResume(3,scope.row)" v-if="scope.row.interview_status==1&&props.row.entry_status==1" type="text" size="small">放弃入职</el-button> -->
             </template>
           </el-table-column>
@@ -67,8 +69,8 @@
 </template>
 
 <script>
-import { getListPut, giveupView, giveupEntry, delPut, addApply } from '../../api/teamReceipt'
-import { moneyTypeList, rewardTypeList, payTypeList, weekList } from '../../base/base'
+import { getListPut, giveupView, giveupEntry, delPut, addApply } from '@/api/teamReceipt'
+import { moneyTypeList, rewardTypeList, payTypeList, weekList } from '@/base/base'
 import confirmDialog from '../common/confirmDialog'
 export default {
   components: {

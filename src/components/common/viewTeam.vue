@@ -6,7 +6,7 @@
         <img src="../../assets/img/member/cancel.png" class="member-col1-comLogo" v-if="!teamInfo.log" alt />
         <img :src="teamInfo.log" class="member-col1-comLogo" alt />
         <P class="member-col1-comName">{{teamInfo.team_name}}</P>
-        <p class="member-col1-time">申请日期：{{teamInfo.addtime}}</p>
+        <p class="member-col1-time">申请日期：{{time?$moment.unix(time).format('YYYY-MM-DD HH:mm'):'--'}}</p>
       </section>
       <section class="member-col3">
         <ul class="x-flex-between">
@@ -74,13 +74,11 @@
 <script>
 import { seeTeamInfo } from '@/api/company'
 export default {
-  props: {
-    dialogTableVisible: false,
-    teamId: ''
-  },
+  props: ['dialogTableVisible', 'addTime', 'teamId'],
   data () {
     return {
-      teamInfo: {}
+      teamInfo: {},
+      time: ''
     }
   },
   watch: {
@@ -95,6 +93,11 @@ export default {
         }).catch(error => {
           this.$message.error(error.status.remind)
         })
+      }
+    },
+    addTime (val) {
+      if (val) {
+        this.time = val
       }
     }
   },

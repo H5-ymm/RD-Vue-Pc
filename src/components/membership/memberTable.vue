@@ -91,7 +91,6 @@ export default {
         return item.uid
       })
       this.uid = arr.join(',')
-      console.log(this.uid)
       this.$emit('handleSelectionChange', this.multipleSelection.length)
     },
     handleDel (val) {

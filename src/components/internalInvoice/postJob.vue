@@ -72,6 +72,7 @@
         <component :is="comName" @submitForm="submitForm" :tabIndex="tabIndex" :formJob="formMember"></component>
       </keep-alive>
     </div>
+
   </div>
 </template>
 <script>
@@ -84,7 +85,7 @@ export default {
   components: {
     baseInfo,
     rewardRule,
-    operationInfo
+    operationInfo,
   },
   data () {
     return {
@@ -114,8 +115,14 @@ export default {
       },
       rewardInfo: {},
       formMember: {},
-      id: ''
-
+      id: '',
+      modalInfo: {
+        title: '您的信息未完善！',
+        okText: '前去完善',
+        closeText: '',
+        imgBg: require('../../assets/img/info.png')
+      },
+      dialogVisible: false,
     }
   },
   created () {
@@ -185,6 +192,7 @@ export default {
         console.log(this.tabIndex)
         return
       }
+      console.log(val)
       if (this.tabIndex <= 2) {
         this.tabIndex = this.tabIndex
         if (this.tabIndex == 0) {

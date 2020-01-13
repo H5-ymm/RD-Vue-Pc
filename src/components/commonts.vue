@@ -4,12 +4,7 @@
     <div class="team-box x-flex-start">
       <div class="team-box-left">
         <div class="x-flex-start-justify">
-          <el-input
-            placeholder="搜索"
-            class="team-input"
-            v-model="params.title"
-            @input="handleCommand(3)"
-          >
+          <el-input placeholder="搜索" class="team-input" v-model="params.title" @input="handleCommand(3)">
             <i slot="prefix" class="el-input__icon el-icon-search"></i>
           </el-input>
           <el-dropdown @command="handleCommand">
@@ -33,25 +28,23 @@
       </div>
       <div class="team-box-content team-box-right">
         <!-- <edit-card></edit-card> -->
-        <detail-card
-          :cardType="type"
-          @refurbish="refurbish"
-          @saveDiscuss="saveDiscuss"
-          :commentInfo="commentInfo"
-        ></detail-card>
+        <detail-card :cardType="type" @refurbish="refurbish" @saveDiscuss="saveDiscuss" :commentInfo="commentInfo"></detail-card>
       </div>
     </div>
+    <infoTip :centerDialogVisible="dialogVisible" :modalInfo="modalInfo" @handleClose="dialogVisible=false"></infoTip>
   </div>
 </template>
 
 <script>
 import PersonCard from './commentCard/PersonCard'
 import DetailCard from './commentCard/DetailCard'
+import infoTip from './common/infoTip'
 import { getDiscussList, getDiscussInfo, addDiscuss } from '../api/comment'
 export default {
   components: {
     PersonCard,
-    DetailCard
+    DetailCard,
+    infoTip
   },
   data () {
     return {
@@ -69,7 +62,14 @@ export default {
         title: ''
       },
       commentId: '',
-      refurbishStatus: ''
+      refurbishStatus: '',
+      dialogVisible: false,
+      modalInfo: {
+        title: '您的信息未完善！',
+        okText: '前去完善',
+        closeText: '',
+        imgBg: require('../assets/img/info.png')
+      },
     }
   },
   mounted () {
@@ -83,9 +83,9 @@ export default {
         if (res.data.data) {
           this.list = res.data.data || []
           this.commentId = this.list[0].id
-          if(this.refurbishStatus!=3) {
+          if (this.refurbishStatus != 3) {
             this.getDetail(this.commentId)
-          }     
+          }
         }
         else {
           this.list = []
@@ -108,7 +108,6 @@ export default {
     },
     saveDiscuss (val) {
       addDiscuss(val).then(res => {
-        console.log(res)
         if (res.data) {
           this.$message.success('添加成功')
           this.refurbishStatus = 3
@@ -129,6 +128,10 @@ export default {
       if (command == 3) {
         this.getList()
       } else {
+        if (localStorage.getItem('teamType') == 0) {
+          this.dialogVisible = true
+          return false
+        }
         this.commentId = ''
         this.type = command
         this.commentInfo = {}

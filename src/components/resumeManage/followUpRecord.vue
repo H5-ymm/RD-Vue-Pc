@@ -6,7 +6,7 @@
         <p>跟进记录</p>
       </section>
       <section class="record-col3">
-        <ul>
+        <!-- <ul>
           <li v-for="(item,index) in trackList" :key="index" class="record-item">
             <p class="record-time">{{$moment.unix(item.addtime).format('YYYY-MM-DD')}}</p>
             <el-divider>
@@ -21,13 +21,22 @@
             </div>
             <p class="record-footer">{{$moment.unix(item.addtime).format('HH:mm:ss')}}</p>
           </li>
-        </ul>
-        <div class="resume-btn">
+        </ul> -->
+        <el-timeline v-if="trackList.length">
+          <el-timeline-item v-for="(item, index) in trackList" :type="item.type" :size="item.size" :key="index" :timestamp="$moment.unix(item.addtime).format('YYYY-MM-DD')" placement="top">
+            <div class="record-content">
+              <P class="record-title">{{item.title}}</P>
+              <P>操作人: {{item.operator}}</P>
+              <P>跟进时间: {{$moment.unix(item.addtime).format('HH:mm:ss')}}</P>
+            </div>
+          </el-timeline-item>
+        </el-timeline>
+        <!-- <div class="resume-btn">
           <a href="#topContent">
             <el-button @click="backTop">返回顶部</el-button>
           </a>
           <el-button type="primary" @click="submitForm">确定</el-button>
-        </div>
+        </div> -->
       </section>
     </div>
     <div slot="footer" class="resume-footer-btn x-flex-center">
@@ -50,39 +59,71 @@
   </el-dialog>
 </template>
 <script>
-import { addTrackingInfo } from '@/api/resume'
+import { addTrackingInfo, getTrackList } from '@/api/resume'
 export default {
-  props: ['dialogTableVisible', 'trackList', 'id'],
+  props: ['dialogTableVisible', 'id'],
   data () {
     return {
       reason: '',
-      list: [],
       show: false,
       resumeId: '',
-      list: []
+      trackList: []
     }
   },
   watch: {
     id (val) {
       if (val) {
         this.resumeId = val
+        this.getTrackData()
       }
-    },
-    trackList (val) {
-      this.list = val || []
     }
   },
   created () {
-    this.list = this.trackList
+
+  },
+  computed: {
+    list () {
+      return this.getArr(this.trackList)
+    }
   },
   methods: {
-    backTop () {
-      let dom = this.$refs.topContent
-      dom.scrollTop = 0
+    getArr (val) {
+      let obj = {}
+      let newObj = {}
+      let arr = []
+      val.forEach((item, index) => {
+        obj = {
+          size: 'large',
+          type: 'primary',
+        }
+        if (index == 0) {
+          newObj = Object.assign(item, obj)
+        }
+        else {
+          // newObj = Object.assign(item, {
+          //   size: 'normal ',
+          //   type: 'info',
+          // })
+        }
+        arr.push(newObj)
+      })
+      console.log(arr)
+      return arr
+    },
+    // 获取跟进记录
+    getTrackData () {
+      let params = {
+        uid: localStorage.getItem('uid'),
+        resumeId: this.resumeId
+      }
+      getTrackList(params).then(res => {
+        this.trackList = res.data
+      })
     },
     handleClose () {
       this.$emit('handleClose')
     },
+    // 添加跟进记录
     submitForm () {
       this.$emit('submitRecord', this.reason)
     },
@@ -114,7 +155,7 @@ export default {
       box-shadow:1px -2px 5px 0px rgba(106,106,106,0.1);
       border-radius:0px 0px 5px 5px;
       width: 100%;
-      height: 30px;
+      height: 40px;
     }
     .transition-box {
       height: 225px;
@@ -153,54 +194,13 @@ export default {
     padding: 0 0 10px;
     position: relative;
     &.record-box {
-      height:400px;
+      height:540px;
       overflow: auto;
     }
     .cancel-icon {
       position: absolute;
       top: 5px;
       right: 0;
-    }
-    .record-col3 {
-      width: 82%;
-      border-top: 1px solid #eee;
-      padding-top: 20px;
-      margin: 0 auto;
-      .record-item {
-        margin-bottom: 10px;
-      }
-      .record-time {
-        color: #333;
-      }
-      .record-title {
-        color: #333;
-        font-weight: bold;
-        font-size:16px;
-        text-align: left;
-      }
-      .el-divider--horizontal {
-        margin: 20px 0;
-      }
-      .el-divider {
-        background-color: #1890FF;
-      }
-      .el-divider__text {
-        padding: 0;
-      }
-      .record-content {
-        margin: 20px 0;
-        text-align: left;
-        color: #333333;
-        .record-text {
-          color: #1890FF;
-          margin: 0 4px;
-        }
-      }
-      .record-footer {
-        text-align: right;
-        color: #999999;
-        font-size: 12px;
-      }
     }
   }
   .resume-card {   

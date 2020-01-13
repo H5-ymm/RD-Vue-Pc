@@ -1,6 +1,10 @@
 <template>
   <div id="app">
-    <router-view/>
+    <transition :name="transitionName" mode="out-in">
+      <keep-alive>
+        <router-view />
+      </keep-alive>
+    </transition>
   </div>
 </template>
 <style scoped>
@@ -13,13 +17,15 @@
 
 <script>
 export default {
-  data(){
+  data () {
     return {
-      token:''
+      token: '',
+      transitionName: 'slide-left'//默认动画
     }
   },
-  created:function(){
+  created: function () {
 
   }
 }
 </script>
+

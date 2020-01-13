@@ -51,12 +51,12 @@
           <breadcrumb :breadcrumbs="breadcrumb"></breadcrumb>
         </el-header>
         <el-main class="team-main" :class="{'comany-main-page': type==1}">
-          <transition name="fade" mode="out-in">
-            <router-view class="team-box"></router-view>
-            <!-- <keep-alive>
+          <!-- <transition name="el-fade-in"> -->
+          <router-view class="team-box" v-if="$route.meta.requiresAuth"></router-view>
+          <!-- <keep-alive>
               <router-view class="team-box"></router-view>
             </keep-alive> -->
-          </transition>
+          <!-- </transition> -->
         </el-main>
       </el-container>
     </el-container>
@@ -82,7 +82,8 @@ export default {
       height: '',
       baseInfo: {},
       userInfo: {},
-      uid: localStorage.getItem('uid')
+      uid: localStorage.getItem('uid'),
+      transitionName: 'slide-left'//默认动画
     }
   },
   components: {
@@ -94,14 +95,12 @@ export default {
     // type 1 企业
     // 2 团队
     this.type = localStorage.getItem('userType')
-    this.getUser(this.uid)
     if (sessionStorage.getItem('menus')) {
       this.breadcrumb = JSON.parse(sessionStorage.getItem('menus'))
     }
   },
   watch: {
     type (val) {
-      console.log(val)
       if (val == 1) {
         this.aside = 'companyAside'
         this.height = "88px"
@@ -110,9 +109,18 @@ export default {
       else {
         this.aside = 'homeAside'
         this.height = "74px"
+        this.getUser(this.uid)
         this.getInfo(this.uid)
       }
-    }
+    },
+    // '$route' (to, from) {
+    //   //页面切换动画
+    //   console.log(to)
+    //   let toName = to.name
+    //   const toIndex = to.meta.index
+    //   const fromIndex = from.meta.index
+    //   this.transitionName = toIndex < fromIndex ? 'slide-right' : 'slide-left'
+    // }
   },
   methods: {
     getImgUrl,
@@ -125,12 +133,16 @@ export default {
     getCompanyInfo (uid) {
       getCompanyDetail({ uid }).then(res => {
         this.baseInfo = res.data
-        console.log(res.data)
         if (res.data && res.data.logo_url) {
-          console.log(res.data)
           this.baseInfo.logo_url = getImgUrl(res.data.logo_url)
         }
         sessionStorage.setItem('baseInfo', JSON.stringify(this.baseInfo))
+        let userInfo = {
+          user_name: res.data.com_name,
+          mobile: res.data.link_phone,
+          head_img: getImgUrl(res.data.logo_url)
+        }
+        sessionStorage.setItem('userInfo', JSON.stringify(userInfo))
       })
     },
     getUser (uid) {
@@ -139,8 +151,8 @@ export default {
         sessionStorage.setItem('userInfo', JSON.stringify(this.userInfo))
       })
     },
-    handleCommand (val) { 
-      if (val=='login') {
+    handleCommand (val) {
+      if (val == 'login') {
         localStorage.clear('')
         sessionStorage.clear('')
       }
@@ -155,11 +167,37 @@ export default {
 .el-container.is-vertical{
   height: 100vh;
 }
+// .slide-right-enter-active,
+// .slide-right-leave-active,
+// .slide-left-enter-active,
+// .slide-left-leave-active {
+//   will-change: transform;
+//   transition: all 500ms;
+//   position: absolute;
+// }
+ 
+// .slide-right-enter {
+//   opacity: 0;
+//   transform: translate3d(-100%, 0, 0);
+// }
+ 
+// .slide-right-leave-active {
+//   opacity: 0;
+//   transform: translate3d(100%, 0, 0);
+// }
+ 
+// .slide-left-enter {
+//   opacity: 0;
+//   transform: translate3d(100%, 0, 0);
+// }
+ 
+// .slide-left-leave-active {
+//   opacity: 0;
+//   transform: translate3d(-100%, 0, 0);
+// }
 .team-main-view{
   width: 100vw;
   height: 100vh;
-  /* overflow-y: hidden; */
-  /* overflow: auto; */
   overflow: hidden;
   position: relative;
   .home-link {

@@ -116,7 +116,7 @@
       </el-form>
       <div class="member-table">
         <div class="table-query">
-          <el-button @click="$router.push('postJob')">发布岗位</el-button>
+          <el-button @click="putJob" type="primary">发布岗位</el-button>
         </div>
         <el-table border :data="tableData" ref="multipleTable" style="width: 100%">
           <el-table-column label="企业名称" prop="company_name" align="center" width="150"></el-table-column>
@@ -175,7 +175,7 @@
             </template>
           </el-table-column>
           <el-table-column label="创建日期" prop="ctime" align="center" width="160">
-             <template slot-scope="props">
+            <template slot-scope="props">
               <span>{{props.row.ctime?$moment(props.row.ctime).format('YYYY-MM-DD HH:mm'):''}}</span>
             </template>
           </el-table-column>
@@ -210,6 +210,7 @@
     </div>
     <personalModal :dialogTableVisible="dialogTableVisible" :personalList="personalList" @handleOk="handleOk" @handleClose="dialogTableVisible=false"></personalModal>
     <havePersonModal :dialogTableVisible="personVisible" @handleClose="personVisible=false" @handleOk="handleOk" :hasPersonList="hasPersonList"></havePersonModal>
+    <infoTip :centerDialogVisible="dialogVisible" :modalInfo="modalInfo" @handleClose="dialogVisible=false"></infoTip>
   </div>
 </template>
 
@@ -218,10 +219,12 @@ import { getJoblist, addPut, getobedistributedList, cancelrecvList, cancelrecv, 
 import { moneyTypeList, rewardTypeList, payTypeList, weekList, recommendStatusList, timeStatusList, positionStatusList } from '@/base/base'
 import personalModal from '../common/personalModal'
 import havePersonModal from './havePersonModal'
+import infoTip from '../common/infoTip'
 export default {
   components: {
     personalModal,
-    havePersonModal
+    havePersonModal,
+    infoTip
   },
   filters: {
     moneyType (val) {
@@ -296,7 +299,14 @@ export default {
       handleStatus: 1,
       personalList: [],
       hasPersonList: [],
-      uid: localStorage.getItem('uid')
+      uid: localStorage.getItem('uid'),
+      modalInfo: {
+        title: '您的信息未完善！',
+        okText: '前去完善',
+        closeText: '',
+        imgBg: require('../../assets/img/info.png')
+      },
+      dialogVisible: false,
     }
   },
   created () {
@@ -328,6 +338,13 @@ export default {
       }).catch(error => {
         this.$message.error(error.status.remind)
       })
+    },
+    putJob () {
+      if (localStorage.getItem('teamType') == 0) {
+        this.dialogVisible = true
+        return false
+      }
+      this.$router.push('postJob')
     },
     changeInput (val) {
       this.formMember[this.type] = val

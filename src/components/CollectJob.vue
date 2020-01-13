@@ -87,8 +87,8 @@
 </template>
 
 <script>
-import { getCollectList, teamcollection, recommendList, recommendTeamUserJob } from '../api/collect'
-import { moneyTypeList, rewardTypeList, recommendStatusList, rewardTypeList1 } from '../base/base'
+import { getCollectList, teamcollection, recommendList, recommendTeamUserJob, teamCollectionJob } from '@/api/collect'
+import { moneyTypeList, rewardTypeList, recommendStatusList, rewardTypeList1 } from '@/base/base'
 import modal from './common/modal'
 import viewJob from './common/viewJob'
 export default {
@@ -157,11 +157,9 @@ export default {
     getList (params) {
       getCollectList(params).then(res => {
         const { data } = res
-        console.log(data)
         this.tableData = data.data
         this.total = data.count
       }).catch(error => {
-        console.log(error)
         if (error) {
           this.$message.error(error.status.remind)
         }
@@ -196,12 +194,23 @@ export default {
         this.dialogTableVisible = true
         this.getList(this.formMember)
       }).catch(error => {
-        console.log(error)
         this.$message.error(error.status.remind)
       })
     },
     handleCancle (val) {
-
+      let params = {
+        uid: localStorage.getItem('uid'),
+        jobId: val.job_id
+      }
+      teamCollectionJob(params).then(res => {
+        if (res.data) {
+          this.$message.success('取消成功')
+        } else {
+          this.$message.success('取消失败')
+        }
+      }).catch(error => {
+        this.$message.error(error.status.remind)
+      })
     },
     handleApply (val) {
       let params = {

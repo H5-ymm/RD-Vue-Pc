@@ -1,69 +1,26 @@
 <template>
-  <el-form
-    :model="formMember"
-    :rules="rules"
-    :inline="true"
-    label-position="left"
-    ref="formMember"
-    class="demo-form-inline account-bind"
-  >
+  <el-form :model="formMember" :rules="rules" :inline="true" label-position="left" ref="formMember" class="demo-form-inline account-bind">
     <div v-if="isShow">
       <el-form-item label="手机号码" required prop="mobile">
         <el-input v-model="formMember.mobile" placeholder="请输入手机号码"></el-input>
       </el-form-item>
       <el-form-item label="短信验证码" required prop="code">
         <el-input v-model="formMember.code" placeholder="请输入短信验证码" class="bind-input-code"></el-input>
-        <el-button
-          type="primary"
-          class="code-btn"
-          plain
-          :class="{disabled: !this.canClick}"
-          @click="sendCode"
-        >{{content}}</el-button>
+        <el-button type="primary" class="code-btn" plain :class="{disabled: !this.canClick}" @click="sendCode">{{content}}</el-button>
       </el-form-item>
     </div>
     <el-form-item label="原密码" required v-if="isUpdate&&!isShow">
-      <el-input
-        v-model="formMember.depart_name"
-        suffix-icon="el-icon-success input-success"
-        placeholder="请输入原密码"
-      ></el-input>
+      <el-input v-model="formMember.depart_name" suffix-icon="el-icon-success input-success" placeholder="请输入原密码"></el-input>
       <span class="error el-icon-warning" v-if="pasError">密码错误</span>
     </el-form-item>
     <el-form-item :label="label" required prop="password">
-      <el-progress
-        :percentage="40"
-        :format="format"
-        class="error progress"
-        color="#FE2A00"
-        v-if="formMember.password.length&&formMember.password.length<=6"
-      ></el-progress>
-      <el-progress
-        :percentage="70"
-        :format="format"
-        class="error progress"
-        color="#FF9938"
-        v-if="formMember.password.length>6&&formMember.password.length<=10"
-      ></el-progress>
-      <el-progress
-        :percentage="100"
-        :format="format"
-        class="error progress"
-        color="#58B44E"
-        v-if="formMember.password.length>10"
-      ></el-progress>
-      <el-input
-        v-model="formMember.password"
-        suffix-icon="el-icon-success input-success"
-        :placeholder="'请输入'+ ( isUpdate ? '新': '' ) + '密码，6-16位字母/数字/符号组合'"
-      ></el-input>
+      <el-progress :percentage="40" :format="format" class="error progress" color="#FE2A00" v-if="formMember.password.length&&formMember.password.length<=6"></el-progress>
+      <el-progress :percentage="70" :format="format" class="error progress" color="#FF9938" v-if="formMember.password.length>6&&formMember.password.length<=10"></el-progress>
+      <el-progress :percentage="100" :format="format" class="error progress" color="#58B44E" v-if="formMember.password.length>10"></el-progress>
+      <el-input v-model="formMember.password" suffix-icon="el-icon-success input-success" :placeholder="'请输入'+ ( isUpdate ? '新': '' ) + '密码，6-16位字母/数字/符号组合'"></el-input>
     </el-form-item>
     <el-form-item :label="label1" required>
-      <el-input
-        v-model="formMember.newPassworded"
-        suffix-icon="el-icon-success input-success"
-        placeholder="请输入和上面相同的密码"
-      ></el-input>
+      <el-input v-model="formMember.newPassworded" suffix-icon="el-icon-success input-success" placeholder="请输入和上面相同的密码"></el-input>
       <span class="error el-icon-warning" v-if="pasCheck">两次密码不一致</span>
     </el-form-item>
     <div class="account-btn-box x-flex-end">
@@ -95,12 +52,11 @@ export default {
       content: '发送验证码',
       canClick: false,
       token: '',
-      pasError:false,
+      pasError: false,
       pasCheck: false
     }
   },
   created () {
-    console.log(this.isUpdate)
   },
   computed: {
     label () {

@@ -143,16 +143,17 @@ export default {
   watch: {
     teamCenterInfo (val) {
       if (val) {
-        this.teamCenterCount[1].rate = this.teamCenterInfo.total
-        this.teamCenterCount[2].rate = this.teamCenterInfo.put
-        this.teamCenterCount[3].rate = this.teamCenterInfo.view
-        this.teamCenterCount[4].rate = this.teamCenterInfo.entry
-        this.teamCenterCount[1].num = this.teamCenterInfo.total_num
-        this.teamCenterCount[2].num = this.teamCenterInfo.put_num
-        this.teamCenterCount[3].num = this.teamCenterInfo.view_num
-        this.teamCenterCount[4].num = this.teamCenterInfo.entry_num
+        this.teamCenterCount[1].rate = this.teamCenterInfo.total ? this.teamCenterInfo.total : 0
+        this.teamCenterCount[2].rate = this.teamCenterInfo.put ? this.teamCenterInfo.put : 0
+        this.teamCenterCount[3].rate = this.teamCenterInfo.view ? this.teamCenterInfo.view : 0
+        this.teamCenterCount[4].rate = this.teamCenterInfo.entry ? this.teamCenterInfo.entry : 0
+        this.teamCenterCount[1].num = this.teamCenterInfo.total_num ? this.teamCenterInfo.total_num : 0
+        this.teamCenterCount[2].num = this.teamCenterInfo.put_num ? this.teamCenterInfo.put_num : 0
+        this.teamCenterCount[3].num = this.teamCenterInfo.view_num ? this.teamCenterInfo.view_num : 0
+        this.teamCenterCount[4].num = this.teamCenterInfo.entry_num ? this.teamCenterInfo.entry_num : 0
 
-        this.teamCenterCount[0].num = this.teamCenterInfo.put_num + this.teamCenterInfo.entry_num + this.teamCenterInfo.entry_num + this.teamCenterInfo.total_num
+        this.teamCenterCount[0].num = Number(this.teamCenterInfo.put_num) + Number(this.teamCenterInfo.view_num) + Number(this.teamCenterInfo.entry_num) + Number(this.teamCenterInfo.total_num)
+        console.log(this.teamCenterCount[0].num)
       }
     }
   },

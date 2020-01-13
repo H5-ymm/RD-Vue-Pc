@@ -97,7 +97,7 @@ export default {
       storeComment: {},
       content: '',
       isShow: false,
-      contentunescape:'',
+      contentunescape: '',
       ishtmlContent: false,
       htmlContent: ''
     }
@@ -115,7 +115,6 @@ export default {
   watch: {
     cardType (val) {
       this.type = val
-      console.log(this.type)
       if (val != 2) {
         this.contenteditable = true
       } else {
@@ -123,7 +122,6 @@ export default {
       }
     },
     commentInfo (val) {
-      console.log(val)
       if (val && val.uid) {
         this.isShow = false
         this.storeComment = JSON.parse(JSON.stringify(val))
@@ -143,8 +141,8 @@ export default {
     }
   },
   methods: {
-    getContent(val) {
-      return val? unescape(val): ''
+    getContent (val) {
+      return val ? unescape(val) : ''
     },
     // 获取文章评论列表
     getCommentList (params) {
@@ -192,9 +190,8 @@ export default {
       } else if (document.selection && document.selection.createRange) {
         return document.selection.createRange();
       }
-      console.log(this.comTitle) 
     },
-    focusInput(e){
+    focusInput (e) {
       this.ishtmlContent = true
       this.comTitle = ''
     },

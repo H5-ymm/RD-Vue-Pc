@@ -10,10 +10,8 @@
           <el-form-item :label="`${noticeType}时间`" required>
             <div class="x-flex-between">
               <el-date-picker v-model="formMember.date" type="date" :disabled="viewTime" :picker-options="pickerOptions" class="width195" value-format="yyyy-MM-dd" format="yyyy-MM-dd" :placeholder="`请选择${noticeType}日期`"></el-date-picker>
-              <el-time-select class="width195" type="date" 
-              :picker-options="
-                ['09:30 - 12:00', '14:30 - 18:30']"
-              :disabled="viewTime" value-format="HH:mm" format="HH:mm" v-model="formMember.time" :placeholder="`请选择${noticeType}时间`"></el-time-select>
+              <el-time-select class="width195" type="date" :picker-options="
+                ['09:30 - 12:00', '14:30 - 18:30']" :disabled="viewTime" value-format="HH:mm" format="HH:mm" v-model="formMember.time" :placeholder="`请选择${noticeType}时间`"></el-time-select>
             </div>
           </el-form-item>
           <el-form-item :label="`${noticeType}地点`" required>
@@ -62,12 +60,11 @@ export default {
     }
   },
   created () {
-
+    this.formMember.date = this.$moment(new Date()).format('YYYY-MM-DD HH:mm')
   },
   watch: {
     noticeType (val) {
       if (val) {
-        console.log(val)
         this.type = val
       }
     },
@@ -76,7 +73,7 @@ export default {
         this.getTimeInfo(val)
       }
     },
-    isEdit(val){
+    isEdit (val) {
       if (val) {
         this.viewTime = val ? true : false
         console.log(this.viewTime)
@@ -86,25 +83,19 @@ export default {
   methods: {
     getTimeInfo (id) {
       selectInterviewEntryInfo({ id }).then(res => {
-        console.log(res.data)
-        console.log(this.type)
         if (this.type == '入职') {
           this.formMember.date = this.$moment.unix(res.data.entry_time).format('YYYY-MM-DD')
-          console.log(this.formMember.date)
           this.formMember.time = this.$moment.unix(res.data.entry_time).format('HH:mm')
           let content1 = res.data.entry_comtent.split('&')
           this.formMember.content = content1[1]
           this.formMember.address = content1[0].split('/').join(',')
-          console.log(this.formMember.address)
         }
-        else {
+        if (this.type == '面试') {
           this.formMember.date = this.$moment.unix(res.data.view_time).format('YYYY-MM-DD')
-          console.log(this.formMember.date)
           this.formMember.time = this.$moment.unix(res.data.view_time).format('HH:mm')
           let content1 = res.data.content.split('&')
           this.formMember.content = content1[1]
           this.formMember.address = content1[0].split('/').join(',')
-          console.log(this.formMember.address)
         }
       }).catch(error => {
         this.$message.error(error.status.remind)

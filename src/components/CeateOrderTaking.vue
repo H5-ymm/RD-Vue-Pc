@@ -108,10 +108,10 @@
             <span class="content-len">{{len}}/1000字</span>
           </div>
         </el-form-item>
-        <el-form-item label="联系人" required>
+        <el-form-item label="联系人" required prop="link_name">
           <el-input v-model="orderTakingForm.link_name" class="width408" placeholder="请输入联系人姓名"></el-input>
         </el-form-item>
-        <el-form-item label="联系电话" required>
+        <el-form-item label="联系电话" required prop="tel">
           <el-input v-model="orderTakingForm.tel" class="width408" placeholder="请输入联系电话"></el-input>
         </el-form-item>
         <el-form-item label="邮箱">
@@ -140,6 +140,14 @@ export default {
     salaryAndRebate
   },
   data () {
+    let validatereg = function (rule, value, callback) {   //验证用户名是否合法
+      let reg = /^1[3456789]\d{9}$/;
+      if (!(reg.test(value))) {
+        callback(new Error('手机号格式不正确'));
+      } else {
+        callback();
+      }
+    };
     return {
       orderTakingForm: {
         type: 1,
@@ -162,6 +170,13 @@ export default {
         ],
         industry: [
           { required: true, message: '请选择从事行业', trigger: 'blur' }
+        ],
+        link_name: [
+          { required: true, message: '请选择联系人', trigger: 'blur' }
+        ],
+        tel: [
+          { required: true, message: '请输入手机号', trigger: 'blur' },
+          { validator: validatereg, trigger: 'blur' }
         ]
       },
       moneyList: [],
@@ -230,7 +245,6 @@ export default {
       }
     },
     changeInput (val) {
-      console.log(val)
       if (val && val.length >= 2 && Number(val) < 16) {
         this.orderTakingForm.min_age = 16
       }
@@ -239,9 +253,9 @@ export default {
       }
     },
     changeInputmax_age (val) {
-      if (val.length == 1 && Number(val) < 17) {
-        this.orderTakingForm.max_age = 17
-      }
+      // if (val.length == 1 && Number(val) < 17) {
+      //   this.orderTakingForm.max_age = 17
+      // }
       if (val && val.length >= 2 && Number(val) < 16) {
         this.orderTakingForm.max_age = 17
       }
@@ -273,7 +287,6 @@ export default {
       }
     },
     onDivInput (e, key) {
-      console.log(e.target.innerHTML)
       this[key] = e.target.innerHTML
     },
     change (val) {
@@ -282,7 +295,6 @@ export default {
       this.orderTakingForm.three_cityid = val[2]
     },
     submitSalary (val) {
-      console.log(val)
       if (val) {
         this.rateInfo = val
         this.disabled = true
@@ -296,6 +308,12 @@ export default {
     submitForm (orderTakingForm) {
       if (!this.orderTakingForm.job_content) {
         return this.$message.warning('请输入职位描述')
+      }
+      if (Number(this.orderTakingForm.min_age) < 16) {
+        return this.$message.warning('最小年龄不能小于16')
+      }
+      if (Number(this.orderTakingForm.max_age) < Number(this.orderTakingForm.min_age)) {
+        return this.$message.warning('最大年龄不能大于最小年龄')
       }
       if (this.jobContent.length < 30) {
         return this.$message.warning('职位描述最低输入30个')

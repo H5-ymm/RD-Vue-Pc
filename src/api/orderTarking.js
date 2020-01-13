@@ -9,3 +9,5 @@ export const addReportInfo = data => $post('/report/addReportInfo', data);
 export const invoiceInfo = data => $post('/receipt/invoiceInfo', data);
 export const jobRecommendedList = data => $post('/receipt/jobRecommendedList', data); // 推荐职位列表
 export const companyInvoiceList = data => $post('/receipt/companyInvoiceList', data); //获取该公司其他单子列表
+
+export const getCompanyInfo = data => $post('/receipt/getCompanyInfo', data); // 企业信息查询

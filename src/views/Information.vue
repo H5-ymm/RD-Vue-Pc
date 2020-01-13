@@ -13,6 +13,7 @@
     margin: 20px 0;
     .panel-content {
       padding: 20px 28px 20px;
+      font-size: 14px;
     }
     .home-main-title {
       padding-bottom: 20px;

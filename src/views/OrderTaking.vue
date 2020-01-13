@@ -81,7 +81,7 @@
                         <span>{{item.com_name||'公司名称'}}</span>
                         <img src="../assets/img/noIcon.png" class="orderTaking-icon" alt v-if="item.status==2" />
                         <img src="../assets/img/noIcon.png" alt v-else />
-                        <span class="ctime">{{ $moment.unix(item.ctime).format('HH:mm')}}发布</span>
+                        <span class="ctime">{{ ctime (item.ctime) }}发布</span>
                       </li>
                       <li>
                         <el-tag size="small" v-if="item.is_fund">五险</el-tag>
@@ -199,6 +199,17 @@ export default {
     window.addEventListener('scroll', this.windowScroll)
   },
   methods: {
+    ctime (val) {
+      let time = ''
+      let newTime = this.$moment(Date.now(), 'YYYY-MM-DD HH:mm').valueOf()
+      if (newTime - val > 0) {
+        time = this.$moment.unix(val).format('YYYY-MM-DD')
+      }
+      else {
+        time = this.$moment.unix(val).format('YYYY-MM-DD')
+      }
+      return time
+    },
     windowScroll () {
       let scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
       if (scrollTop - document.documentElement.clientHeight + 500 >= 0) {
@@ -299,7 +310,6 @@ export default {
     getAreaList (code) {
       getAreasList({ code }).then(res => {
         this.areaList = res.data
-        console.log(this.areaList)
       })
     },
     currentChange (page) {

@@ -59,10 +59,8 @@ export default {
     }
   },
   methods: {
-    getContent(val) {
-      console.log(val)
-      console.log(unescape(val))
-      return val? unescape(val): ''
+    getContent (val) {
+      return val ? unescape(val) : ''
     },
     handleComment (index, item, type, ind, val) {
       this.type = type
@@ -96,7 +94,7 @@ export default {
       this.$emit('deleteComment', id)
     },
     submitComment (val) {
-      console,log(val)
+      console, log(val)
       let params = {
         uid: localStorage.getItem('uid'),
         type: 2,

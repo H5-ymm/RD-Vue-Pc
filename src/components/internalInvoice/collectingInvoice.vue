@@ -100,7 +100,7 @@
       </el-form>
       <div class="member-table">
         <div class="table-query">
-          <el-button @click="$router.push('postJob')">发布岗位</el-button>
+          <el-button @click="$router.push('postJob')" type="primary">发布岗位</el-button>
         </div>
         <el-table border :data="tableData" ref="multipleTable" style="width: 100%">
           <el-table-column label="企业名称" align="center" width="150" prop="company_name">

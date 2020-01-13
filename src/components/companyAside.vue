@@ -6,52 +6,19 @@
       <el-col :span="24">
         <div class="names company-names">人事达</div>
         <div class="company-info">
-          <img
-            src="../assets/img/img1.png"
-            alt
-            class="company-logo"
-            v-if="baseInfo&&!baseInfo.logo_url"
-          />
-          <img
-            src="../assets/img/img1.png"
-            alt
-            class="company-logo"
-            v-else
-          />
-          <p
-            class="company-name"
-            v-if="baseInfo"
-          >{{baseInfo.com_name}}</p>
+          <img src="../assets/img/img1.png" alt class="company-logo" v-if="baseInfo&&!baseInfo.logo_url" />
+          <img src="../assets/img/img1.png" alt class="company-logo" v-else />
+          <p class="company-name" v-if="baseInfo">{{baseInfo.com_name}}</p>
         </div>
-        <el-menu
-          class="el-menu-vertical-demo"
-          background-color="#262626"
-          active-text-color="#1890FF"
-          text-color="#fff"
-          @open="handleOpen"
-          :unique-opened="true"
-          @close="handleClose"
-          @select="selectMenus"
-          router
-          :default-active="routerli"
-        >
-          <el-submenu
-            :index="item.title"
-            class="acts"
-            v-for="(item,index) in menus"
-            :key="index"
-          >
+        <el-menu class="el-menu-vertical-demo" background-color="#262626" active-text-color="#1890FF" text-color="#fff" @open="handleOpen" :unique-opened="true" @close="handleClose" @select="selectMenus" router :default-active="routerli">
+          <el-submenu :index="item.title" class="acts" v-for="(item,index) in menus" :key="index">
             <template slot="title">
-              <i class="el-icon-collection"></i>
+              <!-- <i class="el-icon-collection"></i> -->
+              <img :src="require(`../assets/img/companyIcon/icon${index+1}.png`)" alt="" v-if="title!=item.title" class="aside-icon">
+              <img :src="require(`../assets/img/companyIcon/icon${index+1}_active.png`)" v-if="title==item.title" alt="" class="aside-icon">
               <span>{{item.title}}</span>
             </template>
-            <el-menu-item
-              :index="val.url"
-              :class="{'is-active':url==val.url}"
-              v-for="(val,ind) in item.submenu"
-              :key="ind"
-              :route="val.url"
-            >{{val.title}}</el-menu-item>
+            <el-menu-item :index="val.url" :class="{'is-active':url==val.url}" v-for="(val,ind) in item.submenu" :key="ind" :route="val.url">{{val.title}}</el-menu-item>
           </el-submenu>
         </el-menu>
       </el-col>
@@ -160,8 +127,8 @@ export default {
           ]
         }
       ],
-      title: '',
-      url:'',
+      title: '发单招聘',
+      url: '',
       uid: localStorage.getItem('uid'),
       baseInfo: {}
     }
@@ -177,6 +144,7 @@ export default {
     },
     handleOpen (key, keyPath) {
       console.log(key, keyPath);
+      this.title = key
     },
     handleClose (key, keyPath) {
       //console.log(key, keyPath);
@@ -184,18 +152,18 @@ export default {
     selectMenus (key, keyPath) {
       this.url = key
       console.log(this.url)
-      let arr = this.getMenusTitle(key,this.menus)
+      let arr = this.getMenusTitle(key, this.menus)
       sessionStorage.setItem('menusUrl', this.url)
       sessionStorage.setItem('menus', JSON.stringify(arr))
     },
-    getMenusTitle(url,arr){
+    getMenusTitle (url, arr) {
       let title = ''
       let list = []
-      arr.forEach(item=>{
-        item.submenu.forEach(val=>{
+      arr.forEach(item => {
+        item.submenu.forEach(val => {
           if (val.url == url) {
             title = val.title
-            list.push(item.title,title)
+            list.push(item.title, title)
           }
         })
       })
@@ -240,6 +208,13 @@ export default {
 }
 .el-submenu {
   padding-right:0;
+  span {
+    font-size: 16px;
+  }
+}
+.el-submenu  .aside-icon {
+  width: 17px;
+  margin-right: 10px;
 }
 .el-menu-vertical-demo{
   border: 0px solid #ffffff;
@@ -248,6 +223,7 @@ export default {
 }
 .el-submenu .el-menu-item {
   min-width: 170px;
+  font-size: 16px;
 }
 .names {
   &.company-names {

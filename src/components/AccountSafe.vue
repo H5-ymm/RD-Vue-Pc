@@ -141,7 +141,6 @@ export default {
       }
     },
     submitForm (val) {
-      console.log(val)
       let activeIndex = this.activeIndex
       switch (activeIndex) {
         case 1:
@@ -160,7 +159,6 @@ export default {
     },
     bindBank (val) {
       userBinkBank(val).then(res => {
-        console.log(res)
         this.getInfo(this.uid)
       }).catch(error => {
         this.$message.error(error.status.remind)
@@ -168,7 +166,6 @@ export default {
     },
     bindEm (val) {
       bindEmail(val).then(res => {
-        console.log(res)
         this.getInfo(this.uid)
       }).catch(error => {
         this.$message.error(error.status.remind)
@@ -176,7 +173,6 @@ export default {
     },
     bindAlipay (val) {
       userBinkAlipay(val).then(res => {
-        console.log(res)
         this.getInfo(this.uid)
       }).catch(error => {
         this.$message.error(error.status.remind)

@@ -93,13 +93,13 @@ export default {
       this.getLegenData(val)
       this.getData(this.activeIndex)
     },
-    percentList(val){
+    percentList (val) {
       if (val) {
         this.arrList = val
         this.getList(this.legendIndex)
         this.getLegenData(this.legendIndex)
         this.getData(this.activeIndex)
-      }else {
+      } else {
         this.arrList = null
       }
     }
@@ -157,7 +157,6 @@ export default {
         arr[0] = this.getArray(this.arrList.total)
         arr[1] = this.getArray(this.arrList.put)
         arr[2] = this.getArray(this.arrList.view)
-        console.log(this.getArray(this.arrList.entry))
         arr[3] = this.getArray(this.arrList.entry)
       }
       if (this.arrList && this.arrList.total && this.list) {
