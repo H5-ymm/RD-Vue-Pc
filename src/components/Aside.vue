@@ -151,39 +151,35 @@ export default {
             {
               title: '收藏职位',
               url: '/collectJob'
-            },
-            {
-              title: '成员推荐',
-              url: '/userRecommend'
-            },
-          ]
-        },
-        {
-          title: '财务管理',
-          icon: 'el-icon-collection-tag',
-          submenu: [
-            {
-              title: '我的账户',
-              url: '/myAccount'
-            },
-            {
-              title: '充值',
-              url: '/deposit'
-            },
-            {
-              title: '提现',
-              url: '/withdraw'
-            },
-            {
-              title: '转账',
-              url: '/transfer'
-            },
-            {
-              title: '交易记录',
-              url: '/tradingRecord'
             }
           ]
-        }
+        },
+        // {
+        //   title: '财务管理',
+        //   icon: 'el-icon-collection-tag',
+        //   submenu: [
+        //     {
+        //       title: '我的账户',
+        //       url: '/myAccount'
+        //     },
+        //     {
+        //       title: '充值',
+        //       url: '/deposit'
+        //     },
+        //     {
+        //       title: '提现',
+        //       url: '/withdraw'
+        //     },
+        //     {
+        //       title: '转账',
+        //       url: '/transfer'
+        //     },
+        //     {
+        //       title: '交易记录',
+        //       url: '/tradingRecord'
+        //     }
+        //   ]
+        // }
       ],
       root: {
         title: '团队设置',
@@ -199,10 +195,18 @@ export default {
           }
         ]
       },
+      collect: {
+        title: '成员推荐',
+        url: '/userRecommend'
+      },
       receipt: {
         title: '内部发单',
         icon: 'el-icon-collection-tag',
         submenu: [
+          {
+            title: '已发布职位',
+            url: '/publishJobList?view=2'
+          },
           {
             title: '已推荐简历',
             url: '/putList'
@@ -210,10 +214,6 @@ export default {
         ]
       },
       internalInvoiceRoot: [
-        {
-          title: '已发布职位',
-          url: '/publishJobList?view=2'
-        },
         {
           title: '管理内部职位',
           url: '/publishJobList?view=1'
@@ -244,7 +244,8 @@ export default {
         }
       ],
       title: '',
-      url: '/teamData'
+      url: '/teamData',
+      userPosition: 0
     }
   },
   created () {
@@ -263,16 +264,54 @@ export default {
       }
       this.menus.splice(4, 0, this.root)
       this.menus.splice(9, 0, this.receipt)
-
       this.menus[3].submenu = this.receiptRoot.concat(this.menus[3].submenu)
+      let len = this.menus.length - 1
+      this.menus[len].submenu.push(this.collect)
     }
     if (userPosition == 2) {
       this.menus[3].submenu = this.receiptRoot1.concat(this.menus[3].submenu)
       this.menus.splice(8, 0, this.receipt)
     }
-    if (userPosition != 3) {
-      let len = this.menus.length - 2
+    if (userPosition == 3) {
+      this.menus.splice(8, 0, this.receipt)
+    }
+    if (userPosition && userPosition != 3) {
+      let len = this.menus.length - 1
       this.menus[len].submenu = this.internalInvoiceRoot.concat(this.menus[len].submenu)
+    }
+  },
+  watch: {
+    $route (to, from) {
+      console.log(to)
+      let userPosition = sessionStorage.getItem('userPosition')
+      let teamType = localStorage.getItem('teamType')
+      let teamId = localStorage.getItem('uid')
+      if (userPosition == 1) {
+        if (teamType == 1) {
+          this.root.submenu[0].url = `/teamCompanyForm?teamId=${teamId}&type=${teamType}`
+        }
+        else if (teamType == 2) {
+          this.root.submenu[0].url = `/personalForm?teamId=${teamId}&type=${teamType}`
+        }
+        else {
+          this.root.submenu[0].url = `/teamSetting`
+        }
+        this.menus.splice(4, 0, this.root)
+        this.menus.splice(9, 0, this.receipt)
+
+        this.menus[3].submenu = this.receiptRoot.concat(this.menus[3].submenu)
+      }
+      if (userPosition == 2) {
+        this.menus[3].submenu = this.receiptRoot1.concat(this.menus[3].submenu)
+        this.menus.splice(8, 0, this.receipt)
+      }
+      if (userPosition == 3) {
+        this.menus.splice(8, 0, this.receipt)
+      }
+      if (userPosition && userPosition != 3) {
+        let len = this.menus.length - 1
+        this.menus[len].submenu = this.internalInvoiceRoot.concat(this.menus[len].submenu)
+      }
     }
   },
   methods: {
@@ -302,17 +341,14 @@ export default {
       return list
     }
   },
-   watch:{
-    $route(to,from) {
-       if(to.path=='/commonTableList'&&from.path=='/teamEntryList'){
+  watch: {
+    $route (to, from) {
+      if (to.path == '/commonTableList' && from.path == '/teamEntryList') {
         // this.selectMenus(to.path,this.menus)
         this.url = '/teamEntryList'
-      }else {
-        this.selectMenus(to.fullPath,this.menus)
+      } else {
+        this.selectMenus(to.fullPath, this.menus)
       }
-      // if(to.path=='/teamEntryList'&&from.path=='/resumeResult'){
-      //   this.selectMenus(to.path,this.menus)
-      // }
     }
   },
   computed: {

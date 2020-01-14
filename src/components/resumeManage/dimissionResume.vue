@@ -51,12 +51,9 @@
             </template>
           </el-table-column>
           <el-table-column label="联系电话" prop="mobile" align="center" width="150"></el-table-column>
-          <el-table-column label="企业名称" align="center" width="150">
-            <template slot-scope="props">
-              <span class="text-line" type="text">{{props.row.name}}</span>
-            </template>
+          <el-table-column label="企业名称" align="center" prop="com_name" width="150">
           </el-table-column>
-          <el-table-column label="岗位名称" prop="desired_position" align="center" width="150"></el-table-column>
+          <el-table-column label="岗位名称" prop="job_name" align="center" width="150"></el-table-column>
           <el-table-column label="离职时间" sortable="custom" align="center" width="160">
             <template slot-scope="props">
               <span type="text">{{props.row.removetime?props.row.removetime:'--'}}</span>
@@ -135,10 +132,10 @@ export default {
       dialogTableVisible: false,
       followUpRecordVisible: false,
       dialogObj: {
-        title: '离职原因',
-        subTitle: '离职详情',
-        okText: '确认离职',
-        placeholder: '请输入离职详情'
+        title: '放弃用户原因',
+        subTitle: '放弃详情',
+        okText: '确认放弃',
+        placeholder: '请输入放弃详情'
       },
       tableData: [],
       currentPage: 1,

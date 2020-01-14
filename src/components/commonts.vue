@@ -72,10 +72,11 @@ export default {
       },
     }
   },
-  mounted () {
-    this.getList()
-    // localStorage.setItem('uid', 6)
-    // localStorage.setItem('username', '测试一号哦')
+  created () {
+    let userType = localStorage.getItem('userType')
+    if (userType == 2) {
+      this.getList()
+    }
   },
   methods: {
     getList () {

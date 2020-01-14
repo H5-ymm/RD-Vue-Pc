@@ -47,7 +47,7 @@
             <template slot-scope="props">
               <span class="status status2" v-if="props.row.status==1&&props.row.job_status==1">待审核</span>
               <span class="status" :class="`status${props.row.status-1}`" v-if="props.row.status!=1&&props.row.job_status==1">{{props.row.status==2?'已通过':'未通过'}}</span>
-              <span class="status" :class="`status${Number(props.row.job_status)+1}`" v-if="props.row.job_status==1&&props.row.job_status!=1&&props.row.status==2">{{props.row.job_status==1?'已上架':'未上架'}}</span>
+              <span class="status" :class="`status${Number(props.row.job_status)+1}`" v-if="props.row.job_status!=1&&props.row.status==2">{{props.row.job_status==1?'已上架':'已下架'}}</span>
             </template>
           </el-table-column>
           <el-table-column label="操作" align="center" width="150">

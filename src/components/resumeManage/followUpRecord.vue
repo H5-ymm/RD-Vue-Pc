@@ -126,7 +126,7 @@
         <el-timeline v-if="list.length">
           <el-timeline-item v-for="(item, index) in list" :type="item.type" :size="item.size" :key="index" :timestamp="$moment.unix(item.addtime).format('YYYY-MM-DD')" placement="top">
             <div class="record-content">
-              <P class="record-title">{{item.title}}</P>
+              <P class="record-title">[{{item.title}}] {{item.username}}</P>
               <P>操作人: {{item.operator}}</P>
               <P>跟进时间: {{$moment.unix(item.addtime).format('YYYY-MM-DD HH:mm:ss')}}</P>
             </div>
@@ -218,7 +218,7 @@ export default {
       })
     },
     handleClose () {
-      this.$emit('handleClose')
+      this.$emit('submitRecord', this.reason)
     },
     // 添加跟进记录
     submitForm () {
@@ -232,7 +232,7 @@ export default {
         title: this.reason
       }
       addTrackingInfo(params).then(res => {
-        this.$emit('submitRecord', this.reason)
+        this.getTrackData()
         this.reason = ''
       })
     }

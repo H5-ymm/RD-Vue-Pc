@@ -171,24 +171,26 @@ export default {
       if (this.loginWay == 2) {
         this.formTab.token = this.token
       }
+      localStorage.clear('')
+      sessionStorage.clear()
       this.$refs['TabForm'].validate((valid) => {
         if (valid) {
           goLogin(this.formTab).then(res => {
             localStorage.setItem('userType', res.data.type)
-            let registerType = res.data.type
             localStorage.setItem('token', res.data.token)
             localStorage.setItem('uid', res.data.uid)
             localStorage.setItem('userName', res.data.username)
             localStorage.setItem('departName', res.data.departName)
-            localStorage.setItem('teamType', res.data.team_type)
-            // 登录人身份
-            sessionStorage.setItem('userPosition', res.data.gradeNum)
-            localStorage.setItem('userPosition', res.data.gradeNum)
+            let registerType = res.data.type
             if (res.data.type == 1) {
-              this.$router.push('createOrderTaking')
+              this.$router.push('/createOrderTaking')
             }
             else {
-              this.$router.push('teamData')
+              localStorage.setItem('teamType', res.data.team_type)
+              // 登录人身份
+              sessionStorage.setItem('userPosition', res.data.gradeNum)
+              localStorage.setItem('userPosition', res.data.gradeNum)
+              this.$router.push('/teamData')
             }
           }).catch(error => {
             if (error.status.code == 3010) {

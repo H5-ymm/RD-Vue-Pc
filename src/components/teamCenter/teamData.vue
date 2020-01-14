@@ -26,7 +26,7 @@
   <div class="team-center-view">
     <teamPanel :title="`${titleLog}数据`" :moreShow="false">
       <div slot="content">
-        <el-form :inline="true" class="team-center-form" :model="formMember">
+        <el-form :inline="true" class="team-center-form" :model="formMember" v-if="userPosition!=3">
           <el-form-item label="搜索类型：">
             <div class="x-flex-center">
               <el-select v-model="formMember.depart_id" class="width120" placeholder="部门" @change="changeDep" v-if="userPosition==1">
@@ -50,14 +50,14 @@
     </teamPanel>
     <el-row :gutter="20">
       <el-col :span="12">
-        <teamPanel :title="`${titleLog}日志`" class="team-panel-section1" @viewMore="$router.push('logList?view=logTable')">
+        <teamPanel :title="`${titleLog}日志`" class="team-panel-section1" @viewMore="$router.push('/logList?view=logTable')">
           <div slot="content">
             <logTable :tableData="tableTeamData"></logTable>
           </div>
         </teamPanel>
       </el-col>
       <el-col :span="12">
-        <teamPanel title="接单简历日志" class="team-panel-section1" @viewMore="$router.push('logList?view=receiptLogTable')">
+        <teamPanel title="接单简历日志" class="team-panel-section1" @viewMore="$router.push('/logList?view=receiptLogTable')">
           <div slot="content">
             <receiptLogTable :tableData="tableData"></receiptLogTable>
           </div>
@@ -70,6 +70,7 @@
         <allOrder :orderData="orderData"></allOrder>
       </div>
     </teamPanel>
+    <infoTip :centerDialogVisible="dialogVisible" :modalInfo="modalInfo" @handleClose="dialogVisible=false"></infoTip>
   </div>
 </template>
 <script>
@@ -82,6 +83,7 @@ import orderQuery from './orderQuery'
 import allOrder from './allOrder'
 import { getrank, getCompare, getTeamLog, getnumLeader, getmemberList, getapplyLog } from '@/api/teamCenter'
 import { departmentRoleList } from '@/api/department'
+import infoTip from '../common/infoTip'
 export default {
   components: {
     teamPanel,
@@ -90,12 +92,20 @@ export default {
     logTable,
     receiptLogTable,
     orderQuery,
-    allOrder
+    allOrder,
+    infoTip
   },
   data () {
     return {
       formMember: {
         uid: localStorage.getItem('uid')
+      },
+      dialogVisible: false,
+      modalInfo: {
+        title: '您的信息未完善！',
+        okText: '前去完善',
+        closeText: '',
+        imgBg: require('../../assets/img/info.png')
       },
       timeList: [
         { label: '一周', value: 1 },
@@ -149,15 +159,21 @@ export default {
     }
   },
   created () {
-    this.getList(this.params)
-    this.getCompareInfo(this.paramsInfo)
-    this.getData(this.paramsEchart)
-    this.getTeamList(this.paramsLog)
-    this.getLogList(this.paramsLog)
   },
   mounted () {
-    if (this.userPosition == 1) {
-      this.getDep()
+    if (localStorage.getItem('teamType') == 0) {
+      this.dialogVisible = true
+      return false
+    }
+    else {
+      this.getList(this.params)
+      this.getCompareInfo(this.paramsInfo)
+      this.getData(this.paramsEchart)
+      this.getTeamList(this.paramsLog)
+      this.getLogList(this.paramsLog)
+      if (this.userPosition == 1) {
+        this.getDep()
+      }
     }
   },
   computed: {
@@ -199,6 +215,7 @@ export default {
         this.personList = res.data || []
         console.log(this.personList)
       }).catch(error => {
+        console.log(error)
         this.$message.error(error.status.remind)
       })
     },
@@ -223,6 +240,7 @@ export default {
       departmentRoleList({ uid }).then(res => {
         this.depList = res.data || []
       }).catch(error => {
+        console.log(error)
         this.$message.error(error.status.remind)
       })
     },

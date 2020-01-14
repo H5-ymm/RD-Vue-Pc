@@ -278,6 +278,7 @@ export default {
     },
     updateResume (val) {
       val.uid = localStorage.getItem('uid')
+      delete val.eduName
       updateUserResume(val).then(res => {
         if (res.data) {
           this.dialogTableVisible = false

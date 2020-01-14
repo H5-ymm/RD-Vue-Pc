@@ -11,23 +11,20 @@
             <el-link :underline="false" href="home" v-if="type==1">首页</el-link>
             <div class="x-flex-start-justify" v-if="type==2||type==3">
               <img :src="getImgUrl(baseInfo.log)" alt class="team-logo" v-if="baseInfo&&baseInfo.log" />
+              <img src="../assets/img/headIcon.png" alt class="team-logo" v-else />
               <p class="team-logo no-logo" v-else></p>
               <span>{{baseInfo&&baseInfo.team_name}}</span>
             </div>
             <div class="x-flex-center" v-if="type==2||type==3">
               <el-link :underline="false" href="home" class="home-link">首页</el-link>
-              <!-- <i class="el-icon-bell item"></i> -->
-              <!-- <el-badge :value="200" :max="99" class="item">
-                <i class="el-icon-bell unRead"></i>
-              </el-badge> -->
               <el-dropdown @command="handleCommand">
                 <span class="el-dropdown-link">
                   <span>{{userInfo.user_name?userInfo.user_name:userInfo.mobile}}</span>
                   <i class="el-icon-caret-bottom"></i>
                 </span>
                 <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item command="accountSettings">账户信息</el-dropdown-item>
-                  <el-dropdown-item command="login">退出登录</el-dropdown-item>
+                  <el-dropdown-item command="/accountSettings">账户信息</el-dropdown-item>
+                  <el-dropdown-item command="/login">退出登录</el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
             </div>
@@ -42,8 +39,8 @@
                   <i class="el-icon-caret-bottom"></i>
                 </span>
                 <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item command="companyForm">账户信息</el-dropdown-item>
-                  <el-dropdown-item command="login">退出登录</el-dropdown-item>
+                  <el-dropdown-item command="/companyForm">账户信息</el-dropdown-item>
+                  <el-dropdown-item command="/login">退出登录</el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
             </div>
@@ -104,23 +101,28 @@ export default {
       if (val == 1) {
         this.aside = 'companyAside'
         this.height = "88px"
-        this.getCompanyInfo(this.uid)
+        if (this.uid) {
+          this.getCompanyInfo(this.uid)
+        }
+
       }
       else {
         this.aside = 'homeAside'
         this.height = "74px"
-        this.getUser(this.uid)
-        this.getInfo(this.uid)
+        if (this.uid) {
+          this.getUser(this.uid)
+          this.getInfo(this.uid)
+        }
       }
     },
-    // '$route' (to, from) {
-    //   //页面切换动画
-    //   console.log(to)
-    //   let toName = to.name
-    //   const toIndex = to.meta.index
-    //   const fromIndex = from.meta.index
-    //   this.transitionName = toIndex < fromIndex ? 'slide-right' : 'slide-left'
-    // }
+    $route (to, from) {
+      //页面切换动画
+      this.type = localStorage.getItem('userType')
+      this.uid = localStorage.getItem('uid')
+      if (sessionStorage.getItem('menus')) {
+        this.breadcrumb = JSON.parse(sessionStorage.getItem('menus'))
+      }
+    }
   },
   methods: {
     getImgUrl,
@@ -152,11 +154,14 @@ export default {
       })
     },
     handleCommand (val) {
-      if (val == 'login') {
+      if (val == '/login') {
         localStorage.clear('')
-        sessionStorage.clear('')
+        sessionStorage.clear()
+        this.$router.replace(val)
       }
-      this.$router.push(val)
+      else {
+        this.$router.push(val)
+      }
     }
   },
 }

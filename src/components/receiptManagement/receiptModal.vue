@@ -3,86 +3,104 @@
     <div class="receipt-row">
       <img src="../../assets/img/member/cancel.png" alt class="cancel-icon" @click="handleClose" />
       <section class="member-col1">
-        <p>通知入职</p>
+        <p>通知{{noticeType}}</p>
       </section>
       <section class="member-col3 bind-col3">
-        <el-form :model="formMember" :rules="rules" :inline="true" label-position="left" ref="formMember" class="demo-form-inline">
-          <el-form-item label="入职时间" required prop="depart_name">
+        <el-form :model="formMember" :inline="true" label-position="left" ref="formMember" class="demo-form-inline">
+          <el-form-item :label="`${noticeType}时间`" required>
             <div class="x-flex-between">
-              <el-date-picker v-model="formMember.date" type="date" class="width195" placeholder="请选择入职日期">
-              </el-date-picker>
-              <el-time-select class="width195" v-model="formMember.value" :picker-options="{
-                  start: '08:30',
-                  step: '00:15',
-                  end: '18:30'
-                }" placeholder="请选择入职时间">
-              </el-time-select>
+              <el-date-picker v-model="formMember.date" type="date" :disabled="viewTime" :picker-options="pickerOptions" class="width195" value-format="yyyy-MM-dd" format="yyyy-MM-dd" :placeholder="`请选择${noticeType}日期`"></el-date-picker>
+              <el-time-select class="width195" type="date" :picker-options="
+                ['09:30 - 12:00', '14:30 - 18:30']" :disabled="viewTime" value-format="HH:mm" format="HH:mm" v-model="formMember.time" :placeholder="`请选择${noticeType}时间`"></el-time-select>
             </div>
           </el-form-item>
-          <el-form-item label="通知内容" required prop="user_id">
-            <el-input v-model="formMember.depart_name" type="textarea" class="width400" :autosize="{maxRows: 4}" placeholder="请输入通知内容"></el-input>
+          <el-form-item :label="`${noticeType}地点`" required>
+            <districtSelet class="width400" v-if="!viewTime" @changeAddress="changeAddress" :placeholder="`请选择${noticeType}地点`"></districtSelet>
+            <el-input v-model="formMember.address" :readonly="viewTime" class="address" placeholder="请输入详细地址"></el-input>
+          </el-form-item>
+          <el-form-item label="通知内容" required>
+            <span class="error el-icon-warning">审核通过简历会直接发送{{noticeType}}通知，谨慎操作</span>
+            <el-input v-model="formMember.content" :readonly="viewTime" type="textarea" class="width400" :autosize="{maxRows: 4}" :placeholder="`${!viewTime?'请输入通知内容':''}`"></el-input>
           </el-form-item>
         </el-form>
       </section>
     </div>
     <div slot="footer" class="notice-footer-btn">
       <el-button @click="handleClose">取消</el-button>
-      <el-button type="primary" @click="submitForm">确定</el-button>
+      <el-button type="primary" @click="submitForm" v-if="!viewTime">确定</el-button>
     </div>
   </el-dialog>
 </template>
 <script>
-// 部门经理只能编辑状态
-// 成员只能查看
-// 总经理可以编辑部门 职称 状态
-import { getTeamListUser } from '../../api/department'
-import { validateIdCard } from '../../util/util'
+
 import districtSelet from '../districtSelet'
+import { selectInterviewEntryInfo } from '@/api/receipt'
 export default {
   components: {
     districtSelet
   },
-  props: ['dialogTableVisible'],
+  props: ['dialogTableVisible', 'noticeType', 'isEdit', 'id'],
   data () {
     return {
       formMember: {
-        depart_name: '',
-        user_id: '',
-        uid: localStorage.getItem('uid'),
+        date: '',
+        time: '',
+        address: '',
+        content: ''
       },
-      rules: {
-        depart_name: [
-          { required: true, message: '请输入部门名称', trigger: 'blur' },
-        ],
-        user_id: [
-          { required: true, message: '请选择部门经理', trigger: 'blur' }
-        ]
+      pickerOptions: {
+        disabledDate (time) {
+          return time.getTime() <= Date.now();
+        },
       },
-      userList: [],
       uid: localStorage.getItem('uid'),
-      address: []
+      address: [],
+      type: '',
+      viewTime: false
     }
   },
   created () {
-    this.getList(this.uid)
+    this.formMember.date = this.$moment(new Date()).add(1, 'days').format('YYYY-MM-DD HH:mm')
+  },
+  watch: {
+    isEdit (val) {
+      if (val) {
+        this.viewTime = val ? true : false
+        if (this.viewTime && this.id) {
+          this.getTimeInfo(this.id)
+        }
+      }
+    }
   },
   methods: {
-    getList (uid) {
-      getTeamListUser({ uid }).then(res => {
-        this.userList = res.data
+    getTimeInfo (id) {
+      selectInterviewEntryInfo({ id }).then(res => {
+        this.formMember.date = this.$moment.unix(res.data.entry_time).format('YYYY-MM-DD')
+        this.formMember.time = this.$moment.unix(res.data.entry_time).format('HH:mm')
+        let content1 = res.data.entry_comtent.split('&')
+        this.formMember.content = content1[1]
+        this.formMember.address = content1[0].split('/').join(',')
+      }).catch(error => {
+        this.$message.error(error.status.remind)
       })
     },
     handleClose () {
-      this.$parent.visible = false
+      this.$parent.dialogTableVisible = false
+    },
+    changeAddress (val) {
+      this.address = val
     },
     submitForm () {
-      this.$refs['formMember'].validate((valid) => {
-        if (valid) {
-          this.$emit('submitForm', this.formMember)
-        } else {
-          return false
-        }
-      })
+      if (this.interview_status == 3) return
+      let date = this.formMember.date + this.formMember.time
+      let date1 = this.$moment(date, 'YYYY-MM-DD HH:mm').valueOf()
+      let address = this.address.join('/')
+      date1 = date1 + ''
+      let params = {
+        time: date1.substring(0, 10),
+        content: address + '/' + this.formMember.address + '&' + this.formMember.content
+      }
+      this.$emit('submitForm', params)
     }
   }
 }
@@ -146,9 +164,16 @@ export default {
         }
       }
     }
+     .error {
+        position:absolute;
+        top:-24px;
+        right:0;
+        color:#FE2A00;
+        font-size:12px;
+      }
   }
   .notice-footer-btn {
-    // padding-right: 20px;
+    margin-right: 10px;
     .el-button {
       margin-right: 20px;
     }

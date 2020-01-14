@@ -142,7 +142,12 @@ export default {
         if (valid) {
           updateTeamInfo(this.personalForm).then(res => {
             if (res.status.code == 200) {
+              localStorage.setItem('teamType', 2)
+              this.$message.success('保存成功')
               this.$router.push('userlist')
+            }
+            else {
+              this.$message.error('保存失败')
             }
           }).catch(error => {
             this.$message.error(error.status.remind)

@@ -119,7 +119,7 @@
         </el-form-item>
         <el-form-item class="teamMessage-btn">
           <el-button type="primary" :disabled="!disabled" @click="submitForm('orderTakingForm')">发布</el-button>
-          <el-button @click="resetForm('orderTakingForm')">取消</el-button>
+          <el-button @click="$router.go(-1)">取消</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -133,7 +133,7 @@ import { getConstant } from '@/api/dictionary'
 import districtSelet from './districtSelet'
 import { createInvoice } from '@/api/company'
 import salaryAndRebate from './orderTaking/salaryAndRebate'
-import { invoiceInfo } from '@/api/orderTarking'
+import { updateInvoice, getInvoice } from '@/api/orderTarking'
 export default {
   components: {
     districtSelet,
@@ -217,7 +217,7 @@ export default {
         id: this.id,
         uid: localStorage.getItem('uid')
       }
-      invoiceInfo(params).then(res => {
+      getInvoice(params).then(res => {
         this.from = res.data
         this.orderTakingForm = res.data
         if (res.data && res.data.provinceid) {
@@ -306,35 +306,58 @@ export default {
       }
     },
     submitForm (orderTakingForm) {
-      if (!this.orderTakingForm.job_content) {
-        return this.$message.warning('请输入职位描述')
-      }
+      console.log(this.orderTakingForm.job_content)
       if (Number(this.orderTakingForm.min_age) < 16) {
         return this.$message.warning('最小年龄不能小于16')
       }
       if (Number(this.orderTakingForm.max_age) < Number(this.orderTakingForm.min_age)) {
         return this.$message.warning('最大年龄不能大于最小年龄')
       }
-      if (this.jobContent.length < 30) {
+
+      if (!this.orderTakingForm.job_content) {
+        return this.$message.warning('请输入职位描述')
+      }
+      if (this.orderTakingForm.job_content < 30) {
         return this.$message.warning('职位描述最低输入30个')
       }
+
       this.$refs[orderTakingForm].validate((valid) => {
         if (valid) {
-          createInvoice(this.orderTakingForm).then(res => {
-            if (res.data) {
-              this.$router.push('checkReceipt')
-              this.resetForm()
-            }
-            else {
-              this.$message.error('发布失败')
-            }
-          }).catch(error => {
-            this.$message.error(error.status.remind)
-          })
+          // 修改发单
+          if (this.orderTakingForm.id) {
+            this.updateRecepit(this.orderTakingForm)
+          }
+          else {
+            // 新增
+            createInvoice(this.orderTakingForm).then(res => {
+              if (res.data) {
+                this.$router.push('/checkReceipt')
+                this.resetForm()
+              }
+              else {
+                this.$message.error('发布失败')
+              }
+            }).catch(error => {
+              this.$message.error(error.status.remind)
+            })
+          }
         } else {
           return false;
         }
       });
+    },
+    updateRecepit (orderTakingForm) {
+      updateInvoice(orderTakingForm).then(res => {
+        if (res.data) {
+          this.$router.push('checkReceipt')
+          this.resetForm()
+        }
+        else {
+          this.$message.error('发布失败')
+        }
+      }).catch(error => {
+        this.$message.error(error.status.remind)
+      })
     },
     resetForm () {
       this.orderTakingForm = {

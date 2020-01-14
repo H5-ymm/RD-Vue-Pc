@@ -195,7 +195,7 @@
                       </p>
                       <p v-if="orderTakingDetail.reward_type==1">
                         <span>结算时间：</span>
-                        <span>次月第{{orderTakingDetail.settlement_time}}号结算</span>
+                        <span>次月{{orderTakingDetail.settlement_time}}号结算</span>
                       </p>
                       <p class="team-info-card-item" v-else>
                         <span>结算时间：</span>
@@ -470,7 +470,7 @@ export default {
       jobRecommendedList(params).then(res => {
         this.recommendedList = res.data
       }).catch(error => {
-        this.message.$error(error.status.remind)
+        this.$message.error(error.status.remind)
       })
     },
     getCompanyData (uid) {
@@ -478,7 +478,7 @@ export default {
         console.log(res)
         this.companyInfo = res.data || {}
       }).catch(error => {
-        this.message.$error(error.status.remind)
+        this.$message.error(error.status.remind)
       })
     },
     getCompanyInvoiceList () {
@@ -489,7 +489,7 @@ export default {
       companyInvoiceList(params).then(res => {
         this.comInvoiceList = res.data
       }).catch(error => {
-        this.message.$error(error.status.remind)
+        this.$message.error(error.status.remind)
       })
     },
     switchNav (item, index) {
@@ -504,7 +504,7 @@ export default {
         this.list = res.data.data.data
         this.total = res.data.count
       }).catch(error => {
-        this.message.$error(error.status.remind)
+        this.$message.error(error.status.remind)
       })
     },
     applyReceipt () {
@@ -537,7 +537,7 @@ export default {
       }
     },
     handleReport () {
-      if (this.orderTakingDetail.checkCollect) return
+      if (this.orderTakingDetail.checkReport) return
       this.tipDialogVisible = true
     },
     // 收藏
@@ -553,18 +553,18 @@ export default {
           this.centerDialogVisible = true
         }
         else if (res.data && this.orderTakingDetail.checkCollect) {
-          this.message.$error('操作成功')
+          this.$message.success('操作成功')
+          this.orderTakingDetail.checkCollect = 0
         }
         else {
-          this.message.$error('操作失败')
+          this.$message.error('操作失败')
         }
       }).catch(error => {
-        this.message.$error(error.status.remind)
+        this.$message.error(error.status.remind)
       })
     },
     // 举报
     submit (val) {
-      if (this.orderTakingDetail.checkReport) return
       let parasm = {
         uid: localStorage.getItem('uid'),
         jobId: this.orderTakingDetail.id,

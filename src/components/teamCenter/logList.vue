@@ -41,13 +41,8 @@ export default {
     }
   },
   created () {
+    this.componentId = this.$route.query.view
     this.getList(this.params)
-  },
-  watch: {
-    $route (to, from) {
-      this.componentId = to.query.view
-      this.getList(this.params)
-    }
   },
   methods: {
     getList (params) {

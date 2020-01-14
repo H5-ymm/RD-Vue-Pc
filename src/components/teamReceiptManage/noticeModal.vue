@@ -35,7 +35,6 @@
 // 部门经理只能编辑状态
 // 成员只能查看
 // 总经理可以编辑部门 职称 状态
-import { getTeamListUser } from '../../api/department'
 import { validateIdCard } from '../../util/util'
 import districtSelet from '../districtSelet'
 export default {
@@ -69,21 +68,16 @@ export default {
     viewTimeInfo (val) {
       if (val) {
         console.log(val)
-        let arr = val.content.split('/')
-        this.address = arr[0] + arr[1] + arr[2]
+        let arr = val.content.split('&')
+        this.address = arr[0]
         this.content = arr[3]
       }
     }
   },
   created () {
-    this.getList(this.uid)
+
   },
   methods: {
-    getList (uid) {
-      getTeamListUser({ uid }).then(res => {
-        this.userList = res.data
-      })
-    },
     handleClose () {
       this.$parent.visible = false
     },

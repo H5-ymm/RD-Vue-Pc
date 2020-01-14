@@ -60,7 +60,12 @@
           <el-table-column label="需求人数" prop="required_number" align="center" width="100"></el-table-column>
           <el-table-column label="面试通过" prop="recommendResume" align="center" width="110">
           </el-table-column>
-          <el-table-column label="岗位薪资" prop="money" align="center" width="120"></el-table-column>
+          <el-table-column label="岗位薪资" align="center" width="120">
+            <template slot-scope="props">
+              <span v-if="props.row.money_type==1">{{props.row.money_min}}~{{props.row.money_max}}</span>
+              <span v-else>{{props.row.money}}</span>
+            </template>
+          </el-table-column>
           <el-table-column label="薪资模式" align="center" width="100">
             <template slot-scope="props">
               <span>{{props.row.money_type|moneyType}}</span>
@@ -99,7 +104,7 @@
               <el-button @click="$router.push({path:'/entryList',query:{id:props.row.id}})" type="text" size="small" v-if="(props.row.interview_status>=2&&props.row.entry_time&&props.row.entry_status)||(props.row.entry_status&&props.row.interview_status==3)">查看入职</el-button>
               <el-button @click="handleOver(props.row)" type="text" v-if="props.row.interview_status==1&&!props.row.entry_status" size="small">面试结束</el-button>
               <el-button @click="$router.push({path:'checkResume',query:{id:props.row.id,view:4}})" v-if="props.row.interview_status==1&&!props.row.entry_status" type="text" size="small">审核结果</el-button>
-              <el-button @click="$router.push({path:'commonTable',query:{id:props.row.id,view:6}})" v-if="props.row.interview_status>=2&&!props.row.entry_status" type="text" size="small">面试名单</el-button>
+              <el-button @click="viewEntrytList(props.row)" v-if="props.row.interview_status>=2&&!props.row.entry_status" type="text" size="small">面试名单</el-button>
               <el-button @click="setEntryTime(props.row)" type="text" size="small" v-if="props.row.interview_status==2||props.row.interview_status==3">通知入职</el-button>
               <el-button @click="$router.push({path:'commonTable',query:{id:props.row.id,view:3}})" v-if="(!props.row.entry_time&&props.row.entry_status) || props.row.entry_status" type="text" size="small">
                 面试结果
@@ -111,19 +116,19 @@
       </div>
       <el-pagination class="team-pagination" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="formMember.page" :page-sizes="[10, 30, 50, 100]" :page-size="formMember.limit" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
     </div>
-    <noticeModal :dialogTableVisible="dialogTableVisible" noticeType="入职" :id="jobId" :isEdit="entry_time" @submitForm="submitForm"></noticeModal>
+    <receiptModal :dialogTableVisible="dialogTableVisible" noticeType="入职" :id="jobId" :isEdit="entry_time" @submitForm="submitForm"></receiptModal>
     <modal :dialogTableVisible="visible" @handleOk="handleOk" isShow="true" :modalObj="modalObj" @handleClose="visible=false,jobId=''"></modal>
   </div>
 </template>
 <script>
 import { invoiceInterviewList, auditEntryResume, endInterview, exportInterviewResume, editEntryTime } from '@/api/receipt'
 import { moneyTypeList, rewardTypeList, entryStatusList3 } from '../../base/base'
-import noticeModal from './noticeModal'
+import receiptModal from './receiptModal'
 import modal from '../common/modal'
 import { getConstant } from '../../api/dictionary'
 export default {
   components: {
-    noticeModal,
+    receiptModal,
     modal
   },
   filters: {
@@ -238,13 +243,23 @@ export default {
       }
       exportInterviewResume(params)
     },
+    viewEntrytList (val) {
+      this.jobId = val.id
+      if (!val.entry_time) {
+        this.dialogTableVisible = true
+        this.entry_time = ''
+      }
+      else {
+        this.$router.push({ path: 'commonTable', query: { id: val.id, view: 6 } })
+      }
+    },
     setEntryTime (val) {
+      this.jobId = val.id
       if (!val.entry_time) {
         this.dialogTableVisible = true
       }
       else {
         this.dialogTableVisible = true
-        this.jobId = val.id
         this.entry_time = val.entry_time
       }
     },

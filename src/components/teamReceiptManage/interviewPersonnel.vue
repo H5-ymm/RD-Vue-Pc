@@ -62,7 +62,7 @@
           </el-table-column>
           <el-table-column label="状态" align="center" width="150">
             <template slot-scope="props">
-              <span class="status" :class="`status${props.row.invoice_status}`" v-if="!props.row.interview_status&&!props.row.entry_status">{{props.row.invoice_status==0?'收集中':props.row.invoice_status==1?'面试开始':props.row.invoice_status==2?'面试结束':'审核简历'}}</span>
+              <span class="status" :class="`status${props.row.invoice_status}`" v-if="!props.row.interview_status&&!props.row.entry_status">{{props.row.invoice_status==0?'收集中':props.row.invoice_status==1?'审核中':props.row.invoice_status==2?'面试开始':'审核简历'}}</span>
               <!-- <span class="status" v-if="props.row.entry_status&&props.row.entry_status<3" :class="`status${props.row.entry_status}`">{{props.row.entry_status==1?'面试开始':props.row.entry_status==2?'面试结束':''}}</span> -->
               <!-- <span class="status" v-if="props.row.status==1" :class="`status${props.row.status}`">面试开始</span> -->
               <span class="status status4" v-else>面试结束</span>
@@ -92,13 +92,13 @@
             <template slot-scope="scope">
               <div v-if="!scope.row.interview_status&&!scope.row.entry_status">
                 <el-button v-if="scope.row.interview_status>=3||!scope.row.interview_status" @click="$router.push('/recommendResume?id='+ scope.row.id + '&jobId='+scope.row.job_id)" type="text" size="small">推荐简历</el-button>
-                <el-button v-if="!scope.row.interview_status||scope.row.interview_status==4" @click="$router.push('/commonTableList?id='+ scope.row.id+ '&jobId='+scope.row.job_id)" type="text" size="small">
+                <el-button v-if="!scope.row.interview_status||scope.row.interview_status==4" @click="$router.push('/commonTableList?id='+ scope.row.id+ '&jobId='+scope.row.job_id+'&view=2')" type="text" size="small">
                   推荐名单
                   <!-- <span class="resume-number">(+150)</span> -->
                 </el-button>
               </div>
               <div v-if="scope.row.interview_status||scope.row.entry_status">
-                <el-button @click="$router.push('/resumeResult?id='+ scope.row.id)" type="text" size="small">
+                <el-button @click="$router.push('/resumeResult?id='+ scope.row.job_id)" type="text" size="small">
                   面试名单
                   <!-- <span class="resume-number">(+150)</span> -->
                 </el-button>
@@ -111,7 +111,6 @@
       <el-pagination class="team-pagination" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="formMember.page" :page-sizes="[10, 30, 50, 100]" :page-size="formMember.limit" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
     </div>
     <customerService :dialogTableVisible="dialogTableVisible"></customerService>
-    <receiptModal :dialogTableVisible="visible"></receiptModal>
     <viewJob :dialogTableVisible="dialogJobVisible" :id="jobId" @handleClose="dialogJobVisible=false"></viewJob>
   </div>
 </template>
@@ -148,7 +147,6 @@ export default {
       rewardTypeList,
       dialogTableVisible: false,
       dialogJobVisible: false,
-      visible: false,
       tableData: [],
       formMember: {
         uid: localStorage.getItem('uid'),

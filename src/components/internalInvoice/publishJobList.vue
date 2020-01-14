@@ -190,17 +190,17 @@
             <template slot-scope="scope">
               <div v-if="viewType==1" class="x-flex-around">
                 <!-- <el-button @click="$router.push('jobDetail?id='+scope.row.id)" type="text" size="small">详情</el-button> -->
-                <el-button @click="$router.push('postJob?id='+scope.row.id)" type="text" size="small" v-if="(scope.row&&scope.row.uid==uid)||userPosition==1">编辑</el-button>
+                <el-button @click="$router.push('/postJob?id='+scope.row.id)" type="text" size="small" v-if="(scope.row&&scope.row.uid==uid)||userPosition==1">编辑</el-button>
                 <el-button @click="delJob(scope.row)" type="text" size="small" v-if="(scope.row&&scope.row.uid==uid)||userPosition==1">删除</el-button>
                 <el-button @click="handleRecepit(1,scope.row)" type="text" v-if="scope.row.uid==uid||userPosition==1" size="small">分配跟进人</el-button>
                 <el-button @click="changeJobstatus(0,scope.row)" type="text" size="small" v-if="((scope.row&&scope.row.uid==uid)||userPosition==1)&&scope.row.is_up==1">下架</el-button>
                 <el-button @click="changeJobstatus(1,scope.row)" type="text" size="small" v-if="((scope.row&&scope.row.uid==uid)||userPosition==1)&&!scope.row.is_up">上架</el-button>
               </div>
               <div v-if="viewType!=1" class="x-flex-center">
-                <el-button @click="$router.push('jobDetail?id='+scope.row.id)" type="text" size="small">详情</el-button>
-                <el-button @click="$router.push('recommendResume?jobId='+scope.row.id+'&index=1')" v-if="scope.row.is_up==1" type="text" size="small">推荐简历</el-button>
+                <el-button @click="$router.push('/jobDetail?id='+scope.row.id)" type="text" size="small">详情</el-button>
+                <el-button @click="$router.push('/recommendResume?jobId='+scope.row.id+'&index=1')" v-if="scope.row.is_up==1" type="text" size="small">推荐简历</el-button>
                 <span v-if="!scope.row.is_up" class="default-status">推荐简历</span>
-                <el-button @click="$router.push('putList?id='+scope.row.id)" type="text" size="small">已推荐简历</el-button>
+                <el-button @click="$router.push('/putList?id='+scope.row.id)" type="text" size="small">已推荐简历</el-button>
               </div>
             </template>
           </el-table-column>

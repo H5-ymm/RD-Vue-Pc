@@ -35,7 +35,13 @@ $axios.interceptors.response.use(
     if (response.data.status.code === 200) {
       return Promise.resolve(response);
     } else {
-      return Promise.reject(response);
+      console.log(response.data.status)
+      if (response.data.status.code == 5030) {
+        return false
+      }
+      else {
+        return Promise.reject(response);
+      }
     }
   },
   // 服务器状态码不是200的情况 
@@ -44,6 +50,9 @@ $axios.interceptors.response.use(
       switch (error.response.status) {
         case 500:
           Message.error('网络错误');
+          break;
+        case 5030:
+          console.log(error.response.status)
           break;
         // 401: 未登录    
         // 未登录则跳转登录页面，并携带当前页面的路径    

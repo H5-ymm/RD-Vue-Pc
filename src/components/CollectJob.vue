@@ -49,12 +49,13 @@
               <span>{{props.row.money_type | moneyType}}</span>
             </template>
           </el-table-column> -->
-          <el-table-column label="岗位薪资" align="center" width="110">
+          <el-table-column label="岗位薪资" align="center" width="150">
             <template slot-scope="props">
-              <span>{{props.row.money}}元/{{props.row.money_type==1?'月':props.row.money_type==2?'日':'时'}}</span>
+              <span v-if="props.row.money_type==1">{{props.row.money_min}} ~ {{props.row.money_max}}元/{{props.row.money_type==1?'月':props.row.money_type==2?'日':'时'}}</span>
+              <span v-else>{{props.row.money}}元/{{props.row.money_type==1?'月':props.row.money_type==2?'日':'时'}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="返利模式" align="center" width="110">
+          <el-table-column label="返利模式" align="center" width="150">
             <template slot-scope="props">
               <span>{{props.row.reward_money}}元/{{props.row.reward_type | rewardType}}</span>
             </template>
@@ -66,15 +67,20 @@
           </el-table-column>
           <el-table-column label="推荐状态" align="center" width="110" v-if="userPosition!=1">
             <template slot-scope="props">
-              <span class="status" :class="`status${props.row.status}`">{{props.row.status|recommendStatus}}</span>
+              <span class="status" :class="`status${props.row.t_status}`">{{props.row.t_status|recommendStatus}}</span>
             </template>
           </el-table-column>
           <el-table-column label="操作" align="center" min-width="150">
             <template slot-scope="scope">
-              <el-button @click="handleRecommend(scope.row)" v-if="scope.row.status==1&&scope.row.jobStatus==1&&userPosition==3" type="text" size="small">推荐接单</el-button>
-              <el-button @click="handleApply(scope.row)" v-if="scope.row.jobStatus==1&&userPosition!=3" type="text" size="small">申请接单</el-button>
-              <el-button @click="handleCancle(scope.row)" type="text" size="small">取消收藏</el-button>
-              <span v-if="scope.row.status==2" type="text" size="small">已申请</span>
+              <div v-if="scope.row.job_status==1">
+                <el-button @click="handleRecommend(scope.row)" v-if="scope.row.t_status==0&&userPosition!=1" type="text" size="small">推荐接单</el-button>
+                <el-button @click="handleApply(scope.row)" v-if="scope.row.t_status==1&userPosition==1" type="text" size="small">申请接单</el-button>
+                <el-button @click="handleCancle(scope.row)" type="text" v-if="scope.row.t_status==3&&scope.row.jobStatus==1&&userPosition!=1" size="small">取消收藏</el-button>
+                <el-button @click="handleCancle(scope.row)" type="text" size="small">取消收藏</el-button>
+              </div>
+              <div v-else>
+                <el-button @click="handleCancle(scope.row)" type="text" size="small">取消收藏</el-button>
+              </div>
             </template>
           </el-table-column>
         </el-table>
@@ -146,12 +152,14 @@ export default {
         closeText: '继续浏览'
       },
       id: '',
-      userPosition: sessionStorage.getItem('userPosition')// 1 总经理，2经理，3 成员
+      userPosition: localStorage.getItem('userPosition')// 1 总经理，2经理，3 成员
     }
   },
   created () {
     // 初始化查询标签数据
     this.getList(this.formMember)
+    console.log(this.userPosition)
+    console.log(localStorage.getItem('userPosition'))
   },
   methods: {
     getList (params) {
@@ -186,13 +194,18 @@ export default {
     },
     handleRecommend (val) {
       let params = {
-        jobId: val.jobId,
+        jobId: val.job_id,
         id: val.id,
         uid: localStorage.getItem('uid')
       }
       recommendTeamUserJob(params).then(res => {
-        this.dialogTableVisible = true
-        this.getList(this.formMember)
+        if (res.data) {
+          this.$message.success('推荐成功')
+          this.getList(this.formMember)
+        }
+        else {
+          this.$message.error('推荐失败')
+        }
       }).catch(error => {
         this.$message.error(error.status.remind)
       })
@@ -205,8 +218,9 @@ export default {
       teamCollectionJob(params).then(res => {
         if (res.data) {
           this.$message.success('取消成功')
+          this.getList(this.formMember)
         } else {
-          this.$message.success('取消失败')
+          this.$message.error('取消失败')
         }
       }).catch(error => {
         this.$message.error(error.status.remind)
@@ -220,7 +234,8 @@ export default {
         collectId: val.id
       }
       teamcollection(params).then(res => {
-        this.dialogTableVisible = true
+        this.$message.success('取消成功')
+        // this.dialogTableVisible = true
         this.getList(this.formMember)
       }).catch(error => {
         this.$message.error(error.status.remind)

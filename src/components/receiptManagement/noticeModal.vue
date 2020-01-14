@@ -60,43 +60,27 @@ export default {
     }
   },
   created () {
-    this.formMember.date = this.$moment(new Date()).format('YYYY-MM-DD HH:mm')
+    this.formMember.date = this.$moment(new Date()).add(1, 'days').format('YYYY-MM-DD HH:mm')
   },
   watch: {
-    noticeType (val) {
-      if (val) {
-        this.type = val
-      }
-    },
-    id (val) {
-      if (val && !this.viewTime) {
-        this.getTimeInfo(val)
-      }
-    },
     isEdit (val) {
       if (val) {
         this.viewTime = val ? true : false
         console.log(this.viewTime)
+        if (this.viewTime) {
+          this.getTimeInfo(val)
+        }
       }
     }
   },
   methods: {
     getTimeInfo (id) {
       selectInterviewEntryInfo({ id }).then(res => {
-        if (this.type == '入职') {
-          this.formMember.date = this.$moment.unix(res.data.entry_time).format('YYYY-MM-DD')
-          this.formMember.time = this.$moment.unix(res.data.entry_time).format('HH:mm')
-          let content1 = res.data.entry_comtent.split('&')
-          this.formMember.content = content1[1]
-          this.formMember.address = content1[0].split('/').join(',')
-        }
-        if (this.type == '面试') {
-          this.formMember.date = this.$moment.unix(res.data.view_time).format('YYYY-MM-DD')
-          this.formMember.time = this.$moment.unix(res.data.view_time).format('HH:mm')
-          let content1 = res.data.content.split('&')
-          this.formMember.content = content1[1]
-          this.formMember.address = content1[0].split('/').join(',')
-        }
+        this.formMember.date = this.$moment.unix(res.data.view_time).format('YYYY-MM-DD')
+        this.formMember.time = this.$moment.unix(res.data.view_time).format('HH:mm')
+        let content1 = res.data.content.split('&')
+        this.formMember.content = content1[1]
+        this.formMember.address = content1[0].split('/').join(',')
       }).catch(error => {
         this.$message.error(error.status.remind)
       })
@@ -117,13 +101,7 @@ export default {
         time: date1.substring(0, 10),
         content: address + '/' + this.formMember.address + '&' + this.formMember.content
       }
-      this.$refs['formMember'].validate((valid) => {
-        if (valid) {
-          this.$emit('submitForm', params)
-        } else {
-          return false
-        }
-      })
+      this.$emit('submitForm', params)
     }
   }
 }

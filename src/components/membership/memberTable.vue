@@ -11,8 +11,11 @@
         </span>
         <el-button type="text" @click="multipleSelection=[]">清空</el-button>
       </div>
-      <div>
+      <div v-if="userPosition==1">
         <el-button @click="dismissTeam()">解散团队</el-button>
+      </div>
+      <div v-else>
+        <el-button type="primary" @click="dismissTeam()">退出团队</el-button>
       </div>
     </div>
     <div class="table">

@@ -1,13 +1,5 @@
 <template>
-  <el-dialog
-    title
-    :visible.sync="centerDialogVisible"
-    top="35vh"
-    width="340px"
-    center
-    :before-close="handleClose"
-    class="dialog info-dialog"
-  >
+  <el-dialog title :visible.sync="centerDialogVisible" top="35vh" width="340px" center :show-close="false" :before-close="handleClose" class="dialog info-dialog">
     <div class="dialog-centent">
       <img :src="modalInfo.imgBg" class="dialog-img" alt />
       <div class="dialog-row">

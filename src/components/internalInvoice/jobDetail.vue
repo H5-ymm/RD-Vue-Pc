@@ -129,7 +129,8 @@
               <div class="resume-card-item">
                 <div class="x-flex-start">
                   <p class="resume-col1">综合薪资</p>
-                  <p>{{formMember.offermoney?formMember.offermoney:0}}/{{formMember.offermoney_type==1?'月':formMember.offermoney_type==2?'日':'时'}}</p>
+                  <p v-if="formMember.offermoney_type==1">{{formMember.money_min}} ~ {{formMember.money_max}} / {{formMember.offermoney_type==1?'月':formMember.offermoney_type==2?'日':'时'}}</p>
+                  <p v-else>{{formMember.offermoney?formMember.offermoney:0}}/{{formMember.offermoney_type==1?'月':formMember.offermoney_type==2?'日':'时'}}</p>
                 </div>
                 <div class="x-flex-start" v-if="formMember.welfare_statement">
                   <p class="resume-col1">薪资说明</p>

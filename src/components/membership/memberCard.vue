@@ -37,7 +37,7 @@ export default {
       else {
         obj = {
           name: '团队名称',
-          num: localStorage.getItem('departName') ? localStorage.getItem('departName') : '--',
+          num: localStorage.getItem('departName') != 'null' ? localStorage.getItem('departName') : '--',
           resumeNum: '简历总数',
           entryNum: '已入职'
         }

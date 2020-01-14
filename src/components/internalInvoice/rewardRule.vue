@@ -24,7 +24,7 @@
       </section>
     </div>
     <div class="resume-footer-btn">
-      <el-button type="primary" @click="submitForm(2)">下一步</el-button>
+      <el-button type="primary" @click="submitForm()">下一步</el-button>
     </div>
   </div>
 </template>
@@ -59,17 +59,17 @@ export default {
     }
   },
   created () {
-    let params = 'edu_type,money_array'
+    let params = 'money_array'
     this.getList(params)
+    this.rewardForm.type = 1
   },
   watch: {
     tabIndex (val) {
       this.index = val
-      console.log(val)
-      if (val==0){  
-        this.$emit('submitForm', {tabIndex:1})
+      if (val == 1) {
+        this.$emit('submitForm', { tabIndex: 1 })
       }
-      else if(val==1){
+      else if (val == 0) {
         this.submitForm(val)
       }
       else {
@@ -91,7 +91,6 @@ export default {
     },
     getList (filed) {
       getConstant({ filed }).then(res => {
-        this.edu_type = res.data.edu_type
         this.moneyArray = res.data.money_array
       })
     },
@@ -102,40 +101,41 @@ export default {
       this.rewardForm = val
       this.formMember = Object.assign(this.formMember, val)
     },
-    checkReward(info){
+    checkReward (info) {
       let flag = false
-      if (info.type==2) {
-        flag = true
-      }
-      else {
-        for (let key in info) {
-          if (info.reward_type == 1) {
-            if (info[key] != '' && key != 'reward_needtime' && key != 'duration_time') {
-              flag = true
-              break;
-            }
-            else {
-              flag = false
-            }
+      for (let key in info) {
+
+        console.log(info)
+        if (info.reward_type == 1) {
+          if (info[key] != '' && key == 'reward_needtime' && key == 'duration_time') {
+            flag = true
           }
           else {
-            if (info[key] != '') {
-              flag = true
-              break;
-            }
-            else {
-              flag = false
-            }
+            flag = false
+          }
+        }
+        else {
+          if (info[key] != '') {
+            flag = true
+          }
+          else {
+            flag = false
           }
         }
       }
-      return flag 
+      console.log(flag)
+      return flag
     },
     submitForm (index) {
-      if (index==2) {
+      console.log(!this.checkReward(this.rewardForm))
+      console.log(this.rewardForm.type)
+      if (this.rewardForm.type == 1) {
         if (!this.checkReward(this.rewardForm)) {
-          this.$emit('submitForm', index)
           return this.$message.warning('请设置返利模式规则')
+          // this.$emit('submitForm', index)
+        }
+        else {
+          this.$emit('submitForm', this.formMember)
         }
       }
       else {

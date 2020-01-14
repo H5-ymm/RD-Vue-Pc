@@ -73,7 +73,7 @@
       <el-pagination class="team-pagination" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="formMember.page" :page-sizes="[10, 30, 50, 100]" :page-size="formMember.limit" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
     </div>
     <customerService :dialogTableVisible="dialogTableVisible"></customerService>
-    <viewJob :dialogTableVisible="dialogJobVisible" :id="id" @handleClose="dialogJobVisible=false"></viewJob>
+    <viewJob :dialogTableVisible="dialogJobVisible" :id="jobId" @handleClose="dialogJobVisible=false"></viewJob>
     <viewTeam :dialogTableVisible="dialogTeamVisible" :addTime="addTime" @handleClose="dialogTeamVisible=false" :teamId="teamId"></viewTeam>
   </div>
 </template>
@@ -133,7 +133,8 @@ export default {
       ],
       teamId: '',
       id: '',
-      addTime: ''
+      addTime: '',
+      jobId: ''
     }
   },
   created () {
@@ -143,10 +144,8 @@ export default {
   methods: {
     getList (params) {
       applyInvoiceList(params).then(res => {
-        const { data } = res
-        console.log(res)
-        this.tableData = data.data
-        this.total = data.count
+        this.tableData = res.data.data
+        this.total = res.data.count
       })
     },
     handleSizeChange (val) {
@@ -164,7 +163,7 @@ export default {
       this.dialogTeamVisible = true
     },
     viewJob (val) {
-      this.id = val.id
+      this.jobId = val.job_id
       this.dialogJobVisible = true
     },
     handleAudit (status, val) {

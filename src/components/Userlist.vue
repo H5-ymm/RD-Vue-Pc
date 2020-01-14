@@ -134,7 +134,7 @@ export default {
         return false
       }
       loginOutTeam({ uid }).then(res => {
-        this.$message.success('退出成功')
+        this.$message.success('删除成功')
         this.getList(this.formMember)
       }).catch(error => {
         this.$message.error(error.status.remind)

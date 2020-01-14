@@ -29,27 +29,27 @@ export default {
       this.breadcrumbs = sessionStorage.getItem('menus') ? JSON.parse(sessionStorage.getItem('menus')) : ['论坛列表']
     }
   },
-  methods:{
-    closeView(item,index) {
+  methods: {
+    closeView (item, index) {
       if (index) {
-        let url =  sessionStorage.getItem('menusUrl')
-        this.breadcrumbs.splice(index,1)
+        let url = sessionStorage.getItem('menusUrl')
+        this.breadcrumbs.splice(index, 1)
       }
     }
   },
   watch: {
     $route (to, from) {
-      if(to.path=='/resumeResult'&&from.path=='/teamInterviewPersonnel'){
-        this.breadcrumbs =  ["接单管理", "面试结果"]
-      }
-      else if(to.path=='/teamEntryList'&&from.path=='/resumeResult'){
-        this.breadcrumbs =  ["接单管理", "入职结果"]
-      }
-     else {
-        let arr = JSON.parse(sessionStorage.getItem('menus'))
+      if (to.path == '/resumeResult' && from.path == '/teamInterviewPersonnel') {
+        this.breadcrumbs = ["接单管理", "面试结果"]
+           }
+            else if (to.path == '/teamEntryList' && from.path == '/resumeResult') {
+        this.breadcrumbs = ["接单管理", "入职结果"]
+           }
+           else {
+        let  arr = JSON.parse(sessionStorage.getItem('menus'))
         console.log(arr)
-        this.breadcrumbs = arr.splice(0)
-     }
+        this.breadcrumbs = arr ? arr.splice(0) : []
+            }
     }
   }
 }

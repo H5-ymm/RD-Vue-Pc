@@ -208,11 +208,12 @@ export default {
       }
     },
     tabIndex (val) {
-      if(val==0) {
-        this.$emit('submitForm', 0)
+      console.log(val)
+      if (val == 1) {
+        this.submitForm()
       }
       else {
-        this.submitForm()
+        this.$emit('submitForm', val)
       }
     }
   },
@@ -286,10 +287,10 @@ export default {
           if (this.formMember.age_max < this.formMember.age_min) {
             return this.$message.warning('最大年龄应该大于最小年龄')
           }
-          console.log(this.formMember)
           this.$emit('submitForm', this.formMember)
-        } else {
-          this.$emit('submitForm', 0)
+        }
+        else {
+          this.$emit('submitForm', { tabIndex: 1 })
         }
       })
     }

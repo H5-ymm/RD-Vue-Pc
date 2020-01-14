@@ -178,7 +178,7 @@ export default {
       totalTime: 60,
       timer: null,
       canClick: true,
-      dialogTableVisible:false
+      dialogTableVisible: false
     }
   },
   methods: {
@@ -239,12 +239,13 @@ export default {
             localStorage.setItem('userType', this.registerType)
             localStorage.setItem('token', res.data.token)
             // this.$router.push('team')
+            localStorage.setItem('teamType', 0)
             sessionStorage.setItem('userPosition', 1)
             if (res.data.type == 1) {
-              this.$router.push('createOrderTaking')
+              this.$router.push('/createOrderTaking')
             }
             else {
-              this.$router.push('teamData')
+              this.$router.push('/teamData')
             }
           }).catch(error => {
             this.$message.error(error.status.remind)

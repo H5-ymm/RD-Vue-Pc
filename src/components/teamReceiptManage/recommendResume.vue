@@ -59,7 +59,7 @@
 
 <template>
   <div class="tables-box billingManagement">
-    <div class="recomment-card x-flex-start-justify">
+    <div class="recomment-card x-flex-start-justify" v-if="!activeIndex">
       <div class="recomment-card-col1">
         <p>推荐公司：</p>
         <p class="desired-position">{{resumeInfo.com_name?resumeInfo.com_name:'--'}}</p>
@@ -218,24 +218,11 @@ export default {
     if (this.$route.query.jobId) {
       this.jobId = this.$route.query.jobId
     }
-    if (this.$route.query.id) {
+    if (this.$route.query.id && !this.activeIndex) {
       this.apply_id = this.$route.query.id
+      this.getInfo()
     }
-    this.getInfo()
     this.byJobMatchingList(this.formMember)
-
-  },
-  watch: {
-    $route (to, from) {
-      if (from.query.jobId) {
-        this.formMember.jobId = from.query.jobId
-        this.getInfo()
-        this.byJobMatchingList(this.formMember)
-      }
-    },
-    tabIndex (val) {
-      this.byJobMatchingList(this.formMember)
-    },
   },
   methods: {
     byJobMatchingList (params) {

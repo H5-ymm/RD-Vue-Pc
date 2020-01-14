@@ -11,3 +11,6 @@ export const jobRecommendedList = data => $post('/receipt/jobRecommendedList', d
 export const companyInvoiceList = data => $post('/receipt/companyInvoiceList', data); //获取该公司其他单子列表
 
 export const getCompanyInfo = data => $post('/receipt/getCompanyInfo', data); // 企业信息查询
+export const getInvoice = data => $post('/enterpriseinvoice/selectInvoiceInfo', data); // 企业信息查询
+
+export const updateInvoice = data => $post('/enterpriseinvoice/updateInvoice', data); // 企业信息查询

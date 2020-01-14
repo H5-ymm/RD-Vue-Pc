@@ -190,6 +190,7 @@ export default {
       this.companyForm.logo_url = this.imageUrl
       addCompanyInfo(this.companyForm).then(res => {
         if (res.data) {
+          localStorage.setItem('teamType', 1)
           this.$message.success('保存成功')
           sessionStorage.setItem('baseInfo', JSON.stringify(this.companyForm))
         }

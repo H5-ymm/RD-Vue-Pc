@@ -131,12 +131,12 @@ export default {
         imgBg: require('../../assets/img/info.png')
       },
       dialogVisible: false,
-      baserRequireInfo:{
-        job_name:'',
-        company_name:'',
-        number:'',
-        offermoney_type:'',
-        offermoney:''
+      baserRequireInfo: {
+        job_name: '',
+        company_name: '',
+        number: '',
+        offermoney_type: '',
+        offermoney: ''
       },
       otherInfo: null
     }
@@ -172,9 +172,9 @@ export default {
         this.$message.error(error.status.remind)
       })
     },
-    isCheckReward(info){
+    isCheckReward (info) {
       let flag = false
-      if (info.type==2) {
+      if (info.type == 2) {
         flag = true
       }
       else if (info.tabIndex) {
@@ -204,12 +204,12 @@ export default {
         }
       }
       console.log(flag)
-      return flag 
+      return flag
     },
     submitForm (val) {
       let index = 0
-      if (typeof val == 'number') {      
-        if (val==2) {
+      if (typeof val == 'number') {
+        if (val == 2) {
           index = val - 1
         }
         else {
@@ -218,7 +218,7 @@ export default {
         this.switchTab(index)
       }
       else {
-        if(val&&val.type==2) {
+        if (val && val.type == 2) {
           index = 2
           this.tabIndex = 2
         }
@@ -229,7 +229,7 @@ export default {
       if (index == 0) {
         this.comName = 'baseInfo'
         this.baseInfo = val
-        if (!this.isCheck( this.baseInfo)) {
+        if (!this.isCheck(this.baseInfo)) {
           this.tabIndex = 1
           this.comName = 'rewardRule'
         }
@@ -242,14 +242,13 @@ export default {
         this.otherInfo = val
         this.comName = 'operationInfo'
       }
-      if (val.tabIndex&&this.tabIndex==1) {
+      if (val.tabIndex && this.tabIndex == 1) {
         this.tabIndex = 0
-        this.comName = 'rewardRule'
+        this.comName = 'baseInfo'
       }
       let isSave = val.job_type
-      console.log(isSave)
       this.formInfo = Object.assign(this.formInfo, val)
-      if (this.comName == 'operationInfo'&&isSave!=undefined) {
+      if (this.comName == 'operationInfo' && isSave != undefined) {
         addjob(this.formInfo).then(res => {
           if (res.data) {
             this.$message.success('发布成功')

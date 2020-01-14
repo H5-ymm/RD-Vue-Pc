@@ -35,7 +35,7 @@
       <div class="member-table resume-table">
         <div class="table-query x-flex-start">
           <div v-if="viewType==1">
-            <el-button @click="staffVisible=true">添加员工</el-button>
+            <el-button @click="staffVisible=true,staffId=''" type="primary">添加员工</el-button>
             <el-button @click="handleUser(1,this.staffId)">离职</el-button>
             <el-button @click="leadResumeVisible=true">导入简历</el-button>
             <el-button @click="exportResume">导出简历</el-button>

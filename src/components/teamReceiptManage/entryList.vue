@@ -51,7 +51,12 @@
           <el-table-column label="需求人数" prop="required_number" align="center" width="100"></el-table-column>
           <el-table-column label="已入职" align="center" prop="entry_num" width="100">
           </el-table-column>
-          <el-table-column label="岗位薪资" prop="money" align="center" width="150"></el-table-column>
+          <el-table-column label="岗位薪资" align="center" width="150">
+            <template slot-scope="props">
+              <span v-if="props.row.money_type==1">{{props.row.money_min}}~{{props.row.money_max}}</span>
+              <span v-else>{{props.row.money}}</span>
+            </template>
+          </el-table-column>
           <el-table-column label="薪资模式" align="center" width="150">
             <template slot-scope="props">
               <span>{{props.row.money_type|moneyType}}</span>
@@ -60,7 +65,8 @@
           <el-table-column label="状态" align="center" width="150">
             <template slot-scope="props">
               <span class="status" v-if="!props.row.entry_status" :class="`status${props.row.entry_status}`">入职开始</span>
-              <span class="status" v-if="props.row.entry_status" :class="`status${props.row.entry_status}`">{{props.row.entry_status==1?"入职开始":props.row.entry_status==2?'入职结束':'审核入职'}}</span>
+              <span class="status" v-if="props.row.entry_status&&props.row.entry_status!=4" :class="`status${props.row.entry_status}`">{{props.row.entry_status==1?"入职开始":props.row.entry_status==2?'入职结束':'审核入职'}}</span>
+              <span class="status status4" v-if="props.row.entry_status==4">审核结束</span>
             </template>
           </el-table-column>
           <el-table-column label="岗位城市" align="center" width="150">
@@ -76,17 +82,17 @@
           </el-table-column>
           <el-table-column label="入职时间" sortable align="center" width="160">
             <template slot-scope="props">
-              <span>{{props.row.entry_time?$moment.unix(props.row.entry_time).format('YYYY-MM-DD HH:ss'):'--'}}</span>
+              <el-button type="text" @click="viewTime(props.row)">{{props.row.entry_time?$moment.unix(props.row.entry_time).format('YYYY-MM-DD HH:ss'):'--'}}</el-button>
             </template>
           </el-table-column>
           <el-table-column label="操作" align="center" min-width="160">
             <template slot-scope="scope">
-              <el-button @click="$router.push('/commonTableList?view=4&id='+scope.row.id)" v-if="scope.row.entry_status>=2" type="text" size="small">入职审核</el-button>
-              <el-button @click="$router.push('/commonTableList?view=3&id='+scope.row.id)" type="text" size="small" v-if="scope.row.entry_status<=1">
+              <el-button @click="$router.push('/commonTableList?view=6&job_id='+scope.row.job_id)" v-if="scope.row.entry_status>=2&&scope.row.entry_status!=4" type="text" size="small">入职审核</el-button>
+              <el-button @click="$router.push('/commonTableList?view=3&job_id='+scope.row.job_id)" type="text" size="small" v-if="scope.row.entry_status<=1">
                 面试名单
                 <!-- <span class="resume-number">(+150)</span> -->
               </el-button>
-              <!-- <el-button @click="handleEdit(scope.row)" type="text" size="small">在职名单</el-button> -->
+              <el-button @click="$router.push('/commonTableList?view=7&job_id='+scope.row.job_id)" type="text" size="small" v-if="scope.row.entry_status==4">在职名单</el-button>
               <el-button @click="dialogTableVisible=true" type="text" size="small">联系客服</el-button>
             </template>
           </el-table-column>
@@ -96,19 +102,22 @@
     </div>
     <customerService :dialogTableVisible="dialogTableVisible"></customerService>
     <viewJob :dialogTableVisible="dialogJobVisible" :id="jobId" @handleClose="dialogJobVisible=false"></viewJob>
+    <receiptModal :dialogTableVisible="visible" @handleClose="visible=false" :viewTimeInfo="viewTimeInfo"></receiptModal>
   </div>
 </template>
 
 <script>
-import { applyList } from '@/api/teamReceipt'
+import { applyList, getOffermsg } from '@/api/teamReceipt'
 import { moneyTypeList, rewardTypeList, entryStatusList } from '@/base/base'
 import { getConstant } from '@/api/dictionary'
 import viewJob from '../common/viewJob'
 import customerService from '../common/customerService'
+import receiptModal from './receiptModal'
 export default {
   components: {
     viewJob,
-    customerService
+    customerService,
+    receiptModal
   },
   filters: {
     moneyType (val) {
@@ -152,7 +161,7 @@ export default {
       jobList: {},
       timeList: [],
       jobId: '',
-
+      viewTimeInfo: {}
     }
   },
   created () {
@@ -166,6 +175,16 @@ export default {
       getConstant({ filed }).then(res => {
         const { job_array } = res.data
         this.jobList = job_array
+      }).catch(error => {
+        this.$message.error(error.status.remind)
+      })
+    },
+    viewTime (val) {
+      if (val.entry_time == 0) return
+      this.visible = true
+      this.apply_id = val.id
+      getOffermsg({ apply_id: val.id }).then(res => {
+        this.viewTimeInfo = res.data
       }).catch(error => {
         this.$message.error(error.status.remind)
       })

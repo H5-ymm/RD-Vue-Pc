@@ -3,67 +3,61 @@
     <div class="receipt-row">
       <img src="../../assets/img/member/cancel.png" alt class="cancel-icon" @click="handleClose" />
       <section class="member-col1">
-        <p>通知入职</p>
+        <p>入职通知</p>
       </section>
       <section class="member-col3 bind-col3">
         <el-form :model="formMember" :inline="true" label-position="left" ref="formMember" class="demo-form-inline">
-          <el-form-item label="入职时间" required>
-            <div class="x-flex-between">
-              <el-date-picker v-model="formMember.date" type="date" class="width195" placeholder="请选择入职日期">
-              </el-date-picker>
-              <el-time-select class="width195" v-model="formMember.value" :picker-options="{
-                  start: '08:30',
-                  step: '00:15',
-                  end: '18:30'
-                }" placeholder="请选择入职时间">
-              </el-time-select>
+          <el-form-item label="入职时间">
+            <div class="x-flex-start">
+              <span>{{viewTimeInfo.entry_time}}</span>
             </div>
           </el-form-item>
-          <el-form-item label="通知内容" required>
-            <el-input v-model="formMember.content" type="textarea" class="width400" :autosize="{maxRows: 4}" placeholder="请输入通知内容"></el-input>
+          <el-form-item label="入职地点">
+            <div class="x-flex-start">
+              <span>{{address}}</span>
+            </div>
+          </el-form-item>
+          <el-form-item label="通知内容">
+            <div class="x-flex-start">
+              <span>{{content}}</span>
+            </div>
           </el-form-item>
         </el-form>
       </section>
     </div>
     <div slot="footer" class="notice-footer-btn">
-      <el-button @click="submitForm">取消</el-button>
-      <el-button type="primary" @click="submitForm">确定</el-button>
+      <el-button @click="handleClose">取消</el-button>
     </div>
   </el-dialog>
 </template>
 <script>
-// 部门经理只能编辑状态
-// 成员只能查看
-// 总经理可以编辑部门 职称 状态
-import { getTeamListUser } from '../../api/department'
-import { validateIdCard } from '../../util/util'
-import districtSelet from '../districtSelet'
 export default {
-  components: {
-    districtSelet
-  },
-  props: ['dialogTableVisible'],
+  props: ['dialogTableVisible', 'viewTimeInfo'],
   data () {
     return {
       formMember: {
         uid: localStorage.getItem('uid'),
       },
-      userList: [],
       uid: localStorage.getItem('uid'),
-      address: []
+      address: '',
+      content: ''
     }
   },
   created () {
-    this.getList(this.uid)
+  },
+  watch: {
+    viewTimeInfo (val) {
+      if (val) {
+        console.log(val)
+        let arr = val.entry_comtent.split('&')
+        this.address = arr[0].replace('\/\g', ',')
+        this.content = arr[1]
+      }
+    }
   },
   methods: {
-    getList (uid) {
-      getTeamListUser({ uid }).then(res => {
-        this.userList = res.data
-      })
-    },
     handleClose () {
-      this.$parent.visible = false
+      this.$emit('handleClose')
     },
     submitForm () {
       this.$refs['formMember'].validate((valid) => {

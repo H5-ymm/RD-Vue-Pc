@@ -151,8 +151,6 @@ export default {
     },
     selectMenus (key, keyPath) {
       this.url = key
-      console.log(key)
-      console.log(keyPath)
       let arr = this.getMenusTitle(key, this.menus)
       sessionStorage.setItem('menusUrl', this.url)
       sessionStorage.setItem('menus', JSON.stringify(arr))
@@ -171,29 +169,24 @@ export default {
       return list
     }
   },
-  watch:{
-    $route(to,from) {
+  watch: {
+    $route (to, from) {
       console.log(to)
       console.log(from)
-      if(to.path=='/interviewPersonnel'&&from.path=='/talentResume'){
-        // this.url = to.path
-        this.selectMenus(to.path,this.menus)
+      if (to.path == '/interviewPersonnel' && from.path == '/talentResume') {
+        this.selectMenus(to.path, this.menus)
       }
-      if (to.path == '/entryList'&&from.path=='/interviewPersonnel'){
-        this.url = to.path
-        this.selectMenus(to.path,this.menus)
+      if (to.path == '/entryList' && from.path == '/interviewPersonnel') {
+        this.selectMenus(to.path, this.menus)
       }
     }
   },
   computed: {
     routerli () {
       // 对应路由
-      let pathStr = this.$route.path.split('/')
-      return '/' + pathStr[1]
+      // let pathStr = this.$route.path.split('/')
+      return this.$route.path
 
-    },
-    names () {
-      return this.$store.state.user.users
     }
   }
 }

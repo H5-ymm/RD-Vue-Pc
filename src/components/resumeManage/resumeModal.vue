@@ -190,15 +190,21 @@ export default {
         } else {
           this.entryTime = []
         }
-        this.addressExpect = [res.data.expect_provindeid, res.data.expect_cityid]
-        this.address = [res.data.provinceid, res.data.cityid]
+        if (res.data.expect_provindeid != 0 && res.data.expect_cityid != 0) {
+          this.addressExpect = [res.data.expect_provindeid, res.data.expect_cityid]
+        }
+        if (res.data.provinceid != 0 && res.data.cityid != 0) {
+          this.address = [res.data.provinceid, res.data.cityid]
+        }
+        else {
+          this.address = []
+        }
       })
     },
     getList (filed) {
       getConstant({ filed }).then(res => {
         this.edu_type = res.data.edu_type
         this.moneyArray = this.getArry(res.data.money_array)
-        console.log(this.moneyArray)
       })
     },
     getArry (obj) {
@@ -212,8 +218,8 @@ export default {
       return arr
     },
     changeDate (val) {
-      let entry_begintime = val[0] + ''
-      let entry_endtime = val[1] + ''
+      let entry_begintime = val ? val[0] + '' : ''
+      let entry_endtime = val ? val[1] + '' : ''
       this.formMember.entry_begintime = entry_begintime.slice(0, 10)
       this.formMember.entry_endtime = entry_endtime.slice(0, 10)
     },

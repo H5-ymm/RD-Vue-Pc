@@ -63,7 +63,12 @@
           </el-table-column>
           <el-table-column label="审核通过简历" align="center" prop="auditPassResume" width="150">
           </el-table-column>
-          <el-table-column label="岗位薪资" prop="money" align="center" width="150"></el-table-column>
+          <el-table-column label="岗位薪资" align="center" width="150">
+            <template slot-scope="props">
+              <span v-if="props.row.money_type==1">{{props.row.money_min}}~{{props.row.money_max}}</span>
+              <span v-else>{{props.row.money}}</span>
+            </template>
+          </el-table-column>
           <el-table-column label="薪资模式" align="center" width="150">
             <template slot-scope="props">
               <span>{{props.row.money_type|moneyType}}</span>
@@ -71,13 +76,11 @@
           </el-table-column>
           <el-table-column label="发单状态" align="center" width="150">
             <template slot-scope="props">
-              <span class="status" v-if="!props.row.interview_status" :class="`status${props.row.invoice_status}`">{{props.row.invoice_status|statusType}}</span>
-              <span class="status" v-if="props.row.interview_status&&props.row.interview_status!=4" :class="`status${props.row.interview_status}`">{{props.row.interview_status==1?'面试开始':'面试结束'}}</span>
-              <span class="status status3" v-if="props.row.interview_status&&props.row.interview_status==4">面试结束</span>
-
+              <span class="status" v-if="props.row.invoice_status==0" :class="`status${props.row.invoice_status}`">收集中</span>
+              <span class="status" v-if="props.row.invoice_status&&!props.row.interview_status" :class="`status${props.row.invoice_status}`">{{props.row.invoice_status==1?'审核中':'面试开始'}}</span>
+              <span class="status" v-if="props.row.invoice_status=2&&props.row.interview_status&&!props.row.entry_status" :class="`status${props.row.interview_status}`">{{props.row.invoice_status?'面试开始':'面试结束'}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="岗位城市" prop="citys" align="center" width="150"></el-table-column>
           <el-table-column label="接单时间" sortable="custom" prop="jddesc" align="center" width="150">
             <template slot-scope="props">
               <span>{{props.row.addtime?$moment.unix(props.row.addtime).format('YYYY-MM-DD HH:mm'):'--'}}</span>
@@ -96,12 +99,12 @@
           <el-table-column label="联系人" prop="link_name" align="center" width="150"></el-table-column>
           <el-table-column label="操作" align="center" width="150">
             <template slot-scope="props">
-              <div v-if="props.row.invoice_status==0||props.row.invoice_status==1">
+              <div v-if="props.row.interview_status==0&&props.row.invoice_status<=1">
                 <el-button @click="checkResume(props.row)" v-if="!props.row.interview_status" type="text" size="small">审核简历</el-button>
                 <el-button @click="handleNote(props.row)" v-if="!props.row.view_time||props.row.invoice_status<=1&&props.row.view_time" type="text" size="small">面试通知</el-button>
               </div>
-              <div v-if="props.row.interview_status>=1||props.row.interview_status==2">
-                <el-button @click="$router.push({path:'/interviewPersonnel',query:{id:props.row.id,view:2}})" v-if="props.row.interview_status>=1" type="text" size="small">查看面试</el-button>
+              <div v-if="props.row.interview_status>=1">
+                <el-button @click="$router.push({path:'/interviewPersonnel',query:{id:props.row.id,view:2}})" v-if="props.row.invoice_status=2" type="text" size="small">查看面试</el-button>
                 <el-button @click="$router.push({path:'checkResume',query:{id:props.row.id,view:3}})" type="text" size="small">审核结果</el-button>
               </div>
             </template>
@@ -110,15 +113,15 @@
       </div>
       <el-pagination class="team-pagination" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="formMember.page" :page-sizes="[10, 30, 50, 100]" :page-size="formMember.limit" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
     </div>
-    <viewJob :dialogTableVisible="dialogJobVisible" :id="jobId" @handleClose="dialogJobVisible=false"></viewJob>
+    <viewJob :dialogTableVisible="dialogJobVisible" :id="jobId" @handleClose="dialogJobVisible=false,jobId=''"></viewJob>
     <noticeModal :dialogTableVisible="dialogTableVisible" :isEdit="view_time" :id="jobId" noticeType="面试" @submitForm="submitForm"></noticeModal>
     <modal :dialogTableVisible="visible" @handleOk="handleOk" isShow="true" :modalObj="modalObj" @handleClose="visible=false,jobId=''"></modal>
   </div>
 </template>
 
 <script>
-import { getResumeList, exportRecommendResume, editInterviewTime } from '../../api/receipt'
-import { moneyTypeList, rewardTypeList, payTypeList, userResumeStatusList, userResumeStatusList1 } from '../../base/base'
+import { getResumeList, exportRecommendResume, editInterviewTime } from '@/api/receipt'
+import { moneyTypeList, rewardTypeList, userResumeStatusList, userResumeStatusList1 } from '@/base/base'
 import noticeModal from './noticeModal'
 import { getConstant } from '../../api/dictionary'
 import modal from '../common/modal'
@@ -138,12 +141,6 @@ export default {
     },
     rewardType (val) {
       let obj = rewardTypeList.find(item => {
-        return val == item.value
-      })
-      return obj ? obj.label : '--'
-    },
-    statusType (val) {
-      let obj = userResumeStatusList1.find(item => {
         return val == item.value
       })
       return obj ? obj.label : '--'
@@ -168,7 +165,6 @@ export default {
       },
       total: 0,
       multipleSelection: [],
-      activeIndex: 0,
       jobList: {},
       jobId: '',
       modalObj: {
@@ -190,23 +186,16 @@ export default {
     let params = 'job_array'
     this.getData(params)
   },
-  watch: {
-    $route (ro, from) {
-      this.getList(this.formMember)
-    }
-  },
   methods: {
     getData (filed) {
       getConstant({ filed }).then(res => {
-        const { job_array } = res.data
-        this.jobList = job_array
+        this.jobList = res.data.job_array
       })
     },
     getList (params) {
       getResumeList(params).then(res => {
-        const { data } = res
-        this.tableData = data.data
-        this.total = data.count
+        this.tableData = res.data.data
+        this.total = res.data.count
       })
     },
     checkResume (val) {
@@ -230,8 +219,8 @@ export default {
       this.dialogTableVisible = true
     },
     changeDate (val) {
-      this.formMember.entry_begintime = val[0]
-      this.formMember.entry_endtime = val[1]
+      this.formMember.entry_begintime = val ? val[0] : ''
+      this.formMember.entry_endtime = val ? val[1] : ''
     },
     sortChange (column) {
       if (column.order == 'ascending') {
@@ -257,10 +246,6 @@ export default {
         jobId: this.jobId
       }
       exportRecommendResume(params)
-    },
-    selectStatus (item, index) {
-      this.activeIndex = index
-      this.formMember.status = item.value
     },
     handleSizeChange (val) {
       this.formMember.limit = val
