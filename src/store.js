@@ -2,7 +2,8 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import { teamRouters } from './router/team'
 import { companyRouters } from './router/company'
-
+import { goLogin } from './api/login'
+import { resolve, reject } from 'q';
 Vue.use(Vuex)
 
 export default new Vuex.Store({
@@ -15,7 +16,8 @@ export default new Vuex.Store({
     userType: localStorage.getItem('userType'), // 登录身份
     baseInfo: {},
     routes: [],
-    permissionList: null 
+    permissionList: null,
+    userPosition: sessionStorage.getItem('userPosition')
   },
   mutations: {
     getBaseInfo (state, info) {
@@ -29,7 +31,13 @@ export default new Vuex.Store({
     },
     CLEAR_PERMISSION(state) {
       state.permissionList = null
-    }
+    },
+    getUid(state,uid) {
+      state.uid = uid
+    },
+    getUserPosition(state,position) {
+      state.position = position
+    },
   },
   actions: {
     FETCH_PERMISSION({ commit, state }) {
@@ -43,6 +51,19 @@ export default new Vuex.Store({
         }
         /* 完整的路由表 */
         commit('SET_PERMISSION', [...children])
+    },
+    loginSaveInfo({ commit },params){
+      return new Promise((resolve, reject) => {
+        goLogin(params).then(res => {
+          commit('getUid', res.data.uid)
+          commit('getUserPosition', res.data.gradeNum) 
+          localStorage.setItem('uid', res.data.uid)
+          localStorage.setItem('token', res.data.token)
+          resolve(res)
+        }).catch(error => {
+          reject(error)
+        })
+      })
     }
   }
 })

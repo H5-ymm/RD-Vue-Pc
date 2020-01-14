@@ -10,7 +10,7 @@ import './assets/css/element-variables.scss';
 // 引入axios
 Vue.prototype.$moment = moment
 Vue.config.productionTip = false
-
+Vue.prototype.$store=store
 // 注册element-ui
 Vue.use(ElementUI);
 

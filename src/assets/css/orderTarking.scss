@@ -190,6 +190,13 @@
       color: #6A6A6A;
     }
   }
+  .company-name1 {
+    color: #333;
+    font-size:14px;
+    &:hover{
+      color: #1890FF;
+    }
+  }
   .require-number {
     color: #FE2A00;
   }

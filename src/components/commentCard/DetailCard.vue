@@ -31,7 +31,7 @@
           <span class="tag" v-if="commentInfo&&type==2">{{getSortType(commentInfo.type)}}</span>
         </p>
       </li>
-      <li class="edit-card-item x-flex-start border-bottom" v-if="!type">
+      <li class="edit-card-item x-flex-start border-bottom" v-if="type!=2">
         <p>置顶：</p>
         <p>
           <el-radio-group v-model="is_top">

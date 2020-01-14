@@ -1,5 +1,5 @@
 <template>
-  <div class="team-view">
+  <div class="team-view commonts-box">
     <!-- <breadcrumb :breadcrumbs="breadcrumb"></breadcrumb> -->
     <div class="team-box x-flex-start">
       <div class="team-box-left">
@@ -150,6 +150,7 @@ export default {
 .team-view {
   .team-box {
     height: 100%;
+   
     .no-data {
       width: 100%;
       margin: 0 auto;

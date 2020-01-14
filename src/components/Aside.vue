@@ -249,7 +249,8 @@ export default {
     }
   },
   created () {
-    let userPosition = sessionStorage.getItem('userPosition')
+    let userPosition = this.$store.state.userPosition
+    console.log( this.$store.state.userPosition)
     let teamType = localStorage.getItem('teamType')
     let teamId = localStorage.getItem('uid')
     if (userPosition == 1) {
@@ -265,8 +266,9 @@ export default {
       this.menus.splice(4, 0, this.root)
       this.menus.splice(9, 0, this.receipt)
       this.menus[3].submenu = this.receiptRoot.concat(this.menus[3].submenu)
-      let len = this.menus.length - 1
+      let len = this.menus.length - 2
       this.menus[len].submenu.push(this.collect)
+      console.log(this.menus[len].submenu)
     }
     if (userPosition == 2) {
       this.menus[3].submenu = this.receiptRoot1.concat(this.menus[3].submenu)
@@ -282,8 +284,7 @@ export default {
   },
   watch: {
     $route (to, from) {
-      console.log(to)
-      let userPosition = sessionStorage.getItem('userPosition')
+      let userPosition =  this.$store.state.userPosition
       let teamType = localStorage.getItem('teamType')
       let teamId = localStorage.getItem('uid')
       if (userPosition == 1) {
@@ -346,9 +347,10 @@ export default {
       if (to.path == '/commonTableList' && from.path == '/teamEntryList') {
         // this.selectMenus(to.path,this.menus)
         this.url = '/teamEntryList'
-      } else {
-        this.selectMenus(to.fullPath, this.menus)
-      }
+      } 
+      // else {
+      //   this.selectMenus(to.fullPath, this.menus)
+      // }
     }
   },
   computed: {

@@ -55,7 +55,7 @@
   </el-container>
 </template>
 <script>
-import { goLogin, getCode, userRegister } from '../api/login'
+import { goLogin, getCode } from '../api/login'
 import { setTimeout } from 'timers';
 import Dialog from '../components/Dialog'
 export default {
@@ -167,7 +167,7 @@ export default {
         localStorage.removeItem('remindUserInfo')
       }
     },
-    onSubmit () {
+   onSubmit () {
       if (this.loginWay == 2) {
         this.formTab.token = this.token
       }
@@ -175,10 +175,8 @@ export default {
       sessionStorage.clear()
       this.$refs['TabForm'].validate((valid) => {
         if (valid) {
-          goLogin(this.formTab).then(res => {
+           this.$store.dispatch('loginSaveInfo', this.formTab).then(res => {
             localStorage.setItem('userType', res.data.type)
-            localStorage.setItem('token', res.data.token)
-            localStorage.setItem('uid', res.data.uid)
             localStorage.setItem('userName', res.data.username)
             localStorage.setItem('departName', res.data.departName)
             let registerType = res.data.type

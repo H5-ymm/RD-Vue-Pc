@@ -255,6 +255,7 @@ export default {
       getapplyLog(params).then(res => {
         this.tableData = res.data.data || []
       }).catch(error => {
+        console.log(error)
         this.$message.error(error.status.remind)
       })
     },

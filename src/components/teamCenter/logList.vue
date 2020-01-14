@@ -3,7 +3,6 @@
   .team-center-section {
     background: #fff;
     padding: 20px 15px 0;
-    height:90%;
     .team-center-table {
       margin: 20px 0;
     }

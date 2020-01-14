@@ -50,14 +50,14 @@
 }
 .orderTaking-info span:nth-of-type(1){
   text-align: right;
-  // font-size:14px;
+  font-size:14px;
   width: 100px;
   margin-left: -30px;
   color: #6a6a6a;
 }
 .orderTaking-jobDeail .orderTarking-btn {
   width: 298px;
-  padding: 6px 20px;
+  padding: 14px 20px;
 }
 .orderTarking-link {
   margin-left: 5px;
@@ -101,6 +101,12 @@
   }
   .profile-more {
     margin: 0 5px;
+  }
+  .view-detail {
+    &:hover{
+      background: #1890FF;
+      color: #fff;
+    }
   }
 }
 </style>
@@ -257,9 +263,9 @@
                         <ul class="orderTaking-main-item">
                           <li class="company-name x-flex-start-justify">
                             <span>{{item.com_name}}</span>
-                            <img src="../assets/img/noIcon.png" class="orderTaking-icon" alt v-if="item.status==2" />
+                            <!-- <img src="../assets/img/noIcon.png" class="orderTaking-icon" alt v-if="item.status==2" />
                             <img src="../assets/img/noIcon.png" alt v-else />
-                            <span class="ctime">{{ $moment.unix(item.ctime).format('HH:mm')}}发布</span>
+                            <span class="ctime">{{ $moment.unix(item.ctime).format('HH:mm')}}发布</span> -->
                           </li>
                           <li>
                             <el-tag size="small" v-if="item.is_fund">五险</el-tag>
@@ -270,7 +276,7 @@
                         </ul>
                       </div>
                       <div>
-                        <el-button type="primary" @click="viewJobDetail(item)">查看详情</el-button>
+                        <el-button type="primary" plain class="view-detail" @click="viewJobDetail(item)">查看详情</el-button>
                       </div>
                     </div>
                   </section>
@@ -313,7 +319,7 @@
               <div>
                 <ul class="orderTaking-main-item orderTaking-main-history" v-for="(item,index) in comInvoiceList" :key="index">
                   <li class="x-flex-between">
-                    <span class="company-name">{{item.name}}</span>
+                    <span class="company-name1">{{item.name}}</span>
                     <span class="require-number">{{item.required_number}}人</span>
                   </li>
                   <li class="x-flex-between">

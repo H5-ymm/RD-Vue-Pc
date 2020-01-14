@@ -54,7 +54,8 @@ export default {
   .view-box-list {
     background: #fff;
     width: 540px;
-    min-height: 774px;
+    height: 774px;
+    overflow: auto;
     margin-top: 10px;
   }
   .view-box-list .view-box-card {

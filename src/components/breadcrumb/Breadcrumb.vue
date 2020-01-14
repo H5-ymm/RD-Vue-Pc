@@ -41,15 +41,14 @@ export default {
     $route (to, from) {
       if (to.path == '/resumeResult' && from.path == '/teamInterviewPersonnel') {
         this.breadcrumbs = ["接单管理", "面试结果"]
-           }
-            else if (to.path == '/teamEntryList' && from.path == '/resumeResult') {
+       }
+      else if (to.path == '/teamEntryList' && from.path == '/resumeResult') {
         this.breadcrumbs = ["接单管理", "入职结果"]
-           }
-           else {
+      }
+      else {
         let  arr = JSON.parse(sessionStorage.getItem('menus'))
-        console.log(arr)
         this.breadcrumbs = arr ? arr.splice(0) : []
-            }
+      }
     }
   }
 }

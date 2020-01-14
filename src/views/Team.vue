@@ -128,6 +128,7 @@ export default {
     getImgUrl,
     getInfo (uid) {
       getTeamInfo({ uid }).then(res => {
+        console.log(res)
         this.baseInfo = res.data || null
         sessionStorage.setItem('baseInfo', JSON.stringify(this.baseInfo))
       })
