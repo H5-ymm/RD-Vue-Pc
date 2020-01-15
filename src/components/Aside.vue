@@ -250,7 +250,6 @@ export default {
   },
   created () {
     let userPosition = this.$store.state.userPosition
-    console.log(this.$store.state.userPosition)
     let teamType = localStorage.getItem('teamType')
     let teamId = localStorage.getItem('uid')
     if (userPosition == 1) {
@@ -268,13 +267,13 @@ export default {
       this.menus[3].submenu = this.receiptRoot.concat(this.menus[3].submenu)
       let len = this.menus.length - 2
       this.menus[len].submenu.push(this.collect)
-      console.log(this.menus[len].submenu)
     }
     if (userPosition == 2) {
       this.menus[3].submenu = this.receiptRoot1.concat(this.menus[3].submenu)
       this.menus.splice(8, 0, this.receipt)
     }
     if (userPosition == 3) {
+      this.receipt.submenu.unshift(this.job)
       this.menus.splice(8, 0, this.receipt)
     }
     if (userPosition && userPosition != 3) {
