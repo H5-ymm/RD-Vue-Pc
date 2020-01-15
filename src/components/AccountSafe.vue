@@ -26,7 +26,7 @@
 
 <script>
 import accountDialog from './account/accountDialog'
-import { getUserInfo, getUserBinkInfo } from '@/api/user'
+import { getUserBinkInfo } from '@/api/user'
 import { companyBinkInfo, bindEmail, userBinkBank, userBinkAlipay } from '@/api/bind'
 export default {
   components: {

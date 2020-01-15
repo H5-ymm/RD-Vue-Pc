@@ -224,6 +224,7 @@ export default {
         params.last = last
       }
       getnumLeader(params).then(res => {
+        console.log(last)
         if (last) {
           this.list = res.data
         }
@@ -255,7 +256,6 @@ export default {
       getapplyLog(params).then(res => {
         this.tableData = res.data.data || []
       }).catch(error => {
-        console.log(error)
         this.$message.error(error.status.remind)
       })
     },
@@ -290,6 +290,7 @@ export default {
     },
     selectQuery (val) {
       this.paramsEchart = Object.assign(this.paramsEchart, val)
+      this.paramsEchart = Object.assign(this.paramsEchart, 0)
       this.getData(this.paramsEchart)
       this.legendIndex = val.type
     }

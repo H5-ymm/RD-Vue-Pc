@@ -18,7 +18,10 @@
           </el-dropdown>
         </div>
         <!-- 列表 -->
-        <person-card :list="list" v-if="list.length!=0" :total="total" @selectComment="selectComment"></person-card>
+        <div v-if="list.length!=0" class="team-box-left-box">
+          <person-card :list="list" :total="total" @selectComment="selectComment"></person-card>
+          <section class="view-card-row-more x-flex-center" v-if="isLoad" @click="loadMore">加载更多</section>
+        </div>
         <div class="no-data" v-else>
           <img src="../assets/img/nodata.png" class="nodata-bg" alt="">
           <p class="no-data-title">暂无数据</p>
@@ -61,7 +64,7 @@ export default {
       params: {
         uid: localStorage.getItem('uid'),
         title: '',
-        limit: 10,
+        limit: 6,
         page: 1
       },
       commentId: '',
@@ -73,6 +76,7 @@ export default {
         closeText: '',
         imgBg: require('../assets/img/info.png')
       },
+      isLoad: false
     }
   },
   created () {
@@ -87,6 +91,12 @@ export default {
         if (res.data.data) {
           this.list = res.data.data || []
           this.total = res.data.count
+          if (this.total - this.list.length>0) {
+            this.isLoad = true
+          }
+          else {
+            this.isLoad = false
+          }
           this.commentId = this.list[0].id
           if (this.refurbishStatus != 3) {
             this.getDetail(this.commentId)
@@ -100,20 +110,27 @@ export default {
         this.$message.error(error.status.remind)
       })
     },
+    loadMore(){
+      this.params.limit = this.params.limit + 6
+      this.refurbishStatus = 3
+      this.getList()
+    },
     getDetail (id) {
       getDiscussInfo({ id }).then(res => {
         this.commentInfo = res.data || {}
       }).catch(error => {
-        this.$message.error(error.status.remind)
+        if(error) {
+          this.$message.error(error.status.remind)
+        }
       })
     },
     updDiscuss (val) {
       updateDiscuss(val).then(res => {
         if (res.data) {
-          this.type = 2
-          this.$message.success('修改成功')
-          this.refurbishStatus = 0
+          this.type = 2    
+          this.refurbishStatus = 3
           this.getList()
+          this.$message.success('修改成功')
         }
         else {
           this.$message.error('修改失败')
@@ -127,12 +144,13 @@ export default {
       this.getDetail(id)
     },
     saveDiscuss (val) {
+      this.commentInfo = val
       addDiscuss(val).then(res => {
         if (res.data) {
           this.type = 2
-          this.$message.success('添加成功')
-          this.refurbishStatus = 3
+          this.refurbishStatus = 0
           this.getList()
+          this.$message.success('添加成功')
         }
         else {
           this.$message.error('添加失败')
@@ -168,9 +186,13 @@ export default {
 
 <style lang="scss">
 .team-view {
+  &.commonts-box {
+    height: 100%;
+    overflow: hidden;
+  }
   .team-box {
     height: 100%;
-   
+     overflow: hidden;
     .no-data {
       width: 100%;
       margin: 0 auto;
@@ -190,10 +212,22 @@ export default {
       margin-bottom: 20px;
     }
   }
+  .view-card-row-more  {
+    width: 100%;
+    background: #fff;
+    height: 40px;
+    line-height: 40px;
+    color: #999;
+  }
 }
 
 .team-box .team-box-left {
   width:540px;
+  .team-box-left-box {
+    height: 500px;
+    webkit-overflow-scrolling: touch;
+    overflow: scroll;
+  }
 }
 .team-box-left .el-input__inner {
   height: 44px;
@@ -212,9 +246,11 @@ export default {
 .team-box-content {
   width: 80%;
   background: #fff;
-  /* height: 818px; */
   margin-left: 44px;
   border-radius: 10px;
+  height: 545px;
+  overflow: auto;
+  webkit-overflow-scrolling: touch;
 }
 .dropdown-menu {
   width: 100px!important;
@@ -237,10 +273,5 @@ export default {
 }
 .foots{
   margin-top: 30px;
-}
-.team-view {
-  /* height: 100%; */
-  overflow-y: auto;
-  overflow-x: hidden;
 }
 </style>

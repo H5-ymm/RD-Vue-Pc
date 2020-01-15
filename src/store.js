@@ -3,12 +3,12 @@ import Vuex from 'vuex'
 import { teamRouters } from './router/team'
 import { companyRouters } from './router/company'
 import { goLogin } from './api/login'
-import { resolve, reject } from 'q';
+import { getUserInfo, editUserInfo } from '@/api/user'
 Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    user: {}, //用户信息
+    userInfo: sessionStorage.getItem('userInfo')? JSON.parse(sessionStorage.getItem('userInfo')): {}, //用户信息
     token: localStorage.getItem('token'), //token
     uid: localStorage.getItem('uid'),
     baseUrl: 'http://tiantianxsg.com:39888/index.php/',
@@ -23,6 +23,9 @@ export default new Vuex.Store({
     getBaseInfo (state, info) {
       state.baseInfo = info
     },
+    getUserInfo(state, info){
+      state.userInfo = info
+    },
     userType (state, info) {
       state.userType = info
     },
@@ -36,8 +39,11 @@ export default new Vuex.Store({
       state.uid = uid
     },
     getUserPosition(state,position) {
-      state.position = position
+      state.userPosition = position
     },
+    setType(state,type) {
+      state.userType = type
+    }
   },
   actions: {
     FETCH_PERMISSION({ commit, state }) {
@@ -52,11 +58,33 @@ export default new Vuex.Store({
         /* 完整的路由表 */
         commit('SET_PERMISSION', [...children])
     },
+    getUserAllInfo({ commit ,state}) {
+      return new Promise((resolve, reject) => {
+        getUserInfo({uid:state.uid}).then(res => {
+          commit('getUserInfo', res.data.data)
+          sessionStorage.setItem('baseInfo', JSON.stringify(res.data.data))
+          resolve(res)
+        }).catch(error => {
+          reject(error)
+        })
+      })
+    },
+    updateUserInfo({dispatch},params){
+      return new Promise((resolve, reject) => {
+        editUserInfo(params).then(res => {
+         dispatch('getUserAllInfo')
+          resolve(res)
+        }).catch(error => {
+          reject(error)
+        })
+      })
+    },
     loginSaveInfo({ commit },params){
       return new Promise((resolve, reject) => {
         goLogin(params).then(res => {
           commit('getUid', res.data.uid)
-          commit('getUserPosition', res.data.gradeNum) 
+          commit('getUserPosition', res.data.gradeNum)
+          localStorage.setItem('userType', res.data.type)
           localStorage.setItem('uid', res.data.uid)
           localStorage.setItem('token', res.data.token)
           resolve(res)

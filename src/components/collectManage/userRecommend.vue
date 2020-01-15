@@ -62,7 +62,8 @@
             <template slot-scope="scope">
               <el-button @click="handleApply(scope.row)" v-if="scope.row.status==0&&scope.row.job_status==1" type="text" size="small">申请接单</el-button>
               <el-button @click="handleRefuse(scope.row)" type="text" size="small" v-if="scope.row.status==0&&scope.row.job_status==1">拒绝推荐</el-button>
-              <span v-if="scope.row.status==2" type="text" size="small">{{scope.row.status==1?'已申请':'已拒绝'}}</span>
+              <!-- <span class="default-status" v-if="scope.row.status==2" >{{scope.row.status==1?'已申请':'已拒绝'}}</span> -->
+               <span class="default-status" v-if="scope.row.status==1" >已拒绝</span>
             </template>
           </el-table-column>
         </el-table>

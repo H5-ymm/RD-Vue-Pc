@@ -17,6 +17,8 @@
 .head-icon {
   width: 30px;
   height: 30px;
+  margin: 0 5px;
+  border-radius: 50%;
 }
 .home-aside{
   height: 100vh;
@@ -49,12 +51,14 @@
       <P class="home-purple-left" v-else>
         <el-dropdown @command="handleCommand">
           <div class="el-dropdown-link x-flex-center" style="margin-right:10px">
-            <p class="x-flex-between">
-              <img :src="userInfo.head_img" alt v-if="userInfo.head_img" class="head-icon" />
-              <img src="../assets/img/headIcon.png" v-else class="head-icon"></i>&nbsp;
-              <span v-if="userInfo.user_name">{{userInfo.user_name?userInfo.user_name:userInfo.mobile}}</span>
-              <span v-else>{{userName}}</span>
-            </p>
+            <div class="x-flex-between">
+              <p v-if="userInfo.user_name">{{userInfo.user_name?userInfo.user_name:userInfo.mobile}}</p>
+              <p v-else>{{userName}}</p>
+              <img :src="getImgUrl(userInfo.head_img)" alt v-if="userInfo.head_img" class="head-icon" />
+              <img src="../assets/img/headIcon.png" v-else class="head-icon">&nbsp;
+                <!-- <el-divider direction="vertical" v-if="departName"></el-divider>
+                <span v-if="departName">{{departName}}</span>     -->
+            </div>
             <i class="el-icon-caret-bottom"></i>
           </div>
           <el-dropdown-menu slot="dropdown">
@@ -67,6 +71,7 @@
   </div>
 </template>
 <script>
+import { getImgUrl } from '@/util/util'
 export default {
   name: '',
   props: ['activeIndex'],
@@ -92,6 +97,7 @@ export default {
     }
   },
   created () {
+    console.log(sessionStorage.getItem('userInfo'))
     if (sessionStorage.getItem('userInfo')) {
       this.userInfo = JSON.parse(sessionStorage.getItem('userInfo'))
       console.log(this.userInfo)
@@ -102,28 +108,28 @@ export default {
       let arr = []
       if (localStorage.getItem('userType') == 2) {
         arr = [
-          { name: '团队中心', url: 'teamData' }, { name: '接单管理', url: 'teamApplication' },
-          { name: '简历管理', url: 'addResume' }, { name: '退出登录', url: 'login' }
+          { name: '团队中心', url: '/teamData' }, { name: '接单管理', url: '/teamApplication' },
+          { name: '简历管理', url: '/addResume' }, { name: '退出登录', url: '/login' }
         ]
       } else {
         arr = [
-          { name: '发单招聘', url: 'createOrderTaking' }, { name: '发单管理', url: 'checkReceipt' },
-          { name: '账户设置', url: 'companyForm' }, { name: '退出登录', url: 'login' }
+          { name: '发单招聘', url: '/createOrderTaking' }, { name: '发单管理', url: '/checkReceipt' },
+          { name: '账户设置', url: '/companyForm' }, { name: '退出登录', url: '/login' }
         ]
       }
       return arr
     }
   },
   methods: {
+    getImgUrl,
     handleCommand (val) {
       this.$router.push(val)
-      if (val == 'login') {
+      if (val == '/login') {
         localStorage.clear('')
         sessionStorage.clear('')
       }
     },
     switchNav (item, index) {
-      // this.activeIndex = index
       this.$router.push(item.url)
     }
   }

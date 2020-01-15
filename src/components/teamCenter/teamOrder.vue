@@ -2,7 +2,7 @@
   .team-center-section {
     background: #fff;
     padding: 20px 15px 0;
-    height:90%;
+    // height:90%;
   }
 </style>
 <template>
@@ -45,7 +45,7 @@ export default {
       }
     }
   },
-  mounted () {
+  created () {
     if (localStorage.getItem('teamType') == 0) {
       console.log(localStorage.getItem('teamType'))
       this.dialogVisible = true

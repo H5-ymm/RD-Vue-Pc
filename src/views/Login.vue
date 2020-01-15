@@ -125,11 +125,9 @@ export default {
     }
   },
   beforeRouteLeave (to, from, next) {
-    // ...
-    this.reload();
-    console.log(to)
-    console.log(from)
-    next()
+    next(()=>{
+      this.reload();
+    })
 
   },
   methods: {

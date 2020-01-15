@@ -345,9 +345,13 @@ export default {
   watch: {
     $route (to, from) {
       if (to.path == '/commonTableList' && from.path == '/teamEntryList') {
-        // this.selectMenus(to.path,this.menus)
+        this.selectMenus(to.path,this.menus)
         this.url = '/teamEntryList'
       }
+      if(to.path=='/teamEntryList'&&from.path=='/resumeResult'){
+        this.selectMenus(to.path,this.menus)
+      }
+
       // else {
       //   this.selectMenus(to.fullPath, this.menus)
       // }

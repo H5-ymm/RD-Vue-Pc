@@ -45,7 +45,7 @@
 </template>
 <script>
 import accountDialog from './account/accountDialog'
-import { getUserInfo, getBindBankList, getUserBinkInfo } from '@/api/user'
+import { getBindBankList, getUserBinkInfo } from '@/api/user'
 export default {
   components: {
     accountDialog

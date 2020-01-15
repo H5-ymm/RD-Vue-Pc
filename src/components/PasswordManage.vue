@@ -38,7 +38,7 @@
 </template>
 
 <script>
-import { getUserInfo, getUserBinkInfo, getUserMobile, setLoginPassword, editPayPassword, setPayPassword, editUserPassword } from '@/api/user'
+import { getUserBinkInfo, getUserMobile, setLoginPassword, editPayPassword, setPayPassword, editUserPassword } from '@/api/user'
 import accountDialog from './account/accountDialog'
 import setUserPas from './account/setUserPas'
 import setZfbPas from './account/setZfbPas'

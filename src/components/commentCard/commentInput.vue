@@ -84,6 +84,7 @@ export default {
     submitComment () {
       let content = !this.content ? this.comment : this.content
       this.$emit('submitComment', content)
+      this.content = ''
     },
     cancleComment () {
       this.content = ''

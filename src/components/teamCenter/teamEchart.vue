@@ -47,7 +47,7 @@ export default {
         grid: {
           left: '25',
           width: '100%',
-          bottom: '30',
+          bottom: '20',
           right: '20'
         },
         legend: {
@@ -70,7 +70,8 @@ export default {
             padding: [3, 0, 0, 0]
           }
         },
-        xAxis: {},
+        xAxis: {
+        },
         yAxis: {},
         series: [],
         itemStyleColor: '#0581DE',
@@ -113,8 +114,9 @@ export default {
       }
       else if (val == 2) {
         this.legendData = ['本月', '上个月']
-        for (let i = 1; i < 30; i++) {
-          this.xData.push(i + '号')
+        let key = this.getKey(val)
+        if (this.arrList && this.arrList.total && this.list) {
+          this.xData = this.getXarr(this.arrList[key])
         }
       }
       else if (val == 3) {
@@ -150,6 +152,16 @@ export default {
         if (i) {
           arr.push(obj[i])
         }
+        console.log(obj[i])
+      }
+      return arr
+    },
+    getXarr(obj){
+      let arr = []
+      for (let i in obj) {
+        if (i) {
+          arr.push(i)
+        }
         else {
           return
         }
@@ -158,12 +170,17 @@ export default {
     },
     getList (val) {
       let arr = []
-      if (this.arrList && this.arrList.total && this.activeIndex == 0) {
-        arr[0] = this.getArray(this.arrList.total)
-        arr[1] = this.getArray(this.arrList.put)
-        arr[2] = this.getArray(this.arrList.view)
-        arr[3] = this.getArray(this.arrList.entry)
-        console.log(arr[0])
+      let obj = {
+        0:'total',
+        1:'put',
+        2:'view',
+        3:'entry'
+      }
+      if (this.arrList&& this.activeIndex == 0) {
+        for(let key in obj) {
+         arr[key] = this.getArray(this.arrList[obj[key]]).splice(0)
+        }
+        console.log(arr)
       }
       if (this.arrList && this.arrList.total && this.list) {
         let key = this.getKey(this.activeIndex)
@@ -217,7 +234,6 @@ export default {
       }
       else {
         this.legendData = ['简历总数', '报名总数', '面试总数', '入职总数']
-        console.log(this.getList(this.legendIndex))
         this.series = [{
           name: '简历总数',
           type: 'line',
@@ -264,7 +280,24 @@ export default {
       let myChart = $echart.init(document.getElementById('myChart'))
       let newXaxis = JSON.stringify(this.axais)
       this.option.yAxis = this.axais
-      this.option.xAxis = Object.assign(JSON.parse(newXaxis), { data: this.xData })
+      let  axisLabel
+      console.log(this.legendIndex)
+      if (this.legendIndex==2) {
+        axisLabel = {//坐标轴刻度标签的相关设置。
+          interval:0,
+          rotate:"45",
+          show: true,
+          textStyle: {
+            color: '#333'
+          }
+        }
+        this.option.grid.bottom = '80'
+        this.option.xAxis = Object.assign(JSON.parse(newXaxis), { axisLabel }, { data: this.xData })
+      }
+      else {
+        this.option.grid.bottom = '20'
+        this.option.xAxis = Object.assign(JSON.parse(newXaxis), { data: this.xData })
+      }
       this.option.legend.data = this.legendData
       this.option = Object.assign(this.option, { series: this.series })
       myChart.setOption(this.option, true)

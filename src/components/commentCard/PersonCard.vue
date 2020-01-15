@@ -20,7 +20,6 @@
           <el-button round size="mini">{{item.type | sortType(item.type)}}</el-button>
         </div>
       </section>
-      <section v-if="isLoad" @click="loadMore">加载更多</section>
     </div>
   </div>
 </template>
@@ -36,22 +35,12 @@ export default {
     }
   },
   name: 'card',
-  props: ['list', 'total'],
+  props: ['list'],
   data () {
     return {
       activeIndex: 0,
       commentSort,
       isLoad: false
-    }
-  },
-  watch: {
-    total (val) {
-      if (val) {
-        let num = this.list.length
-        if (val > num) {
-          this.isLoad = true
-        }
-      }
     }
   },
   methods: {

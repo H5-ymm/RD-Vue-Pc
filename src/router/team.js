@@ -66,7 +66,7 @@ let children = [{  // 团队论坛
   name: 'teamApplication',
   component: teamApplication,
   meta: {
-    requiresAuth: 2
+    requiresAuth: 1
   }
 },
 {
@@ -122,7 +122,7 @@ let children = [{  // 团队论坛
   name: addResume,
   component: addResume,
   meta: {
-    requiresAuth: 1
+    requiresAuth: 2
   }
 },
 {
@@ -130,7 +130,7 @@ let children = [{  // 团队论坛
   name: recommendJob,
   component: recommendJob,
   meta: {
-    requiresAuth: 1
+    requiresAuth: 2
   }
 },
 {
@@ -138,7 +138,7 @@ let children = [{  // 团队论坛
   name: applyResume,
   component: applyResume,
   meta: {
-    requiresAuth: 1
+    requiresAuth: 2
   }
 },
 {
@@ -146,7 +146,7 @@ let children = [{  // 团队论坛
   name: onTheJobResumes,
   component: onTheJobResumes,
   meta: {
-    requiresAuth: 1
+    requiresAuth: 2
   }
 },
 {
@@ -154,7 +154,7 @@ let children = [{  // 团队论坛
   name: dimissionResume,
   component: dimissionResume,
   meta: {
-    requiresAuth: 1
+    requiresAuth: 2
   }
 },
 {
@@ -162,7 +162,7 @@ let children = [{  // 团队论坛
   name: waiverOfResume,
   component: waiverOfResume,
   meta: {
-    requiresAuth: 1
+    requiresAuth: 2
   }
 },
 {
@@ -170,7 +170,7 @@ let children = [{  // 团队论坛
   name: CollectJob,
   component: CollectJob,
   meta: {
-    requiresAuth: 1
+    requiresAuth: 2
   }
 },
 {
@@ -185,54 +185,52 @@ let children = [{  // 团队论坛
   path: '/transfer',  // 转账
   component: transfer,
   meta: {
-    requiresAuth: 1
+    requiresAuth: 2
   }
 },
 {
   path: '/teamData',  // 团队排名
   component: teamData,
   meta: {
-    requiresAuth: 1
+    requiresAuth: 2
   }
 },
 {
   path: '/teamOrder',  // 团队排名
   component: teamOrder,
   meta: {
-    requiresAuth: 1
+    requiresAuth: 2
   }
 },
 {
   path: '/logList',  // 日志
   component: logList,
   meta: {
-    requiresAuth: 1
+    requiresAuth: 2
   }
 },
 {
   path: '/receiptTable',  // 日志
   component: receiptTable,
   meta: {
-    requiresAuth: 1
+    requiresAuth: 2
   }
 },
 {
   path: '/putList',  // 日志
   component: putList,
   meta: {
-    requiresAuth: 1
+    requiresAuth: 2
   }
-}
+ }
 ]
-
-let userPosition = sessionStorage.getItem('userPosition')// 1 总经理，2经理，3 成员
 let rootList = [
   { // 团队设置
     path: '/teamSetting',
     name: 'TeamSetting',
     component: TeamSetting,
     meta: {
-      requiresAuth: 2
+      requiresAuth: 1
     }
   },
   { // 团队企业设置
@@ -240,7 +238,7 @@ let rootList = [
     name: 'personalForm',
     component: personalForm,
     meta: {
-      requiresAuth: 2
+      requiresAuth: 1
     }
   },
   { // 团队个人设置
@@ -248,7 +246,7 @@ let rootList = [
     name: 'teamCompanyForm',
     component: teamCompanyForm,
     meta: {
-      requiresAuth: 2
+      requiresAuth: 1
     }
   },
   { // 部门列表
@@ -256,7 +254,7 @@ let rootList = [
     name: 'Department',
     component: Department,
     meta: {
-      requiresAuth: 2
+      requiresAuth: 1
     }
   },
 ]
@@ -274,7 +272,7 @@ let receiptList = [
     name: jobDetail,
     component: jobDetail,
     meta: {
-      requiresAuth: 1
+      requiresAuth: 2
     }
   },
   {
@@ -306,7 +304,7 @@ let receiptList = [
     name: resumeList,
     component: resumeList,
     meta: {
-      requiresAuth: 1
+      requiresAuth: 2
     }
   },
 

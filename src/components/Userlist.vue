@@ -40,7 +40,7 @@
 
 <template>
   <div class="tables-box">
-    <memberCard :userType="userType" :teamInfo="teamInfo"></memberCard>
+    <memberCard :userType="userType" @refurbish="refurbish" :teamInfo="teamInfo"></memberCard>
     <div class="table-list">
       <memberQuery @onSubmit="onSubmit"></memberQuery>
       <memberTable :total="total" :tableData="tableData" @handleEdit="handleEdit" @dismissTeam="dismissTeam" @handleView="handleView" @addMember="addMember" @handleDel="handleDel" @handleSelectionChange="handleSelectionChange"></memberTable>
@@ -109,12 +109,14 @@ export default {
       this.formMember.page = val
       this.getList(this.formMember)
     },
+    refurbish(){
+      this.getList(this.formMember)
+    },
     getList (params) {
       getTeamList(params).then(res => {
-        const { data } = res
-        this.tableData = data.data
-        this.total = data.count
-        this.teamInfo = data.teamInfo
+        this.tableData = res.data.data
+        this.total = res.data.count
+        this.teamInfo = res.data.teamInfo
       })
     },
     handleView (val) {

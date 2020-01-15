@@ -205,9 +205,8 @@ export default {
     // 删除文章
     deleteDiscuss (params) {
       delDiscuss(params).then(res => {
-        const { status } = res
         this.$emit('refurbish')
-        this.delTip(status.code, res.status.remind)
+        this.delTip(res.status.code, res.status.remind)
       }).catch(error => {
         this.delTip(error.status.code, error.status.remind)
       })
@@ -307,13 +306,14 @@ export default {
         is_top: this.is_top
       }
       if (this.commentInfo.id) {
+        this.type = 2
         params.discuss_id = this.commentInfo.id
         this.$emit('updateDiscuss', params)
       }
       else {
         this.$emit('saveDiscuss', params)
       }
-
+      this.isShow = false
     },
     submitChildComment (val) {
       this.saveComment(val)

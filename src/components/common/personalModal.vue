@@ -11,8 +11,8 @@
           <el-button type="primary" @click="query">查询</el-button>
         </div>
         <div class="personal-box">
-          <el-checkbox-group v-model="checkList">
-            <el-checkbox :label="item" :disabled="item.status==1" v-for="(item,index) in list" :key="index">{{item.user_name}}</el-checkbox>
+          <el-checkbox-group v-model="checkList" @change="changeCheck"> 
+            <el-checkbox :label="item"  :disabled="item.status==1" v-for="(item,index) in list" :key="index">{{item.user_name}}</el-checkbox>
           </el-checkbox-group>
         </div>
       </section>
@@ -42,35 +42,41 @@ export default {
   },
   created () {
     this.list = this.personalList
-    console.log(this.list)
-  },
-  computed: {
-    checkList1 () {
-      // return this.list.map(item => {
-      //   return
-      // })
-    }
   },
   watch: {
     personalList (val) {
-      this.list = val
+     if(val&&val.length) {
+        this.list = val
+        let arr =  val.filter(item => {
+          if(item.status) {
+            return item
+          }
+        })
+       this.checkList = arr
+     }
     }
   },
   methods: {
     handleClose () {
       this.$emit('handleClose')
     },
+    changeCheck(val) {
+      console.log(val)
+    },
     submit () {
+      console.log(this.checkList)
       this.$emit('handleOk', this.checkList)
       this.checkList = []
     },
     getList (name, arr) {
       let newArr = arr.filter((item) => {
         // 查找newArr中所有name包含c的数据，然后返回
-        if (item.user_name.indexOf(name) != -1) {
+        console.log(item.user_name.indexOf(name))
+        if (item.user_name.indexOf(name)>=0) {
           return item
         }
       })
+      return newArr
     },
     query () {
       this.list = this.getList(this.name, this.list)

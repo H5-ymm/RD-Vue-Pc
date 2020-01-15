@@ -142,6 +142,7 @@ import districtSelet from '@/components/districtSelet'
 import { getImg, getImgUrl } from '@/util/util'
 import { uploadFile } from '@/api/upload'
 import { getUserInfo, editUserInfo } from '@/api/user'
+import { mapMutations,mapState } from 'vuex'
 export default {
   components: {
     districtSelet
@@ -169,6 +170,12 @@ export default {
   },
   created () {
     this.getInfo(this.uid)
+    console.log(this.userInfo)
+  },
+  computed:{
+    ...mapState({
+      userInfo:state => state.userInfo
+    })
   },
   methods: {
     getInfo (uid) {
@@ -208,7 +215,7 @@ export default {
     submitForm (personalForm) {
       this.$refs[personalForm].validate((valid) => {
         if (valid) {
-          editUserInfo(this.personalForm).then(res => {
+          this.$store.dispatch('updateUserInfo',this.personalForm).then(res => {
             if (res.status.code == 200) {
               this.isEdit = false
             }
@@ -222,8 +229,7 @@ export default {
     },
     resetForm (personalForm) {
       this.$refs[personalForm].resetFields();
-    },
-    handleAvatarSuccess () { }
+    }
   }
 }
 </script>

@@ -12,15 +12,18 @@
             <div class="x-flex-start-justify" v-if="type==2||type==3">
               <img :src="getImgUrl(baseInfo.log)" alt class="team-logo" v-if="baseInfo&&baseInfo.log" />
               <img src="../assets/img/headIcon.png" alt class="team-logo" v-else />
-              <p class="team-logo no-logo" v-else></p>
               <span>{{baseInfo&&baseInfo.team_name}}</span>
             </div>
-            <div class="x-flex-center" v-if="type==2||type==3">
+            <div class="x-flex-center" v-if="type==2||type==3">         
               <el-link :underline="false" href="home" class="home-link">首页</el-link>
+              <img :src="getImgUrl(userInfo.head_img)" alt class="team-logo user-logo" v-if="userInfo&&userInfo.head_img" />
+              <img src="../assets/img/headIcon.png" alt class="team-logo user-logo" v-else />
               <el-dropdown @command="handleCommand">
                 <span class="el-dropdown-link">
-                  <span>{{userInfo.user_name?userInfo.user_name:userInfo.mobile}}</span>
-                  <i class="el-icon-caret-bottom"></i>
+                  <span v-if="userInfo">{{userInfo.user_name?userInfo.user_name:userInfo.mobile}}</span>
+                  <el-divider direction="vertical" v-if="departName"></el-divider>
+                  <span v-if="departName">{{departName}}</span>    
+                    <i class="el-icon-caret-bottom"></i>
                 </span>
                 <el-dropdown-menu slot="dropdown">
                   <el-dropdown-item command="/accountSettings">账户信息</el-dropdown-item>
@@ -69,6 +72,7 @@ import { getTeamInfo } from '@/api/team'
 import { getUserInfo } from '@/api/user'
 import { getCompanyDetail } from '@/api/company'
 import { getImgUrl } from '@/util/util'
+import { mapState,mapActions,mapMutations} from 'vuex'
 export default {
   name: 'team',
   data () {
@@ -78,8 +82,8 @@ export default {
       aside: '',
       height: '',
       baseInfo: {},
-      userInfo: {},
-      uid: localStorage.getItem('uid'),
+      departName:localStorage.getItem('departName'),
+      uid: this.$store.state.uid,
       transitionName: 'slide-left'//默认动画
     }
   },
@@ -95,6 +99,12 @@ export default {
     if (sessionStorage.getItem('menus')) {
       this.breadcrumb = JSON.parse(sessionStorage.getItem('menus'))
     }
+    console.log(this.userInfo)
+  },
+  computed:{
+    ...mapState({
+      userInfo: state => state.userInfo
+    })
   },
   watch: {
     type (val) {
@@ -104,27 +114,25 @@ export default {
         if (this.uid) {
           this.getCompanyInfo(this.uid)
         }
-
       }
       else {
         this.aside = 'homeAside'
         this.height = "74px"
         if (this.uid) {
-          this.getUser(this.uid)
+          this.getUserAll()
           this.getInfo(this.uid)
         }
-      }
-    },
-    $route (to, from) {
-      //页面切换动画
-      this.type = localStorage.getItem('userType')
-      this.uid = localStorage.getItem('uid')
-      if (sessionStorage.getItem('menus')) {
-        this.breadcrumb = JSON.parse(sessionStorage.getItem('menus'))
       }
     }
   },
   methods: {
+      ...mapMutations(['getUserInfo']),
+    getUserAll(){
+      this.$store.dispatch('getUserAllInfo').then((res) => { 
+        console.log(res.data)
+        this.$store.commit('getUserInfo', res.data)
+      })
+    },
     getImgUrl,
     getInfo (uid) {
       getTeamInfo({ uid }).then(res => {
@@ -136,21 +144,15 @@ export default {
       getCompanyDetail({ uid }).then(res => {
         this.baseInfo = res.data
         if (res.data && res.data.logo_url) {
-          this.baseInfo.logo_url = getImgUrl(res.data.logo_url)
+          this.baseInfo.logo_url = this.getImgUrl(res.data.logo_url)
         }
         sessionStorage.setItem('baseInfo', JSON.stringify(this.baseInfo))
         let userInfo = {
           user_name: res.data.com_name,
           mobile: res.data.link_phone,
-          head_img: getImgUrl(res.data.logo_url)
+          head_img: this.getImgUrl(res.data.logo_url)
         }
         sessionStorage.setItem('userInfo', JSON.stringify(userInfo))
-      })
-    },
-    getUser (uid) {
-      getUserInfo({ uid }).then(res => {
-        this.userInfo = res.data || null
-        sessionStorage.setItem('userInfo', JSON.stringify(this.userInfo))
       })
     },
     handleCommand (val) {
@@ -225,6 +227,9 @@ export default {
     margin-right: 10px;
     &.no-logo {
       border: 1px solid #eee;
+    }
+    &.user-logo{
+      border-radius: 50%;
     }
   }
 }

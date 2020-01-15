@@ -1,5 +1,5 @@
 
-import { post, $post } from '../axios'
+import { $post } from '../axios'
 export const getUserInfo = data => $post('/userinfo/selectUserInfo', data) // 获取用户基本信息
 export const editUserInfo = data => $post('/userinfo/editUserInfo', data) // 个人信息修改
 export const setLoginPassword = data => $post('/userinfo/setLoginPassword', data) // 设置登录密码
