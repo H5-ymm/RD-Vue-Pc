@@ -74,8 +74,8 @@ export default {
     },
     selectEmoji (info) {
       this.emoji = info.emoji
-      // this.conmentEmoji += this.emoji
-      this.content = this.comment + this.emoji
+      this.conmentEmoji += this.emoji
+      this.content = this.comment + this.conmentEmoji
       this.showEmoji = false
     },
     onDivInput (e) {

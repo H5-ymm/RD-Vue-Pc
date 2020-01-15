@@ -18,7 +18,7 @@
           </el-dropdown>
         </div>
         <!-- 列表 -->
-        <person-card :list="list" v-if="list.length!=0" @selectComment="selectComment"></person-card>
+        <person-card :list="list" v-if="list.length!=0" :total="total" @selectComment="selectComment"></person-card>
         <div class="no-data" v-else>
           <img src="../assets/img/nodata.png" class="nodata-bg" alt="">
           <p class="no-data-title">暂无数据</p>
@@ -28,7 +28,7 @@
       </div>
       <div class="team-box-content team-box-right">
         <!-- <edit-card></edit-card> -->
-        <detail-card :cardType="type" @refurbish="refurbish" @saveDiscuss="saveDiscuss" :commentInfo="commentInfo"></detail-card>
+        <detail-card :cardType="type" @refurbish="refurbish" @updateDiscuss="updDiscuss" @saveDiscuss="saveDiscuss" :commentInfo="commentInfo"></detail-card>
       </div>
     </div>
     <infoTip :centerDialogVisible="dialogVisible" :modalInfo="modalInfo" @handleClose="dialogVisible=false"></infoTip>
@@ -39,7 +39,7 @@
 import PersonCard from './commentCard/PersonCard'
 import DetailCard from './commentCard/DetailCard'
 import infoTip from './common/infoTip'
-import { getDiscussList, getDiscussInfo, addDiscuss } from '../api/comment'
+import { getDiscussList, getDiscussInfo, addDiscuss, updateDiscuss } from '../api/comment'
 export default {
   components: {
     PersonCard,
@@ -55,11 +55,14 @@ export default {
       AllNum: 0,  //全部条数
       type: 2,
       list: [],
+      total: 0,
       activeIndex: 0,
       commentInfo: {},
       params: {
         uid: localStorage.getItem('uid'),
-        title: ''
+        title: '',
+        limit: 10,
+        page: 1
       },
       commentId: '',
       refurbishStatus: '',
@@ -83,6 +86,7 @@ export default {
       getDiscussList(this.params).then(res => {
         if (res.data.data) {
           this.list = res.data.data || []
+          this.total = res.data.count
           this.commentId = this.list[0].id
           if (this.refurbishStatus != 3) {
             this.getDetail(this.commentId)
@@ -103,6 +107,21 @@ export default {
         this.$message.error(error.status.remind)
       })
     },
+    updDiscuss (val) {
+      updateDiscuss(val).then(res => {
+        if (res.data) {
+          this.type = 2
+          this.$message.success('修改成功')
+          this.refurbishStatus = 0
+          this.getList()
+        }
+        else {
+          this.$message.error('修改失败')
+        }
+      }).catch(error => {
+        this.$message.error(error.status.remind)
+      })
+    },
     selectComment (id) {
       this.type = 2
       this.getDetail(id)
@@ -110,6 +129,7 @@ export default {
     saveDiscuss (val) {
       addDiscuss(val).then(res => {
         if (res.data) {
+          this.type = 2
           this.$message.success('添加成功')
           this.refurbishStatus = 3
           this.getList()

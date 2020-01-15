@@ -44,11 +44,6 @@
             </template>
           </el-table-column>
           <el-table-column label="需求人数" prop="required_number" align="center" width="110"></el-table-column>
-          <!-- <el-table-column label="薪资模式" align="center" width="110">
-            <template slot-scope="props">
-              <span>{{props.row.money_type | moneyType}}</span>
-            </template>
-          </el-table-column> -->
           <el-table-column label="岗位薪资" align="center" width="150">
             <template slot-scope="props">
               <span v-if="props.row.money_type==1">{{props.row.money_min}} ~ {{props.row.money_max}}元/{{props.row.money_type==1?'月':props.row.money_type==2?'日':'时'}}</span>
@@ -158,15 +153,12 @@ export default {
   created () {
     // 初始化查询标签数据
     this.getList(this.formMember)
-    console.log(this.userPosition)
-    console.log(localStorage.getItem('userPosition'))
   },
   methods: {
     getList (params) {
       getCollectList(params).then(res => {
-        const { data } = res
-        this.tableData = data.data
-        this.total = data.count
+        this.tableData = res.data.data
+        this.total = res.data.count
       }).catch(error => {
         if (error) {
           this.$message.error(error.status.remind)
@@ -174,7 +166,7 @@ export default {
       })
     },
     viewJob (val) {
-      this.id = val.id
+      this.id = val.job_id
       this.dialogJobVisible = true
     },
     selectStatus (key, item) {
@@ -228,7 +220,7 @@ export default {
     },
     handleApply (val) {
       let params = {
-        jobId: val.jobId,
+        jobId: val.job_id,
         id: val.id,
         uid: localStorage.getItem('uid'),
         collectId: val.id
@@ -242,7 +234,7 @@ export default {
       })
     },
     handleOk () {
-      this.$router.push('teamApplication')
+      this.$router.push('/teamApplication')
     },
     handleSearch () {
       this.getList(this.formMember)

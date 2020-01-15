@@ -122,15 +122,8 @@ export default {
     }
   },
   created () {
-    // 初始化查询标签数据
-    // 面试名单
     this.formMember.jobId = this.$route.query.id
     this.getList(this.formMember)
-  },
-  watch: {
-    $route (to, form) {
-      this.getList(this.formMember)
-    }
   },
   methods: {
     getList (params) {

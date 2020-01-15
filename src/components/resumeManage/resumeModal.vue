@@ -57,7 +57,7 @@
                 </el-form-item>
                 <el-form-item label="薪资模式">
                   <el-select v-model="formMember.salary_type" placeholder="请选择薪资模式">
-                    <el-option :label="item.label" :value="item.value" v-show="index" v-for="(item,index) in moneyTypeList" :key="item.label"></el-option>
+                    <el-option :label="item.label" :value="item.value" v-for="(item,index) in moneyTypeList1" :key="item.label"></el-option>
                   </el-select>
                 </el-form-item>
                 <el-form-item label="预计入职时间">
@@ -111,7 +111,7 @@ import { getConstant } from '@/api/dictionary'
 import districtSelet from '../districtSelet'
 import { selectUserResumeInfo } from '@/api/resume'
 import { validateIdCard } from '@/util/util'
-import { moneyTypeList } from '@/base/base'
+import { moneyTypeList1 } from '@/base/base'
 export default {
   components: {
     districtSelet
@@ -139,7 +139,7 @@ export default {
         address: '',
         provinceid: '',
         cityid: '',
-        salary_type: '',
+        salary_type: '1',
         uid: localStorage.getItem('uid')
       },
       rules: {
@@ -154,7 +154,7 @@ export default {
       edu_type: [],
       jobList: [],
       ageList: [],
-      moneyTypeList,
+      moneyTypeList1,
       moneyArray: [],
       entryTime: [],
       address: [],

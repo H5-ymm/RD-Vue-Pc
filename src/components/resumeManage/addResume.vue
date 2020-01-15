@@ -96,7 +96,7 @@
   </div>
 </template>
 <script>
-import {  getResumeList, addUserResume, selectUserResumeInfo, giveUpResume, exportUserResume,
+import {  getResumeList2, addUserResume, selectUserResumeInfo, giveUpResume, exportUserResume,
   importUserResume, downloadTestTable, updateUserResume} from '@/api/resume'
 
 import { addPut } from '@/api/internalInvoice'
@@ -176,7 +176,7 @@ export default {
   },
   methods: {
     getList (params) {
-      getResumeList(params).then(res => {
+      getResumeList2(params).then(res => {
         const { data } = res
         this.tableData = data.data
         this.total = data.count

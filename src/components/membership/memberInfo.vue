@@ -4,7 +4,7 @@
       <img src="../../assets/img/member/cancel.png" alt class="cancel-icon" @click="handleClose" />
       <section class="member-col1">
         <div class="head-box">
-          <img src="../../assets/img/headIcon3.png" class="head" alt  v-if="!formMember.log"/>
+          <img src="../../assets/img/headIcon3.png" class="head" alt v-if="!formMember.log" />
           <img :src="getImgUrl(formMember.log)" alt="" v-else>
         </div>
         <p>{{formMember.user_name}}</p>
@@ -46,19 +46,35 @@
           <p>当前状态</p>
           <p>{{formMember.status == 1 ? '正常': '锁定'}}</p>
         </div>
-        <div class="x-flex-center">
+        <div class="x-flex-center" v-if="userPosition!=1">
           <p>部门</p>
           <p>{{formMember.depart_name}}</p>
         </div>
-        <div class="x-flex-center">
+        <div class="x-flex-center" v-if="userPosition!=1">
           <p>当前职称</p>
           <p>{{formMember.grade_name}}</p>
         </div>
       </section>
-      <section class="member-col3" v-if="userPosition!=3">
-        <el-form :model="formMember" class="demo-form-inline" label-width="90px">
+      <section class="member-col3">
+        <el-form :model="formMember" class="demo-form-inline" label-width="120px">
+          <el-form-item label="部门" v-if="userPosition==1">
+            <el-select placeholder="请选择" :disabled="isView" v-model="depId" @change="selectDep">
+              <el-option :label="item.depart_name" :value="item.id" v-for="(item,index) in depList" :key="index"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="当前职称" v-if="userPosition==1">
+            <el-select v-model="formMember.grade_id" :disabled="isView" value-key="grade_name" placeholder="请选择">
+              <el-option :label="item.grade_name" :value="item.id" v-for="item in jobList" :key="item.grade_name"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="当前状态" v-if="userPosition!=3">
+            <el-radio-group v-model="formMember.status" :disabled="isView">
+              <el-radio :label="1" border>正常</el-radio>
+              <el-radio :label="2" border>锁定</el-radio>
+            </el-radio-group>
+          </el-form-item>
           <el-form-item label="活动形式" v-if="formMember.status==2">
-            <el-input type="textarea"  readonly v-model="formMember.remark" placeholder="请输入锁定说明（必填）"></el-input>
+            <el-input type="textarea" :readonly="isView" v-model="formMember.remark" placeholder="请输入锁定说明（必填）"></el-input>
           </el-form-item>
           <el-form-item label="认证信息">
             <memberTooltip :formMember="formMember"></memberTooltip>
@@ -67,8 +83,8 @@
       </section>
     </div>
     <div slot="footer">
-      <el-button type="primary" @click="handleClose">关闭</el-button>
-      <!-- <el-button type="primary" @click="handleClose">关闭</el-button> -->
+      <el-button @click="handleClose">关闭</el-button>
+      <el-button type="primary" v-if="!isView" @click="submitMember">确定</el-button>
     </div>
   </el-dialog>
 </template>
@@ -81,7 +97,7 @@ import { getConstant } from '../../api/dictionary'
 import memberTooltip from './memberTooltip'
 import { getImgUrl } from '@/util/util'
 export default {
-  props: ['dialogTableVisible', 'memberInfo', 'memberType', 'userId'],
+  props: ['dialogTableVisible', 'memberInfo', 'memberType', 'userId', 'isView'],
   components: {
     memberTooltip
   },
@@ -91,16 +107,21 @@ export default {
       jobList: [],
       depList: [],
       depId: '',
-      userPosition:sessionStorage.getItem('userPosition')
+      userPosition: sessionStorage.getItem('userPosition')
     }
   },
   created () {
-
+    this.getJobList()
   },
   watch: {
     userId (val) {
       if (val) {
         this.getInfo(val)
+      }
+      else {
+        this.formMember = {
+          user_name: ''
+        }
       }
     }
   },
@@ -114,10 +135,53 @@ export default {
       seeTeamUserInfo(params).then(res => {
         console.log(res)
         this.formMember = res.data
-        // this.depId = this.getJob(this.depList, this.formMember.grade_id)
-        // this.jobList = this.getArr(this.depList, this.depId)
+        if (!this.formMember.grade_id) {
+          this.formMember.grade_id = ''
+        }
+        if (this.formMember.grade_id && this.depList.length) {
+          this.depId = this.getJob(this.depList, this.formMember.grade_id)
+          this.jobList = this.getArr(this.depList, this.depId)
+        }
+        else {
+          this.formMember.grade_id = ''
+        }
+        if (res.data.provinceid && res.data.cityid) {
+          this.address = [res.data.provinceid, res.data.cityid, res.data.three_cityid]
+        }
         // console.log(this.jobList)
       })
+    },
+    // 获取职位
+    getJob (arr, id) {
+      let depId
+      arr.forEach(item => {
+        if (item.child) {
+          item.child.forEach(val => {
+            if (val.id == id) {
+              depId = val.depart_id
+            }
+          })
+        }
+      })
+      return depId
+    },
+    getArr (arr, id) {
+      let newArr = []
+      arr.forEach(item => {
+        if (item.id == id) {
+          newArr = item.child
+        }
+      })
+      return newArr
+    },
+    getJobList () {
+      let uid = localStorage.getItem('uid')
+      departmentRoleList({ uid }).then(res => {
+        this.depList = res.data
+      })
+    },
+    selectDep (val) {
+      this.jobList = this.getArr(this.depList, val)
     },
     handleClose () {
       this.$parent.dialogTableVisible = false
@@ -125,7 +189,6 @@ export default {
     submitMember () {
       let params = {
         uid: this.formMember.uid,
-        id: this.formMember.id,
         grade_id: this.formMember.grade_id,
         status: this.formMember.status,
         provinceid: this.formMember.provinceid,

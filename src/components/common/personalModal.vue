@@ -29,7 +29,7 @@
 <script>
 export default {
   props: {
-    dialogTableVisible: false,
+    dialogTableVisible: { type: Boolean, default: false },
     title: { type: String, default: '分配跟进人' },
     personalList: { type: Array, default: [] },
   },
@@ -42,6 +42,14 @@ export default {
   },
   created () {
     this.list = this.personalList
+    console.log(this.list)
+  },
+  computed: {
+    checkList1 () {
+      // return this.list.map(item => {
+      //   return
+      // })
+    }
   },
   watch: {
     personalList (val) {
@@ -56,14 +64,17 @@ export default {
       this.$emit('handleOk', this.checkList)
       this.checkList = []
     },
-    getList (arr) {
+    getList (name, arr) {
       let newArr = arr.filter((item) => {
         // 查找newArr中所有name包含c的数据，然后返回
-        return item.name.indexOf(this.name) != -1
+        if (item.user_name.indexOf(name) != -1) {
+          return item
+        }
       })
     },
     query () {
       this.list = this.getList(this.name, this.list)
+      console.log(this.list)
     }
   }
 }

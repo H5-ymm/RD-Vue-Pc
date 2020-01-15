@@ -103,10 +103,10 @@
             <template slot-scope="props">
               <el-button @click="$router.push({path:'/entryList',query:{id:props.row.id}})" type="text" size="small" v-if="(props.row.interview_status>=2&&props.row.entry_time&&props.row.entry_status)||(props.row.entry_status&&props.row.interview_status==3)">查看入职</el-button>
               <el-button @click="handleOver(props.row)" type="text" v-if="props.row.interview_status==1&&!props.row.entry_status" size="small">面试结束</el-button>
-              <el-button @click="$router.push({path:'checkResume',query:{id:props.row.id,view:4}})" v-if="props.row.interview_status==1&&!props.row.entry_status" type="text" size="small">审核结果</el-button>
+              <el-button @click="$router.push({path:'/checkResume',query:{id:props.row.id,view:4}})" v-if="props.row.interview_status==1&&!props.row.entry_status" type="text" size="small">审核结果</el-button>
               <el-button @click="viewEntrytList(props.row)" v-if="props.row.interview_status>=2&&!props.row.entry_status" type="text" size="small">面试名单</el-button>
               <el-button @click="setEntryTime(props.row)" type="text" size="small" v-if="props.row.interview_status==2||props.row.interview_status==3">通知入职</el-button>
-              <el-button @click="$router.push({path:'commonTable',query:{id:props.row.id,view:3}})" v-if="(!props.row.entry_time&&props.row.entry_status) || props.row.entry_status" type="text" size="small">
+              <el-button @click="$router.push({path:'/commonTable',query:{id:props.row.id,view:3}})" v-if="(!props.row.entry_time&&props.row.entry_status) || props.row.entry_status" type="text" size="small">
                 面试结果
                 <!-- <span class="resume-number">(+150)</span> -->
               </el-button>
@@ -122,10 +122,10 @@
 </template>
 <script>
 import { invoiceInterviewList, auditEntryResume, endInterview, exportInterviewResume, editEntryTime } from '@/api/receipt'
-import { moneyTypeList, rewardTypeList, entryStatusList3 } from '../../base/base'
+import { moneyTypeList, rewardTypeList, entryStatusList3 } from '@/base/base'
 import receiptModal from './receiptModal'
 import modal from '../common/modal'
-import { getConstant } from '../../api/dictionary'
+import { getConstant } from '@/api/dictionary'
 export default {
   components: {
     receiptModal,
@@ -250,7 +250,7 @@ export default {
         this.entry_time = ''
       }
       else {
-        this.$router.push({ path: 'commonTable', query: { id: val.id, view: 6 } })
+        this.$router.push({ path: '/commonTable', query: { id: val.id, view: 6 } })
       }
     },
     setEntryTime (val) {

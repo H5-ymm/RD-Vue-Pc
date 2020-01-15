@@ -81,29 +81,7 @@
         width: 20px;
         margin-right: 10px;
       }
-    }
-    // .resume-card-row {
-    //   margin: 20px 0 0 -15px;
-    //    .resume-card-item {
-    //     width: 50%;
-
-    //     text-align: left;
-    //     &:nth-child(2) {
-    //       .el-form-item {
-    //         padding-left: 55px;
-    //         margin-right:0;
-    //       }
-    //     } 
-    //   }
-    //   .resume-address {
-    //     position: absolute;
-    //     top: 0;
-    //     right: -310px;
-    //   }
-    //   .el-form-item__error{
-    //     top:-50%;
-    //   }
-    // }  
+    } 
   }
   .resume-btn {
     text-align: right;
@@ -126,8 +104,12 @@
         <el-timeline v-if="list.length">
           <el-timeline-item v-for="(item, index) in list" :type="item.type" :size="item.size" :key="index" :timestamp="$moment.unix(item.addtime).format('YYYY-MM-DD')" placement="top">
             <div class="record-content">
-              <P class="record-title">[{{item.title}}] {{item.username}}</P>
-              <P>操作人: {{item.operator}}</P>
+              <P class="record-title">
+                [{{item.title}}] {{item.username}} {{item.remark?item.remark:''}}
+              </P>
+              <P v-if="item.com_name">企业名称 : {{item.com_name}}</P>
+              <P v-if="item.job_name">企业名称 : {{item.job_name}}</P>
+              <P>操作人 : {{item.operator}}</P>
               <P>跟进时间: {{$moment.unix(item.addtime).format('YYYY-MM-DD HH:mm:ss')}}</P>
             </div>
           </el-timeline-item>
@@ -168,6 +150,7 @@ export default {
   watch: {
     id (val) {
       if (val) {
+        console.log(val)
         this.resumeId = val
         this.getTrackData()
       }

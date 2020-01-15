@@ -95,7 +95,7 @@
                 <span v-if="jobInfo.reward_money_type==2&&jobInfo.duration_time">持续返利{{jobInfo.duration_time}}个月</span>
                 <span v-if="jobInfo.reward_money_type==2&&!jobInfo.duration_time">一{{jobInfo.reward_money_type==1?'天':jobInfo.reward_money_type==2?'周': '个月'}}</span>
               </div>
-              <div class="team-info-card-item" v-if="jobInfo.reward_type==2||jobInfo.reward_type==3||obInfo.reward_type==4">
+              <div class="team-info-card-item" v-if="jobInfo.reward_type==2||jobInfo.reward_type==3||jobInfo.reward_type==4">
                 <span>需入职满</span>
                 <span v-if="jobInfo.reward_needtime">{{jobInfo.reward_needtime}}{{jobInfo.reward_money_type==1?'天':jobInfo.reward_money_type==2?'周': '个月'}}</span>
                 <span v-else>一天</span>
@@ -135,14 +135,12 @@ export default {
   },
   watch: {
     id (val) {
-      console.log(val)
       if (val) {
         let params = {
           id: val,
           uid: localStorage.getItem('uid')
         }
         invoiceInfo(params).then(res => {
-          console.log(res)
           this.jobInfo = res.data
         })
       }

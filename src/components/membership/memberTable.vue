@@ -45,11 +45,12 @@
         <el-table-column label="操作" align="center" width="150">
           <template slot-scope="scope">
             <div v-if="userPosition!=3">
-              <el-button @click="handleEdit(scope.row.uid)" type="text" size="small">编辑</el-button>
-              <el-button @click="handleDel(scope.row.uid)" type="text" size="small">删除</el-button>
+              <el-button @click="handleEdit(scope.row.id)" type="text" size="small">编辑</el-button>
+              <el-button @click="handleDel(scope.row.id)" v-if="scope.row.uid!=uid" type="text" size="small">删除</el-button>
+              <el-button @click="handleView(scope.row.id)" v-if="scope.row.uid==uid" type="text" size="small">查看</el-button>
             </div>
             <div v-if="userPosition==3">
-              <el-button @click="handleEdit(scope.row.uid)" type="text" size="small">查看</el-button>
+              <el-button @click="handleView(scope.row.id)" type="text" size="small">查看</el-button>
             </div>
           </template>
         </el-table-column>
@@ -71,12 +72,11 @@ export default {
       teamId: '',
       multipleSelection: [],
       userPosition: sessionStorage.getItem('userPosition'),
-      uid: ''
+      uid: localStorage.getItem('uid')
     }
   },
   methods: {
     addMember () {
-      this.uid = ''
       this.$emit('addMember')
     },
     handleEdit (val) {

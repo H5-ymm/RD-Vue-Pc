@@ -2,7 +2,7 @@
   <div class="view-box-list">
     <div class="view-box-card" :class="{'view-box-card-active': index==activeIndex}" v-for="(item,index) in list" :key="index">
       <section class="view-card-row x-flex-start-justify" @click="selectComment(index,item)">
-        <span class="top" v-if="!item.is_top">
+        <span class="top" v-if="item.is_top">
           <span>置顶</span>
         </span>
         <div class="view-card-col1">
@@ -20,6 +20,7 @@
           <el-button round size="mini">{{item.type | sortType(item.type)}}</el-button>
         </div>
       </section>
+      <section v-if="isLoad" @click="loadMore">加载更多</section>
     </div>
   </div>
 </template>
@@ -35,17 +36,31 @@ export default {
     }
   },
   name: 'card',
-  props: ['list'],
+  props: ['list', 'total'],
   data () {
     return {
       activeIndex: 0,
-      commentSort
+      commentSort,
+      isLoad: false
+    }
+  },
+  watch: {
+    total (val) {
+      if (val) {
+        let num = this.list.length
+        if (val > num) {
+          this.isLoad = true
+        }
+      }
     }
   },
   methods: {
     selectComment (index, item) {
       this.activeIndex = index
       this.$emit('selectComment', item.id)
+    },
+    loadMore () {
+      this.$emit('loadMore')
     }
   }
 }

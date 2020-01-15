@@ -1,4 +1,4 @@
-import { post, $post } from '../axios'
+import { $post } from '../axios'
 
 export const addTeamUser = data => $post('/team/addTeamUser', data) // 添加团队成员
 export const updateTeamUser = data => $post('/team/updateTeamUser', data) // 修改团队成员

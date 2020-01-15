@@ -41,7 +41,7 @@
                 <span class="status" :class="`status${props.row.interview_status}`" v-if="props.row.status==1&&props.row.interview_status&&!props.row.entry_status">{{props.row.interview_status==1?'通过':'未通过'}}</span>
                 <span class="status status2" v-if="props.row.status==1&&props.row.interview_status==3">未参加</span>
               </div>
-              <div v-if="viewType==2">
+              <div v-if="viewType==2||viewType==1">
                 <span class="status" :class="`status${props.row.status}`" v-if="!props.row.status">待审核</span>
                 <span class="status" :class="`status${props.row.status}`" v-if="props.row.status">{{props.row.status==1?'已通过':'已拒绝'}}</span>
               </div>
@@ -49,7 +49,7 @@
                 <span class="status" :class="`status${props.row.status}`" v-if="!props.row.entry_status">待审核</span>
                 <span class="status" :class="`status${props.row.entry_status}`" v-if="props.row.entry_status">{{props.row.entry_status==1?'已入职':props.row.entry_status==2?'未入职':'未参加'}}</span>
               </div>
-              <div v-if="viewType!=2&&viewType!=4&&viewType!=3&&viewType!=7">
+              <div v-if="viewType!=2&&viewType!=4&&viewType!=3&&viewType!=7&&viewType!=1">
                 <span class="status" :class="`status${props.row.entry_status}`" v-if="!props.row.entry_status">待审核</span>
                 <span class="status" :class="`status${props.row.entry_status}`" v-if="props.row.entry_status">{{props.row.entry_status==1?'通过':props.row.entry_status==2?'未通过':'未参加'}}</span>
               </div>
@@ -58,14 +58,17 @@
           <el-table-column label="操作" align="center" width="180" v-if="viewType!=7">
             <template slot-scope="scope">
               <div v-if="viewType!=3&&viewType!=7">
-                <el-button @click="handleResume(1,scope.row)" type="text" v-if="scope.row.status==1&&!scope.row.interview_status&&!scope.row.entry_status" size="small">放弃报名</el-button>
+                <el-button @click="handleResume(1,scope.row)" type="text" v-if="scope.row.status==0&&!scope.row.interview_status&&!scope.row.entry_status" size="small">放弃报名</el-button>
                 <el-button @click="handleResume(2,scope.row)" v-if="scope.row.status==1&&scope.row.interview_status==2" type="text" size="small">放弃面试</el-button>
                 <el-button @click="routerResume(scope.row)" v-if="scope.row.status==2||scope.row.interview_status>=3||scope.row.entry_status>=2" type="text" size="small">推荐岗位</el-button>
                 <el-button @click="handleResume(3,scope.row)" v-if="scope.row.interview_status==2&&!scope.row.entry_status" type="text" size="small">放弃入职</el-button>
               </div>
-              <div v-if="viewType!=4&&viewType!=6&&viewType!=2&&viewType!=7">
+              <div v-if="viewType!=4&&viewType!=6&&viewType!=2&&viewType!=7&&viewType!=1">
                 <span v-if="scope.row.status==1&&scope.row.interview_status!=3&&!scope.row.entry_status">{{scope.row.interview_status==1?'通过':'未通过'}}</span>
                 <span v-if="scope.row.status==1&&scope.row.interview_status==3&&!scope.row.entry_status">未参加</span>
+              </div>
+              <div v-if="viewType==1">
+                <span v-if="scope.row.status">{{scope.row.status==1?'通过':'未拒绝'}}</span>
               </div>
               <!-- <el-button @click="handleResume(4,scope.row)" v-if="scope.row.interview_status==1&&scope.row.entry_status==1&&viewType==7" type="text" size="small">离职</el-button> -->
             </template>
@@ -152,6 +155,10 @@ export default {
     if (this.viewType == 2) {
       this.formMember.status_view = 0
       this.formMember.type = 2
+    }
+    if (this.viewType == 1) {
+      this.formMember.status_view = ''
+      this.formMember.type = ''
     }
     this.getList(this.formMember)
   },

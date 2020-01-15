@@ -152,7 +152,7 @@
 // import { getTeamList, loginOutTeam, addTeamUser, updateTeamUser } from '../../api/team'
 import { gettalent, addPut, getapplyInfo } from '@/api/teamReceipt'
 import { addPutSelf } from '@/api/internalInvoice'
-import { getResumeList, addUserResume, getMatchingResume, getInternalInvoiceList, getMatchingJobList, getInternalMatchingList } from '@/api/resume'
+import { addUserResume, getMatchingResume, getInternalInvoiceList, getMatchingJobList, getInternalMatchingList } from '@/api/resume'
 import { moneyTypeList, rewardTypeList, payTypeList, weekList } from '@/base/base'
 import jobMate from '../resumeManage/jobMate'
 export default {

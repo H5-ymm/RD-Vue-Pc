@@ -67,16 +67,25 @@
           </el-table-column>
           <el-table-column label="申请状态" align="center" width="110" v-if="userPosition==2">
             <template slot-scope="scope">
-              <span v-if="scope.row.apportion_status&&scope.row.apportion_status!=3&&!scope.row.apportion_action" class="status" :class="`status${scope.row.apportion_status}`">{{scope.row.apportion_status | applyStatus}}</span>
-              <span class="status status2" v-if="!scope.row.apportion_status">未申请</span>
-              <span class="status status2" v-if="scope.row.apportion_status==3&&scope.row.apportion_action">已取消申请</span>
-              <span class="status status2" v-if="scope.row.apportion_status==1&&!scope.row.apportion_status">已申请</span>
+              <span v-if="!scope.row.apportion_action&&scope.row.apportion_status" class="status" :class="`status${scope.row.apportion_status}`">{{scope.row.apportion_status==1?'已同意':'已拒绝'}}</span>
+              <span class="status" v-if="scope.row.apportion_status==1&&scope.row.apportion_action==2">已同意</span>
+              <span class="status status2" v-if="!scope.row.apportion_status&&!scope.row.apportion_action">未申请</span>
+              <span v-if="!scope.row.apportion_action&&scope.row.apportion_status" class="status" :class="`status${scope.row.apportion_status}`">{{scope.row.apportion_status==1?'已同意':'已拒绝'}}</span>
+              <span class="status status3" v-if="!scope.row.apportion_status&&scope.row.apportion_action==2">已申请</span>
+              <span class="status status2" v-if="scope.row.apportion_status==3&&!scope.row.apportion_action">已取消申请</span>
               <span class="status status4" v-if="scope.row.apportion_action==1&&scope.row.apportion_status==1">分配接单</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="已分配组员" align="center" width="180" v-if="userPosition==2">
+            <template slot-scope="scope">
+              <div @click="handleRecepit(2,scope.row)">
+                <el-button type="text" class="text-line width150" size="small">{{scope.row.apportion_namelist}}</el-button>
+              </div>
             </template>
           </el-table-column>
           <el-table-column label="状态" align="center" width="100" v-if="userPosition==1">
             <template slot-scope="scope">
-              <span class="status" :class="`status${scope.row.status}`" v-if="scope.row.dsh&&!scope.row.ylq">待审核</span>
+              <span class="status" :class="`status${scope.row.status}`" v-if="scope.row.dsh">待审核</span>
               <span class="status status2" v-if="!scope.row.dsh&&!scope.row.ylq" :class="`active-status${scope.row.status}`">未分配</span>
               <span class="status status3" v-if="!scope.row.dsh&&scope.row.ylq" :class="`active-status${scope.row.status}`">已分配</span>
             </template>
@@ -84,10 +93,10 @@
           <el-table-column label="操作" align="center" min-width="160">
             <template slot-scope="scope">
               <div v-if="userPosition==2">
-                <el-button @click="handleApply(scope.row)" type="text" v-if="!scope.row.apportion_status" size="small">申请推荐</el-button>
-                <el-button @click="handleRecepit(2,scope.row)" type="text" size="small" v-if="scope.row.apportion_status==1&&scope.row.apportion_action==1">分配组员</el-button>
+                <el-button @click="handleApply(scope.row)" type="text" v-if="!scope.row.apportion_status&&!scope.row.apportion_action" size="small">申请推荐</el-button>
+                <el-button @click="handleRecepit(1,scope.row)" type="text" size="small" v-if="scope.row.apportion_action>=1&&(scope.row.apportion_status==1)">分配组员</el-button>
                 <el-button @click="handleRecepitManagers(0,scope.row)" type="text" size="small" v-if="scope.row.apportion_status==2">重新申请</el-button>
-                <el-button @click="handleRecepitManagers(3,scope.row)" type="text" size="small" v-if="scope.row.apportion_status==1&&!scope.row.apportion_action">取消申请</el-button>
+                <el-button @click="handleRecepitManagers(3,scope.row)" type="text" size="small" v-if="!scope.row.apportion_status&&scope.row.apportion_action==2">取消申请</el-button>
                 <el-button @click="viewJob(scope.row)" type="text" size="small">查看职位</el-button>
                 <!-- <el-button @click="dialogVisible=true" type="text" size="small">删除职位</el-button> -->
               </div>
@@ -111,7 +120,7 @@
 </template>
 
 <script>
-import { getcurapply, apportionJob, auditRecv, getpartMember, curapportionList, addApportion, changeApportion, getTeamManage } from '@/api/teamReceipt'
+import { getcurapply, apportionJob, auditRecv, getpartMember, curapportionList, addApportion, addTomember, changeApportion, getTeamManage, tomemberlist } from '@/api/teamReceipt'
 import { moneyTypeList, rewardTypeList, payTypeList, entryStatusList, applyStatusList1 } from '@/base/base'
 import viewJob from '../common/viewJob'
 import modal from '../common/modal'
@@ -217,8 +226,25 @@ export default {
         }
       }
       else {
-        this.getCurapportionList()
+        if (this.userPosition == 2) {
+          this.getTomemberlist()
+        }
+        else {
+          this.getCurapportionList()
+        }
       }
+    },
+    getTomemberlist () {
+      let params = {
+        job_id: this.jobId,
+        uid: localStorage.getItem('uid')
+      }
+      tomemberlist(params).then(res => {
+        this.hasPersonList = res.data || []
+        this.personVisible = true
+      }).catch(error => {
+        this.$message.error(error.status.remind)
+      })
     },
     // 团长获取所有列表
     getManagerList () {
@@ -227,9 +253,7 @@ export default {
         uid: localStorage.getItem('uid')
       }
       getTeamManage(params).then(res => {
-        console.log(res.data)
         this.personalList = this.getArray1(res.data)
-        console.log(this.personalList)
         this.dialogTableVisible = true
       }).catch(error => {
         this.$message.error(error.status.remind)
@@ -239,7 +263,8 @@ export default {
     handleRecepitManagers (status, val) {
       let params = {
         job_id: val.job_id,
-        uid: localStorage.getItem('uid')
+        uid: localStorage.getItem('uid'),
+        status: status
       }
       changeApportion(params).then(res => {
         this.hasPersonList = res.data || []
@@ -248,13 +273,14 @@ export default {
         this.$message.error(error.status.remind)
       })
     },
+    // 经理获取组员
     getPersonList () {
       let params = {
         job_id: this.jobId,
         uid: localStorage.getItem('uid')
       }
       getpartMember(params).then(res => {
-        this.personalList = this.getArray(res.data)
+        this.personalList = this.getArray1(res.data)
         this.dialogTableVisible = true
       }).catch(error => {
         this.$message.error(error.status.remind)
@@ -315,7 +341,13 @@ export default {
         job_id: val.job_id,
       }
       addApportion(params).then(res => {
-        this.getList(this.formMember)
+        if (res.data) {
+          this.$message.success('申请成功')
+          this.getList(this.formMember)
+        }
+        else {
+          this.$message.error('申请失败')
+        }
       }).catch(error => {
         this.$message.error(error.status.remind)
       })
@@ -324,17 +356,37 @@ export default {
       let arr = val.map(val => {
         return val.uid
       })
-      this.dialogTableVisible = false
       let params = {
         uid: localStorage.getItem('uid'),
         job_id: this.jobId,
         uids: arr.join(',')
       }
-      apportionJob(params).then(res => {
-        this.getList(this.formMember)
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+      if (this.userPosition == 1) {
+        apportionJob(params).then(res => {
+          if (res.data) {
+            this.$message.success('操作成功')
+            this.getList(this.formMember)
+            this.dialogTableVisible = false
+          }
+          else {
+            this.$message.error('操作失败')
+          }
+        }).catch(error => {
+          this.$message.error(error.status.remind)
+        })
+      }
+      else {
+        addTomember(params).then(res => {
+          if (res.data) {
+            this.$message.success('操作成功')
+            this.getList(this.formMember)
+            this.dialogTableVisible = false
+          }
+          else {
+            this.$message.error('操作失败')
+          }
+        })
+      }
     },
     // 取消分配
     handleOkPerson (val) {

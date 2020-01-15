@@ -231,14 +231,14 @@ export default {
         this.orderTakingForm.settlement_type = 1
       }
       for (let key in this.orderTakingForm) {
-        if(key!= 'reward_type') {
+        if (key != 'reward_type' && key != 'money_type' && key != 'money') {
           this.orderTakingForm[key] = ''
         }
       }
     },
-    changeRewardType(val){
+    changeRewardType (val) {
       for (let key in this.orderTakingForm) {
-        if(key!= 'reward_type'&&key!= 'reward_money_type') {
+        if (key != 'money_type' && key != 'money' && key != 'reward_type' && key != 'reward_money_type') {
           this.orderTakingForm[key] = ''
         }
       }

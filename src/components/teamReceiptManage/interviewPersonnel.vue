@@ -92,7 +92,7 @@
             <template slot-scope="scope">
               <div v-if="!scope.row.interview_status&&!scope.row.entry_status">
                 <el-button v-if="scope.row.interview_status>=3||!scope.row.interview_status" @click="$router.push('/recommendResume?id='+ scope.row.id + '&jobId='+scope.row.job_id)" type="text" size="small">推荐简历</el-button>
-                <el-button v-if="!scope.row.interview_status||scope.row.interview_status==4" @click="$router.push('/commonTableList?id='+ scope.row.id+ '&jobId='+scope.row.job_id+'&view=2')" type="text" size="small">
+                <el-button v-if="!scope.row.interview_status||scope.row.interview_status==4" @click="$router.push('/commonTableList?id='+ scope.row.id+ '&job_id='+scope.row.job_id+'&view=1')" type="text" size="small">
                   推荐名单
                   <!-- <span class="resume-number">(+150)</span> -->
                 </el-button>

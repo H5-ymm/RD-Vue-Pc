@@ -1,10 +1,6 @@
 <template>
   <div id="app">
-    <transition :name="transitionName" mode="out-in">
-      <keep-alive>
-        <router-view />
-      </keep-alive>
-    </transition>
+    <router-view v-if="isRouterAlive" />
   </div>
 </template>
 <style scoped>
@@ -20,12 +16,28 @@ export default {
   data () {
     return {
       token: '',
+      isRouterAlive: true,
       transitionName: 'slide-left'//默认动画
+    }
+  },
+  provide: function () {
+    return {
+      reload: this.reload
     }
   },
   created: function () {
 
-  }
+  },
+  methods: {
+    reload () {
+      this.isRouterAlive = false;
+      // 该方法会在dom更新后执行
+      this.$nextTick(function () {
+        this.isRouterAlive = true
+        console.log('d')
+      })
+    }
+  },
 }
 </script>
 

@@ -45,7 +45,7 @@
               </template>
             </el-input>
           </div>
-          <el-select v-model="orderTakingForm.reward_money_type"  @change="changeRewardType" v-else class="width160" placeholder="请选择">
+          <el-select v-model="orderTakingForm.reward_money_type" @change="changeRewardType" v-else class="width160" placeholder="请选择">
             <el-option :label="item.label" :value="item.value" v-for="item in payTypeList" :key="item.label"></el-option>
           </el-select>
         </div>
@@ -217,14 +217,14 @@ export default {
         this.orderTakingForm.settlement_type = 1
       }
       for (let key in this.orderTakingForm) {
-        if(key!= 'reward_type') {
+        if (key != 'reward_type' && key != 'money_type' && key != 'money') {
           this.orderTakingForm[key] = ''
         }
       }
     },
-    changeRewardType(val){
+    changeRewardType (val) {
       for (let key in this.orderTakingForm) {
-        if(key!= 'reward_type'&&key!= 'reward_money_type') {
+        if (key != 'money_type' && key != 'money' && key != 'reward_type' && key != 'reward_money_type') {
           this.orderTakingForm[key] = ''
         }
       }

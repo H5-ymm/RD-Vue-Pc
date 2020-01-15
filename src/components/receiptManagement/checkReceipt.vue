@@ -74,9 +74,8 @@
 </template>
 
 <script>
-import { getTeamList, loginOutTeam, addTeamUser, updateTeamUser } from '../../api/team'
-import { getReceiptList, companyReceiptShelf, delReceiptShelf } from '../../api/receipt'
-import { moneyTypeList, rewardTypeList, payTypeList, checkStatusList } from '../../base/base'
+import { getReceiptList, companyReceiptShelf, delReceiptShelf } from '@/api/receipt'
+import { moneyTypeList, rewardTypeList, payTypeList, checkStatusList } from '@/base/base'
 import viewJob from '../common/viewJob'
 export default {
   components: {
@@ -129,11 +128,6 @@ export default {
   created () {
     // 初始化查询标签数据
     this.getList(this.formMember)
-  },
-  watch: {
-    $route (to, from) {
-      this.getList(this.formMember)
-    }
   },
   methods: {
     getList (params) {

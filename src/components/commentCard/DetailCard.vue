@@ -8,9 +8,9 @@
           <i class="el-icon-more"></i>
         </el-button>
         <el-dropdown-menu slot="dropdown" class="dropdown-menu">
-          <el-dropdown-item class="el-icon-top" command="0">&nbsp;{{commentInfo.is_top ? '置顶':'取消置顶'}}</el-dropdown-item>
-          <el-dropdown-item class="el-icon-edit-outline" command="1" v-if="commentInfo.uid==uid">&nbsp;编辑</el-dropdown-item>
-          <el-dropdown-item class="el-icon-delete" command="2" v-if="commentInfo.uid==uid">&nbsp;删除</el-dropdown-item>
+          <el-dropdown-item class="el-icon-top" command="0" v-if="commentInfo.uid==uid&&userPosition!=3">&nbsp;{{!commentInfo.is_top ? '置顶':'取消置顶'}}</el-dropdown-item>
+          <el-dropdown-item class="el-icon-edit-outline" command="1" v-if="commentInfo.uid==uid&&userPosition!=3">&nbsp;编辑</el-dropdown-item>
+          <el-dropdown-item class="el-icon-delete" command="2" v-if="commentInfo.uid==uid&&userPosition!=3">&nbsp;删除</el-dropdown-item>
           <el-dropdown-item class="el-icon-refresh-right" command="3">&nbsp;刷新</el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
@@ -36,7 +36,7 @@
         <p>
           <el-radio-group v-model="is_top">
             <el-radio :label="1">置顶</el-radio>
-            <el-radio :label="2">不置顶</el-radio>
+            <el-radio :label="0">不置顶</el-radio>
           </el-radio-group>
         </p>
       </li>
@@ -67,11 +67,11 @@
   </div>
 </template>
 <script>
-import { commentSort } from '../../base/base'
+import { commentSort } from '@/base/base'
 import ReplyCard from './ReplyCard'
 import commentInput from './commentInput'
 import Editor from './Editor'
-import { getReply, delReplyfirst, delReply, addReply, setTopComment } from '../../api/comment'
+import { getReply, delReplyfirst, delReply, addReply, setTopComment, delDiscuss } from '@/api/comment'
 export default {
   components: {
     ReplyCard,
@@ -90,7 +90,7 @@ export default {
         discuss_id: ''
       },
       sortType: 0,
-      is_top: 1,
+      is_top: 0,
       uid: localStorage.getItem('uid'),
       username: localStorage.getItem('userName'),
       comTitle: '',
@@ -99,7 +99,8 @@ export default {
       isShow: false,
       contentunescape: '',
       ishtmlContent: false,
-      htmlContent: ''
+      htmlContent: '',
+      userPosition: localStorage.getItem('userPosition')
     }
   },
   computed: {
@@ -302,10 +303,17 @@ export default {
         uid: localStorage.getItem('uid'),
         type: this.sortType,
         content: escape(this.content),
-        title: this.htmlContent,
+        title: this.htmlContent ? this.htmlContent : this.comTitle,
         is_top: this.is_top
       }
-      this.$emit('saveDiscuss', params)
+      if (this.commentInfo.id) {
+        params.discuss_id = this.commentInfo.id
+        this.$emit('updateDiscuss', params)
+      }
+      else {
+        this.$emit('saveDiscuss', params)
+      }
+
     },
     submitChildComment (val) {
       this.saveComment(val)

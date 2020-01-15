@@ -79,7 +79,7 @@
           </el-table-column>
           <el-table-column label="跟进记录" align="center" width="160">
             <template slot-scope="props">
-              <el-button class="text-line" style="width:100px" type="text" @click="viewRecord(props.row)" v-if="props.row.trackList">{{props.row.trackList.remark}}</el-button>
+              <el-button class="text-line" style="width:100px" type="text" @click="viewRecord(props.row)">{{props.row.trackList&&props.row.trackList.title? props.row.trackList.title:'--'}}</el-button>
             </template>
           </el-table-column>
           <el-table-column label="跟进时间" prop="jddesc" sortable="custom" align="center" width="160">
@@ -309,7 +309,6 @@ export default {
     },
     viewRecord (val) {
       this.followUpRecordVisible = true
-      // this.trackList = val.trackList
       this.resumeId = val.resume_id
     },
     viewResume (val) {

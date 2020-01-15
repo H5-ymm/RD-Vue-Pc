@@ -204,23 +204,23 @@ export default {
         icon: 'el-icon-collection-tag',
         submenu: [
           {
-            title: '已发布职位',
-            url: '/publishJobList?view=2'
-          },
-          {
             title: '已推荐简历',
             url: '/putList'
           }
         ]
       },
+      job: {
+        title: '已发布职位',
+        url: '/publishJobList?view=2'
+      },
       internalInvoiceRoot: [
-        {
-          title: '管理内部职位',
-          url: '/publishJobList?view=1'
-        },
         {
           title: '领取发单',
           url: '/collectingInvoice'
+        },
+        {
+          title: '管理内部职位',
+          url: '/publishJobList?view=1'
         },
         {
           title: '内部审核简历',
@@ -250,7 +250,7 @@ export default {
   },
   created () {
     let userPosition = this.$store.state.userPosition
-    console.log( this.$store.state.userPosition)
+    console.log(this.$store.state.userPosition)
     let teamType = localStorage.getItem('teamType')
     let teamId = localStorage.getItem('uid')
     if (userPosition == 1) {
@@ -279,12 +279,13 @@ export default {
     }
     if (userPosition && userPosition != 3) {
       let len = this.menus.length - 1
+      this.internalInvoiceRoot.splice(1, 0, this.job)
       this.menus[len].submenu = this.internalInvoiceRoot.concat(this.menus[len].submenu)
     }
   },
   watch: {
     $route (to, from) {
-      let userPosition =  this.$store.state.userPosition
+      let userPosition = this.$store.state.userPosition
       let teamType = localStorage.getItem('teamType')
       let teamId = localStorage.getItem('uid')
       if (userPosition == 1) {
@@ -299,7 +300,6 @@ export default {
         }
         this.menus.splice(4, 0, this.root)
         this.menus.splice(9, 0, this.receipt)
-
         this.menus[3].submenu = this.receiptRoot.concat(this.menus[3].submenu)
       }
       if (userPosition == 2) {
@@ -347,7 +347,7 @@ export default {
       if (to.path == '/commonTableList' && from.path == '/teamEntryList') {
         // this.selectMenus(to.path,this.menus)
         this.url = '/teamEntryList'
-      } 
+      }
       // else {
       //   this.selectMenus(to.fullPath, this.menus)
       // }

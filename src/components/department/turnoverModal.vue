@@ -56,8 +56,8 @@
             </el-table-column>
             <el-table-column label="等级" align="center" width="150">
               <template slot-scope="props">
-                <el-select v-model="grade_id" v-if="activeIndex==props.$index&&isEdit" :placeholder="props.row.grade_name" @change="selectDepName" class="width100 table-edit">
-                  <el-option :label="item.grade_name" :value="item.id" v-for="(item,index) in jobList" :key="index"></el-option>
+                <el-select v-model="grade_id" value-key="grade_name" v-if="activeIndex==props.$index&&isEdit" :placeholder="props.row.grade_name" @change="selectDepName" class="width100 table-edit">
+                  <el-option :label="item.grade_name" :value="item.id" v-for="(item,index) in jobList" :key="item.grade_name"></el-option>
                 </el-select>
                 <span v-else>{{ props.row.grade_name}}</span>
               </template>
@@ -112,9 +112,9 @@ export default {
     this.getJobList()
     this.getList(this.formMember)
   },
-  computed:{
-    jobListAll(){
-      return  this.getArr(this.depList, this.depart_id)
+  computed: {
+    jobListAll () {
+      return this.getArr(this.depList, this.depart_id)
     }
   },
   watch: {
@@ -139,6 +139,7 @@ export default {
     },
     selectDepName (val) {
       this.jobList = this.getArr(this.depList, val)
+      console.log(this.jobList)
     },
     selectDepGrade (index) {
       // this.activeIndex = index
@@ -176,6 +177,8 @@ export default {
     handleCloseEdit () {
       this.activeIndex = -1
       this.isEdit = false
+      this.departId = ''
+      this.gradeId = ''
     },
     handleSubmit () {
       console.log(this.grade_id)
@@ -195,7 +198,7 @@ export default {
           this.$emit('handleClose', 1)
         }
         else {
-           this.$message.error('操作失败')
+          this.$message.error('操作失败')
         }
       }).catch(error => {
         this.$message.error(error.status.remind)

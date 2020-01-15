@@ -51,7 +51,7 @@
             <template slot-scope="props">
               <div v-if="viewType==3">
                 <span class="status" :class="`status${props.row.status}`">
-                   {{getStatus(props.row.status)}}
+                  {{getStatus(props.row.status)}}
                 </span>
               </div>
               <div v-if="viewType==4">
@@ -139,7 +139,7 @@ export default {
         { label: '已通过', value: 2 },
         { label: '未通过', value: 3 }
       ],
-       statusList1: [
+      statusList1: [
         { label: '待审核', value: 0 },
         { label: '已通过', value: 1 },
         { label: '未通过', value: 2 }
@@ -154,18 +154,6 @@ export default {
         closeText: '取消'
       },
       status: ''
-    }
-  },
-  watch: {
-    $route (to, from) {
-      if (this.viewType == 3) {
-        this.formMember.job_id = this.$route.query.id
-      }
-      else {
-        this.formMember.jobId = this.$route.query.id
-
-      }
-      this.getList(this.formMember)
     }
   },
   computed: {
@@ -208,7 +196,7 @@ export default {
       }
 
     },
-    getStatus(val){
+    getStatus (val) {
       let obj = this.statusList1.find(item => {
         return val == item.value
       })

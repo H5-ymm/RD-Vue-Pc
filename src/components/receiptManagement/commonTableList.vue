@@ -165,7 +165,6 @@ export default {
     // 5.入职审核
     // 2.在职名单
     this.viewType = this.$route.query.view
-    console.log(this.viewType)
     this.jobId = this.$route.query.id
     this.formMember.jobId = this.jobId
     this.getList(this.formMember)
@@ -230,9 +229,8 @@ export default {
       })
     },
     getData (res) {
-      const { data } = res
-      this.tableData = data.data
-      this.total = data.count
+      this.tableData = res.data.data
+      this.total = res.itemdata.count
     },
     selectStatus (item, index) {
       this.activeIndex = index

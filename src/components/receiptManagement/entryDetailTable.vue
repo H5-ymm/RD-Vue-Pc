@@ -135,9 +135,8 @@ export default {
   methods: {
     getList (params) {
       entryUserResumeList(params).then(res => {
-        const { data } = res
-        this.tableData = data.data
-        this.total = data.count
+        this.tableData = res.data.data
+        this.total = res.data.count
       })
     },
     selectStatus (item, index) {

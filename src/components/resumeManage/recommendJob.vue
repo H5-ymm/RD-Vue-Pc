@@ -91,11 +91,9 @@
 </template>
 
 <script>
-import { getResumeList, addUserResume, getMatchingResume, getInternalInvoiceList, getMatchingJobList, getInternalMatchingList } from '@/api/resume'
-import { putResumelist } from '@/api/internalInvoice'
-import { getListPut, addPut } from '@/api/teamReceipt'
-import { moneyTypeList, rewardTypeList, payTypeList, weekList } from '@/base/base'
-import { recommendTeamUserJob } from '@/api/collect'
+import { getMatchingResume, getInternalInvoiceList, getMatchingJobList, getInternalMatchingList } from '@/api/resume'
+import { addPut } from '@/api/teamReceipt'
+import { moneyTypeList, rewardTypeList } from '@/base/base'
 import jobMate from './jobMate'
 export default {
   components: {
@@ -164,40 +162,34 @@ export default {
       else {
         this.getList(this.formMember)
       }
-    },
-    // $route (to, from) {
-    //   if (from.query.viewType) {
-    //     this.viewType = from.query.viewType
-    //     this.byJobMatchingList(this.formMember)
-    //   }
-    //   else {
-    //     this.getList(this.formMember)
-    //   }
-    // }
+    }
   },
   methods: {
     getList (params) {
       if (this.tabIndex == 0) {
         getMatchingJobList(params).then(res => {
-          const { data } = res
-          this.tableData = data.data
+          this.tableData = res.data.data
           this.total = res.data.count
+        }).catch(error => {
+          this.$message.error(error.status.remind)
         })
       }
       else {
         getInternalMatchingList(params).then(res => {
-          const { data } = res
-          this.tableData = data.data
+          this.tableData = res.data.data
           this.total = res.data.count
+        }).catch(error => {
+          this.$message.error(error.status.remind)
         })
       }
     },
     byJobMatchingList () {
       if (this.tabIndex == 0) {
         getMatchingResume(params).then(res => {
-          const { data } = res
-          this.tableData = data.data
+          this.tableData = res.data.data
           this.total = res.data.count
+        }).catch(error => {
+          this.$message.error(error.status.remind)
         })
       }
       else {

@@ -43,11 +43,11 @@
     <memberCard :userType="userType" :teamInfo="teamInfo"></memberCard>
     <div class="table-list">
       <memberQuery @onSubmit="onSubmit"></memberQuery>
-      <memberTable :total="total" :tableData="tableData" @handleEdit="handleEdit" @handleView="handleView" @addMember="addMember" @handleDel="handleDel" @handleSelectionChange="handleSelectionChange"></memberTable>
+      <memberTable :total="total" :tableData="tableData" @handleEdit="handleEdit" @dismissTeam="dismissTeam" @handleView="handleView" @addMember="addMember" @handleDel="handleDel" @handleSelectionChange="handleSelectionChange"></memberTable>
       <el-pagination class="team-pagination" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="formMember.page" :page-sizes="[10, 30, 50, 100]" :page-size="formMember.limit" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
     </div>
-    <memberAdd :dialogTableVisible="visible" :id="userId" @submitForm="submitForm"></memberAdd>
-    <memberInfo :dialogTableVisible="dialogTableVisible" :userId="userId"></memberInfo>
+    <memberAdd :dialogTableVisible="visible" @handleClose="visible=false,userId='',teamInfo={}" :id="userId" @submitForm="submitForm"></memberAdd>
+    <memberInfo :dialogTableVisible="dialogTableVisible" :isView="isView" :userId="userId" @submitMember="submitMember"></memberInfo>
     <infoTip :centerDialogVisible="dialogVisible" :modalInfo="modalInfo" @handleClose="dialogVisible=false"></infoTip>
   </div>
 </template>
@@ -91,7 +91,8 @@ export default {
       len: 0,
       userId: '',
       teamInfo: {},
-      userType: localStorage.getItem('userType')
+      userType: localStorage.getItem('userType'),
+      isView: false
     }
   },
   created () {
@@ -119,6 +120,7 @@ export default {
     handleView (val) {
       this.userId = val
       this.dialogTableVisible = true
+      this.isView = true
     },
     handleEdit (val) {
       if (localStorage.getItem('teamType') == 0) {
@@ -126,7 +128,23 @@ export default {
         return false
       }
       this.userId = val
-      this.visible = true
+      this.isView = false
+      this.dialogTableVisible = true
+    },
+    // 退出团队
+    dismissTeam () {
+      let uid = localStorage.getItem('uid')
+      loginOutTeam({ uid }).then(res => {
+        if (res.data) {
+          this.$message.success('退出成功')
+          this.getList(this.formMember)
+        }
+        else {
+          this.$message.error('退出成功')
+        }
+      }).catch(error => {
+        this.$message.error(error.status.remind)
+      })
     },
     handleDel (uid) {
       if (localStorage.getItem('teamType') == 0) {
@@ -149,6 +167,8 @@ export default {
         this.dialogVisible = true
       }
       else {
+        this.userId = ''
+        this.teamInfo = {}
         this.visible = true
       }
     },
@@ -156,23 +176,37 @@ export default {
       let params = Object.assign(this.formMember, value)
       this.getList(params)
     },
-    submitForm (val) {
-      this.visible = false
-      if (this.userId) {
+    submitMember (val) {
+      if (!this.isView) {
+        // val.id = this.userId
+        let params = Object.assign(val, { id: this.userId })
         updateTeamUser(val).then(res => {
-          this.getList(this.formMember)
+          if (res.data) {
+            this.dialogTableVisible = false
+            this.$message.success('保存成功')
+            this.getList(this.formMember)
+          }
+          else {
+            this.$message.error('保存失败')
+          }
         }).catch(error => {
           this.$message.error(error.status.remind)
         })
       }
-      else {
-        addTeamUser(val).then(res => {
+    },
+    submitForm (val) {
+      addTeamUser(val).then(res => {
+        if (res.data) {
+          this.$message.success('保存成功')
           this.visible = false
           this.getList(this.formMember)
-        }).catch(error => {
-          this.$message.error(error.status.remind)
-        })
-      }
+        }
+        else {
+          this.$message.success('保存失败')
+        }
+      }).catch(error => {
+        this.$message.error(error.status.remind)
+      })
     }
   }
 }

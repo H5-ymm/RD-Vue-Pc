@@ -62,7 +62,7 @@
           <el-table-column label="离职次数" prop="resume_num" align="center" width="150"></el-table-column>
           <el-table-column label="跟进记录" align="center" width="100">
             <template slot-scope="props">
-              <el-button class="text-line" v-if="props.row.trackList" type="text" @click="viewRecord(props.row)">{{props.row.trackList.title}}</el-button>
+              <el-button class="text-line" type="text" @click="viewRecord(props.row)">{{props.row.trackList&&props.row.trackList.title?props.row.trackList.title:'--'}}</el-button>
             </template>
           </el-table-column>
           <el-table-column label="跟进时间" align="center" width="160">
@@ -206,7 +206,7 @@ export default {
     },
     viewRecord (val) {
       this.followUpRecordVisible = true
-      this.resumeId = val.resume_id
+      this.resumeId = val.id
       // this.trackList = val.trackList
     },
     submitRecord (val) {

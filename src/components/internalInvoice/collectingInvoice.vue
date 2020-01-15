@@ -142,7 +142,8 @@
           <el-table-column label="操作" align="center" min-width="150">
             <template slot-scope="scope">
               <el-button @click="$router.push('jobDetail?id='+scope.row.id)" type="text" size="small">详情</el-button>
-              <el-button @click="handleApply(scope.row)" v-if="scope.row.is_up==1 && userPosition==2" type="text" size="small">领取</el-button>
+              <el-button @click="handleApply(scope.row)" v-if="scope.row.is_up==1 && userPosition==2&&!scope.row.tolist" type="text" size="small">领取</el-button>
+              <span class="default-status" v-if="scope.row.is_up==1 && userPosition==2&&scope.row.tolist">已领取</span>
             </template>
           </el-table-column>
         </el-table>
@@ -278,8 +279,13 @@ export default {
         uid: localStorage.getItem('uid')
       }
       recvjob(params).then(res => {
-        this.dialogTableVisible = true
-        this.getList(this.formMember)
+        if (res.data) {
+          this.getList(this.formMember)
+          this.$message.success('领取成功')
+        }
+        else {
+          this.$message.error('领取失败')
+        }
       }).catch(error => {
         this.$message.error(error.status.remind)
       })

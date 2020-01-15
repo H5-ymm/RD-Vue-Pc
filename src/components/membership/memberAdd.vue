@@ -7,13 +7,13 @@
       </section>
       <section class="member-col3 member-add-col3">
         <el-form :model="formMember" :rules="rules" ref="formMember" class="demo-form-inline" label-position="right" label-width="100px">
-          <el-form-item label="姓名" required prop="user_name">
+          <el-form-item label="姓名" prop="user_name">
             <el-input v-model="formMember.user_name" :readonly="id!=''" placeholder="请输入组员姓名"></el-input>
           </el-form-item>
-          <el-form-item label="身份证号" required prop="id_card" v-if="!id">
+          <el-form-item label="身份证号" prop="id_card" v-if="!id">
             <el-input v-model="formMember.id_card" :readonly="id!=''" placeholder="请输入组员身份证号"></el-input>
           </el-form-item>
-          <el-form-item label="联系电话" required>
+          <el-form-item label="联系电话" prop="mobile">
             <el-input v-model="formMember.mobile" :readonly="id!=''" placeholder="请输入该组员联系电话"></el-input>
           </el-form-item>
           <!-- <el-form-item label="户籍所在地">
@@ -61,7 +61,7 @@
 // 总经理可以编辑部门 职称 状态
 import { getConstant } from '../../api/dictionary'
 import districtSelet from '../districtSelet'
-import { departmentRoleList, seeTeamUserInfo } from '../../api/team'
+import { departmentRoleList } from '../../api/team'
 import { validateIdCard } from '../../util/util'
 export default {
   components: {
@@ -103,6 +103,9 @@ export default {
           { required: true, message: '请输入组员身份证', trigger: 'blur' },
           { validator: validate, trigger: 'blur' }
         ],
+        mobile: [
+          { required: true, message: '请输入组员手机号', trigger: 'blur' },
+        ],
         grade_id: [
           { required: true, message: '请选择组员所在部门', trigger: 'blur' }
         ]
@@ -118,39 +121,7 @@ export default {
     this.getList(params)
     this.getJobList()
   },
-  watch: {
-    id (val) {
-      if (val) {
-        this.getInfo(val)
-      }
-    }
-  },
   methods: {
-    getInfo (id) {
-      let params = {
-        userId: localStorage.getItem('uid'),
-        uid: id
-      }
-      seeTeamUserInfo(params).then(res => {
-        if (res.data) {
-          this.formMember = res.data
-          if (!this.formMember.grade_id) {
-            this.formMember.grade_id = ''
-          }
-          if (this.formMember.grade_id) {
-            this.depId = this.getJob(this.depList, this.formMember.grade_id)
-            this.jobList = this.getArr(this.depList, this.depId)
-          }
-          else {
-            this.depId = ''
-            this.jobList = []
-          }
-          this.address = [res.data.provinceid, res.data.cityid, res.data.three_cityid]
-        }
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
-    },
     getJob (arr, id) {
       let depId
       arr.forEach(item => {
@@ -193,7 +164,7 @@ export default {
       this.formMember.three_cityid = val[2]
     },
     handleClose () {
-      this.$parent.visible = false
+      this.$emit('handleClose')
     },
     submitForm () {
       this.$refs['formMember'].validate((valid) => {
@@ -264,7 +235,7 @@ export default {
           width:300px!important;
           border-radius: 0;
           height: 80px;
-          margin-left: 0;
+          // margin-left: 0;
         }
         .el-form-item__content {
           margin-left: 20px!important;

@@ -65,7 +65,11 @@ export const moneyTypeList = [
   { label: '日薪', value: 2 },
   { label: '时薪', value: 3 }
 ]
-
+export const moneyTypeList1 = [
+  { label: '月薪', value: 1 },
+  { label: '日薪', value: 2 },
+  { label: '时薪', value: 3 }
+]
 export const rewardList = [
   { label: '不限', value: 0 },
   { label: '月返', value: 1 },

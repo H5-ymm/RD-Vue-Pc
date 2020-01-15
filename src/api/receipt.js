@@ -7,7 +7,7 @@ export const applyInvoiceList = data => $post('/company/applyInvoiceList', data)
 export const auditInvoiceInfo = data => $post('/company/auditInvoiceInfo', data) // 企业操作接单申请
 export const delCompanyTeamApply = data => $post('/company/delCompanyTeamApply', data) // 企业删除团队的接单申请
 
-export const getResumeList = data => $post('/company/CompanyResumeList', data) // 人才简历
+export const companyResumeList = data => $post('/company/CompanyResumeList', data) // 人才简历
 export const auditResumeList = data => $post('/company/auditResumeList', data)  // 审核简历列表
 export const auditResumeRecommend = data => $post('/company/auditResumeRecommend', data) //简历审核
 export const exportRecommendResume = data => exportData('/company/exportRecommendResume', data) // 导出

@@ -171,8 +171,6 @@ export default {
   },
   watch: {
     $route (to, from) {
-      console.log(to)
-      console.log(from)
       if (to.path == '/interviewPersonnel' && from.path == '/talentResume') {
         this.selectMenus(to.path, this.menus)
       }

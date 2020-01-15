@@ -147,7 +147,12 @@ export default {
     getArray (obj) {
       let arr = []
       for (let i in obj) {
-        arr.push(obj[i])
+        if (i) {
+          arr.push(obj[i])
+        }
+        else {
+          return
+        }
       }
       return arr
     },
@@ -158,6 +163,7 @@ export default {
         arr[1] = this.getArray(this.arrList.put)
         arr[2] = this.getArray(this.arrList.view)
         arr[3] = this.getArray(this.arrList.entry)
+        console.log(arr[0])
       }
       if (this.arrList && this.arrList.total && this.list) {
         let key = this.getKey(this.activeIndex)

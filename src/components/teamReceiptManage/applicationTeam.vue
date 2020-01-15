@@ -83,7 +83,7 @@
 </template>
 
 <script>
-import { getTeamReceiptList, addApply, cancelApply, delApply } from '../../api/teamReceipt'
+import { listApply, addApply, cancelApply, delApply } from '@/api/teamReceipt'
 import customerService from '../common/customerService'
 import viewJob from '../common/viewJob'
 import { moneyTypeList, rewardTypeList, payTypeList, weekList, applyStatusList } from '../../base/base'
@@ -134,10 +134,9 @@ export default {
   },
   methods: {
     getList (params) {
-      getTeamReceiptList(params).then(res => {
-        const { data } = res
-        this.tableData = data.data
-        this.total = data.count
+      listApply(params).then(res => {
+        this.tableData = res.data.data
+        this.total = res.data.count
       }).catch(error => {
         this.$message.error(error.status.remind)
       })

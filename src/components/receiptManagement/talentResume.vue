@@ -55,14 +55,10 @@
               <el-button type="text" @click="viewJob(props.row)">{{props.row.jobName}}</el-button>
             </template>
           </el-table-column>
-          <el-table-column label="团队名称" prop="team_name" align="center" width="150">
-
-          </el-table-column>
+          <el-table-column label="团队名称" prop="team_name" align="center" width="150"> </el-table-column>
           <el-table-column label="需求人数" prop="required_number" align="center" width="150"></el-table-column>
-          <el-table-column label="已推荐简历" align="center" prop="recommendResume" width="150">
-          </el-table-column>
-          <el-table-column label="审核通过简历" align="center" prop="auditPassResume" width="150">
-          </el-table-column>
+          <el-table-column label="已推荐简历" align="center" prop="recommendResume" width="150"> </el-table-column>
+          <el-table-column label="审核通过简历" align="center" prop="auditPassResume" width="150"> </el-table-column>
           <el-table-column label="岗位薪资" align="center" width="150">
             <template slot-scope="props">
               <span v-if="props.row.money_type==1">{{props.row.money_min}}~{{props.row.money_max}}</span>
@@ -105,7 +101,7 @@
               </div>
               <div v-if="props.row.interview_status>=1">
                 <el-button @click="$router.push({path:'/interviewPersonnel',query:{id:props.row.id,view:2}})" v-if="props.row.invoice_status=2" type="text" size="small">查看面试</el-button>
-                <el-button @click="$router.push({path:'checkResume',query:{id:props.row.id,view:3}})" type="text" size="small">审核结果</el-button>
+                <el-button @click="$router.push({path:'/checkResume',query:{id:props.row.id,view:3}})" type="text" size="small">审核结果</el-button>
               </div>
             </template>
           </el-table-column>
@@ -120,10 +116,10 @@
 </template>
 
 <script>
-import { getResumeList, exportRecommendResume, editInterviewTime } from '@/api/receipt'
-import { moneyTypeList, rewardTypeList, userResumeStatusList, userResumeStatusList1 } from '@/base/base'
+import { companyResumeList, exportRecommendResume, editInterviewTime } from '@/api/receipt'
+import { moneyTypeList, rewardTypeList, userResumeStatusList } from '@/base/base'
 import noticeModal from './noticeModal'
-import { getConstant } from '../../api/dictionary'
+import { getConstant } from '@/api/dictionary'
 import modal from '../common/modal'
 import viewJob from '../common/viewJob'
 export default {
@@ -151,7 +147,6 @@ export default {
       moneyTypeList,
       rewardTypeList,
       userResumeStatusList,
-      userResumeStatusList1,
       dialogTableVisible: false,
       dialogJobVisible: false,
       visible: false,
@@ -193,7 +188,7 @@ export default {
       })
     },
     getList (params) {
-      getResumeList(params).then(res => {
+      companyResumeList(params).then(res => {
         this.tableData = res.data.data
         this.total = res.data.count
       })

@@ -19,11 +19,12 @@ export const setjobtouser = data => $post('/teamselfjob/setjobtouser', data) //�
 export const getTeamManage = data => $post('/teamselfjob/get_team_manage', data) //分配跟进人（新增修改）
 export const auditRemuse = data => $post('/teamselfjob/audit_remuse', data) //设置面试结果
 export const entrantResult = data => $post('/teamselfjob/entrant_result', data) //设置入职结果
-export const checkPutresume = data => $post('/teamselfjob/get_putresume', data) //审核简历
+export const checkPutresume = data => $post('/teamselfjob/get_putresume', data)
 
-export const getJobinfo = data => $post('/teamselfjob/getJobinfo', data) //审核简历
+export const getJobinfo = data => $post('/teamselfjob/getJobinfo', data)
 
-export const recvjob = data => $post('/teamselfjob/recvjob', data) //审核简历
+export const recvjob = data => $post('/teamselfjob/recvjob', data)
+
 export const getobedistributedList = data => $post('/Teamselfjob/getobedistributed_list', data) //获取 待分配跟进人列表
 
 export const cancelrecvList = data => $post('/Teamselfjob/cancelrecv_list', data) //已分配 领取/跟进列表（取消分配用）

@@ -24,11 +24,6 @@
     .outline-color {
       color: #999999;
     }
-    .default-status {
-      color: #333333;
-      font-size: 12px;
-      margin: 0 10px;
-    }
   }
   .width120 {
     width: 120px;
@@ -186,10 +181,10 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column label="操作" align="center" min-width="220" fixed="right">
+          <el-table-column label="操作" align="center" width="240" fixed="right">
             <template slot-scope="scope">
-              <div v-if="viewType==1" class="x-flex-around">
-                <!-- <el-button @click="$router.push('jobDetail?id='+scope.row.id)" type="text" size="small">详情</el-button> -->
+              <div v-if="viewType==1">
+                <el-button @click="$router.push('jobDetail?id='+scope.row.id)" type="text" size="small" v-if="scope.row.uid!=uid&&userPosition!=1">详情</el-button>
                 <el-button @click="$router.push('/postJob?id='+scope.row.id)" type="text" size="small" v-if="(scope.row&&scope.row.uid==uid)||userPosition==1">编辑</el-button>
                 <el-button @click="delJob(scope.row)" type="text" size="small" v-if="(scope.row&&scope.row.uid==uid)||userPosition==1">删除</el-button>
                 <el-button @click="handleRecepit(1,scope.row)" type="text" v-if="scope.row.uid==uid||userPosition==1" size="small">分配跟进人</el-button>
@@ -215,7 +210,7 @@
 </template>
 
 <script>
-import { getJoblist, addPut, getobedistributedList, cancelrecvList, cancelrecv, setjobtouser, getTomember, deleteJob, changestatus, getTeamManage } from '@/api/internalInvoice'
+import { getJoblist, getobedistributedList, cancelrecvList, cancelTomember, cancelrecv, setjobtouser, getTomember, deleteJob, changestatus, getTeamManage } from '@/api/internalInvoice'
 import { moneyTypeList, rewardTypeList, payTypeList, weekList, recommendStatusList, timeStatusList, positionStatusList } from '@/base/base'
 import personalModal from '../common/personalModal'
 import havePersonModal from './havePersonModal'
@@ -323,12 +318,6 @@ export default {
     this.viewType = this.$route.query.view
     this.getList(this.formMember)
   },
-  watch: {
-    $route (to, from) {
-      this.viewType = to.query.view
-      this.getList(this.formMember)
-    }
-  },
   methods: {
     getList (params) {
       getJoblist(params).then(res => {
@@ -361,24 +350,6 @@ export default {
       this.formMember.page = val
       this.getList(this.formMember)
     },
-    // 推荐简历
-    putResume (val) {
-      let params = {
-        job_id: val.id,
-        resume_id: val.resume_id,
-        uid: this.uid
-      }
-      addPut(params).then(res => {
-        this.getList(this.formMember)
-      }).catch(error => {
-        if (!error.status.remind) {
-          this.$message.error('')
-        }
-        else {
-          this.$message.error(error.status.remind)
-        }
-      })
-    },
     getArray (arr) {
       let arr1 = []
       arr.forEach(item => {
@@ -401,7 +372,6 @@ export default {
       getobedistributedList(params).then(res => {
         let arr = res.data || []
         this.personalList = this.getArray(arr)
-        console.log(this.personalList)
         this.dialogTableVisible = true
       }).catch(error => {
         this.$message.error(error.status.remind)
@@ -427,16 +397,18 @@ export default {
     },
     // 上下架
     changeJobstatus (status, val) {
-      console.log(status)
       let params = {
         id: val.id,
         uid: this.uid,
         status
       }
       changestatus(params).then(res => {
-        console.log(res)
         if (res.data) {
+          this.$message.success('操作成功')
           this.getList(this.formMember)
+        }
+        else {
+          this.$message.error('操作失败')
         }
       }).catch(error => {
         this.$message.error(error.status.remind)
@@ -457,8 +429,14 @@ export default {
     // 取消分配
     cancleAssigned (params) {
       cancelrecv(params).then(res => {
-        this.personVisible = false
-        this.getList(this.formMember)
+        if (res.data) {
+          this.personVisible = false
+          this.$message.success('分配成功')
+          this.getList(this.formMember)
+        }
+        else {
+          this.$message.error('取消成功')
+        }
       }).catch(error => {
         this.$message.error(error.status.remind)
       })
@@ -494,6 +472,7 @@ export default {
         if (res.data) {
           this.dialogTableVisible = false
           this.getList(this.formMember)
+          this.$message.success('分配跟进人成功')
         }
         else {
           this.$message.error('分配跟进人失败')

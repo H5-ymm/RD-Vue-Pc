@@ -79,11 +79,11 @@
 </template>
 
 <script>
-import { applyInvoiceList, auditInvoiceInfo, delCompanyTeamApply, companyReceiptShelf } from '../../api/receipt'
+import { applyInvoiceList, auditInvoiceInfo, delCompanyTeamApply, companyReceiptShelf } from '@/api/receipt'
 import customerService from '../common/customerService'
 import viewJob from '../common/viewJob'
 import viewTeam from '../common/viewTeam'
-import { moneyTypeList, rewardTypeList, payTypeList, applyStatusList } from '../../base/base'
+import { moneyTypeList, rewardTypeList, applyStatusList } from '../../base/base'
 export default {
   components: {
     customerService,
@@ -207,7 +207,7 @@ export default {
     submitMember (val) {
       updateTeamUser(val).then(res => {
         this.dialogTableVisible = false
-        this.getList(this.params)
+        this.getList(this.formMember)
       })
     },
     handleSelectionChange (val) {

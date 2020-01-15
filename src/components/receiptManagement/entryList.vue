@@ -81,12 +81,12 @@
           <el-table-column label="操作" align="center" min-width="160">
             <template slot-scope="scope">
               <el-button @click="handleUser(1,scope.row)" type="text" size="small" v-if="scope.row.entry_status==1">入职结束</el-button>
-              <el-button v-if="scope.row.entry_status==2||scope.row.entry_status==3" @click="$router.push({path:'commonTable',query:{id:scope.row.id,view:4}})" type="text" size="small">
+              <el-button v-if="scope.row.entry_status==2||scope.row.entry_status==3" @click="$router.push({path:'/commonTable',query:{id:scope.row.id,view:4}})" type="text" size="small">
                 入职审核
                 <!-- <span class="resume-number">(+150)</span> -->
               </el-button>
-              <el-button @click="$router.push({path:'commonTable',query:{id:scope.row.id,view:6}})" type="text" v-if="scope.row.entry_status==1" size="small">面试结果</el-button>
-              <el-button @click="$router.push({path:'commonTable',query:{id:scope.row.id,view:2}})" type="text" size="small" v-if="scope.row.entry_status==4">在职名单</el-button>
+              <el-button @click="$router.push({path:'/commonTable',query:{id:scope.row.id,view:6}})" type="text" v-if="scope.row.entry_status==1" size="small">面试结果</el-button>
+              <el-button @click="$router.push({path:'/commonTable',query:{id:scope.row.id,view:2}})" type="text" size="small" v-if="scope.row.entry_status==4">在职名单</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -168,15 +168,6 @@ export default {
     this.getList(this.formMember)
     this.getData(params)
   },
-  watch:{
-    $route(to,from) {
-       if (from.query.id) {
-        this.jobId = from.query.id
-        this.formMember.jobId = this.$route.query.id
-        this.getList(this.formMember)
-      }
-    }
-  },
   methods: {
     getData (filed) {
       getConstant({ filed }).then(res => {
@@ -186,9 +177,8 @@ export default {
     },
     getList (params) {
       entryInvoiceList(params).then(res => {
-        const { data } = res
-        this.tableData = data.data
-        this.total = data.count
+        this.tableData = res.data.data
+        this.total = res.data.count
       }).catch(error => {
         this.$message.error(error.status.remind)
       })
@@ -199,7 +189,7 @@ export default {
     },
     changeDate (val) {
       this.formMember.begintime = val[0]
-      this.formMember.endTime =val?val[1]:''
+      this.formMember.endTime = val ? val[1] : ''
     },
     handleSizeChange (val) {
       this.formMember.limit = val

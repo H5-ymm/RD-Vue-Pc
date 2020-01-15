@@ -242,9 +242,8 @@ export default {
       this.reason = val.name
     },
     viewRecord (val) {
+      this.resumeId = val.id
       this.followUpRecordVisible = true
-      // this.trackList = val.trackList
-      this.resumeId = val.resume_id
     },
     submitRecord (val) {
       this.followUpRecordVisible = false
