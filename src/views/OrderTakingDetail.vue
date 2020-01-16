@@ -209,12 +209,12 @@
                       </p>
                       <p v-if="orderTakingDetail.reward_type==2||orderTakingDetail.reward_type==3">
                         <span>持续时长：</span>
-                        <span>{{orderTakingDetail.settlement_time?orderTakingDetail.settlement_time:'一'}}{{orderTakingDetail.reward_continuous==1?'天':orderTakingDetail.reward_continuous==2?'周': '个月'}}</span>
+                        <span>{{orderTakingDetail.reward_duration?orderTakingDetail.reward_duration:'一'}}{{orderTakingDetail.reward_money_type==1?'天':orderTakingDetail.reward_money_type==2?'周': '个月'}}</span>
                       </p>
                       <p class="team-info-card-item" v-if="orderTakingDetail.reward_type==4">
                         <span>需入职满：</span>
-                        <span v-if="orderTakingDetail.reward_needtime">{{orderTakingDetail.reward_needtime}}{{orderTakingDetail.reward_continuous==1?'天':orderTakingDetail.reward_continuous==2?'周': '月'}}</span>
-                        <span v-else>当{{orderTakingDetail.reward_continuous==1?'天':orderTakingDetail.reward_continuous==2?'周': '月'}}返利</span>
+                        <span v-if="orderTakingDetail.reward_needtime">{{orderTakingDetail.reward_needtime}}{{orderTakingDetail.reward_money_type==1?'天':orderTakingDetail.reward_money_type==2?'周': '月'}}</span>
+                        <span v-else>一天</span>
                       </p>
                     </div>
                     <div class="orderTaking-info">
@@ -230,7 +230,8 @@
                       </p>
                       <p v-if="orderTakingDetail.reward_type==2||orderTakingDetail.reward_type==3">
                         <span>需入职满：</span>
-                        <span>{{orderTakingDetail.reward_needtime?orderTakingDetail.reward_needtime:'一'}}{{orderTakingDetail.reward_continuous==1?'天':orderTakingDetail.reward_continuous==2?'周': '个月'}}</span>
+                        <span v-if="orderTakingDetail.reward_needtime">{{orderTakingDetail.reward_needtime?orderTakingDetail.reward_needtime:'一'}}{{orderTakingDetail.reward_continuous==1?'天':orderTakingDetail.reward_continuous==2?'周': '个月'}}</span>
+                        <span v-else>一天</span>
                       </p>
                     </div>
                   </div>
@@ -252,7 +253,7 @@
                         </ul>
                         <ul class="orderTaking-main-item">
                           <li v-if="item.money_type==1">月薪: {{item.money_min}} ~ {{item.money_max}}/人</li>
-                          <li v-else>{{getmoneyType(item.money_type)}}薪: {{item.money}}/人}}</li>
+                          <li v-else>{{getmoneyType(item.money_type)}}薪: {{item.money}}/人</li>
                           <li v-if="item.reward_type!=4">返利：{{item.reward_money}}/人/{{getmoneyType(item.reward_type)}}</li>
                           <li v-else>返利：{{item.reward_money}}/人</li>
                           <li v-if="item.reward_type==1">持续时间：{{item.reward_money_type==1?'长期返利':'持续返利'}}</li>

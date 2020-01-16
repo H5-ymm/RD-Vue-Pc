@@ -255,13 +255,15 @@ export default {
       }
       if (this.viewType == 1) {
         this.dialogTableVisible = false
-        this.getList(this.formMember)
+        // this.getList(this.formMember)
+        this.$router.push('/recommendJob?id=') + this.resumeId
         // receiveResume(params).then(res => {
         //   this.resumeId = ''
         //   this.getList(this.formMember)
         // }).catch(error => {
         //   this.$message.waring(error.status.remind)
         // })
+        //
       }
       else {
         reductionDelResume(params).then(res => {
@@ -320,15 +322,19 @@ export default {
         reason: val.reason
       }
       delResume(params).then(res => {
-        this.resumeId = ''
-        this.getList(this.formMember)
+        if (res.data) {
+          this.resumeId = ''
+          this.getList(this.formMember)
+        }
+        else {
+          this.$message.waring('操作失败')
+        }
       }).catch(error => {
         this.$message.waring(error.status.remind)
       })
     },
-    onSubmit (value) {
-      let params = Object.assign(this.formMember, value)
-      this.getList(params)
+    onSubmit () {
+      this.getList(this.formMember)
     },
     onReset () {
       this.formMember = {

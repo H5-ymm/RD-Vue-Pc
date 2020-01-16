@@ -47,6 +47,20 @@ export default {
       if (val) {
         document.getElementById('InputSearch').style.display = "none"
       }
+    },
+    emoji (val) {
+      if (!val) {
+        this.content = ''
+        this.conmentEmoji = ''
+        this.comment = ''
+      }
+    },
+    comment (val) {
+      if (!val) {
+        this.content = ''
+        this.conmentEmoji = ''
+        this.emoji = ''
+      }
     }
   },
   methods: {
@@ -85,10 +99,15 @@ export default {
       let content = !this.content ? this.comment : this.content
       this.$emit('submitComment', content)
       this.content = ''
+      this.conmentEmoji = ''
+      this.emoji = ''
+      this.comment = ''
     },
     cancleComment () {
       this.content = ''
+      this.conmentEmoji = ''
       this.emoji = ''
+      this.comment = ''
       this.$emit('cancleComment')
     }
   }

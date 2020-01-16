@@ -1,6 +1,6 @@
 <template>
   <div class="salary-rebate">
-    <el-form-item label="综合薪资" required>
+    <el-form-item label="综合薪资" prop="offermoney_type">
       <div>
         <el-select v-model="orderTakingForm.offermoney_type" class="width160" placeholder="请选择">
           <el-option :label="item.label" :value="item.value" v-show="index" v-for="(item,index) in moneyTypeList" :key="item.label"></el-option>

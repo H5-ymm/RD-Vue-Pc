@@ -7,11 +7,11 @@
       </section>
       <section class="member-col3 department-add-col">
         <el-form :model="formMember" :rules="rules" :inline="true" label-position="left" ref="formMember" class="demo-form-inline">
-          <el-form-item label="部门名称" required prop="depart_name">
+          <el-form-item label="部门名称" prop="depart_name">
             <el-input v-model="formMember.depart_name" placeholder="请输入部门名称"></el-input>
           </el-form-item>
-          <el-form-item label="部门经理" required prop="user_id">
-            <el-select v-model="formMember.user_id" placeholder="请选择部门经理">
+          <el-form-item label="部门经理" prop="user_id">
+            <el-select v-model="formMember.user_id" filterable placeholder="请选择部门经理">
               <el-option :label="item.user_name" :value="item.uid" v-for="(item,index) in userList" :key="index"></el-option>
             </el-select>
           </el-form-item>

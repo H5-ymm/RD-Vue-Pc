@@ -10,10 +10,10 @@
             </p>
             <div class="x-flex-between-start resume-card-row">
               <div class="resume-card-item">
-                <el-form-item label="岗位名称" required prop="job_name">
+                <el-form-item label="岗位名称" prop="job_name">
                   <el-input v-model="formMember.job_name" placeholder="请输入岗位名称" class="width406"></el-input>
                 </el-form-item>
-                <el-form-item label="招聘人数" required prop="number">
+                <el-form-item label="招聘人数" prop="number">
                   <el-input v-model="formMember.number" placeholder="请输入招聘人数" class="width406"></el-input>
                 </el-form-item>
                 <el-form-item label="团队logo">
@@ -25,11 +25,11 @@
                 </el-form-item>
               </div>
               <div class="resume-card-item">
-                <el-form-item label="用工企业名称" required prop="company_name">
+                <el-form-item label="用工企业名称" prop="company_name">
                   <el-input v-model="formMember.company_name" class="width406" placeholder="请输入用工企业名称"></el-input>
                 </el-form-item>
                 <el-form-item label="招工截止日期">
-                  <el-date-picker class="width406" format="yyyy-MM-dd" value-format="timestamp" v-model="formMember.offtime" type="date" placeholder="选择日期"></el-date-picker>
+                  <el-date-picker class="width406" format="yyyy-MM-dd" value-format="timestamp" v-model="offtime" type="date" placeholder="选择日期"></el-date-picker>
                 </el-form-item>
               </div>
             </div>
@@ -62,7 +62,7 @@
                   <!-- <el-input v-model="formMember.address" class="width406" placeholder="请输入工作地址"></el-input> -->
                 </el-form-item>
                 <el-form-item label="入职条件">
-                  <el-input v-model="formMember.entry_requirements" class="width406" placeholder="请输入期望岗位"></el-input>
+                  <el-input v-model="formMember.entry_requirements" class="width406" placeholder="请输入入职条件"></el-input>
                 </el-form-item>
                 <el-form-item label="工作内容">
                   <el-input v-model="formMember.job_description" type="textarea" class="width406" :autosize="{ maxRows: 3}" placeholder="请输入工作内容"></el-input>
@@ -142,7 +142,7 @@ export default {
     districtSelet,
     moneyType
   },
-  props: ['formJob', 'tabIndex'],
+  props: ['formJob'],
   data () {
     return {
       formMember: {
@@ -178,6 +178,9 @@ export default {
         ],
         number: [
           { required: true, message: '请输入招聘人数', trigger: 'blur' }
+        ],
+        offermoney_type: [
+          { required: true, message: '请选择薪资类型', trigger: 'change' }
         ]
       },
       edu_type: [],
@@ -196,7 +199,8 @@ export default {
         {
           label: '男女不限', value: 0
         }
-      ]
+      ],
+      offtime: ''
     }
   },
   watch: {
@@ -205,15 +209,6 @@ export default {
         for (let key in this.formMember) {
           this.formMember[key] = val[key]
         }
-      }
-    },
-    tabIndex (val) {
-      console.log(val)
-      if (val == 1) {
-        this.submitForm()
-      }
-      else {
-        this.$emit('submitForm', val)
       }
     }
   },
@@ -266,12 +261,7 @@ export default {
       this.formMember.cityid = val[1]
     },
     submit (val) {
-      console.log(val)
       this.formMember = Object.assign(this.formMember, val)
-    },
-    changeExpect (val) {
-      this.formMember.expect_provindeid = val[0]
-      this.formMember.expect_cityid = val[1]
     },
     handleClose () {
       this.$parent.dialogTableVisible = false
@@ -281,16 +271,23 @@ export default {
         if (valid) {
           if (this.formMember.offermoney_type
             && !this.formMember.offermoney) {
-            this.$emit('submitForm', 0)
             return this.$message.warning('请选择薪资')
           }
           if (this.formMember.age_max < this.formMember.age_min) {
             return this.$message.warning('最大年龄应该大于最小年龄')
           }
+          if (this.offtime) {
+            let offtime = this.offtime + ''
+            this.formMember.offtime = offtime.slice(0, 10)
+          }
+          if (!this.formMember.provinceid) {
+            this.formMember.provinceid = 0
+            this.formMember.cityid = 0
+          }
           this.$emit('submitForm', this.formMember)
         }
         else {
-          this.$emit('submitForm', { tabIndex: 1 })
+          console.log(1)
         }
       })
     }

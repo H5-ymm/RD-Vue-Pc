@@ -5,6 +5,9 @@
   display: flex;
   justify-content: space-between;
 }
+.home-purple-left {
+  color: #fff;
+}
 .home {
   .header-left{
     display: inline-block;
@@ -42,21 +45,21 @@
       </ul>
     </div>
     <div class="bg-purple-light x-flex-between">
-      <span class="home-purple-left" v-if="!userInfo">
+      <!-- <span class="home-purple-left" v-if="!userInfo">
         <i class="el-icon-user-solid"></i>
         <a class="welcome" href="login">登录</a>
         <a class="divider">|</a>
         <a class="welcome" href="register">注册</a>
-      </span>
-      <P class="home-purple-left" v-else>
+      </span> -->
+      <P class="home-purple-left">
         <el-dropdown @command="handleCommand">
           <div class="el-dropdown-link x-flex-center" style="margin-right:10px">
             <div class="x-flex-between">
-              <p v-if="userInfo.user_name">{{userInfo.user_name?userInfo.user_name:userInfo.mobile}}</p>
+              <p v-if="userInfo&&userInfo.user_name">{{userInfo.user_name?userInfo.user_name:userInfo.mobile}}</p>
               <p v-else>{{userName}}</p>
-              <img :src="getImgUrl(userInfo.head_img)" alt v-if="userInfo.head_img" class="head-icon" />
+              <img :src="getImgUrl(userInfo.head_img)" alt v-if="userInfo&&userInfo.head_img" class="head-icon" />
               <img src="../assets/img/headIcon.png" v-else class="head-icon">&nbsp;
-                <!-- <el-divider direction="vertical" v-if="departName"></el-divider>
+              <!-- <el-divider direction="vertical" v-if="departName"></el-divider>
                 <span v-if="departName">{{departName}}</span>     -->
             </div>
             <i class="el-icon-caret-bottom"></i>
@@ -72,6 +75,7 @@
 </template>
 <script>
 import { getImgUrl } from '@/util/util'
+import { mapState, mapActions, mapMutations } from 'vuex'
 export default {
   name: '',
   props: ['activeIndex'],
@@ -92,18 +96,16 @@ export default {
           url: 'Information'
         }
       ],
-      userInfo: null,
       userName: localStorage.getItem('userName')
     }
   },
   created () {
-    console.log(sessionStorage.getItem('userInfo'))
-    if (sessionStorage.getItem('userInfo')) {
-      this.userInfo = JSON.parse(sessionStorage.getItem('userInfo'))
-      console.log(this.userInfo)
-    }
+    this.getUserAll()
   },
   computed: {
+    ...mapState({
+      userInfo: state => state.userInfo
+    }),
     ommandList () {
       let arr = []
       if (localStorage.getItem('userType') == 2) {
@@ -122,12 +124,18 @@ export default {
   },
   methods: {
     getImgUrl,
+    ...mapMutations(['getUserInfo']),
     handleCommand (val) {
       this.$router.push(val)
       if (val == '/login') {
         localStorage.clear('')
         sessionStorage.clear('')
       }
+    },
+    getUserAll () {
+      this.$store.dispatch('getUserAllInfo').then((res) => {
+        this.$store.commit('getUserInfo', res.data)
+      })
     },
     switchNav (item, index) {
       this.$router.push(item.url)

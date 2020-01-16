@@ -12,6 +12,6 @@ export const delDepartment = data => $post('/team/delDepartment', data)
 export const adjustmentList = data => $post('/team/adjustmentList', data)
 
 export const departmentRoleList = data => $post('/team/departmentRoleList', data) // 获取团队部门和部门职称列表
-
+export const getDepartmentRoleList = data => $post('/team/departmentRoleList', data)
 
 

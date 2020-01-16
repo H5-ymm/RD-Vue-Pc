@@ -14,7 +14,7 @@
               <img src="../assets/img/headIcon.png" alt class="team-logo" v-else />
               <span>{{baseInfo&&baseInfo.team_name}}</span>
             </div>
-            <div class="x-flex-center" v-if="type==2||type==3">         
+            <div class="x-flex-center" v-if="type==2||type==3">
               <el-link :underline="false" href="home" class="home-link">首页</el-link>
               <img :src="getImgUrl(userInfo.head_img)" alt class="team-logo user-logo" v-if="userInfo&&userInfo.head_img" />
               <img src="../assets/img/headIcon.png" alt class="team-logo user-logo" v-else />
@@ -22,8 +22,8 @@
                 <span class="el-dropdown-link">
                   <span v-if="userInfo">{{userInfo.user_name?userInfo.user_name:userInfo.mobile}}</span>
                   <el-divider direction="vertical" v-if="departName"></el-divider>
-                  <span v-if="departName">{{departName}}</span>    
-                    <i class="el-icon-caret-bottom"></i>
+                  <span v-if="departName">{{departName}}</span>
+                  <i class="el-icon-caret-bottom"></i>
                 </span>
                 <el-dropdown-menu slot="dropdown">
                   <el-dropdown-item command="/accountSettings">账户信息</el-dropdown-item>
@@ -69,10 +69,11 @@ import homeAside from '@/components/Aside' //侧边栏
 import companyAside from '@/components/companyAside'
 import Breadcrumb from '@/components/breadcrumb/Breadcrumb'
 import { getTeamInfo } from '@/api/team'
-import { getUserInfo } from '@/api/user'
+// import { getUserInfo } from '@/api/user'
 import { getCompanyDetail } from '@/api/company'
 import { getImgUrl } from '@/util/util'
-import { mapState,mapActions,mapMutations} from 'vuex'
+import { logout } from '@/api/login'
+import { mapState, mapActions, mapMutations } from 'vuex'
 export default {
   name: 'team',
   data () {
@@ -82,8 +83,9 @@ export default {
       aside: '',
       height: '',
       baseInfo: {},
-      departName:localStorage.getItem('departName'),
-      uid: this.$store.state.uid,
+      userInfo: {},
+      uid: '',
+      departName: localStorage.getItem('departName'),
       transitionName: 'slide-left'//默认动画
     }
   },
@@ -96,41 +98,55 @@ export default {
     // type 1 企业
     // 2 团队
     this.type = localStorage.getItem('userType')
+    this.uid = localStorage.getItem('uid')
+    if (this.type == 1) {
+      this.aside = 'companyAside'
+      this.height = "88px"
+      if (this.uid) {
+        this.getCompanyInfo(this.uid)
+      }
+    }
+    else {
+      this.aside = 'homeAside'
+      this.height = "74px"
+      if (this.uid) {
+        this.getUserAll()
+        this.getInfo(this.uid)
+      }
+    }
     if (sessionStorage.getItem('menus')) {
       this.breadcrumb = JSON.parse(sessionStorage.getItem('menus'))
     }
-    console.log(this.userInfo)
-  },
-  computed:{
-    ...mapState({
-      userInfo: state => state.userInfo
-    })
+    this.getUserAll()
   },
   watch: {
-    type (val) {
-      if (val == 1) {
-        this.aside = 'companyAside'
-        this.height = "88px"
-        if (this.uid) {
-          this.getCompanyInfo(this.uid)
+    $route (to, from) {
+      if (to.query.userType) {
+        this.type = to.query.userType
+        if (this.type == 1) {
+          this.aside = 'companyAside'
+          this.height = "88px"
+          if (this.uid) {
+            this.getCompanyInfo(this.uid)
+          }
         }
-      }
-      else {
-        this.aside = 'homeAside'
-        this.height = "74px"
-        if (this.uid) {
-          this.getUserAll()
-          this.getInfo(this.uid)
+        else {
+          this.aside = 'homeAside'
+          this.height = "74px"
+          if (this.uid) {
+            this.getUserAll()
+            this.getInfo(this.uid)
+          }
         }
       }
     }
   },
   methods: {
-      ...mapMutations(['getUserInfo']),
-    getUserAll(){
-      this.$store.dispatch('getUserAllInfo').then((res) => { 
-        console.log(res.data)
+    getUserAll () {
+      this.$store.dispatch('getUserAllInfo').then((res) => {
         this.$store.commit('getUserInfo', res.data)
+        console.log(res.data)
+        this.userInfo = res.data
       })
     },
     getImgUrl,
@@ -157,9 +173,24 @@ export default {
     },
     handleCommand (val) {
       if (val == '/login') {
-        localStorage.clear('')
-        sessionStorage.clear()
-        this.$router.replace(val)
+        // let uid = this.$store.state.uid ? this.$store.state.uid : localStorage.getItem('uid')
+        this.$store.dispatch('logoutUser').then((res) => {
+          console.log(res)
+          this.$message.success('退出登录成功')
+          this.$router.replace(val)
+        })
+        // logout({ uid }).then(res => {
+        //   if (res.data) {
+        //     localStorage.clear('')
+        //     sessionStorage.clear()
+        //     // this.$store.commit('getUserInfo', {})
+        //     this.$message.success('退出登录成功')
+        //     this.$router.replace(val)
+        //   }
+        //   else {
+        //     this.$message.error('退出登录失败')
+        //   }
+        // })
       }
       else {
         this.$router.push(val)

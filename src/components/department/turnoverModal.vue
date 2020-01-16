@@ -80,8 +80,8 @@
   </el-dialog>
 </template>
 <script>
-import { adjustmentList, departmentRoleList } from '../../api/department'
-import { editTeamUserRole } from '../../api/team'
+import { adjustmentList, getDepartmentRoleList } from '@/api/department'
+import { editTeamUserRole } from '@/api/team'
 export default {
   props: ['dialogTableVisible', 'departId'],
   data () {
@@ -127,7 +127,7 @@ export default {
   methods: {
     getJobList () {
       let uid = localStorage.getItem('uid')
-      departmentRoleList({ uid }).then(res => {
+      getDepartmentRoleList({ uid }).then(res => {
         this.depList = res.data
       }).catch(error => {
         this.$message.error(error.status.remind)

@@ -33,7 +33,7 @@
   font-size:16px;
 }
 .box-card p:nth-of-type(2) {
-  font-size:34px;
+  font-size:32px;
   margin-top: 10px;
 }
 </style>
@@ -109,7 +109,7 @@ export default {
       this.formMember.page = val
       this.getList(this.formMember)
     },
-    refurbish(){
+    refurbish () {
       this.getList(this.formMember)
     },
     getList (params) {
@@ -170,7 +170,7 @@ export default {
       }
       else {
         this.userId = ''
-        this.teamInfo = {}
+        // this.teamInfo = {}
         this.visible = true
       }
     },

@@ -1,91 +1,3 @@
-<template>
-  <el-dialog width="400px" title :visible.sync="dialogTableVisible" class="member-dialog" :show-close="false">
-    <div class="member-row personal-row">
-      <img src="../../assets/img/member/cancel.png" alt class="cancel-icon" @click="handleClose" />
-      <section class="member-col1">
-        <p>{{title}}</p>
-      </section>
-      <section class="member-col3">
-        <div class="x-flex-between">
-          <el-input type="text" class="width210" v-model="name"></el-input>
-          <el-button type="primary" @click="query">查询</el-button>
-        </div>
-        <div class="personal-box">
-          <el-checkbox-group v-model="checkList" @change="changeCheck"> 
-            <el-checkbox :label="item"  :disabled="item.status==1" v-for="(item,index) in list" :key="index">{{item.user_name}}</el-checkbox>
-          </el-checkbox-group>
-        </div>
-      </section>
-    </div>
-    <div slot="footer" class="dialog-footer x-flex-between">
-      <span class="select-text">
-        已选择
-        <span class="select-num">{{checkList.length}}</span> 项
-      </span>
-      <el-button type="primary" @click="submit">确定</el-button>
-    </div>
-  </el-dialog>
-</template>
-<script>
-export default {
-  props: {
-    dialogTableVisible: { type: Boolean, default: false },
-    title: { type: String, default: '分配跟进人' },
-    personalList: { type: Array, default: [] },
-  },
-  data () {
-    return {
-      list: [],
-      checkList: [],
-      name: ''
-    }
-  },
-  created () {
-    this.list = this.personalList
-  },
-  watch: {
-    personalList (val) {
-     if(val&&val.length) {
-        this.list = val
-        let arr =  val.filter(item => {
-          if(item.status) {
-            return item
-          }
-        })
-       this.checkList = arr
-     }
-    }
-  },
-  methods: {
-    handleClose () {
-      this.$emit('handleClose')
-    },
-    changeCheck(val) {
-      console.log(val)
-    },
-    submit () {
-      console.log(this.checkList)
-      this.$emit('handleOk', this.checkList)
-      this.checkList = []
-    },
-    getList (name, arr) {
-      let newArr = arr.filter((item) => {
-        // 查找newArr中所有name包含c的数据，然后返回
-        console.log(item.user_name.indexOf(name))
-        if (item.user_name.indexOf(name)>=0) {
-          return item
-        }
-      })
-      return newArr
-    },
-    query () {
-      this.list = this.getList(this.name, this.list)
-      console.log(this.list)
-    }
-  }
-}
-</script>
-
 <style lang="scss">
 .member-dialog {
   box-shadow:0px 1px 43px 0px rgba(51,51,51,0.3);
@@ -155,4 +67,93 @@ export default {
   }
 }
 </style>
+
+
+<template>
+  <el-dialog width="400px" title :visible.sync="dialogTableVisible" class="member-dialog" :show-close="false">
+    <div class="member-row personal-row">
+      <img src="../../assets/img/member/cancel.png" alt class="cancel-icon" @click="handleClose" />
+      <section class="member-col1">
+        <p>{{title}}</p>
+      </section>
+      <section class="member-col3">
+        <div class="x-flex-between">
+          <el-input type="text" class="width210" v-model="name"></el-input>
+          <el-button type="primary" @click="query">查询</el-button>
+        </div>
+        <div class="personal-box">
+          <el-checkbox-group v-model="checkList" @change="changeCheck">
+            <el-checkbox :label="item" :disabled="item.status==1" v-for="(item,index) in list" :key="index">{{item.user_name}}</el-checkbox>
+          </el-checkbox-group>
+        </div>
+      </section>
+    </div>
+    <div slot="footer" class="dialog-footer x-flex-between">
+      <span class="select-text">
+        已选择
+        <span class="select-num">{{checkList.length}}</span> 项
+      </span>
+      <el-button type="primary" @click="submit">确定</el-button>
+    </div>
+  </el-dialog>
+</template>
+<script>
+export default {
+  props: {
+    dialogTableVisible: { type: Boolean, default: false },
+    title: { type: String, default: '分配跟进人' },
+    personalList: { type: Array, default: [] },
+  },
+  data () {
+    return {
+      list: [],
+      checkList: [],
+      name: ''
+    }
+  },
+  created () {
+    this.list = this.personalList
+  },
+  watch: {
+    personalList (val) {
+      if (val && val.length) {
+        this.list = val
+        let arr = val.filter(item => {
+          if (item.status) {
+            return item
+          }
+        })
+        this.checkList = arr
+      }
+    }
+  },
+  methods: {
+    handleClose () {
+      this.$emit('handleClose')
+    },
+    changeCheck (val) {
+      console.log(val)
+    },
+    submit () {
+      console.log(this.checkList)
+      this.$emit('handleOk', this.checkList)
+      this.checkList = []
+    },
+    getList (name, arr) {
+      let newArr = arr.filter((item) => {
+        // 查找newArr中所有name包含c的数据，然后返回
+        console.log(item.user_name.indexOf(name))
+        if (item.user_name.indexOf(name) >= 0) {
+          return item
+        }
+      })
+      return newArr
+    },
+    query () {
+      this.list = this.getList(this.name, this.list)
+      console.log(this.list)
+    }
+  }
+}
+</script>
 

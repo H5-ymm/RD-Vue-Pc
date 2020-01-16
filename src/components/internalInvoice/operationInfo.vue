@@ -81,21 +81,7 @@ export default {
       meeting_time: '',
       personalList: [],
       list: [],
-      index:2
-    }
-  },
-  watch: {
-    tabIndex (val) {
-      this.index = val
-      if (val==0){
-        this.$emit('submitForm', 0)
-      }
-      else if(val==1){
-        this.$emit('submitForm', 1)
-      }
-      else {
-        this.$emit('submitForm', 2)
-      }
+      index: 2
     }
   },
   created () {
@@ -122,10 +108,12 @@ export default {
       this.dialogTableVisible = false
     },
     submitForm () {
+      if (this.formMember.is_assign == 1 && !this.list.length) {
+        return this.$message.warning('请选择指定人')
+      }
       if (this.meeting_time) {
         let meetingTime = this.meeting_time + ''
         this.formMember.meeting_time = meetingTime.slice(0, 10)
-        console.log(this.formMember)
       }
       this.$emit('submitForm', this.formMember)
     }

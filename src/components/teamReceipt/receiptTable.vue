@@ -36,7 +36,7 @@
           <el-table-column label="职位名称" prop="job_name" align="center" width="150"></el-table-column>
           <el-table-column label="企业名称" align="center" prop="com_name" width="150"></el-table-column>
           <el-table-column label="需求人数" prop="required_number" align="center" width="100"></el-table-column>
-          <el-table-column label="岗位薪资" prop="money" align="center" width="120">
+          <el-table-column label="岗位薪资" prop="money" align="center" width="150">
             <template slot-scope="scope">
               <div>
                 {{scope.row.money}}元/{{scope.row.money==1?'月':scope.row.money?'日':'时'}}
@@ -72,7 +72,7 @@
               <span class="status status2" v-if="!scope.row.apportion_status&&!scope.row.apportion_action">未申请</span>
               <span v-if="!scope.row.apportion_action&&scope.row.apportion_status" class="status" :class="`status${scope.row.apportion_status}`">{{scope.row.apportion_status==1?'已同意':'已拒绝'}}</span>
               <span class="status status3" v-if="!scope.row.apportion_status&&scope.row.apportion_action==2">已申请</span>
-              <span class="status status2" v-if="scope.row.apportion_status==3&&!scope.row.apportion_action">已取消申请</span>
+              <span class="status status2" v-if="scope.row.apportion_status==3">已取消申请</span>
               <span class="status status4" v-if="scope.row.apportion_action==1&&scope.row.apportion_status==1">分配接单</span>
             </template>
           </el-table-column>
@@ -95,7 +95,7 @@
               <div v-if="userPosition==2">
                 <el-button @click="handleApply(scope.row)" type="text" v-if="!scope.row.apportion_status&&!scope.row.apportion_action" size="small">申请推荐</el-button>
                 <el-button @click="handleRecepit(1,scope.row)" type="text" size="small" v-if="scope.row.apportion_action>=1&&(scope.row.apportion_status==1)">分配组员</el-button>
-                <el-button @click="handleRecepitManagers(0,scope.row)" type="text" size="small" v-if="scope.row.apportion_status==2">重新申请</el-button>
+                <el-button @click="handleRecepitManagers(0,scope.row)" type="text" size="small" v-if="scope.row.apportion_status==3">重新申请</el-button>
                 <el-button @click="handleRecepitManagers(3,scope.row)" type="text" size="small" v-if="!scope.row.apportion_status&&scope.row.apportion_action==2">取消申请</el-button>
                 <el-button @click="viewJob(scope.row)" type="text" size="small">查看职位</el-button>
                 <!-- <el-button @click="dialogVisible=true" type="text" size="small">删除职位</el-button> -->
@@ -103,8 +103,8 @@
               <div v-if="userPosition==1">
                 <el-button @click="handleRecepit(1,scope.row)" v-if="!scope.row.dsh" type="text" size="small">分配接单</el-button>
                 <el-button @click="viewJob(scope.row)" type="text" v-if="!scope.row.dsh" size="small">查看职位</el-button>
-                <el-button @click="handleEdit(1,scope.row)" type="text" v-if="scope.row.dsh" size="small">同意</el-button>
-                <el-button @click="handleEdit(2,scope.row)" type="text" v-if="scope.row.dsh" size="small">拒绝</el-button>
+                <el-button @click="handleEdit(1,scope.row)" type="text" v-if="scope.row.dsh" size="small">审核申请</el-button>
+                <el-button @click="handleEdit(2,scope.row)" type="text" v-if="scope.row.dsh" size="small">拒绝申请</el-button>
               </div>
             </template>
           </el-table-column>
@@ -120,7 +120,7 @@
 </template>
 
 <script>
-import { getcurapply, apportionJob, auditRecv, getpartMember, curapportionList, addApportion, addTomember, changeApportion, getTeamManage, tomemberlist } from '@/api/teamReceipt'
+import { getcurapply, apportionJob, auditRecv, getpartMember, cancelTomember, curapportionList, addApportion, addTomember, changeApportion, getTeamManage, tomemberlist } from '@/api/teamReceipt'
 import { moneyTypeList, rewardTypeList, payTypeList, entryStatusList, applyStatusList1 } from '@/base/base'
 import viewJob from '../common/viewJob'
 import modal from '../common/modal'
@@ -196,9 +196,9 @@ export default {
   methods: {
     getList (params) {
       getcurapply(params).then(res => {
-        const { data } = res
-        this.tableData = data.data
-        this.total = data.count
+        console.log(res.data)
+        this.tableData = res.data.data
+        this.total = res.data.count
       })
     },
     viewJob (val) {
@@ -267,10 +267,13 @@ export default {
         status: status
       }
       changeApportion(params).then(res => {
-        this.hasPersonList = res.data || []
-        this.personVisible = true
-      }).catch(error => {
-        this.$message.error(error.status.remind)
+        if (res.data) {
+          this.$message.success('操作成功')
+          this.getList(this.formMember)
+        }
+        else {
+          this.$message.error('操作失败')
+        }
       })
     },
     // 经理获取组员
@@ -329,11 +332,25 @@ export default {
         job_id: val.job_id,
         uids: val.dsh_uid
       }
-      auditRecv(params).then(res => {
-        this.getList(this.formMember)
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+      if (this.userPosition == 1) {
+        auditRecv(params).then(res => {
+          this.getList(this.formMember)
+        }).catch(error => {
+          this.$message.error(error.status.remind)
+        })
+      }
+      else {
+        cancelTomember(params).then(res => {
+          if (res.data) {
+            this.$message.success('操作成功')
+            this.getList(this.formMember)
+            this.dialogTableVisible = false
+          }
+          else {
+            this.$message.error('操作失败')
+          }
+        })
+      }
     },
     handleApply (val) {
       let params = {

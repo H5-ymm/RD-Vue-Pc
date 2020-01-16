@@ -45,7 +45,7 @@
         <p class="edit-card-item-content" v-html="contentunescape"></p>
         <p class="edit-card-comment x-flex-between text-light">
           <span>{{commentInfo.addtime?$moment.unix(commentInfo.addtime).format('YYYY-MM-DD HH:mm'):'--'}}</span>
-          <span class="el-icon-chat-dot-square" @click="reply">&nbsp;评论</span>
+          <span class="el-icon-chat-dot-square" @click="reply(commentInfo)">&nbsp;评论</span>
         </p>
         <commentInput :createdName="commentInfo.user_name" @submitComment="submitComment" :isShow="isShow" @cancleComment="cancleComment"></commentInput>
       </li>
@@ -61,7 +61,7 @@
       </li>
       <!-- 评论 -->
       <div class="reply-card">
-        <ReplyCard :showComment="type==2" :commentList="commentList" :username="commentInfo.user_name" @submit="submitChildComment" @delelteReply="delelteReply" @deleteComment="deleteReplyfirst" @cancelComment="isShow=false"></ReplyCard>
+        <ReplyCard :showComment="type==2" :commentList="commentList" :commType="commType" :username="commentInfo.user_name" @submit="submitChildComment" @delelteReply="delelteReply" @deleteComment="deleteReplyfirst" @cancelComment="isShow=false"></ReplyCard>
       </div>
     </ul>
   </div>
@@ -100,7 +100,8 @@ export default {
       contentunescape: '',
       ishtmlContent: false,
       htmlContent: '',
-      userPosition: localStorage.getItem('userPosition')
+      userPosition: localStorage.getItem('userPosition'),
+      commType: 1
     }
   },
   computed: {
@@ -112,6 +113,7 @@ export default {
   },
   created () {
     this.type = this.cardType
+    this.contentunescape = ''
   },
   watch: {
     cardType (val) {
@@ -120,6 +122,7 @@ export default {
         this.contenteditable = true
       } else {
         this.contenteditable = false
+        this.contentunescape = ''
       }
     },
     commentInfo (val) {
@@ -136,6 +139,7 @@ export default {
         }
       }
       else {
+        this.contentunescape = ''
         this.commentList = []
         this.comTitle = '请输入标题'
       }
@@ -178,7 +182,8 @@ export default {
         this.getCommentList(params)
       }
     },
-    reply () {
+    reply (val) {
+      console.log(val)
       this.isShow = !this.isShow
     },
     changeInput (range) {
@@ -273,6 +278,7 @@ export default {
     },
     // 提交评论
     submitComment (val) {
+      console.log(val)
       let params = {
         uid: localStorage.getItem('uid'),
         type: 1,
@@ -282,12 +288,14 @@ export default {
         comment_id: 0
       }
       this.saveComment(params)
+      this.contentunescape = ''
     },
     saveComment (params) {
       addReply(params).then(res => {
         if (res.data) {
           this.getCommentList(this.params)
           this.isShow = false
+          this.$message.success('评论成功')
         }
         else {
           this.$message.error('评论失败')

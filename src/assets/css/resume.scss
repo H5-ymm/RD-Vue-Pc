@@ -97,6 +97,11 @@
         background: #999999;
       }   
     }
+    &.status1{
+      &::before{
+        background: #71D875;
+      }   
+    }
     &.status2{
       &::before{
         background:  #FF0000;

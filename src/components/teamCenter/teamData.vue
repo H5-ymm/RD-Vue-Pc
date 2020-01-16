@@ -45,7 +45,7 @@
         </el-form>
         <teamCard @select="select" :teamCenterInfo="teamCenterInfo"></teamCard>
         <orderQuery @selectQuery="selectQuery" :timeList="timeList"></orderQuery>
-        <teamEchart :activeIndex="activeIndex" :percentList="percentList" :list="list" :legendIndex="legendIndex"></teamEchart>
+        <teamEchart :activeIndex="activeIndex" :eachartData="eachartData" :percentList="percentList" :list="list" :legendIndex="legendIndex"></teamEchart>
       </div>
     </teamPanel>
     <el-row :gutter="20">
@@ -147,8 +147,8 @@ export default {
       legendIndex: 1,
       limit: 10,
       teamCenterInfo: {},
-      percentList: null,
-      list: {},
+      percentList: [],
+      list: [],
       personList: [],
       tableData: [],
       tableTeamData: [],
@@ -156,6 +156,8 @@ export default {
       userName: '',
       depId: '',
       userPosition: sessionStorage.getItem('userPosition'), // 1 总经理，2经理，3 成员
+      eachartData: [],
+      allData: {}
     }
   },
   created () {
@@ -166,13 +168,15 @@ export default {
       return false
     }
     else {
-      this.getList(this.params)
-      this.getCompareInfo(this.paramsInfo)
-      this.getData(this.paramsEchart)
-      this.getTeamList(this.paramsLog)
-      this.getLogList(this.paramsLog)
-      if (this.userPosition == 1) {
-        this.getDep()
+      if (localStorage.getItem('userType') == 2) {
+        this.getData(this.paramsEchart)
+        this.getList(this.params)
+        this.getCompareInfo(this.paramsInfo)
+        this.getTeamList(this.paramsLog)
+        this.getLogList(this.paramsLog)
+        if (this.userPosition == 1) {
+          this.getDep()
+        }
       }
     }
   },
@@ -190,9 +194,7 @@ export default {
       }
       this.getPerson(params)
       var restaurants = this.personList;
-      console.log(restaurants)
       var results = queryString ? restaurants.filter(this.createStateFilter(queryString)) : restaurants;
-      console.log(results)
       clearTimeout(this.timeout);
       this.timeout = setTimeout(() => {
         cb(results);
@@ -204,37 +206,91 @@ export default {
       };
     },
     handleSelect (item) {
-      console.log(item);
     },
     changeDep (val) {
-      console.log(val)
       this.depId = val
     },
     getPerson (params) {
       getmemberList(params).then(res => {
         this.personList = res.data || []
-        console.log(this.personList)
       }).catch(error => {
-        console.log(error)
         this.$message.error(error.status.remind)
       })
+    },
+    getKey (index) {
+      let label = ''
+      if (index == 1) {
+        label = 'total'
+      }
+      else if (index == 2) {
+        label = 'put'
+      }
+      else if (index == 3) {
+        label = 'view'
+      }
+      else {
+        label = 'entry'
+      }
+      return label
     },
     getData (params, last) {
       if (last) {
         params.last = last
       }
       getnumLeader(params).then(res => {
-        console.log(last)
+        this.allData = res.data
         if (last) {
-          this.list = res.data
+          let key = this.getKey(this.activeIndex)
+          this.list = this.getArray(res.data[key])
+          console.log(this.list)
+          // this.eachartData = this.getNewList(res.data)
         }
         else {
-          this.percentList = res.data
+          // this.percentList = this.getArray(res.data[key])
+          this.eachartData = this.getNewList(res.data)
         }
-
       }).catch(error => {
         this.$message.error(error.status.remind)
       })
+    },
+    getArray (obj) {
+      let arr = []
+      for (let i in obj) {
+        arr.push(obj[i])
+      }
+      console.log(arr)
+      return arr
+    },
+    getXarr (obj) {
+      let arr = []
+      for (let i in obj) {
+        if (i) {
+          arr.push(i)
+        }
+        else {
+          return
+        }
+      }
+      return arr
+    },
+    getNewArr (obj) {
+      for (let key in obj) {
+        arr[key] = this.getArray(val[obj[key]]).splice(0)
+      }
+      return arr
+    },
+    getNewList (val) {
+      let arr = []
+      let obj = {
+        0: 'total',
+        1: 'put',
+        2: 'view',
+        3: 'entry'
+      }
+      for (let key in obj) {
+        arr[key] = this.getArray(val[obj[key]]).splice(0)
+      }
+      return arr
     },
     getDep () {
       let uid = localStorage.getItem('uid')

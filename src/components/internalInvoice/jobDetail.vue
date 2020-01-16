@@ -208,7 +208,31 @@
                 </div>
                 <div class="x-flex-start" v-if="formMember.type==1">
                   <p class="resume-col1">返利模式</p>
-                  <p>{{formMember.reward_money}}</p>
+                  <p v-if="formMember.reward_type==1">
+                    <span>{{formMember.reward_money}}元/人/{{rewardType}}</span>
+                    -
+                    <span>次月{{formMember.settlement_time}}号结算</span>
+                    -
+                    <span v-if="formMember.reward_money_type==1">长期返利</span>
+                    <span v-if="formMember.reward_money_type==2&&formMember.duration_time">持续返利{{jobInfo.duration_time}}个月</span>
+                    <span v-if="formMember.reward_money_type==2&&!formMember.duration_time">一{{jobInfo.reward_money_type==1?'天':jobInfo.reward_money_type==2?'周': '个月'}}</span>
+                  </p>
+                  <p v-if="formMember.reward_type!=1&&formMember.reward_type!=4">
+                    <span>{{formMember.reward_money}}元/人/{{rewardType}}</span>
+                    -
+                    <span v-if="formMember.reward_money_type!=1">{{formMember.settlement_type==1?'本':'次'}}{{rewaryMoneType}}{{formMember.settlement_time?formMember.settlement_time:'第一天'}}结算</span>
+                    <span v-else>{{formMember.settlement_type==1?'当日':'次日'}}结算</span>
+                    -
+                    <span v-if="formMember.duration_time">{{formMember.duration_time}}{{rewaryMoneType}}</span>
+                    <span v-else>一{{rewaryMoneType}}</span>
+                    <span v-if="formMember.reward_needtime">需入职满 {{formMember.reward_needtime}}{{rewaryMoneType}}</span>
+                    <span v-else>需入职满 一天</span></span>
+                  </p>
+                  <p v-if="formMember.reward_type==4">
+                    <span>{{formMember.reward_money}}元/人/一次性</span>
+                    -
+                    <span v-if="formMember.reward_money_type==2&&!formMember.duration_time">需入职满 {{formMember.reward_needtime}}</span>
+                  </p>
                 </div>
               </div>
             </div>
@@ -297,6 +321,32 @@ export default {
     },
     otherInfoStatus () {
       return !this.formMember.sex && !this.formMember.age_min && !this.formMember.five_risks && !this.formMember.reserve_fund && !this.formMember.com_introduction
+    },
+    rewardType () {
+      let text
+      if (this.formMember.reward_type == 1) {
+        text = '月'
+      }
+      if (this.formMember.reward_type == 1) {
+        text = '日'
+      }
+      if (this.formMember.reward_type == 1) {
+        text = '时'
+      }
+      return text
+    },
+    rewaryMoneType () {
+      let text
+      if (this.formMember.reward_money_type == 1) {
+        text = '天'
+      }
+      if (this.formMember.reward_money_type == 1) {
+        text = '周'
+      }
+      if (this.formMember.reward_money_type == 1) {
+        text = '个月'
+      }
+      return text
     }
   },
   methods: {

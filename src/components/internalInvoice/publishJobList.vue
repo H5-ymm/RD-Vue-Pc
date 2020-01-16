@@ -111,7 +111,7 @@
       </el-form>
       <div class="member-table">
         <div class="table-query">
-          <el-button @click="putJob" type="primary">发布岗位</el-button>
+          <el-button @click="putJob" v-if="userPosition!=3" type="primary">发布岗位</el-button>
         </div>
         <el-table border :data="tableData" ref="multipleTable" style="width: 100%">
           <el-table-column label="企业名称" prop="company_name" align="center" width="150"></el-table-column>
@@ -122,9 +122,10 @@
             </template>
           </el-table-column>
           <el-table-column label="工作地址" prop="address" align="center" width="110"></el-table-column>
-          <el-table-column label="员工薪资" align="center" width="110">
+          <el-table-column label="员工薪资" align="center" width="150">
             <template slot-scope="props">
-              <span>{{props.row.offermoney}}元/{{props.row.offermoney_type==1?'月':props.row.offermoney_type==2?'日':'时'}}</span>
+              <span v-if="props.row.offermoney_type==1">{{props.row.offermoney}}元/{{props.row.offermoney_type==1?'月':props.row.offermoney_type==2?'日':'时'}}</span>
+              <span v-else>{{props.row.offermoney}}元/{{props.row.offermoney_type==1?'月':props.row.offermoney_type==2?'日':'时'}}</span>
             </template>
           </el-table-column>
           <el-table-column label="招聘类型" align="center" width="110">
@@ -137,7 +138,7 @@
               <span>{{props.row.offermoney_type | moneyType}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="招聘人数" prop="put_num" align="center" width="110"></el-table-column>
+          <el-table-column label="招聘人数" prop="number" align="center" width="110"></el-table-column>
           <el-table-column label="报名人数" prop="view_dcl" align="center" width="110">
             <template slot-scope="props">
               <span>{{props.row.view_dcl}}</span>
@@ -153,7 +154,7 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column label="面试情况" prop="depart_name" align="center" width="200">
+          <el-table-column label="面试情况" prop="depart_name" align="center" width="220">
             <template slot-scope="props">
               <div>
                 <span class="el-icon-circle-check success-color">&nbsp;{{props.row.view_yes}}</span>
@@ -176,7 +177,8 @@
           </el-table-column>
           <el-table-column label="已领取人" align="center" width="180" v-if="viewType==1">
             <template slot-scope="scope">
-              <div class="text-line" @click="handleRecepit(2,scope.row)" v-if="(scope.row&&scope.row.uid==uid)||userPosition==3">
+              <!-- v-if="scope.row.uid==uid||userPosition==3" -->
+              <div class="text-line" @click="handleRecepit(2,scope.row)">
                 <el-button type="text" size="small">{{scope.row.tolist}}</el-button>
               </div>
             </template>
@@ -187,7 +189,7 @@
                 <el-button @click="$router.push('jobDetail?id='+scope.row.id)" type="text" size="small" v-if="scope.row.uid!=uid&&userPosition!=1">详情</el-button>
                 <el-button @click="$router.push('/postJob?id='+scope.row.id)" type="text" size="small" v-if="(scope.row&&scope.row.uid==uid)||userPosition==1">编辑</el-button>
                 <el-button @click="delJob(scope.row)" type="text" size="small" v-if="(scope.row&&scope.row.uid==uid)||userPosition==1">删除</el-button>
-                <el-button @click="handleRecepit(1,scope.row)" type="text" v-if="scope.row.uid==uid||userPosition==1" size="small">分配跟进人</el-button>
+                <el-button @click="handleRecepit(1,scope.row)" type="text" v-if="scope.row.uid==uid||userPosition!=3" size="small">分配跟进人</el-button>
                 <el-button @click="changeJobstatus(0,scope.row)" type="text" size="small" v-if="((scope.row&&scope.row.uid==uid)||userPosition==1)&&scope.row.is_up==1">下架</el-button>
                 <el-button @click="changeJobstatus(1,scope.row)" type="text" size="small" v-if="((scope.row&&scope.row.uid==uid)||userPosition==1)&&!scope.row.is_up">上架</el-button>
               </div>
@@ -318,6 +320,12 @@ export default {
     this.viewType = this.$route.query.view
     this.getList(this.formMember)
   },
+  watch: {
+    $route (to, from) {
+      this.viewType = to.query.view
+      this.getList(this.formMember)
+    }
+  },
   methods: {
     getList (params) {
       getJoblist(params).then(res => {
@@ -369,13 +377,25 @@ export default {
         job_id: this.jobId,
         uid: this.uid
       }
-      getobedistributedList(params).then(res => {
-        let arr = res.data || []
-        this.personalList = this.getArray(arr)
-        this.dialogTableVisible = true
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+      if (this.userPosition == 1) {
+        getTeamManage(params).then(res => {
+          let arr = res.data || []
+          this.personalList = this.getArray(arr)
+          this.dialogTableVisible = true
+        }).catch(error => {
+          this.$message.error(error.status.remind)
+        })
+      }
+      else {
+        getobedistributedList(params).then(res => {
+          let arr = res.data || []
+          this.personalList = this.getArray(arr)
+          this.dialogTableVisible = true
+        }).catch(error => {
+          this.$message.error(error.status.remind)
+        })
+      }
+
     },
     // 删除
     delJob (val) {
@@ -423,7 +443,6 @@ export default {
       }
       else {
         this.getCancelrecvList()
-
       }
     },
     // 取消分配
@@ -431,11 +450,11 @@ export default {
       cancelrecv(params).then(res => {
         if (res.data) {
           this.personVisible = false
-          this.$message.success('分配成功')
+          this.$message.success('取消成功')
           this.getList(this.formMember)
         }
         else {
-          this.$message.error('取消成功')
+          this.$message.error('取消失败')
         }
       }).catch(error => {
         this.$message.error(error.status.remind)
@@ -450,7 +469,7 @@ export default {
       cancelrecvList(params).then(res => {
         let arr = res.data || []
         this.personVisible = true
-        this.hasPersonList = this.getHasList(arr)
+        this.hasPersonList = this.getHasList1(arr)
       })
     },
     getHasList (arr) {
@@ -460,6 +479,19 @@ export default {
         let obj = {
           user_name: item.user_name,
           touid: item.uid,
+          ctime: item.ctime
+        }
+        arr1.push(obj)
+      })
+      return arr1
+    },
+    getHasList1 (arr) {
+      let arr1 = []
+      arr.forEach(item => {
+        console.log(item)
+        let obj = {
+          user_name: item.user_name,
+          touid: item.id,
           ctime: item.ctime
         }
         arr1.push(obj)

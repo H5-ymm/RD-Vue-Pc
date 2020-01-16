@@ -83,6 +83,7 @@ import { getConstant } from '@/api/dictionary'
 import districtSelet from '../districtSelet'
 import { addCompanyInfo } from '@/api/company'
 import { uploadFile } from '@/api/upload'
+import { getCompanyDetail } from '@/api/company'
 export default {
   components: {
     districtSelet
@@ -113,20 +114,28 @@ export default {
       comTypeList: [],
       jobList: {},
       userType: localStorage.getItem('userType'),
-      address: []
+      address: [],
+      compnayInfo: {}
     };
   },
   created () {
-    let compnayInfo = JSON.parse(sessionStorage.getItem('baseInfo'))
-    for (let key in this.companyForm) {
-      this.companyForm[key] = compnayInfo[key]
-    }
-    this.companyForm.companyName = compnayInfo.com_name
-    this.address = [compnayInfo.provinceid, compnayInfo.cityid, compnayInfo.three_cityid]
+    let uid = localStorage.getItem('uid')
+    this.getCompanyInfo(uid)
     let params = 'com_type,com_scale,job_array'
     this.getList(params)
+
   },
   methods: {
+    getCompanyInfo (uid) {
+      getCompanyDetail({ uid }).then(res => {
+        this.compnayInfo = res.data
+        for (let key in this.companyForm) {
+          this.companyForm[key] = this.compnayInfo[key]
+        }
+        this.companyForm.companyName = this.compnayInfo.com_name
+        this.address = [this.compnayInfo.provinceid, this.compnayInfo.cityid, this.compnayInfo.three_cityid]
+      })
+    },
     getList (filed) {
       getConstant({ filed }).then(res => {
         const { com_scale, com_type, job_array } = res.data

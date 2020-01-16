@@ -69,7 +69,7 @@
     </ul>
     <div>
       <keep-alive>
-        <component :is="comName" @submitForm="submitForm" :tabIndex="tabIndex" :formJob="formMember"></component>
+        <component :is="comName" @submitForm="submitForm" :formJob="formMember"></component>
       </keep-alive>
     </div>
 
@@ -150,13 +150,21 @@ export default {
   methods: {
     switchTab (index) {
       this.tabIndex = index
+      if (index == 0) {
+        this.comName = 'baseInfo'
+      }
+      else if (index == 1) {
+        this.comName = 'rewardRule'
+      }
+      else {
+        this.comName = 'operationInfo'
+      }
     },
     isCheck (obj) {
       let flag = false
       for (let key in obj) {
         if (obj[key] == '') {
           flag = false
-          break;
         }
         else {
           flag = true
@@ -181,10 +189,9 @@ export default {
         return false
       }
       else {
-        console.log(info)
         for (let key in info) {
           if (info.reward_type == 1) {
-            if (info[key] != '' && key != 'reward_needtime' && key != 'duration_time') {
+            if (info[key] != '' && key != 'reward_needtime' && key != 'duration_time' && key != 'type') {
               flag = true
               break;
             }
@@ -193,9 +200,8 @@ export default {
             }
           }
           else {
-            if (info[key] != '') {
+            if (info[key] != '' && key != 'type') {
               flag = true
-              break;
             }
             else {
               flag = false
@@ -203,52 +209,28 @@ export default {
           }
         }
       }
-      console.log(flag)
       return flag
     },
     submitForm (val) {
-      let index = 0
-      if (typeof val == 'number') {
-        if (val == 2) {
-          index = val - 1
-        }
-        else {
-          index = val
-        }
-        this.switchTab(index)
+      console.log(val)
+      console.log(this.tabIndex)
+      if (this.tabIndex < 2) {
+        this.tabIndex = this.tabIndex + 1
       }
-      else {
-        if (val && val.type == 2) {
-          index = 2
-          this.tabIndex = 2
-        }
-        else {
-          index = this.tabIndex
-        }
-      }
-      if (index == 0) {
+      if (this.tabIndex == 0) {
         this.comName = 'baseInfo'
         this.baseInfo = val
-        if (!this.isCheck(this.baseInfo)) {
-          this.tabIndex = 1
-          this.comName = 'rewardRule'
-        }
       }
-      else if (index == 1) {
+      else if (this.tabIndex == 1) {
         this.comName = 'rewardRule'
         this.rewardInfo = val
       }
       else {
         this.otherInfo = val
-        this.comName = 'operationInfo'
+        // this.comName = 'operationInfo'
       }
-      if (val.tabIndex && this.tabIndex == 1) {
-        this.tabIndex = 0
-        this.comName = 'baseInfo'
-      }
-      let isSave = val.job_type
       this.formInfo = Object.assign(this.formInfo, val)
-      if (this.comName == 'operationInfo' && isSave != undefined) {
+      if (this.comName == 'operationInfo') {
         addjob(this.formInfo).then(res => {
           if (res.data) {
             this.$message.success('发布成功')

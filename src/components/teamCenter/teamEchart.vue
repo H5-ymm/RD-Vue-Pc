@@ -6,7 +6,7 @@
 <script>
 import $echart from 'echarts'
 export default {
-  props: ['activeIndex', 'legendIndex', 'percentList', 'list'],
+  props: ['activeIndex', 'legendIndex', 'list', 'percentList', 'eachartData', 'allData'],
   data () {
     return {
       axais: {
@@ -89,19 +89,19 @@ export default {
       this.index = val
       this.getLegenData(this.legendIndex)
       this.getData(val)
+      // this.getList()
     },
     legendIndex (val) {
       this.getLegenData(val)
       this.getData(this.activeIndex)
     },
-    percentList (val) {
-      if (val) {
+    eachartData (val) {
+      if (val && val.length) {
         this.arrList = val
-        this.getList(this.legendIndex)
         this.getLegenData(this.legendIndex)
         this.getData(this.activeIndex)
       } else {
-        this.arrList = null
+        this.arrList = []
       }
     }
   },
@@ -115,8 +115,8 @@ export default {
       else if (val == 2) {
         this.legendData = ['本月', '上个月']
         let key = this.getKey(val)
-        if (this.arrList && this.arrList.total && this.list) {
-          this.xData = this.getXarr(this.arrList[key])
+        if (this.allData && this.allData.total) {
+          this.xData = this.getXarr(this.allData[key])
         }
       }
       else if (val == 3) {
@@ -149,14 +149,11 @@ export default {
     getArray (obj) {
       let arr = []
       for (let i in obj) {
-        if (i) {
-          arr.push(obj[i])
-        }
-        console.log(obj[i])
+        arr.push(obj[i])
       }
       return arr
     },
-    getXarr(obj){
+    getXarr (obj) {
       let arr = []
       for (let i in obj) {
         if (i) {
@@ -168,25 +165,14 @@ export default {
       }
       return arr
     },
-    getList (val) {
+    getList () {
       let arr = []
-      let obj = {
-        0:'total',
-        1:'put',
-        2:'view',
-        3:'entry'
+      if (this.list) {
+        console.log(this.eachartData)
+        arr[0] = this.eachartData[this.activeIndex]
+        arr[1] = this.list.splice(0)
       }
-      if (this.arrList&& this.activeIndex == 0) {
-        for(let key in obj) {
-         arr[key] = this.getArray(this.arrList[obj[key]]).splice(0)
-        }
-        console.log(arr)
-      }
-      if (this.arrList && this.arrList.total && this.list) {
-        let key = this.getKey(this.activeIndex)
-        arr[0] = this.getArray(this.arrList[key])
-        arr[1] = this.getArray(this.list[key])
-      }
+      console.log(arr)
       return arr
     },
     getData (index) {
@@ -198,7 +184,7 @@ export default {
           symbol: 'circle',
           name: item,
           itemStyle: {},
-          data: this.getList(this.legendIndex)[index]
+          data: this.getList()[index]
         }
       })
       arr[1].itemStyle = {
@@ -239,7 +225,7 @@ export default {
           type: 'line',
           symbolSize: 8,
           symbol: 'circle',
-          data: this.getList(this.legendIndex)[0],
+          data: this.arrList ? this.arrList[0] : [],
           itemStyle: {
             normal: { color: '#0581DE' }
           }
@@ -249,7 +235,7 @@ export default {
           type: 'line',
           symbol: 'circle',
           symbolSize: 8,
-          data: this.getList(this.legendIndex)[1],
+          data: this.arrList ? this.arrList[1] : [],
           itemStyle: {
             normal: { color: '#7003FE' }
           }
@@ -258,7 +244,7 @@ export default {
           symbol: 'circle',
           type: 'line',
           symbolSize: 8,
-          data: this.getList(this.legendIndex)[2],
+          data: this.arrList ? this.arrList[2] : [],
           itemStyle: {
             normal: { color: '#F87321' }
           }
@@ -267,7 +253,7 @@ export default {
           symbol: 'circle',
           type: 'line',
           symbolSize: 8,
-          data: this.getList(this.legendIndex)[3],
+          data: this.arrList ? this.arrList[3] : [],
           itemStyle: {
             normal: { color: '#489723' }
           }
@@ -280,12 +266,12 @@ export default {
       let myChart = $echart.init(document.getElementById('myChart'))
       let newXaxis = JSON.stringify(this.axais)
       this.option.yAxis = this.axais
-      let  axisLabel
+      let axisLabel
       console.log(this.legendIndex)
-      if (this.legendIndex==2) {
+      if (this.legendIndex == 2) {
         axisLabel = {//坐标轴刻度标签的相关设置。
-          interval:0,
-          rotate:"45",
+          interval: 0,
+          rotate: "45",
           show: true,
           textStyle: {
             color: '#333'

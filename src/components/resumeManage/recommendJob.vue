@@ -197,6 +197,8 @@ export default {
           const { data } = res
           this.tableData = data.data
           this.total = res.data.count
+        }).catch(error => {
+          this.$message.error(error.status.remind)
         })
       }
     },

@@ -53,8 +53,7 @@
           </el-table-column>
           <el-table-column label="岗位薪资" align="center" width="150">
             <template slot-scope="props">
-              <span v-if="props.row.money_type==1">{{props.row.money_min}}~{{props.row.money_max}}</span>
-              <span v-else>{{props.row.money}}</span>
+              <span>{{props.row.money ?props.row.money:0 }}</span>
             </template>
           </el-table-column>
           <el-table-column label="薪资模式" align="center" width="150">

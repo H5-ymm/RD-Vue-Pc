@@ -17,7 +17,8 @@ export const cancelrecv = data => $post('/teamselfjob/cancelrecv', data) //取�
 
 export const setjobtouser = data => $post('/teamselfjob/setjobtouser', data) //分配跟进人（新增修改）
 export const getTeamManage = data => $post('/teamselfjob/get_team_manage', data) //分配跟进人（新增修改）
-export const auditRemuse = data => $post('/teamselfjob/audit_remuse', data) //设置面试结果
+export const auditRemuse = data => $post('/teamselfjob/audit_remuse', data) //设置审核
+export const viewResult = data => $post('/teamselfjob/view_result', data) //设置面试结果
 export const entrantResult = data => $post('/teamselfjob/entrant_result', data) //设置入职结果
 export const checkPutresume = data => $post('/teamselfjob/get_putresume', data)
 

@@ -12,7 +12,7 @@ const CompanyForm = resolve => (require(['../components/teamMessage/companyForm.
 const createOrderTaking = resolve => (require(['../components/CeateOrderTaking.vue'], resolve))
 const onJobStaff = resolve => (require(['../components/staffManage/onJobStaff.vue'], resolve)) //在职员工
 const Company = resolve => (require(['../views/Team.vue'], resolve))
-import { commonRouters } from './index'
+// import { commonRouters } from './index'
 let children = [
   { // 审核发单
     path: '/checkReceipt',

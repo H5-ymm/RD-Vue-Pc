@@ -58,7 +58,7 @@
       <section class="member-col3">
         <el-form :model="formMember" class="demo-form-inline" label-width="120px">
           <el-form-item label="部门" v-if="userPosition==1">
-            <el-select placeholder="请选择" :disabled="isView" v-model="depId" @change="selectDep">
+            <el-select placeholder="请选择" :disabled="isView&&user!=1" v-model="depId" @change="selectDep">
               <el-option :label="item.depart_name" :value="item.id" v-for="(item,index) in depList" :key="index"></el-option>
             </el-select>
           </el-form-item>
@@ -107,7 +107,8 @@ export default {
       jobList: [],
       depList: [],
       depId: '',
-      userPosition: sessionStorage.getItem('userPosition')
+      userPosition: sessionStorage.getItem('userPosition'),
+      user: ''
     }
   },
   created () {
@@ -133,8 +134,8 @@ export default {
         uid: localStorage.getItem('uid')
       }
       seeTeamUserInfo(params).then(res => {
-        console.log(res)
-        this.formMember = res.data
+        this.formMember = res.data.data
+        this.user = res.data.user
         if (!this.formMember.grade_id) {
           this.formMember.grade_id = ''
         }
@@ -174,6 +175,7 @@ export default {
       })
       return newArr
     },
+
     getJobList () {
       let uid = localStorage.getItem('uid')
       departmentRoleList({ uid }).then(res => {

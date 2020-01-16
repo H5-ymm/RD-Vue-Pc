@@ -70,7 +70,7 @@
           <el-table-column type="selection" align="center" width="50"></el-table-column>
           <el-table-column label="发单状态" align="center" width="180">
             <template slot-scope="props">
-              <el-select v-model="props.row.jobStatus" value-key="label" class="width150" placeholder="请选择" @change="changeStatus($event,props.$index)">
+              <el-select v-model="props.row.jobStatus" :disabled="userPosition==1&&props.row.isactor!=1" value-key="label" class="width150" placeholder="请选择" @change="changeStatus($event,props.$index)">
                 <el-option :label="item.label" :value="item.value" v-show="index" v-for="(item,index) in props.row.receiptStatusList" :key="item.label"></el-option>
               </el-select>
             </template>
@@ -79,10 +79,11 @@
           <el-table-column label="岗位名称" prop="job_name" align="center" width="150"></el-table-column>
           <el-table-column label="岗位类型" align="center" width="110">
             <template slot-scope="props">
-              <span>{{props.row.jobType | jobType}}</span>
+              <span v-if="props.row.type">{{props.row.type | jobType}}</span>
+              <span v-else>普通岗位</span>
             </template>
           </el-table-column>
-          <el-table-column label="招聘人数" prop="put_num" align="center" width="110"></el-table-column>
+          <el-table-column label="招聘人数" prop="number" align="center" width="110"></el-table-column>
           <el-table-column label="已推荐简历" prop="view_dcl" align="center" width="110">
             <template slot-scope="props">
               <span>{{props.row.view_dcl}}</span>
@@ -95,14 +96,14 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column label="招聘类型" prop="type" align="center" width="110"></el-table-column>
+          <el-table-column label="招聘类型" prop="job_type" align="center" width="110"></el-table-column>
           <el-table-column label="薪资类型" align="center" width="110">
             <template slot-scope="props">
               <span>{{props.row.offermoney_type | moneyType}}</span>
             </template>
           </el-table-column>
           <el-table-column label="工作地址" prop="address" align="center" width="110"></el-table-column>
-          <el-table-column label="员工薪资" align="center" width="110">
+          <el-table-column label="员工薪资" align="center" width="150">
             <template slot-scope="props">
               <span>{{props.row.offermoney}}元/{{props.row.offermoney_type==1?'月':props.row.offermoney_type==2?'日':'时'}}</span>
             </template>
@@ -112,14 +113,14 @@
               <span class="status" :class="`status${props.row.is_up}`">{{props.row.is_up==1?'招聘中':'已下架'}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="创建日期" prop="ctime" align="center" width="170">
+          <el-table-column label="创建日期" align="center" width="170">
             <template slot-scope="props">
-              <span>{{props.row.addtime?$moment(props.row.addtime).format('YYYY-MM-DD HH:mm'):''}}</span>
+              <span>{{props.row.ctime?$moment(props.row.ctime).format('YYYY-MM-DD HH:mm'):''}}</span>
             </template>
           </el-table-column>
           <el-table-column label="操作" align="center" min-width="150">
             <template slot-scope="scope">
-              <el-button @click="$router.push({path:'resumeList',query:{jobId:scope.row.id}})" type="text" size="small">简历列表</el-button>
+              <el-button @click="$router.push({path:'/resumeList',query:{jobId:scope.row.id,jobStatus:scope.row.jobStatus}})" type="text" size="small">简历列表</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -223,23 +224,26 @@ export default {
     // 1 面试结果
     // 2 入职结果
     this.getList(this.formMember)
+    console.log(this.tableList)
   },
   computed: {
     tableList () {
-      return this.tableData.map(item => {
-        let obj = Object.assign(item, { receiptStatusList: this.receiptStatusList, jobStatus: 1 })
-        return obj
+      let arr = []
+      let obj = {}
+      this.tableData.forEach(item => {
+        obj = {
+          receiptStatusList: this.receiptStatusList,
+          jobStatus: 1
+        }
+        let newObj = Object.assign(item, { receiptStatusList: this.receiptStatusList, jobStatus: 1 })
+        arr.push(newObj)
       })
-    }
-  },
-  wacth: {
-    $route (to, from) {
-      this.getList(this.formMember)
+      return arr
     }
   },
   methods: {
     getList (params) {
-      getPutresume(params).then(res => {
+      getJoblist(params).then(res => {
         const { data } = res
         this.tableData = data.data || []
         this.total = data.count
@@ -250,6 +254,7 @@ export default {
     changeStatus (val, index) {
       this.$set(this.tableList, 'jobStatus', val)
       this.activeIndex = index
+      console.log(this.receiptStatusList[index])
       this.statusName = this.receiptStatusList[index].label
     },
     changeDate (val) {

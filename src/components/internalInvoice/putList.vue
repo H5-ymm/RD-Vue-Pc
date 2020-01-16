@@ -12,27 +12,17 @@
         <el-form-item label="联系电话：">
           <el-input v-model="formMember.mobile" class="width300" placeholder="请输入联系电话"></el-input>
         </el-form-item>
-        <!-- <el-form-item label="企业名称：" v-if="viewType==3">
+        <el-form-item label="企业名称：">
           <el-input v-model="formMember.name" class="width300" placeholder="请输入企业名称"></el-input>
-        </el-form-item> -->
-        <el-form-item label="意向岗位：" v-if="viewType!=3">
+        </el-form-item>
+        <el-form-item label="岗位名称：">
           <el-input v-model="formMember.job" class="width300" placeholder="请输入意向岗位关键字"></el-input>
         </el-form-item>
         <el-form-item label="录入人：">
           <el-input v-model="formMember.inputName" class="width300" placeholder="请输入录入人关键字"></el-input>
         </el-form-item>
-        <el-form-item label="意向地区：" v-if="viewType!=3">
-          <div class="width300">
-            <districtSelet @change="change" :placeholder="'请选择意向地区'" :disabled="true"></districtSelet>
-          </div>
-        </el-form-item>
         <el-form-item label="跟进人：">
           <el-input v-model="formMember.track_name" class="width300" placeholder="请输入跟进人关键字"></el-input>
-        </el-form-item>
-        <el-form-item label="意向工资：" v-if="viewType!=3">
-          <el-select v-model="formMember.money" class="width300" placeholder="请选择意向工资">
-            <el-option :label="item.label" :value="item.value" v-for="(item,index) in moneyTypeList" :key="index"></el-option>
-          </el-select>
         </el-form-item>
         <el-form-item :label="labelTime+'：'">
           <el-date-picker class="width300" v-model="timeList" type="daterange" format="yyyy-MM-dd" value-format="timestamp" @change="changeDate" range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期"></el-date-picker>
@@ -74,14 +64,14 @@
               <span v-if="props.row.status==1&&!props.row.entry_status" class="status" :class="`status${props.row.interview_status}`">{{props.row.interview_status|viewStatus}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="跟进记录" align="center" width="160">
+          <el-table-column label="跟进记录" align="center" width="100">
             <template slot-scope="props">
-              <el-button class="text-line" style="width:100px" type="text" @click="viewRecord(props.row)" v-if="props.row.trackList&&props.row.trackList[0]">{{props.row.trackList[0].remark}}</el-button>
+              <el-button class="text-line" type="text" @click="viewRecord(props.row)">{{props.row.trackList&&props.row.trackList.title?props.row.trackList.title:'--'}}</el-button>
             </template>
           </el-table-column>
           <el-table-column label="跟进时间" align="center" width="160">
             <template slot-scope="props">
-              <span type="text" v-if="props.row.trackList&&props.row.trackList.length">{{props.row.trackList[0].addtime?$moment.unix(props.row.trackList[0].addtime).format('YYYY-MM-DD HH:mm'):'--'}}</span>
+              <span type="text" v-if="props.row.trackList">{{props.row.trackList.addtime?$moment.unix(props.row.trackList.addtime).format('YYYY-MM-DD HH:mm'):'--'}}</span>
             </template>
           </el-table-column>
           <el-table-column label="意向岗位" prop="desired_position" align="center" width="150"></el-table-column>
@@ -113,8 +103,8 @@
     </div>
     <!-- <viewResume :dialogTableVisible="dialogTableVisible" :resumeId="resumeId" @handleClose="dialogTableVisible=false" @submitForm="submitForm" :resumeInfo="resumeInfo"></viewResume> -->
     <confirmDialog :dialogTableVisible="visible" @submit="submit" @handleClose="handleClose" :dialogObj="dialogObj" :isShow="isShow"></confirmDialog>
-    <!-- <followUpRecord :dialogTableVisible="followUpRecordVisible" @submitRecord="submitRecord" @handleClose="followUpRecordVisible=false" :trackList="trackList"></followUpRecord>
-    <leadResumeModal :dialogTableVisible="leadResumeVisible" @handleClose="leadResumeVisible=false"></leadResumeModal> -->
+    <followUpRecord :dialogTableVisible="followUpRecordVisible" :id="resumeId" @submitRecord="submitRecord" @handleClose="followUpRecordVisible=false" :trackList="trackList"></followUpRecord>
+    <!-- <leadResumeModal :dialogTableVisible="leadResumeVisible" @handleClose="leadResumeVisible=false"></leadResumeModal> -->
   </div>
 </template>
 <script>
@@ -122,7 +112,7 @@ import {  getJoblist, addPut, getPutresume, getobedistributedList, cancelrecvLis
   cancelrecv, setjobtouser, getTomember, deleteJob, changestatus, getTeamManage, giveupPut, giveupView, giveEntry} from '@/api/internalInvoice'
 import { moneyTypeList, rewardTypeList, followStatusList, viewStatusList1, checkStatusList1, entryStatusList4 } from '@/base/base'
 // import viewResume from './viewResume'
-// import followUpRecord from './followUpRecord'
+import followUpRecord from '../resumeManage/followUpRecord'
 // import leadResumeModal from './leadResumeModal'
 import { editRecommendResumeStatus } from '@/api/resume'
 import confirmDialog from '../common/confirmDialog'
@@ -130,11 +120,9 @@ import districtSelet from '../districtSelet'
 import { getConstant } from '../../api/dictionary'
 export default {
   components: {
-    // viewResume,
     districtSelet,
     confirmDialog,
-    // followUpRecord,
-    // leadResumeModal
+    followUpRecord
   },
   filters: {
     moneyType (val) {
@@ -251,10 +239,7 @@ export default {
       // this.getList(this.formMember)
     },
     routerResume (val) {
-      // let arr = JSON.parse(sessionStorage.getItem('menus'))
-      // arr[1] = '推荐岗位'
-      // sessionStorage.setItem('menus', JSON.stringify(arr))
-      this.$router.push('/recommendJob?id=' + val.id)
+      this.$router.push('/recommendResume??jobId=' + val.id + 'index=1')
     },
     exportResume () {
       if (!this.tableData.length) {
@@ -292,8 +277,8 @@ export default {
       this.getList(this.formMember)
     },
     viewRecord (val) {
+      this.resumeId = val.resume_id
       this.followUpRecordVisible = true
-      this.trackList = val.trackList
     },
     viewResume (val) {
       this.dialogTableVisible = true
@@ -371,7 +356,11 @@ export default {
           this.resumeId = ''
           this.id = ''
           this.visible = false
+          this.$message.success('放弃成功')
           this.getList(this.formMember)
+        }
+        else {
+          this.$message.error('放弃失败')
         }
       }).catch(error => {
         this.$message.error(error.status.remind)

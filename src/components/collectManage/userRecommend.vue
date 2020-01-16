@@ -62,8 +62,8 @@
             <template slot-scope="scope">
               <el-button @click="handleApply(scope.row)" v-if="scope.row.status==0&&scope.row.job_status==1" type="text" size="small">申请接单</el-button>
               <el-button @click="handleRefuse(scope.row)" type="text" size="small" v-if="scope.row.status==0&&scope.row.job_status==1">拒绝推荐</el-button>
-              <!-- <span class="default-status" v-if="scope.row.status==2" >{{scope.row.status==1?'已申请':'已拒绝'}}</span> -->
-               <span class="default-status" v-if="scope.row.status==1" >已拒绝</span>
+              <span class="default-status" v-if="scope.row.status==2">已拒绝</span>
+              <span class="default-status" v-if="scope.row.status==1">已申请</span>
             </template>
           </el-table-column>
         </el-table>
@@ -182,7 +182,7 @@ export default {
     },
     handleRefuse (val) {
       let params = {
-        id: val.job_id,
+        id: val.id,
         uid: localStorage.getItem('uid'),
         collectId: val.collect_id
       }

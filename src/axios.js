@@ -1,14 +1,12 @@
 import axios from 'axios';
 import QS from 'qs';
 import { Message } from 'element-ui';
+import router from './router'
 const $axios = axios.create({
   baseURL: process.env.REACT_APP_BASE_URL,
   timeout: 4000
 });
 const baseURL = 'http://tiantianxsg.com:39888/index.php'
-// const instance = axios.create({
-//   responseType: 'blob', //返回数据的格式，可选值为arraybuffer,blob,document,json,text,stream，默认值为json
-// })
 //请求拦截
 $axios.interceptors.request.use(
   function (config) {
@@ -17,10 +15,10 @@ $axios.interceptors.request.use(
     // 此处应根据具体业务写token
     const token = localStorage.getItem('token')
     if (localStorage.getItem('token')) {
-      config.headers['http-userid'] = token
-      config.headers['http-token'] = localStorage.getItem('uid')
+      config.headers['http-userid'] = localStorage.getItem('uid')
+      config.headers['http-token'] = token
     }
-    config.headers = { 'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8' }
+    config.headers['Content-Type'] = 'application/x-www-form-urlencoded;charset=utf-8'
     return config;
   },
   function (error) {
@@ -35,9 +33,15 @@ $axios.interceptors.response.use(
     if (response.data.status.code === 200) {
       return Promise.resolve(response);
     } else {
-      console.log(response.data.status)
       if (response.data.status.code == 5030) {
         return false
+      }
+      else if (response.data.status.code == 1003) {
+        Message.error('登录过期，请重新登录!');
+        localStorage.clear('')
+        sessionStorage.clear('')
+        router.replace('/login')
+        return
       }
       else {
         return Promise.reject(response);
@@ -77,7 +81,7 @@ $axios.interceptors.response.use(
           Message.error('登录过期，请重新登录!');
           localStorage.clear('')
           sessionStorage.clear('')
-          this.$router.push('/login')
+          router.replace('/login')
           break;
         // 其他错误，直接抛出错误提示    
         default:
@@ -151,4 +155,4 @@ export function uploadFile (url, params) {
       })
   });
 }
-// export default $axios;
+export default $axios;

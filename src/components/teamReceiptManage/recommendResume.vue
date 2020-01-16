@@ -226,19 +226,20 @@ export default {
   },
   methods: {
     byJobMatchingList (params) {
-      if (this.tabIndex == 0) {
+      if (this.activeIndex == 0) {
         getMatchingResume(params).then(res => {
-          const { data } = res
-          this.tableData = data.data
+          this.tableData = res.data.data
           this.total = res.data.count
+        }).catch(error => {
+          this.$message.error(error.status.remind)
         })
       }
       else {
         getInternalInvoiceList(params).then(res => {
-          const { data } = res
-          this.tableData = data.data
-          console.log(res)
+          this.tableData = res.data.data
           this.total = res.data.count
+        }).catch(error => {
+          this.$message.error(error.status.remind)
         })
       }
     },
@@ -278,7 +279,8 @@ export default {
       if (!resume_id) {
         return this.$message.success('请选择简历')
       }
-      if (!this.tabIndex) {
+      if (!this.activeIndex) {
+
         let param = {
           resume_id: resume_id,
           uid: localStorage.getItem('uid'),

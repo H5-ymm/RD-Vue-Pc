@@ -37,9 +37,9 @@
           <el-table-column label="状态" align="center" width="150">
             <template slot-scope="props">
               <div v-if="viewType==4||viewType==3">
-                <span class="status" :class="`status${props.row.status}`" v-if="props.row.status==1&&!props.row.interview_status&&!props.row.entry_status">待审核</span>
-                <span class="status" :class="`status${props.row.interview_status}`" v-if="props.row.status==1&&props.row.interview_status&&!props.row.entry_status">{{props.row.interview_status==1?'通过':'未通过'}}</span>
-                <span class="status status2" v-if="props.row.status==1&&props.row.interview_status==3">未参加</span>
+                <span class="status" :class="`status${props.row.status}`" v-if="!props.row.interview_status&&!props.row.entry_status">待审核</span>
+                <span class="status" :class="`status${props.row.interview_status}`" v-if="props.row.interview_status&&props.row.interview_status!=3&&!props.row.entry_status">{{props.row.interview_status==1?'通过':'未通过'}}</span>
+                <span class="status status2" v-if="props.row.interview_status==3">未参加</span>
               </div>
               <div v-if="viewType==2||viewType==1">
                 <span class="status" :class="`status${props.row.status}`" v-if="!props.row.status">待审核</span>
@@ -55,7 +55,7 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column label="操作" align="center" width="180" v-if="viewType!=7">
+          <el-table-column label="操作" align="center" min-width="180" v-if="viewType!=7&&viewType!=4">
             <template slot-scope="scope">
               <div v-if="viewType!=3&&viewType!=7">
                 <el-button @click="handleResume(1,scope.row)" type="text" v-if="scope.row.status==0&&!scope.row.interview_status&&!scope.row.entry_status" size="small">放弃报名</el-button>
@@ -68,7 +68,7 @@
                 <span v-if="scope.row.status==1&&scope.row.interview_status==3&&!scope.row.entry_status">未参加</span>
               </div>
               <div v-if="viewType==1">
-                <span v-if="scope.row.status">{{scope.row.status==1?'通过':'未拒绝'}}</span>
+                <span v-if="scope.row.status!=2">{{scope.row.status==1?'已通过':'已拒绝'}}</span>
               </div>
               <!-- <el-button @click="handleResume(4,scope.row)" v-if="scope.row.interview_status==1&&scope.row.entry_status==1&&viewType==7" type="text" size="small">离职</el-button> -->
             </template>

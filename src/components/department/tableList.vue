@@ -1,5 +1,5 @@
 <template>
-  <div class="table">
+  <div class="table dep-table">
     <el-table border :data="tableData" ref="multipleTable" style="width: 100%">
       <el-table-column label="部门名称" prop="depart_name" align="center" width="150"></el-table-column>
       <el-table-column label="部门经理" prop="user_name" align="center" width="150"></el-table-column>
@@ -58,5 +58,17 @@ export default {
     border-top: 1px solid #eee;
     border-bottom: 1px solid #eee;
     padding: 10px 0;
+    &.dep-table {
+      height:60%;
+      .table-list {
+         height: 100%;
+      }
+      .el-table  {
+         height: 100%;
+        .el-table__body-wrapper {
+          height: 100%;
+        }
+      }
+    }
   }
 </style>

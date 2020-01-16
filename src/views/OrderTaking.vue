@@ -139,7 +139,7 @@ import FooterView from '@/components/FooterView'
 import AsideBox from '@/components/AsideBox'
 import searchInput from '@/components/searchInput'
 import { getList, addApply } from '@/api/orderTarking'
-import { getProvincesList, getCitysList, getAreasList } from '../api/login'
+import { getProvincesList, getCitysList, getAreasList } from '@/api/login'
 import { cityList, moneyTypeList, rewardList, requirePersonList, paymentTaxType } from '../base/base'
 export default {
   name: 'OrderTaking',

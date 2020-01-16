@@ -77,7 +77,6 @@ export default {
     insert (imgUrl) {
       upload(imgUrl).then(res => {
         let src = getImg(imgUrl)
-        console.log(src)
         let img = "<img class='imgBg' src=" + src + " />"
         this.editor.cmd.do('insertHTML', img)
       })

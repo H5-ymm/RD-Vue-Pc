@@ -14,10 +14,10 @@
             </p>
             <div class="x-flex-between-start resume-card-row">
               <div class="resume-card-item">
-                <el-form-item label="姓名" required prop="name">
+                <el-form-item label="姓名" prop="name">
                   <el-input v-model="formMember.name" placeholder="请输入姓名"></el-input>
                 </el-form-item>
-                <el-form-item label="手机号码" required prop="mobile">
+                <el-form-item label="手机号码" prop="mobile">
                   <el-input v-model="formMember.mobile" placeholder="请输入手机号码"></el-input>
                 </el-form-item>
                 <el-form-item label="学历">
@@ -56,7 +56,7 @@
                   <districtSelet @change="changeExpect" :disabled="true" :address="addressExpect" :placeholder="'请选择省市'"></districtSelet>
                 </el-form-item>
                 <el-form-item label="薪资模式">
-                  <el-select v-model="formMember.salary_type" placeholder="请选择薪资模式">
+                  <el-select v-model="formMember.salary_type" value-key="label" placeholder="请选择薪资模式">
                     <el-option :label="item.label" :value="item.value" v-for="(item,index) in moneyTypeList1" :key="item.label"></el-option>
                   </el-select>
                 </el-form-item>
@@ -139,7 +139,7 @@ export default {
         address: '',
         provinceid: '',
         cityid: '',
-        salary_type: '1',
+        salary_type: 1,
         uid: localStorage.getItem('uid')
       },
       rules: {
@@ -162,18 +162,66 @@ export default {
     }
   },
   created () {
-    let params = 'edu_type,money_array'
+    let params = 'edu_type,resume_intention_salary'
     for (let i = 16; i < 46; i++) {
       this.ageList.push(i)
     }
     this.getList(params)
+    this.formMember = {
+      is_five_risks: 1,
+      is_fund: 1,
+      age: 18,
+      sex: 1,
+      name: '',
+      mobile: '',
+      education: '',
+      address: '',
+      provinceid: '',
+      cityid: '',
+      salary_type: 1,
+      uid: localStorage.getItem('uid')
+    }
   },
   watch: {
     resumeId (val) {
       if (val) {
         this.getInfo()
       }
-    }
+      else {
+        this.formMember = {
+          is_five_risks: 1,
+          is_fund: 1,
+          age: 18,
+          sex: 1,
+          name: '',
+          mobile: '',
+          education: '',
+          address: '',
+          provinceid: '',
+          cityid: '',
+          salary_type: 1,
+          uid: localStorage.getItem('uid')
+        }
+      }
+    },
+    dialogTableVisible (val) {
+      if (!val) {
+        this.formMember = {
+          is_five_risks: 1,
+          is_fund: 1,
+          age: 18,
+          sex: 1,
+          name: '',
+          mobile: '',
+          education: '',
+          address: '',
+          provinceid: '',
+          cityid: '',
+          salary_type: 1,
+          uid: localStorage.getItem('uid')
+        }
+      }
+    },
   },
   methods: {
     getInfo () {
@@ -182,7 +230,6 @@ export default {
         resumeId: this.resumeId
       }
       selectUserResumeInfo(params).then(res => {
-        console.log(res.data)
         this.formMember = res.data
         if (res.data.entry_begintime) {
           this.entryTime[0] = this.$moment.unix(res.data.entry_begintime).format('YYYY-MM-DD')
@@ -204,7 +251,7 @@ export default {
     getList (filed) {
       getConstant({ filed }).then(res => {
         this.edu_type = res.data.edu_type
-        this.moneyArray = this.getArry(res.data.money_array)
+        this.moneyArray = this.getArry(res.data.resume_intention_salary)
       })
     },
     getArry (obj) {
@@ -233,10 +280,32 @@ export default {
     },
     handleClose () {
       this.$emit('handleClose')
+      this.formMember = {
+        is_five_risks: 1,
+        is_fund: 1,
+        age: 18,
+        sex: 1,
+        name: '',
+        mobile: '',
+        education: '',
+        address: '',
+        provinceid: '',
+        cityid: '',
+        salary_type: 1,
+        uid: localStorage.getItem('uid')
+      }
     },
     submitForm () {
       this.$refs['formMember'].validate((valid) => {
         if (valid) {
+          if (!this.formMember.provinceid) {
+            this.formMember.provinceid = 0
+            this.formMember.cityid = 0
+          }
+          if (!this.formMember.expect_provindeid) {
+            this.formMember.expect_provindeid = 0
+            this.formMember.expect_cityid = 0
+          }
           this.$emit('submitForm', this.formMember)
         } else {
           return false

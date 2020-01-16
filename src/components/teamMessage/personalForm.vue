@@ -16,32 +16,32 @@
             <p>上传logo</p>
           </el-upload>
         </el-form-item>
-        <el-form-item label="申请人姓名" required>
+        <el-form-item label="申请人姓名" prop="user_name">
           <el-input v-model="personalForm.user_name" class="width408" placeholder="请输入申请人姓名"></el-input>
         </el-form-item>
-        <el-form-item label="身份证" required prop="id_card">
+        <el-form-item label="身份证" prop="id_card">
           <el-input v-model="personalForm.id_card" class="width408" placeholder="请输入身份证"></el-input>
         </el-form-item>
-        <el-form-item label="性别" prop="delivery">
+        <el-form-item label="性别" placeholder="请选择性别">
           <el-radio-group class="width408" v-model="personalForm.sex">
             <el-radio :label="1">男</el-radio>
             <el-radio :label="2">女</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="年龄" require>
+        <el-form-item label="年龄">
           <el-input v-model="personalForm.age" class="width408" placeholder="请输入年龄"></el-input>
         </el-form-item>
-        <el-form-item label="学历" prop="education">
+        <el-form-item label="学历">
           <el-select v-model="personalForm.education" class="width408" placeholder="请选择学历">
             <el-option :label="item" :value="index" v-for="(item,index) in edu_type" :key="index"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="地址" prop="region">
+        <el-form-item label="地址">
           <div class="width408">
             <districtSelet @change="change" :address="address"></districtSelet>
           </div>
         </el-form-item>
-        <el-form-item label="团队简介" prop="introduction">
+        <el-form-item label="团队简介" prop="introduction" placeholder="请输入团队简介">
           <el-input type="textarea" class="width408" :autosize="{minRows: 5}" v-model="personalForm.introduction" placeholder="请输入团队介绍"></el-input>
         </el-form-item>
         <el-form-item class="teamMessage-btn">
@@ -77,17 +77,24 @@ export default {
     return {
       personalForm: {
         type: 2,
-        id: ''
+        id: '',
+        sex: ''
       },
       imageUrl: '',
       rules: {
         team_name: [
-          { message: '请输入团队名称', trigger: 'blur' }
+          { require: true, message: '请输入团队名称', trigger: 'blur' }
         ],
         id_card: [
-          { message: '请输入身份证号码', trigger: 'blur' },
+          { require: true, message: '请输入身份证号码', trigger: 'blur' },
           { validator: validate, trigger: 'blur' }
-        ]
+        ],
+        user_name: [
+          { require: true, message: '请输入申请人姓名', trigger: 'blur' },
+        ],
+        introduction: [
+          { require: true, message: '请输入团队简介', trigger: 'blur' },
+        ],
       },
       edu_type: [],
       uid: localStorage.getItem('uid'),

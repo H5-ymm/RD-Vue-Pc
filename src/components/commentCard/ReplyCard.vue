@@ -14,18 +14,18 @@
           <span>{{item.addtime?$moment.unix(item.addtime).format('YYYY-MM-DD HH:mm'):'--'}}</span>
           <!-- <p> -->
           <!-- <span v-if="uid==item.user_id" @click="deleteComment(item.id)">删除</span> -->
-          <span @click="handleComment(index,item,1)">{{uid==item.user_id?'删除':'评论'}}</span>
+          <span @click="handleComment(index,item,1)">{{uid==item.user_id?'删除':'回复'}}</span>
           <!-- </p> -->
         </div>
-        <commentInput :isShow="currentIndex == index&&showFirstComment" @submitComment="submitComment" :createdName="item.username" @cancleComment="cancleComment(1)"></commentInput>
+        <commentInput :isShow="currentIndex == index&&showFirstComment" @submitComment="submitComment" :createdName="item.username" :reName="item.username" @cancleComment="cancleComment(1)"></commentInput>
 
         <section class="edit-card-comment-section" v-for="(val,ind) in item.replyList" :key="ind">
           <div class="x-flex-start">
             <div class="edit-card-comment-col2">
               <p>
-                <span class="user-name">{{val.r_name}}</span>
+                <span class="user-name">{{val.username}}</span>
                 <span class="reply">回复</span>
-                <span class="user-name">{{val.username}}:</span>
+                <span class="user-name">{{val.r_name}}:</span>
                 <span v-html="getContent(val.content)"></span>
               </p>
               <p class="x-flex-between text-light">
@@ -43,7 +43,7 @@
 <script>
 import commentInput from './commentInput'
 export default {
-  props: ['commentList', 'username'],
+  props: ['commentList', 'username', 'commType'],
   name: 'reply',
   components: {
     commentInput
@@ -55,7 +55,15 @@ export default {
       currentChildIndex: -1,
       type: 0,
       id: '',
-      showFirstComment: true
+      showFirstComment: true,
+      comment_id: '',
+      p_id: '',
+      discuss_id: ''
+    }
+  },
+  watch: {
+    commType (val) {
+      this.type = val
     }
   },
   methods: {
@@ -63,19 +71,24 @@ export default {
       return val ? unescape(val) : ''
     },
     handleComment (index, item, type, ind, val) {
-      this.type = type
+      this.p_id = item.id
+      this.type = 2
+      this.discuss_id = item.discuss_id
       if (type == 2) {
         //  相等删除操作
         this.id = val.id
+        this.comment_id = val.comment_id
         if (this.uid == val.user_id) {
           this.$emit('delelteReply', val.id)
         }
         else {
+          this.currentIndex = index
           this.currentChildIndex = ind
           this.showFirstComment = false
           this.$emit('cancelComment')
         }
       } else {
+        this.comment_id = item.comment_id
         this.id = item.id
         if (this.uid == item.user_id) {
           this.$emit('deleteComment', item.id)
@@ -94,16 +107,18 @@ export default {
       this.$emit('deleteComment', id)
     },
     submitComment (val) {
-      console, log(val)
       let params = {
         uid: localStorage.getItem('uid'),
-        type: 2,
-        content: val,
-        p_id: 1,
-        discuss_id: this.id,
-        comment_id: 1
+        type: this.type,
+        content: escape(val),
+        p_id: this.p_id,
+        discuss_id: this.discuss_id,
+        comment_id: this.id
       }
       this.$emit('submit', params)
+      this.currentIndex = -1
+      this.currentChildIndex = -1
+      this.showFirstComment = false
     },
     cancleComment (index) {
       this.currentChildIndex = -1

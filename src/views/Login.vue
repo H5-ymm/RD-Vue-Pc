@@ -125,7 +125,7 @@ export default {
     }
   },
   beforeRouteLeave (to, from, next) {
-    next(()=>{
+    next(() => {
       this.reload();
     })
 
@@ -150,7 +150,7 @@ export default {
         if (this.totalTime < 0) {
           window.clearInterval(clock)
           this.content = '重新发送验证码'
-          this.totalTime = 10
+          this.totalTime = 60
           this.canClick = true  // 这里重新开启
         }
       }, 1000)
@@ -183,20 +183,21 @@ export default {
       this.$refs['TabForm'].validate((valid) => {
         if (valid) {
           this.$store.dispatch('loginSaveInfo', this.formTab).then(res => {
-            localStorage.setItem('userType', res.data.type)
-            localStorage.setItem('userName', res.data.username)
-            localStorage.setItem('departName', res.data.departName)
-            let registerType = res.data.type
-            if (res.data.type == 1) {
-              this.$router.push('/createOrderTaking')
-            }
-            else {
-              localStorage.setItem('teamType', res.data.team_type)
-              // 登录人身份
-              sessionStorage.setItem('userPosition', res.data.gradeNum)
-              localStorage.setItem('userPosition', res.data.gradeNum)
-              this.$router.push('/teamData')
-            }
+            // localStorage.setItem('userType', res.data.type)
+            // localStorage.setItem('userName', res.data.username)
+            // localStorage.setItem('departName', res.data.departName)
+            // localStorage.setItem('uid', res.data.uid)
+            // let registerType = res.data.type
+            // if (res.data.type == 1) {
+            //   this.$router.push('/createOrderTaking')
+            // }
+            // else {
+            //   localStorage.setItem('teamType', res.data.team_type)
+            //   // 登录人身份
+            //   sessionStorage.setItem('userPosition', res.data.gradeNum)
+            //   localStorage.setItem('userPosition', res.data.gradeNum)
+            //   this.$router.push('/teamData')
+            // }
           }).catch(error => {
             if (error.status.code == 3010) {
               this.isShowError = true
@@ -351,9 +352,10 @@ export default {
 .register-box .code-btn {
   width: 130px!important;
   position:absolute;
-  bottom:0;
+  bottom:2px;
   right:0;
   border-radius:0;
+  padding: 10px 20px;
 }
 .register-box .disabled {
   background:rgba(204,204,204,1);

@@ -1,35 +1,18 @@
 <template>
-  <el-dialog
-    title="请选择城市"
-    :visible="dialogVisible"
-    width="60%"
-    :before-close="handleClose"
-    class="dialog-city"
-  >
+  <el-dialog title="请选择城市" :visible="dialogVisible" width="60%" :before-close="handleClose" class="dialog-city">
     <div class="x-flex-start city-content">
       <ul class="cityList">
-        <li
-          v-for="(item,index) in provinceList"
-          class="provice-hover"
-          @click="handle(item,index)"
-          :class="{'provice-active': index==activeIndex}"
-          :key="index"
-        >{{item.name}}</li>
+        <li v-for="(item,index) in provinceList" class="provice-hover" @click="handle(item,index)" :class="{'provice-active': index==activeIndex}" :key="index">{{item.name}}</li>
       </ul>
       <div class="x-flex-start list city-box">
-        <span
-          v-for="(item,index) in cityList"
-          @click="getCityCode(item)"
-          :key="index"
-          class="item"
-        >{{item.name}}</span>
+        <span v-for="(item,index) in cityList" @click="getCityCode(item)" :key="index" class="item">{{item.name}}</span>
       </div>
     </div>
   </el-dialog>
 </template>
 <script>
-import { getProvincesList, getCitysList, getAreasList } from '../api/login'
-import { cityList } from '../base/base'
+import { getProvincesList, getCitysList, getAreasList } from '@/api/login'
+import { cityList } from '@/base/base'
 export default {
   props: ['dialogVisible'],
   data () {
@@ -62,11 +45,11 @@ export default {
     getProlist (list) {
       return list.map(item => {
         let obj =
-        {
-          value: item.provinceid,
-          name: item.province,
-          children: []
-        }
+          {
+            value: item.provinceid,
+            name: item.province,
+            children: []
+          }
         return obj
       })
     },

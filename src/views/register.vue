@@ -183,16 +183,9 @@ export default {
   },
   methods: {
     districtChange (val) {
-      console.log(val)
       this.formTab.province = val[0]
       this.formTab.city = val[1]
       this.formTab.area = val[2]
-    },
-    handleChange (value) {
-      console.log(value);
-    },
-    handleExpand (value) {
-      console.log(value)
     },
     format (percentage) {
       return percentage === 100 ? '强度：高' : percentage === 70 ? '强度：中' : '强度：低';
@@ -222,13 +215,12 @@ export default {
         if (this.totalTime < 0) {
           window.clearInterval(clock)
           this.content = '重新发送验证码'
-          this.totalTime = 10
+          this.totalTime = 60
           this.canClick = true  //这里重新开启
         }
       }, 1000)
     },
     onSubmit () {
-      console.log(1)
       this.$refs['TabForm'].validate((valid) => {
         if (valid) {
           if (this.formTab.province == '') {
@@ -238,8 +230,9 @@ export default {
           userRegister(this.formTab).then(res => {
             localStorage.setItem('userType', this.registerType)
             localStorage.setItem('token', res.data.token)
-            // this.$router.push('team')
             localStorage.setItem('teamType', 0)
+            this.$store.commit('getUid', res.data.uid)
+            localStorage.setItem('uid', res.data.uid)
             sessionStorage.setItem('userPosition', 1)
             if (res.data.type == 1) {
               this.$router.push('/createOrderTaking')

@@ -59,7 +59,12 @@
           </el-table-column>
           <el-table-column label="联系电话" prop="mobile" align="center" width="150"></el-table-column>
           <el-table-column label="意向岗位" prop="desired_position" align="center" width="150"></el-table-column>
-          <el-table-column label="意向工资" prop="money_m" align="center" width="150"></el-table-column>
+          <el-table-column label="意向工资" prop="money_m" align="center" width="150">
+            <template slot-scope="props">
+              <span type="text" v-if="props.row.salary_type==1">{{props.row.money_m}}</span>
+              <span type="text" v-else>{{props.row.money}}</span>
+            </template>
+          </el-table-column>
           <el-table-column label="意向城市" align="center" width="150">
             <template slot-scope="props">
               <span type="text">{{props.row.expect_provindeName}}{{props.row.expect_cityName}}</span>
@@ -270,6 +275,7 @@ export default {
     },
     addResume () {
       this.resumeId = ''
+      this.resumeInfo = {}
       this.dialogTableVisible = true
     },
     onSubmit (value) {

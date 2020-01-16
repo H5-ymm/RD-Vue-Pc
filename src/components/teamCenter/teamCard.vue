@@ -71,9 +71,11 @@
           </div>
         </div>
         <div v-if="index!=0" class="team-card-col2">
-          <p class="num-color">{{item.rate>=1?'+': '-'}}{{item.rate}}%</p>
-          <p class="el-icon-top num-color" v-if="item.rate>1"></p>
-          <p class="el-icon-bottom num-color-red" v-else></p>
+          <p class="num-color" v-if="Number(item.rate)>0">+{{item.rate}}%</p>
+          <p class="num-color" v-if="Number(item.rate)<0">-{{item.rate}}%</p>
+          <p class="num-color" v-if="Number(item.rate)==0">{{item.rate}}%</p>
+          <p class="el-icon-top num-color" v-if="Number(item.rate)>0"></p>
+          <p class="el-icon-bottom num-color-red" v-if="Number(item.rate)<0"></p>
           <p>周同比</p>
         </div>
       </div>

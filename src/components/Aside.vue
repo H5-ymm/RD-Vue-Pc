@@ -249,7 +249,7 @@ export default {
     }
   },
   created () {
-    let userPosition = this.$store.state.userPosition
+    let userPosition = localStorage.getItem('userPosition')
     let teamType = localStorage.getItem('teamType')
     let teamId = localStorage.getItem('uid')
     if (userPosition == 1) {
@@ -284,7 +284,8 @@ export default {
   },
   watch: {
     $route (to, from) {
-      let userPosition = this.$store.state.userPosition
+      console.log(to, from)
+      let userPosition = localStorage.getItem('userPosition')
       let teamType = localStorage.getItem('teamType')
       let teamId = localStorage.getItem('uid')
       if (userPosition == 1) {
@@ -344,16 +345,18 @@ export default {
   watch: {
     $route (to, from) {
       if (to.path == '/commonTableList' && from.path == '/teamEntryList') {
-        this.selectMenus(to.path,this.menus)
+        this.selectMenus(to.path, this.menus)
         this.url = '/teamEntryList'
       }
-      if(to.path=='/teamEntryList'&&from.path=='/resumeResult'){
-        this.selectMenus(to.path,this.menus)
+      if (to.path == '/teamEntryList' && from.path == '/resumeResult') {
+        this.selectMenus(to.path, this.menus)
       }
-
-      // else {
-      //   this.selectMenus(to.fullPath, this.menus)
-      // }
+      if (to.path == '/putList' && from.path == '/publishJobList') {
+        this.selectMenus(to.path, this.menus)
+      }
+      if (to.path == '/accountSafe' && from.path == '/passwordManage') {
+        this.selectMenus(to.path, this.menus)
+      }
     }
   },
   computed: {

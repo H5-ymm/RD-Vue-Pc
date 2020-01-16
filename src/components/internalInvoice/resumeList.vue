@@ -11,12 +11,12 @@
   <div class="tables-box billingManagement receipt-manage">
     <div class="table-list">
       <el-form :inline="true" label-width="100px" label-position="right" :model="formMember" class="demo-form-inline">
-        <el-form-item label="职位名称：">
-          <el-input v-model="formMember.where" class="width300" placeholder="请输入职位名称关键字"></el-input>
+        <el-form-item label="姓名：">
+          <el-input v-model="formMember.where" class="width300" placeholder="请输入姓名关键字"></el-input>
           <el-button type="primary" @click="onSubmit" class="select-btn">查询</el-button>
         </el-form-item>
         <el-form-item label="发单状态：">
-          <el-select v-model="formMember.job_status" @change="selectStatus" class="width160" placeholder="请选择">
+          <el-select v-model="formMember.job_status" value-key="label" @change="selectStatus" class="width160" placeholder="请选择">
             <el-option :label="item.label" :value="item.value" v-for="item in receiptStatusList" :key="item.value"></el-option>
           </el-select>
           <span class="error el-icon-warning">更改发单状态之后可以操作其他发单状态下的简历</span>
@@ -24,8 +24,8 @@
       </el-form>
       <div class="member-table">
         <div class="table-query">
-          <el-button @click="handlResume(1,this.params)">{{formMember.job_status==1?'通过':'入职'}}</el-button>
-          <el-button @click="handlResume(2,this.params)">{{formMember.job_status==1?'未通过':'未入职'}}</el-button>
+          <el-button @click="handlResume(1,this.params)">{{formMember.job_status!=3?'通过':'入职'}}</el-button>
+          <el-button @click="handlResume(2,this.params)">{{formMember.job_status!=3?'未通过':'未入职'}}</el-button>
           <span class="select-text">
             已选择
             <el-button type="text">{{multipleSelection.length}}&nbsp;</el-button>项
@@ -52,20 +52,34 @@
           </el-table-column>
           <el-table-column label="推荐时间" prop="addtime" align="center" width="180"></el-table-column>
           <el-table-column :label="lable" align="center" width="110">
-            <template slot-scope="props">
-              <span class="status" :class="`status${props.row.status}`" v-if="formMember.job_status==1">{{props.row.status==1?'待审核':props.row.status==2?'通过':'未通过'}}</span>
-              <span class="status" :class="`status${props.row.status}`" v-if="formMember.job_status==2">{{props.row.status | entryStatus}}</span>
+            <template slot-scope="props" v-if="job_status==1">
+              <span class="status" :class="`status${props.row.status}`">{{ props.row.status==0 ? '待审核': props.row.status==1?'已通过':'未通过'}}</span>>
             </template>
+            <template slot-scope="props" v-if="job_status==2">
+              {{props.row.interview_status}}
+              <span class="status" :class="`status${props.row.interview_status}`">{{props.row.interview_status==0?'待审核':props.row.interview_status==1?'已通过':'未通过'}}</span>
+            </template>
+            <template slot-scope="props" v-if="job_status==3">
+              <span class="status" :class="`status${props.row.entry_status}`">{{props.row.entry_status==0?'待审核':props.row.entry_status==1?'已通过':'未通过'}}</span>
+            </template>
+
           </el-table-column>
           <el-table-column label="操作" align="center" min-width="160">
             <template slot-scope="scope">
-              <div v-if="formMember.job_status==1">
-                <el-button @click="handlResume(1,scope.row)" type="text" size="small">通过</el-button>
-                <el-button @click="handlResume(2,scope.row)" type="text" size="small">未通过</el-button>
+              <div v-if="job_status==1">
+                <el-button @click="handlResume(1,scope.row)" type="text" v-if="!scope.row.status" size="small">通过</el-button>
+                <el-button @click="handlResume(2,scope.row)" type="text" v-if="!scope.row.status" size="small">未通过</el-button>
+                <span v-if="scope.row.status">{{scope.row.status==1?'已通过':'未通过'}}</span>
+              </div>
+              <div v-else-if="job_status==2">
+                <el-button @click="handlResume(1,scope.row)" type="text" v-if="!scope.row.interview_status" size="small">通过</el-button>
+                <el-button @click="handlResume(2,scope.row)" type="text" v-if="!scope.row.interview_status" size="small">未通过</el-button>
+                <span v-if="scope.row.interview_status">{{scope.row.interview_status==1?'已通过':'未通过'}}</span>
               </div>
               <div v-else>
                 <el-button @click="handlResume(1,scope.row)" type="text" size="small" v-if="!scope.row.entry_status">已入职</el-button>
                 <el-button @click="handlResume(2,scope.row)" type="text" size="small" v-if="!scope.row.entry_status">未入职</el-button>
+                <span v-if="scope.row.entry_status">{{scope.row.entry_status==1?'已通过':'未通过'}}</span>
               </div>
             </template>
           </el-table-column>
@@ -78,18 +92,12 @@
 </template>
 
 <script>
-import { getPutresume, auditRemuse, entrantResult, checkPutresume } from '@/api/internalInvoice'
+import { getPutresume, auditRemuse, entrantResult, checkPutresume, viewResult } from '@/api/internalInvoice'
 import { entryStatusList1 } from '@/base/base'
 import modal from '../common/modal'
 export default {
   components: {
     modal
-  },
-  entryStatus (val) {
-    let obj = entryStatusList1.find(item => {
-      return val == item.value
-    })
-    return obj ? obj.label : ''
   },
   data () {
     return {
@@ -107,7 +115,7 @@ export default {
       receiptStatusList: [
         { label: '审核简历', value: 1 },
         { label: '面试结果', value: 2 },
-        { label: '面试结果', value: 3 }
+        { label: '入职结果', value: 3 }
       ],
       viewType: 1,
       jobId: '',
@@ -118,7 +126,9 @@ export default {
       },
       status: 1,
       params: null,
-      resumeId: ''
+      resumeId: '',
+      id: '',
+      job_status: ''
     }
   },
   computed: {
@@ -132,6 +142,8 @@ export default {
       this.jobId = this.$route.query.jobId
       this.formMember.job_id = this.jobId
     }
+    this.job_status = this.$route.query.jobStatus
+    this.formMember.job_status = Number(this.$route.query.jobStatus)
     this.getList(this.formMember)
   },
   methods: {
@@ -162,7 +174,7 @@ export default {
       }
       this.status = status
       this.resumeId = val.resume_id
-      this.jobId = val.id
+      this.id = val.id
       if (val && this.multipleSelection.length) {
         this.dialogTableVisible = true
         return false
@@ -175,13 +187,13 @@ export default {
         uid: localStorage.getItem('uid'),
         job_id: this.jobId,
         status: this.status,
-        resume_id: this.resumeId
+        ids: this.id
       }
       if (this.formMember.job_status == 1) {
-        this.checkResume(params)
+        this.resumeResult(params)
       }
       else if (this.formMember.job_status == 2) {
-        this.resumeResult(params)
+        this.checkResume(params)
       }
       else {
         this.handleEntrant(params)
@@ -189,9 +201,13 @@ export default {
     },
     // 审核简历
     checkResume (params) {
-      checkPutresume(params).then(res => {
-        this.$message.success('操作成功')
-        this.getList(this.formMember)
+      viewResult(params).then(res => {
+        if (res.data) {
+          this.$message.success('操作成功')
+          this.getList(this.formMember)
+        } else {
+          this.$message.error('操作失败')
+        }
       }).catch(error => {
         this.$message.error(error.status.remind)
       })
@@ -199,8 +215,13 @@ export default {
     // 入职结果
     handleEntrant (params) {
       entrantResult(params).then(res => {
-        this.$message.success('操作成功')
-        this.getList(this.formMember)
+        if (res.data) {
+          this.$message.success('操作成功')
+          this.getList(this.formMember)
+        }
+        else {
+          this.$message.error('操作失败')
+        }
       }).catch(error => {
         this.$message.error(error.status.remind)
       })
@@ -208,25 +229,22 @@ export default {
     // 面试结果
     resumeResult (params) {
       auditRemuse(params).then(res => {
-        this.$message.success('操作成功')
-        this.getList(this.formMember)
+        if (res.data) {
+          this.$message.success('操作成功')
+          this.getList(this.formMember)
+        } else {
+          this.$message.error('操作失败')
+        }
       }).catch(error => {
         this.$message.error(error.status.remind)
       })
     },
     handleSelectionChange (val) {
+      this.multipleSelection = val
       let arr = val.map(item => {
         return item.id
       })
-      let arr2 = val.map(item => {
-        return item.resume_id
-      })
-      this.jobId = arr.join(',')
-      this.resumeId = arr2.join(',')
-      this.params = {
-        id: this.jobId,
-        resumeId: this.resumeId
-      }
+      this.id = arr.join(',')
     },
     onSubmit () {
       this.getList(this.formMember)

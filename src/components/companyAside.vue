@@ -7,7 +7,7 @@
         <div class="names company-names">人事达</div>
         <div class="company-info">
           <img src="../assets/img/img1.png" alt class="company-logo" v-if="baseInfo&&!baseInfo.logo_url" />
-          <img src="../assets/img/img1.png" alt class="company-logo" v-else />
+          <img src="../assets/img/headIcon2.png" alt class="company-logo" v-else />
           <p class="company-name" v-if="baseInfo">{{baseInfo.com_name}}</p>
         </div>
         <el-menu class="el-menu-vertical-demo" background-color="#262626" active-text-color="#1890FF" text-color="#fff" @open="handleOpen" :unique-opened="true" @close="handleClose" @select="selectMenus" router :default-active="routerli">
@@ -27,7 +27,8 @@
 </template>
 
 <script>
-import { companyBinkInfo } from '../api/user'
+import { getCompanyDetail } from '@/api/company'
+import { getImgUrl } from '@/util/util'
 export default {
   name: 'companyAside',
   props: {
@@ -90,28 +91,28 @@ export default {
             }
           ]
         },
-        {
-          title: '财务管理',
-          icon: 'el-icon-collection-tag',
-          submenu: [
-            {
-              title: '我的账户',
-              url: '/myAccount'
-            },
-            {
-              title: '充值',
-              url: '/deposit'
-            },
-            {
-              title: '提现',
-              url: '/withdraw'
-            },
-            {
-              title: '交易记录',
-              url: '/tradingRecord'
-            },
-          ]
-        },
+        // {
+        //   title: '财务管理',
+        //   icon: 'el-icon-collection-tag',
+        //   submenu: [
+        //     {
+        //       title: '我的账户',
+        //       url: '/myAccount'
+        //     },
+        //     {
+        //       title: '充值',
+        //       url: '/deposit'
+        //     },
+        //     {
+        //       title: '提现',
+        //       url: '/withdraw'
+        //     },
+        //     {
+        //       title: '交易记录',
+        //       url: '/tradingRecord'
+        //     },
+        //   ]
+        // },
         {
           title: '员工管理',
           icon: 'el-icon-collection-tag',
@@ -134,12 +135,24 @@ export default {
     }
   },
   created () {
-    this.baseInfo = sessionStorage.getItem('baseInfo') ? JSON.parse(sessionStorage.getItem('baseInfo')) : null
+    let uid = localStorage.getItem('uid')
+    this.getCompanyInfo(uid)
   },
   methods: {
-    getCompanyBind (uid) {
-      companyBinkInfo({ uid }).then(res => {
-        console.log(res)
+    getImgUrl,
+    getCompanyInfo (uid) {
+      getCompanyDetail({ uid }).then(res => {
+        this.baseInfo = res.data
+        if (res.data && res.data.logo_url) {
+          this.baseInfo.logo_url = this.getImgUrl(res.data.logo_url)
+        }
+        sessionStorage.setItem('baseInfo', JSON.stringify(this.baseInfo))
+        let userInfo = {
+          user_name: res.data.com_name,
+          mobile: res.data.link_phone,
+          head_img: this.getImgUrl(res.data.logo_url)
+        }
+        sessionStorage.setItem('userInfo', JSON.stringify(userInfo))
       })
     },
     handleOpen (key, keyPath) {

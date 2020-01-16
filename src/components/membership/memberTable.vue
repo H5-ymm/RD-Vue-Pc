@@ -23,13 +23,13 @@
         <el-table-column label="序号" type="selection" align="center" width="60" v-if="userPosition!=3"></el-table-column>
         <el-table-column label="姓名" align="center" width="150">
           <template slot-scope="props">
-            <el-button type="text" @click="handleView(props.row.uid)">{{props.row.user_name}}</el-button>
+            <el-button type="text" class="text-line width140" @click="handleView(props.row.id)">{{props.row.user_name}}</el-button>
           </template>
         </el-table-column>
         <el-table-column label="联系电话" prop="mobile" align="center" width="150"></el-table-column>
         <el-table-column label="所属部门" prop="depart_name" align="center" width="150"></el-table-column>
         <el-table-column label="等级" prop="grade_name" sortable align="center" width="150"></el-table-column>
-        <el-table-column label="直属上级" prop="grade_name" align="center" width="150"></el-table-column>
+        <el-table-column label="直属上级" prop="superiorName" align="center" width="150"></el-table-column>
         <el-table-column label="简历数量" prop="export_num" align="center" width="150"></el-table-column>
         <el-table-column label="入职人数" prop="entry_num" align="center" width="150"></el-table-column>
         <el-table-column label="最近登录时间" align="center" width="260">

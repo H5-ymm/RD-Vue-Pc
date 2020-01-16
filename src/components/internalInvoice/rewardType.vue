@@ -216,7 +216,6 @@ export default {
               this.$emit('submit', val)
             }
             else {
-              console.log(val)
               this.$emit('submit', val)
             }
           }

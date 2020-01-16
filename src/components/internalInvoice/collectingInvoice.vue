@@ -10,6 +10,9 @@
     .select-status {
       margin-right: 2px;
     }
+    .default-status {
+      font-size: 12px;
+    }
     .el-button {
       padding: 10px;
     }
@@ -100,7 +103,7 @@
       </el-form>
       <div class="member-table">
         <div class="table-query">
-          <el-button @click="$router.push('postJob')" type="primary">发布岗位</el-button>
+          <el-button @click="$router.push('postJob')" v-if="userPosition!=3" type="primary">发布岗位</el-button>
         </div>
         <el-table border :data="tableData" ref="multipleTable" style="width: 100%">
           <el-table-column label="企业名称" align="center" width="150" prop="company_name">
@@ -112,7 +115,7 @@
             </template>
           </el-table-column>
           <el-table-column label="工作地址" prop="address" align="center" width="110"></el-table-column>
-          <el-table-column label="员工薪资" align="center" width="110">
+          <el-table-column label="员工薪资" align="center" width="150">
             <template slot-scope="props">
               <span>{{props.row.offermoney}}元/{{props.row.offermoney_type==1?'月':props.row.offermoney_type==2?'日':'时'}}</span>
             </template>

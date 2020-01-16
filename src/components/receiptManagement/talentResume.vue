@@ -48,7 +48,7 @@
           </span>
           <el-button type="text" @click="multipleSelection=[]">清空</el-button>
         </div>
-        <el-table border @sort-change="sortChange" :data="tableData" ref="multipleTable" style="width: 100%" @selection-change="handleSelectionChange">
+        <el-table border @sort-change="sortChange" :data="tableData" style="width: 100%" @selection-change="handleSelectionChange">
           <el-table-column type="selection" align="center" width="60"></el-table-column>
           <el-table-column label="职位名称" align="center" width="150">
             <template slot-scope="props">
@@ -123,6 +123,7 @@ import { getConstant } from '@/api/dictionary'
 import modal from '../common/modal'
 import viewJob from '../common/viewJob'
 export default {
+  name: 'talentResume',
   components: {
     noticeModal,
     modal,
@@ -155,8 +156,7 @@ export default {
         uid: localStorage.getItem('uid'),
         limit: 10,
         page: 1,
-        jddesc: 'asc',
-        status: -1
+        status: ''
       },
       total: 0,
       multipleSelection: [],
@@ -201,7 +201,7 @@ export default {
         this.handleNote(val)
       }
       else {
-        this.$router.push({ path: 'checkResume', query: { id: val.id, view: 3 } })
+        this.$router.push({ path: '/checkResume', query: { id: val.id, view: 3 } })
       }
     },
     viewJob (val) {

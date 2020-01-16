@@ -46,11 +46,12 @@
           <el-table-column label="状态" align="center" width="150">
             <template slot-scope="props">
               <span class="status status2" v-if="props.row.status==1&&props.row.job_status==1">待审核</span>
+              <span class="status status2" v-if="props.row.status==1&&props.row.job_status==2">已下架</span>
               <span class="status" :class="`status${props.row.status-1}`" v-if="props.row.status!=1&&props.row.job_status==1">{{props.row.status==2?'已通过':'未通过'}}</span>
-              <span class="status" :class="`status${Number(props.row.job_status)+1}`" v-if="props.row.job_status!=1&&props.row.status==2">{{props.row.job_status==1?'已上架':'已下架'}}</span>
+              <span class="status" :class="`status${Number(props.row.job_status)+1}`" v-if="!props.row.job_status&&props.row.status==2">{{props.row.job_status==1?'已上架':'已下架'}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="操作" align="center" width="150">
+          <el-table-column label="操作" align="center" min-width="150">
             <template slot-scope="scope">
               <!-- <el-button
                 @click="handleEdit(scope.row)"
@@ -62,7 +63,7 @@
               <el-button @click="handleDel(scope.row)" type="text" v-if="scope.row.status!=2" size="small">删除</el-button>
               <el-button @click="viewJob(scope.row)" type="text" size="small">查看</el-button>
               <el-button @click="handleRecceipt(2,scope.row)" v-if="scope.row.status==2&&scope.row.job_status==1" type="text" size="small">下架</el-button>
-              <el-button @click="handleRecceipt(1,scope.row)" type="text" v-if="scope.row.status==2&&scope.row.job_status==2" size="small">上架</el-button>
+              <el-button @click="handleRecceipt(1,scope.row)" type="text" v-if="scope.row.status==2&&(scope.row.job_status==2||scope.row.job_status==1)" size="small">上架</el-button>
             </template>
           </el-table-column>
         </el-table>

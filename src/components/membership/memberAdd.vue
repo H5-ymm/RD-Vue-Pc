@@ -28,8 +28,8 @@
             </el-select>
           </el-form-item>
           <el-form-item label="部门">
-            <el-select placeholder="请选择" :disabled="userPosition==2&&id!=''" v-model="depId" @change="selectDep">
-              <el-option :label="item.depart_name" :value="item.id" v-for="(item,index) in depList" :key="index"></el-option>
+            <el-select placeholder="请选择" value-key="depart_name" :disabled="userPosition==2&&id!=''" v-model="depId" @change="selectDep">
+              <el-option :label="item.depart_name" :value="item.id" v-for="(item,index) in currentDepList" :key="item.depart_name"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="当前职称">
@@ -113,13 +113,19 @@ export default {
       edu_type: [],
       jobList: [],
       address: [],
-      userPosition: sessionStorage.getItem('userPosition')
+      userPosition: sessionStorage.getItem('userPosition'),
+      currentDepList: []
     }
   },
   created () {
     let params = 'edu_type'
+    if (this.userPosition == 2) {
+      this.depId = Number(localStorage.getItem('departId'))
+    }
+    console.log(this.depId)
     this.getList(params)
     this.getJobList()
+    this.handleClose()
   },
   methods: {
     getJob (arr, id) {
@@ -143,8 +149,25 @@ export default {
     getJobList () {
       let uid = this.formMember.uid
       departmentRoleList({ uid }).then(res => {
-        this.depList = res.data
+        // this.depList = res.data
+        if (this.userPosition == 1) {
+          this.currentDepList = res.data.splice(0)
+          console.log(this.currentDepList)
+        }
+        else {
+          this.currentDepList = this.getCurrentDepList(res.data)
+          this.jobList = this.getArr(this.currentDepList, this.depId)
+        }
       })
+    },
+    getCurrentDepList (array) {
+      let arr = []
+      array.filter(item => {
+        if (item.id == this.depId) {
+          arr.push(item)
+        }
+      })
+      return arr
     },
     getArr (arr, id) {
       let newArr = []
@@ -156,7 +179,8 @@ export default {
       return newArr
     },
     selectDep (val) {
-      this.jobList = this.getArr(this.depList, val)
+      console.log(val)
+      this.jobList = this.getArr(this.currentDepList, val)
     },
     change (val) {
       this.formMember.provinceid = val[0]
@@ -164,6 +188,20 @@ export default {
       this.formMember.three_cityid = val[2]
     },
     handleClose () {
+      this.formMember = {
+        region: '',
+        status: 1,
+        user_name: '',
+        id_card: '',
+        mobile: '',
+        education: '',
+        grade_id: '',
+        provinceid: '',
+        cityid: '',
+        three_cityid: '',
+        uid: localStorage.getItem('uid'),
+      }
+      this.address = []
       this.$emit('handleClose')
     },
     submitForm () {

@@ -17,6 +17,8 @@ export const curapportionList = data => $post('/teamapply/curapportion_list', da
 export const getpartMember = data => $post('/teamapply/getpart_member', data) // 部门所有团员列表
 
 export const addTomember = data => $post('/teamapply/add_tomember', data) // 部门经理分配跟进人
+export const cancelTomember = data => $post('/teamapply/cancel_tomember', data)
+
 export const applyList = data => $post('/teamtalent/apply_list', data) //根据接单状态获取接单列表
 export const getListPut = data => $post('/teamtalent/getList_put', data) //根据接单状态获取推荐简历列表
 export const addApportion = data => $post('/teamapply/add_apportion_bymember', data)

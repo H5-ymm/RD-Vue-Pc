@@ -66,7 +66,8 @@
               </div>
               <div class="team-info-card-item" v-if="jobInfo.reward_type==1">
                 <span>结算时间</span>
-                <span>次月{{jobInfo.settlement_time}}号结算</span>
+                <span v-if="jobInfo.settlement_time">次月{{jobInfo.settlement_time}}号结算</span>
+                <span v-else>次月第一天结算</span>
               </div>
               <div class="team-info-card-item" v-else>
                 <span>结算时间</span>
@@ -81,7 +82,7 @@
               <div class="team-info-card-item" v-if="jobInfo.reward_type==4">
                 <span>需入职满</span>
                 <span v-if="jobInfo.reward_needtime">{{jobInfo.reward_needtime}}{{jobInfo.reward_money_type==1?'天':jobInfo.reward_money_type==2?'周': '月'}}</span>
-                <span v-else>一{{jobInfo.reward_money_type==1?'天':jobInfo.reward_money_type==2?'周': '个月'}}</span>
+                <span v-else>一天</span>
               </div>
             </li>
             <li class="team-info-card-row">
@@ -94,6 +95,7 @@
                 <span v-if="jobInfo.reward_money_type==1">长期返利</span>
                 <span v-if="jobInfo.reward_money_type==2&&jobInfo.duration_time">持续返利{{jobInfo.duration_time}}个月</span>
                 <span v-if="jobInfo.reward_money_type==2&&!jobInfo.duration_time">一{{jobInfo.reward_money_type==1?'天':jobInfo.reward_money_type==2?'周': '个月'}}</span>
+                <span v-if="jobInfo.reward_money_type==3&&!jobInfo.duration_time">一{{jobInfo.reward_money_type==1?'天':jobInfo.reward_money_type==2?'周': '个月'}}</span>
               </div>
               <div class="team-info-card-item" v-if="jobInfo.reward_type==2||jobInfo.reward_type==3||jobInfo.reward_type==4">
                 <span>需入职满</span>

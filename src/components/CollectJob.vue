@@ -69,8 +69,9 @@
             <template slot-scope="scope">
               <div v-if="scope.row.job_status==1">
                 <el-button @click="handleRecommend(scope.row)" v-if="scope.row.t_status==0&&userPosition!=1" type="text" size="small">推荐接单</el-button>
-                <el-button @click="handleApply(scope.row)" v-if="scope.row.t_status==1&userPosition==1" type="text" size="small">申请接单</el-button>
-                <el-button @click="handleCancle(scope.row)" type="text" v-if="scope.row.t_status==3&&scope.row.jobStatus==1&&userPosition!=1" size="small">取消收藏</el-button>
+                <el-button @click="handleApply(scope.row)" v-if="scope.row.t_status==0&userPosition==1" type="text" size="small">申请接单</el-button>
+                <span v-if="scope.row.t_status==1&userPosition==1">已申请</span>
+                <el-button class="default-status" @click="handleCancle(scope.row)" type="text" v-if="scope.row.t_status==3&&scope.row.jobStatus==1&&userPosition!=1" size="small">取消收藏</el-button>
                 <el-button @click="handleCancle(scope.row)" type="text" size="small">取消收藏</el-button>
               </div>
               <div v-else>

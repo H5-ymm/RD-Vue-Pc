@@ -75,6 +75,7 @@ export default {
         })
         this.currentId.splice(ret, 1)
       }
+      console.log(this.currentId)
       this.ids = [...new Set(this.currentId)]
     },
     submit () {
