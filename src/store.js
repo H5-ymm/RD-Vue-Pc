@@ -70,7 +70,7 @@ export default new Vuex.Store({
       commit('SET_PERMISSION', [...children])
     },
     logoutUser ({ commit, state }) {
-      return new Promise((resolve, reject) => {
+      let outUser = new Promise((resolve, reject) => {
         let uid = localStorage.getItem('uid')
         logout({ uid }).then(res => {
           localStorage.clear('')
@@ -81,9 +81,10 @@ export default new Vuex.Store({
           reject(error)
         })
       })
+      return outUser
     },
     getUserAllInfo ({ commit, state }) {
-      return new Promise((resolve, reject) => {
+      let allInfo =  new Promise((resolve, reject) => {
         let uid = localStorage.getItem('uid')
         if (uid) {
           getUserInfo({ uid }).then(res => {
@@ -95,6 +96,7 @@ export default new Vuex.Store({
           })
         }
       })
+      return allInfo
     },
     updateUserInfo ({ dispatch }, params) {
       let infoPromise = new Promise((resolve, reject) => {
