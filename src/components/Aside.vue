@@ -21,11 +21,10 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 export default {
   name: 'Aside',
-  props: {
-
-  },
+  props: ['userPosition'],
   data () {
     return {
       menus: [
@@ -66,20 +65,7 @@ export default {
         {
           title: '接单管理',
           icon: 'el-icon-collection-tag',
-          submenu: [
-            {
-              title: '输送人才',
-              url: '/teamInterviewPersonnel'
-            },
-            {
-              title: '面试结果',
-              url: '/resumeResult'
-            },
-            {
-              title: '入职名单',
-              url: '/teamEntryList'
-            },
-          ]
+          submenu: []
         },
         {
           title: '账户设置',
@@ -154,6 +140,11 @@ export default {
             }
           ]
         },
+        {
+          title: '内部发单',
+          icon: 'el-icon-collection-tag',
+          submenu: []
+        }
         // {
         //   title: '财务管理',
         //   icon: 'el-icon-collection-tag',
@@ -199,24 +190,24 @@ export default {
         title: '成员推荐',
         url: '/userRecommend'
       },
-      receipt: {
-        title: '内部发单',
-        icon: 'el-icon-collection-tag',
-        submenu: [
+      job: [
+         {
+            title: '已发布职位',
+            url: '/publishJobList?view=2'
+          },
           {
             title: '已推荐简历',
             url: '/putList'
           }
-        ]
-      },
-      job: {
-        title: '已发布职位',
-        url: '/publishJobList?view=2'
-      },
+      ],
       internalInvoiceRoot: [
         {
           title: '领取发单',
           url: '/collectingInvoice'
+        },
+        {
+          title: '已发布职位',
+          url: '/publishJobList?view=2'
         },
         {
           title: '管理内部职位',
@@ -225,34 +216,77 @@ export default {
         {
           title: '内部审核简历',
           url: '/checkResumeInvoice'
+        },
+        {
+          title: '已推荐简历',
+          url: '/putList'
         }
       ],
       receiptRoot: [
+         {
+              title: '申请接单',
+              url: '/teamApplication'
+            },
+            {
+              title: '接单分配',
+              url: '/receiptTable'
+            },
+            {
+              title: '输送人才',
+              url: '/teamInterviewPersonnel'
+            },
+            {
+              title: '面试结果',
+              url: '/resumeResult'
+            },
+            {
+              title: '入职名单',
+              url: '/teamEntryList'
+            },
+      ],
+      receiptRoot2:[
         {
-          title: '申请接单',
-          url: '/teamApplication'
+          title: '输送人才',
+          url: '/teamInterviewPersonnel'
         },
         {
-          title: '接单分配',
-          url: '/receiptTable'
-        }
+          title: '面试结果',
+          url: '/resumeResult'
+        },
+        {
+          title: '入职名单',
+          url: '/teamEntryList'
+        },
       ],
       receiptRoot1: [
-        {
-          title: '接单分配',
-          url: '/receiptTable'
-        }
+          {
+            title: '接单分配',
+            url: '/receiptTable'
+          },
+          {
+            title: '输送人才',
+            url: '/teamInterviewPersonnel'
+          },
+          {
+            title: '面试结果',
+            url: '/resumeResult'
+          },
+          {
+            title: '入职名单',
+            url: '/teamEntryList'
+          },
       ],
       title: '',
       url: '/teamData',
-      userPosition: 0
+      userP: 0
     }
   },
   created () {
-    let userPosition = localStorage.getItem('userPosition')
+    this.userP =  this.userPosition
+    console.log(this.userP+'改变111')
     let teamType = localStorage.getItem('teamType')
     let teamId = localStorage.getItem('uid')
-    if (userPosition == 1) {
+    if (this.userP == 1) {     
       if (teamType == 1) {
         this.root.submenu[0].url = `/teamCompanyForm?teamId=${teamId}&type=${teamType}`
       }
@@ -263,32 +297,49 @@ export default {
         this.root.submenu[0].url = `/teamSetting`
       }
       this.menus.splice(4, 0, this.root)
-      this.menus.splice(9, 0, this.receipt)
-      this.menus[3].submenu = this.receiptRoot.concat(this.menus[3].submenu)
-      let len = this.menus.length - 2
-      this.menus[len].submenu.push(this.collect)
+      this.menus.forEach((item,index) =>{
+        if(item.title=='接单管理') {      
+          this.menus[index].submenu = [...this.receiptRoot]
+        }
+        if (item.title == '内部发单') {
+          this.menus[index].submenu = [...this.internalInvoiceRoot]
+        }
+      })
     }
-    if (userPosition == 2) {
-      this.menus[3].submenu = this.receiptRoot1.concat(this.menus[3].submenu)
-      this.menus.splice(8, 0, this.receipt)
+    if (this.userP == 2) {
+      this.menus.forEach((item,index) =>{
+        if (item.title == '团队设置') {
+          this.menus.splice(index,1)
+        }
+        if (item.title == '接单管理') {
+          this.menus[index].submenu = [...this.receiptRoot1]
+        }
+        if (item.title == '内部发单') {
+          this.menus[index].submenu = [...this.internalInvoiceRoot]
+        }
+      })
     }
-    if (userPosition == 3) {
-      this.receipt.submenu.unshift(this.job)
-      this.menus.splice(8, 0, this.receipt)
-    }
-    if (userPosition && userPosition != 3) {
-      let len = this.menus.length - 1
-      this.internalInvoiceRoot.splice(1, 0, this.job)
-      this.menus[len].submenu = this.internalInvoiceRoot.concat(this.menus[len].submenu)
+    if (this.userP == 3) {
+      this.menus.forEach((item,index) =>{
+        if (item.title == '团队设置') {
+          this.menus.splice(index,1)
+        }
+        if (item.title == '接单管理') {
+          this.menus[index].submenu = [...this.receiptRoot2]
+        }
+        if (item.title == '内部发单') {
+          this.menus[index].submenu = [... this.job]
+        }
+      })
     }
   },
   watch: {
-    $route (to, from) {
-      console.log(to, from)
-      let userPosition = localStorage.getItem('userPosition')
+    userPosition(val){
+      console.log(val+'改变')
+      this.userP = val
       let teamType = localStorage.getItem('teamType')
       let teamId = localStorage.getItem('uid')
-      if (userPosition == 1) {
+      if (val == 1) {
         if (teamType == 1) {
           this.root.submenu[0].url = `/teamCompanyForm?teamId=${teamId}&type=${teamType}`
         }
@@ -299,19 +350,56 @@ export default {
           this.root.submenu[0].url = `/teamSetting`
         }
         this.menus.splice(4, 0, this.root)
-        this.menus.splice(9, 0, this.receipt)
-        this.menus[3].submenu = this.receiptRoot.concat(this.menus[3].submenu)
+        this.menus.forEach((item,index) =>{
+          if(item.title=='接单管理') {      
+            this.menus[index].submenu = [...this.receiptRoot]
+          }
+          if (item.title == '内部发单') {
+            this.menus[index].submenu = [...this.internalInvoiceRoot]
+          }
+        })
       }
-      if (userPosition == 2) {
-        this.menus[3].submenu = this.receiptRoot1.concat(this.menus[3].submenu)
-        this.menus.splice(8, 0, this.receipt)
+      if (val == 2) {
+        this.menus.forEach((item,index) =>{
+          if (item.title == '团队设置') {
+            this.menus.splice(index,1)
+          }
+          if (item.title == '接单管理') {
+            this.menus[index].submenu = [...this.receiptRoot1]
+          }
+          if (item.title == '内部发单') {
+            this.menus[index].submenu = [...this.internalInvoiceRoot]
+          }
+        })
       }
-      if (userPosition == 3) {
-        this.menus.splice(8, 0, this.receipt)
+      if (val == 3) {
+        this.menus.forEach((item,index) =>{
+          if (item.title == '团队设置') {
+            this.menus.splice(index,1)
+          }
+          if (item.title == '接单管理') {
+            this.menus[index].submenu = [...this.receiptRoot2]
+          }
+          if (item.title == '内部发单') {
+            this.menus[index].submenu = [...this.job]
+          }
+        })
       }
-      if (userPosition && userPosition != 3) {
-        let len = this.menus.length - 1
-        this.menus[len].submenu = this.internalInvoiceRoot.concat(this.menus[len].submenu)
+      console.log(this.menus)
+    },
+    $route (to, from) {
+      if (to.path == '/commonTableList' && from.path == '/teamEntryList') {
+        this.selectMenus(to.path, this.menus)
+        this.url = '/teamEntryList'
+      }
+      if (to.path == '/teamEntryList' && from.path == '/resumeResult') {
+        this.selectMenus(to.path, this.menus)
+      }
+      if (to.path == '/putList' && from.path == '/publishJobList') {
+        this.selectMenus(to.path, this.menus)
+      }
+      if (to.path == '/accountSafe' && from.path == '/passwordManage') {
+        this.selectMenus(to.path, this.menus)
       }
     }
   },
@@ -340,23 +428,6 @@ export default {
         })
       })
       return list
-    }
-  },
-  watch: {
-    $route (to, from) {
-      if (to.path == '/commonTableList' && from.path == '/teamEntryList') {
-        this.selectMenus(to.path, this.menus)
-        this.url = '/teamEntryList'
-      }
-      if (to.path == '/teamEntryList' && from.path == '/resumeResult') {
-        this.selectMenus(to.path, this.menus)
-      }
-      if (to.path == '/putList' && from.path == '/publishJobList') {
-        this.selectMenus(to.path, this.menus)
-      }
-      if (to.path == '/accountSafe' && from.path == '/passwordManage') {
-        this.selectMenus(to.path, this.menus)
-      }
     }
   },
   computed: {

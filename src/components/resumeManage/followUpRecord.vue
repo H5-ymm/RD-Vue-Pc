@@ -63,17 +63,17 @@
     color: #333333;
     padding: 0 0 10px;
     position: relative;
-    &.record-box {
-      height:540px;
-      overflow: auto;
-    }
     .cancel-icon {
       position: absolute;
       top: 5px;
       right: 0;
     }
+    .record-box {
+      height:450px;
+      overflow: auto;
+    }
   }
-  .resume-card {   
+  .resume-card {  
     .resume-main-title {
       border-bottom: 1px solid #eee;
       padding-bottom: 10px;
@@ -95,12 +95,12 @@
 </style>
 <template>
   <el-dialog width="500px" :visible="dialogTableVisible" center class="member-dialog record-dialog" :show-close="false">
-    <div class="member-row record-box" id="topContent" ref="topContent">
+    <div class="member-row" id="topContent" ref="topContent">
       <img src="../../assets/img/member/cancel.png" alt class="cancel-icon" @click="handleClose" />
       <section class="member-col1">
         <p>跟进记录</p>
       </section>
-      <section class="record-col3">
+      <section class="record-col3 record-box">
         <el-timeline v-if="list.length">
           <el-timeline-item v-for="(item, index) in list" :type="item.type" :size="item.size" :key="index" :timestamp="$moment.unix(item.addtime).format('YYYY-MM-DD')" placement="top">
             <div class="record-content">
@@ -108,7 +108,7 @@
                 [{{item.title}}] {{item.username}} {{item.remark?item.remark:''}}
               </P>
               <P v-if="item.com_name">企业名称 : {{item.com_name}}</P>
-              <P v-if="item.job_name">企业名称 : {{item.job_name}}</P>
+              <P v-if="item.job_name">职位名称 : {{item.job_name}}</P>
               <P>操作人 : {{item.operator}}</P>
               <P>跟进时间: {{$moment.unix(item.addtime).format('YYYY-MM-DD HH:mm:ss')}}</P>
             </div>

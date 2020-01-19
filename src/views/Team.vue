@@ -2,7 +2,7 @@
   <div class="team-main-view">
     <el-container>
       <el-aside width="210px" class="team-aside">
-        <component :is="aside"></component>
+        <component :is="aside" :userPosition="userPosition"></component>
       </el-aside>
       <el-container :class="{'comany-team-container': type==1}">
         <el-header :height="height">
@@ -76,6 +76,7 @@ import { logout } from '@/api/login'
 import { mapState, mapActions, mapMutations } from 'vuex'
 export default {
   name: 'team',
+  inject: ['reload'],
   data () {
     return {
       breadcrumb: [],
@@ -85,7 +86,8 @@ export default {
       baseInfo: {},
       userInfo: {},
       uid: '',
-      departName: localStorage.getItem('departName'),
+      departName: '',
+      userPosition:'',
       transitionName: 'slide-left'//默认动画
     }
   },
@@ -94,11 +96,17 @@ export default {
     Breadcrumb,
     companyAside
   },
+  computed:{
+    ...mapState({
+     teamInfo: state => state.teamInfo
+    })
+  },
   created () {
     // type 1 企业
-    // 2 团队
     this.type = localStorage.getItem('userType')
     this.uid = localStorage.getItem('uid')
+    this.userPosition = localStorage.getItem('userPosition')
+    this.departName = localStorage.getItem('departName')
     if (this.type == 1) {
       this.aside = 'companyAside'
       this.height = "88px"
@@ -118,10 +126,14 @@ export default {
       this.breadcrumb = JSON.parse(sessionStorage.getItem('menus'))
     }
     this.getUserAll()
+    console.log( localStorage.getItem('userPosition'))
   },
   watch: {
     $route (to, from) {
       if (to.query.userType) {
+        this.userPosition = localStorage.getItem('userPosition')
+        console.log(this.userPosition)
+        this.departName = localStorage.getItem('departName')
         this.type = to.query.userType
         if (this.type == 1) {
           this.aside = 'companyAside'
@@ -145,7 +157,6 @@ export default {
     getUserAll () {
       this.$store.dispatch('getUserAllInfo').then((res) => {
         this.$store.commit('getUserInfo', res.data)
-        console.log(res.data)
         this.userInfo = res.data
       })
     },
@@ -175,22 +186,10 @@ export default {
       if (val == '/login') {
         // let uid = this.$store.state.uid ? this.$store.state.uid : localStorage.getItem('uid')
         this.$store.dispatch('logoutUser').then((res) => {
-          console.log(res)
+          this.reload()
           this.$message.success('退出登录成功')
           this.$router.replace(val)
         })
-        // logout({ uid }).then(res => {
-        //   if (res.data) {
-        //     localStorage.clear('')
-        //     sessionStorage.clear()
-        //     // this.$store.commit('getUserInfo', {})
-        //     this.$message.success('退出登录成功')
-        //     this.$router.replace(val)
-        //   }
-        //   else {
-        //     this.$message.error('退出登录失败')
-        //   }
-        // })
       }
       else {
         this.$router.push(val)

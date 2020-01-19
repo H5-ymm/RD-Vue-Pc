@@ -124,12 +124,6 @@ export default {
       }
     }
   },
-  beforeRouteLeave (to, from, next) {
-    next(() => {
-      this.reload();
-    })
-
-  },
   methods: {
     sendCode () {
       if (!this.formTab.name) {
@@ -199,6 +193,7 @@ export default {
             //   this.$router.push('/teamData')
             // }
           }).catch(error => {
+            console.log(error)
             if (error.status.code == 3010) {
               this.isShowError = true
               this.dialogVisible = false
@@ -352,7 +347,7 @@ export default {
 .register-box .code-btn {
   width: 130px!important;
   position:absolute;
-  bottom:2px;
+  bottom:-10px;
   right:0;
   border-radius:0;
   padding: 10px 20px;

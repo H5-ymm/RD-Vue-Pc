@@ -6,7 +6,7 @@
 <script>
 import $echart from 'echarts'
 export default {
-  props: ['activeIndex', 'legendIndex', 'list', 'percentList', 'eachartData', 'allData'],
+  props: ['activeIndex', 'legendIndex', 'percentList', 'list','eachartData'],
   data () {
     return {
       axais: {
@@ -76,7 +76,9 @@ export default {
         series: [],
         itemStyleColor: '#0581DE',
         index: 0,
-        arrList: []
+        arrList: [],
+        arr1: [],
+        arr2: {}
       }
     }
   },
@@ -89,7 +91,6 @@ export default {
       this.index = val
       this.getLegenData(this.legendIndex)
       this.getData(val)
-      // this.getList()
     },
     legendIndex (val) {
       this.getLegenData(val)
@@ -101,7 +102,26 @@ export default {
         this.getLegenData(this.legendIndex)
         this.getData(this.activeIndex)
       } else {
-        this.arrList = []
+        this.arrList = null
+      }
+    },
+    list(val){
+      if (val && val.length) {
+        this.arr1 = val
+        this.getLegenData(this.legendIndex)
+        this.getData(this.activeIndex)
+      } else {
+        this.arr1 = null
+      }
+    },
+    percentList(val){
+      console.log(val)
+      if (val) {
+        this.arr2 = val
+        this.getLegenData(this.legendIndex)
+        this.getData(this.activeIndex)
+      } else {
+        this.arr2 = null
       }
     }
   },
@@ -115,8 +135,8 @@ export default {
       else if (val == 2) {
         this.legendData = ['本月', '上个月']
         let key = this.getKey(val)
-        if (this.allData && this.allData.total) {
-          this.xData = this.getXarr(this.allData[key])
+        if (this.arr2 && this.arr2.total) {
+          this.xData = this.getXarr(this.arr2[key])
         }
       }
       else if (val == 3) {
@@ -149,11 +169,13 @@ export default {
     getArray (obj) {
       let arr = []
       for (let i in obj) {
-        arr.push(obj[i])
+        if (i) {
+          arr.push(obj[i])
+        }
       }
       return arr
     },
-    getXarr (obj) {
+    getXarr(obj){
       let arr = []
       for (let i in obj) {
         if (i) {
@@ -165,14 +187,14 @@ export default {
       }
       return arr
     },
-    getList () {
+    getList (val) {
       let arr = []
-      if (this.list) {
-        console.log(this.eachartData)
-        arr[0] = this.eachartData[this.activeIndex]
-        arr[1] = this.list.splice(0)
+      if (this.arr1&&this.arr1.length) {
+        arr[0] = this.arr1
+        arr[1] = this.eachartData[this.activeIndex-1]
+
       }
-      console.log(arr)
+      console.log(this.arr1)
       return arr
     },
     getData (index) {
@@ -235,7 +257,7 @@ export default {
           type: 'line',
           symbol: 'circle',
           symbolSize: 8,
-          data: this.arrList ? this.arrList[1] : [],
+          data: this.arrList ? this.arrList[2] : [],
           itemStyle: {
             normal: { color: '#7003FE' }
           }
@@ -266,12 +288,11 @@ export default {
       let myChart = $echart.init(document.getElementById('myChart'))
       let newXaxis = JSON.stringify(this.axais)
       this.option.yAxis = this.axais
-      let axisLabel
-      console.log(this.legendIndex)
-      if (this.legendIndex == 2) {
+      let  axisLabel
+      if (this.legendIndex==2) {
         axisLabel = {//坐标轴刻度标签的相关设置。
-          interval: 0,
-          rotate: "45",
+          interval:0,
+          rotate:"45",
           show: true,
           textStyle: {
             color: '#333'

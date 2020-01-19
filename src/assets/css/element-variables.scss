@@ -20,15 +20,35 @@
 .el-select-dropdown__item {
   color: #999;
 }
+.el-range-editor.el-input__inner {
+  padding: 18px 10px;
+  .el-input__icon,.el-range-separator {
+    height: auto;
+  }
+}
 .el-input__inner {
   color: #333;
-  padding: 0 10px;
-  height: 38px;
-  line-height: 38px;
+  padding: 19px 10px;
+  height: 0;
+  line-height: normal; 
   border: 1px solid #eee;
   border-radius:3px;
+  line-height:normal;
+  -webkit-user-select: text;
+  &:focus{
+     padding:2px;
+  }
   &:focus,&:hover {
     border:1px solid #1890ff;
+  }
+  .el-range-input {
+    height: auto;
+  }
+}
+.el-pagination {
+  .el-input__inner {
+    color: #333;
+    padding: 12px  10px;
   }
 }
 .el-textarea__inner {

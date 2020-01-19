@@ -147,7 +147,7 @@ export default {
       legendIndex: 1,
       limit: 10,
       teamCenterInfo: {},
-      percentList: [],
+      percentList: {},
       list: [],
       personList: [],
       tableData: [],
@@ -219,35 +219,42 @@ export default {
     },
     getKey (index) {
       let label = ''
-      if (index == 1) {
-        label = 'total'
-      }
-      else if (index == 2) {
-        label = 'put'
-      }
-      else if (index == 3) {
-        label = 'view'
-      }
-      else {
-        label = 'entry'
+        if (index) {
+          if (index == 1) {
+          label = 'total'
+        }
+        else if (index == 2) {
+          label = 'put'
+        }
+        else if (index == 3) {
+          label = 'view'
+        }
+        else {
+          label = 'entry'
+        }
       }
       return label
     },
-    getData (params, last) {
+    getData (params, last,index) {
+      let obj  = {}
       if (last) {
-        params.last = last
+        obj = Object.assign(params,{last:1})
       }
-      getnumLeader(params).then(res => {
+      else {
+        obj  = Object.assign(params,{last:''})
+      }
+      getnumLeader(obj).then(res => {
         this.allData = res.data
+        this.percentList = this.allData
+        let key = this.getKey(index)
         if (last) {
-          let key = this.getKey(this.activeIndex)
           this.list = this.getArray(res.data[key])
-          console.log(this.list)
-          // this.eachartData = this.getNewList(res.data)
+          this.activeIndex = index
         }
         else {
-          // this.percentList = this.getArray(res.data[key])
+          
           this.eachartData = this.getNewList(res.data)
+          console.log( this.eachartData)       
         }
       }).catch(error => {
         this.$message.error(error.status.remind)
@@ -258,7 +265,6 @@ export default {
       for (let i in obj) {
         arr.push(obj[i])
       }
-      console.log(arr)
       return arr
     },
     getXarr (obj) {
@@ -266,9 +272,6 @@ export default {
       for (let i in obj) {
         if (i) {
           arr.push(i)
-        }
-        else {
-          return
         }
       }
       return arr
@@ -290,6 +293,7 @@ export default {
       for (let key in obj) {
         arr[key] = this.getArray(val[obj[key]]).splice(0)
       }
+      console.log(arr)
       return arr
     },
     getDep () {
@@ -323,8 +327,9 @@ export default {
       })
     },
     select (index) {
-      this.activeIndex = index
-      this.getData(this.paramsEchart, 1)
+      console.log(index + '下班')
+      this.getData(this.paramsEchart, 1,index)
+      this.getData(this.paramsEchart)
     },
     getList (params) {
       getrank(params).then(res => {

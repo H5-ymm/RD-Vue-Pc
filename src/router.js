@@ -98,14 +98,6 @@ router = [...router]
 // 4.将生成好的路由addRoutes
 routers.addRoutes(router)
 // routers.beforeEach((to, from, next) => {
-//   if (to.meta.requireAuth) {
-//     if (store.state.token) {
-//       next()
-//     } else {
-//       next({ path: '/login' })
-//     }
-//   } else {
-//     next()
-//   }
+
 // })
 export default routers

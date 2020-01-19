@@ -15,8 +15,8 @@ $axios.interceptors.request.use(
     // 此处应根据具体业务写token
     const token = localStorage.getItem('token')
     if (localStorage.getItem('token')) {
-      config.headers['http-userid'] = localStorage.getItem('uid')
-      config.headers['http-token'] = token
+      // config.headers['http-userid'] = localStorage.getItem('uid')
+      // config.headers['http-token'] = token
     }
     config.headers['Content-Type'] = 'application/x-www-form-urlencoded;charset=utf-8'
     return config;

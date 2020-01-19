@@ -88,7 +88,6 @@ export default new Vuex.Store({
         if (uid) {
           getUserInfo({ uid }).then(res => {
             sessionStorage.setItem('baseInfo', JSON.stringify(res.data.data))
-            console.log(res.data)
             commit('getUserInfo', res.data.data)
             resolve(res)
           }).catch(error => {
@@ -131,6 +130,7 @@ export default new Vuex.Store({
           }
           resolve(res)
         }).catch(error => {
+          console.log(error)
           reject(error)
         })
       })
