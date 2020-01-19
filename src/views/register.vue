@@ -51,9 +51,10 @@
                 <el-button type="primary" @click="onSubmit" class="register">注册</el-button>
               </el-form-item>
               <p class="text">
+                <el-checkbox v-model="checked" @change="dialogTableVisible=true"></el-checkbox>
                 点击注册即表示同意
                 <a href="#" class="login-primary" @click="dialogTableVisible=true">用户协议及隐私保护规则</a>及
-                <a href="#" class="login-primary">《个人信息保护政策》</a>
+                <a href="#" class="login-primary" @click="dialogPersonVisible=true">《个人信息保护政策》</a>
               </p>
             </el-form>
           </el-col>
@@ -70,6 +71,7 @@
           </el-col>
         </el-row>
         <registerRule :dialogTableVisible="dialogTableVisible" @handleClose="dialogTableVisible=false"></registerRule>
+        <personalRule :dialogTableVisible="dialogPersonVisible" @handleClose="dialogPersonVisible=false"></personalRule>
       </div>
     </el-main>
   </el-container>
@@ -79,10 +81,13 @@
 import { userRegister, getCode } from '@/api/login'
 import districtSelet from '@/components/districtSelet'
 import registerRule from '@/components/common/registerRule'
+import personalRule from '@/components/common/personalRule'
+
 export default {
   components: {
     districtSelet,
-    registerRule
+    registerRule,
+    personalRule
   },
   name: 'register',
   data () {
@@ -178,7 +183,9 @@ export default {
       totalTime: 60,
       timer: null,
       canClick: true,
-      dialogTableVisible: false
+      dialogTableVisible: false,
+      dialogPersonVisible:false,
+      checked:false
     }
   },
   methods: {
@@ -221,11 +228,15 @@ export default {
       }, 1000)
     },
     onSubmit () {
+
       this.$refs['TabForm'].validate((valid) => {
         if (valid) {
           if (this.formTab.province == '') {
             this.isShowCom = true
             return
+          }
+          if (!this.checked) {
+            return this.$message.warning('请先阅读注册协议')
           }
           userRegister(this.formTab).then(res => {
             localStorage.setItem('userType', this.registerType)
@@ -398,7 +409,7 @@ export default {
 .register-form-box .text {
   text-align:left;
   font-size:12px;
-  margin-top: 16px;
+  margin-top: 10px;
 }
 .grid-content .text {
   text-align:right;

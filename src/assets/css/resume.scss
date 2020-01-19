@@ -92,6 +92,26 @@
       left: -20px;
       background: #71D875;
     }
+    &.active-status0 {
+      &::before{
+        background: #999;
+      }
+    }
+    &.active-status1 {
+      &::before{
+        background: #71D875;
+      }
+    }
+    &.active-status2 {
+      &::before{
+        background: #F19D3A;
+      }
+    }
+    &.active-status3 {
+      &::before{
+        background:  #FF0000;
+      }
+    }
     &.status0{
       &::before{
         background: #999999;

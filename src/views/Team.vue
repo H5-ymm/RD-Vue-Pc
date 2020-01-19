@@ -132,7 +132,6 @@ export default {
     $route (to, from) {
       if (to.query.userType) {
         this.userPosition = localStorage.getItem('userPosition')
-        console.log(this.userPosition)
         this.departName = localStorage.getItem('departName')
         this.type = to.query.userType
         if (this.type == 1) {
@@ -174,6 +173,7 @@ export default {
           this.baseInfo.logo_url = this.getImgUrl(res.data.logo_url)
         }
         sessionStorage.setItem('baseInfo', JSON.stringify(this.baseInfo))
+        console.log( res.data)
         let userInfo = {
           user_name: res.data.com_name,
           mobile: res.data.link_phone,

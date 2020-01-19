@@ -177,6 +177,7 @@ export default {
       this.$refs['TabForm'].validate((valid) => {
         if (valid) {
           this.$store.dispatch('loginSaveInfo', this.formTab).then(res => {
+            console.log(res)
             // localStorage.setItem('userType', res.data.type)
             // localStorage.setItem('userName', res.data.username)
             // localStorage.setItem('departName', res.data.departName)

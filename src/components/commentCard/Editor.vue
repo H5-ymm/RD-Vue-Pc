@@ -6,7 +6,7 @@ import VEmojiPicker from 'v-emoji-picker';
 import packData from 'v-emoji-picker/data/emojis.json';
 import E from 'wangeditor'
 import { upload } from '../../axios'
-import { getImg } from '../../util/util'
+import { getImg, getImgUrl } from '../../util/util'
 export default {
   props: ['content'],
   data () {
@@ -76,7 +76,8 @@ export default {
   methods: {
     insert (imgUrl) {
       upload(imgUrl).then(res => {
-        let src = getImg(imgUrl)
+        // let src = getImg(imgUrl)
+         let src = getImgUrl(res.data.url)
         let img = "<img class='imgBg' src=" + src + " />"
         this.editor.cmd.do('insertHTML', img)
       })

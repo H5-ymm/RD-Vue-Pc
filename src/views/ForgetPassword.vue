@@ -221,9 +221,13 @@ export default {
 .register-btn {
   margin:20px 70px;
   color:rgba(153,153,153,1);
+  span {
+    font-size: 18px;
+  }
 }
 .register-btn .button{
    margin-right:10px;
+  
 }
 .register-btn .active {
   color:#6A6A6A;

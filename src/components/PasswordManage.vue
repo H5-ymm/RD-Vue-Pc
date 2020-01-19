@@ -87,9 +87,9 @@ export default {
     getInfo (uid) {
       getUserBinkInfo({ uid }).then(res => {
         if (res.data) {
-          const { uid, mobile, alipay_status } = res.data
+          const { uid, mobile, alipay_status, bank_status } = res.data
           this.personalForm = res.data
-          this.alipay_status = alipay_status
+          this.alipay_status = alipay_status || bank_status
         }
       })
     },

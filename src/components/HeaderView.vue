@@ -69,12 +69,13 @@
           </el-dropdown-menu>
         </el-dropdown>
       </P>
-      <a class="el-icon-phone-outline">&nbsp;021-51991869</a>
+      <a v-if="info" class="el-icon-phone-outline">&nbsp;{{info.customerTel}}</a>
     </div>
   </div>
 </template>
 <script>
 import { getImgUrl } from '@/util/util'
+import { getConfigInfo } from '@/api/home'
 import { mapState, mapActions, mapMutations } from 'vuex'
 export default {
   name: '',
@@ -96,10 +97,12 @@ export default {
           url: 'Information'
         }
       ],
-      userName: localStorage.getItem('userName')
+      userName: localStorage.getItem('userName'),
+      info:{}
     }
   },
   created () {
+    this.getInfo()
     this.getUserAll()
   },
   computed: {
@@ -123,6 +126,12 @@ export default {
     }
   },
   methods: {
+    getInfo(){
+      getConfigInfo().then(res=>{
+        console.log(res.data)
+        this.info = res.data
+      })
+    },
     getImgUrl,
     ...mapMutations(['getUserInfo']),
     handleCommand (val) {

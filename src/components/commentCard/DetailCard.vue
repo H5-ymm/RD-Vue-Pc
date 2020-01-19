@@ -131,6 +131,7 @@ export default {
         this.storeComment = JSON.parse(JSON.stringify(val))
         this.comTitle = val.title
         this.contentunescape = this.getContent(val.content)
+        console.log(this.contentunescape )
         this.sortType = val.type
         this.params.discuss_id = val.id
         if (this.type == 2) {
@@ -401,6 +402,10 @@ export default {
   .edit-card-item-content {
     width: 200px;
     line-height: 20px;
+    img {
+      height: 100px;
+      width: 100px;
+    }
   }
   .x-flex-wap {
     flex-wrap: wrap

@@ -7,7 +7,7 @@
         </el-tooltip>
       </a>
     </li>
-    <li>
+    <li @click="concat">
       <el-tooltip class="item" effect="dark" content="联系客服" placement="left">
         <img src="../assets/img/kefu.png" alt />
       </el-tooltip>
@@ -21,7 +21,12 @@
 </template>
 <script>
 export default {
-  props: ['isShow']
+  props: ['isShow'],
+  methods:{
+    concat(){
+      console.log('m')
+    }
+  }
 }
 </script>
 <style>

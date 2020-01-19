@@ -62,7 +62,7 @@
           </el-table-column>
           <el-table-column label="推荐状态" align="center" width="110" v-if="userPosition!=1">
             <template slot-scope="props">
-              <span class="status" :class="`status${props.row.t_status}`">{{props.row.t_status|recommendStatus}}</span>
+              <span class="status" :class="`active-status${props.row.t_status}`">{{props.row.t_status|recommendStatus}}</span>
             </template>
           </el-table-column>
           <el-table-column label="操作" align="center" min-width="150">

@@ -12,22 +12,32 @@
       <div class="customer-service-centent">
         <img src="../../assets/img/kefuImg.png" alt />
       </div>
-      <div slot="footer" class="customer-service-footer">
-        <p>联系电话：021-51993333</p>
-        <p>QQ：123456789</p>
+      <div v-if="info" slot="footer" class="customer-service-footer">
+        <p>联系电话：{{info.customerTel}}</p>
+        <p>QQ：{{info.customerQQ}}</p>
       </div>
     </div>
   </el-dialog>
 </template>
 <script>
+import { getConfigInfo } from '@/api/home'
 export default {
   props: ['dialogTableVisible', 'imgBg', 'title', 'okText', 'closeText'],
   data () {
     return {
-
-    };
+      info: {}
+    }
+  },
+  created(){
+    this.getInfo()
   },
   methods: {
+    getInfo(){
+      getConfigInfo().then(res=>{
+        console.log(res.data)
+        this.info = res.data
+      })
+    },
     handleClose () {
       this.$parent.dialogTableVisible = false
     }

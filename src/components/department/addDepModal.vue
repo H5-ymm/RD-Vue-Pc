@@ -134,9 +134,9 @@ export default {
         }
       }
        &.department-add-col{
-         .el-form-item__label {
-          margin-left: 20px;
-         }
+        //  .el-form-item__label {
+        //   margin-left: 20px;
+        //  }
         .el-form-item__content {
           display: block;
           // margin-left: 0!important;

@@ -97,7 +97,7 @@ export default new Vuex.Store({
       })
     },
     updateUserInfo ({ dispatch }, params) {
-      return new Promise((resolve, reject) => {
+      let infoPromise = new Promise((resolve, reject) => {
         editUserInfo(params).then(res => {
           dispatch('getUserAllInfo')
           resolve(res)
@@ -105,9 +105,10 @@ export default new Vuex.Store({
           reject(error)
         })
       })
+      return infoPromise
     },
     loginSaveInfo ({ commit, dispatch }, params) {
-      return new Promise((resolve, reject) => {
+      let LoginPromise = new Promise((resolve, reject) => {
         goLogin(params).then(res => {
           dispatch('getUserAllInfo')
           localStorage.setItem('userType', res.data.type)
@@ -134,6 +135,7 @@ export default new Vuex.Store({
           reject(error)
         })
       })
+      return LoginPromise
     }
   }
 })
