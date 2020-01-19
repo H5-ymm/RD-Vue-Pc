@@ -62,8 +62,9 @@
                 </div>
                 <div class="x-flex-start-justify">
                   <p class="resume-col1">期望薪资</p>
-                  <p v-if="formMember.salary_type==1">{{formMember.min_expect_money}}~{{formMember.max_expect_money}}</p>
-                  <p v-else>{{formMember.money}}}}</p>
+                  <p v-if="formMember.salary_type==1&&formMember.min_expect_money">{{formMember.min_expect_money}}~{{formMember.max_expect_money}}</p>
+                  <p v-if="formMember.salary_type==1&&!formMember.min_expect_money&&!formMember.max_expect_money">{{formMember.min_expect_money}}</p>
+                  <p v-if="formMember.salary_type!=1">{{formMember.money}}}}</p>
                 </div>
                 <div class="x-flex-start-justify">
                   <p class="resume-col1">预计入职时间</p>

@@ -42,7 +42,7 @@
           <p>最后登录时间</p>
           <p>{{formMember.logout_time?$moment.unix(formMember.logout_time).format('YYYY-MM-DD HH:mm'):'-'}}</p>
         </div>
-        <div class="x-flex-center">
+        <div class="x-flex-center" v-if="userPosition==3">
           <p>当前状态</p>
           <p>{{formMember.status == 1 ? '正常': '锁定'}}</p>
         </div>

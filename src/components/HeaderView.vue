@@ -57,7 +57,7 @@
             <div class="x-flex-between">
               <p v-if="userInfo&&userInfo.user_name">{{userInfo.user_name?userInfo.user_name:userInfo.mobile}}</p>
               <p v-else>{{userName}}</p>
-              <img :src="getImgUrl(userInfo.head_img)" alt v-if="userInfo&&userInfo.head_img" class="head-icon" />
+              <img :src="userInfo.head_img" alt v-if="userInfo&&userInfo.head_img" class="head-icon" />
               <img src="../assets/img/headIcon.png" v-else class="head-icon">&nbsp;
               <!-- <el-divider direction="vertical" v-if="departName"></el-divider>
                 <span v-if="departName">{{departName}}</span>     -->
@@ -128,7 +128,6 @@ export default {
   methods: {
     getInfo(){
       getConfigInfo().then(res=>{
-        console.log(res.data)
         this.info = res.data
       })
     },

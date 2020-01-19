@@ -163,6 +163,7 @@ export default {
     getInfo (uid) {
       getTeamInfo({ uid }).then(res => {
         this.baseInfo = res.data || null
+        this.baseInfo.head_img = getImgUrl(res.data.head_img)
         sessionStorage.setItem('baseInfo', JSON.stringify(this.baseInfo))
       })
     },
@@ -170,14 +171,13 @@ export default {
       getCompanyDetail({ uid }).then(res => {
         this.baseInfo = res.data
         if (res.data && res.data.logo_url) {
-          this.baseInfo.logo_url = this.getImgUrl(res.data.logo_url)
+          this.baseInfo.logo_url = res.data.logo_url
         }
         sessionStorage.setItem('baseInfo', JSON.stringify(this.baseInfo))
-        console.log( res.data)
         let userInfo = {
           user_name: res.data.com_name,
           mobile: res.data.link_phone,
-          head_img: this.getImgUrl(res.data.logo_url)
+          head_img: res.data.logo_url
         }
         sessionStorage.setItem('userInfo', JSON.stringify(userInfo))
       })

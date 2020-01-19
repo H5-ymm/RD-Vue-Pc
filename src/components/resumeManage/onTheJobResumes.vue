@@ -59,12 +59,12 @@
           <el-table-column label="岗位名称" prop="job_name" align="center" width="150"></el-table-column>
           <el-table-column label="报名时间" prop="jddesc" sortable="custom" align="center" width="150">
             <template slot-scope="props">
-              <span type="text">{{props.row.addtime?$moment.unix(props.row.addtime).format('YYYY-MM-DD'):'--'}}</span>
+              <span type="text">{{props.row.addtime?$moment.unix(props.row.addtime).format('YYYY-MM-DD HH:mm'):'--'}}</span>
             </template>
           </el-table-column>
           <el-table-column label="入职时间" prop="msdesc" sortable="custom" align="center" width="150">
             <template slot-scope="props">
-              <span type="text">{{props.row.addtime?$moment.unix(props.row.addtime).format('YYYY-MM-DD'):'--'}}</span>
+              <span type="text">{{props.row.addtime?$moment.unix(props.row.addtime).format('YYYY-MM-DD HH:mm'):'--'}}</span>
             </template>
           </el-table-column>
           <el-table-column label="跟进记录" align="center" width="100">

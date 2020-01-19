@@ -262,6 +262,7 @@ export default {
       })
     },
     refurbish () {
+      this.refurbishStatus = 3
       this.getList()
     },
     handleCommand (command) {

@@ -1,12 +1,14 @@
+<style lang="scss">
+@import '@/assets/css/login.scss';
+</style>
 <template>
   <el-container class="loads register-view">
     <el-header class="header x-flex-around">
-      <div class="bg-purple head-left">
+      <div class="x-flex-between head-left">
         <span class="header-left">人事达</span>
         <a class="welcome">欢迎登录</a>
       </div>
       <div class="bg-purple-light">
-        <span @click="$router.push('home')">浏览首页</span>
         <a>021-51991869</a>
       </div>
     </el-header>
@@ -29,7 +31,7 @@
             <el-form-item label="发送验证码">
               <span class="error el-icon-warning" v-if="isCodeError">验证码错误或者已过期</span>
               <el-input v-model="formTab.code" placeholder="请输入验证码" class="inputCode" show-word-limit></el-input>
-              <el-button type="primary" class="code-btn" plain :class="{disabled: !this.canClick}" @click="sendCode">{{content}}</el-button>
+              <el-button type="primary" class="code-btn password-code-btn" plain :class="{disabled: !this.canClick}" @click="sendCode">{{content}}</el-button>
             </el-form-item>
             <el-form-item prop="newPassword" label="密码">
               <el-input v-model="formTab.newPassword" type="password" placeholder="请输入密码" show-word-limit></el-input>
@@ -183,172 +185,3 @@ export default {
   }
 }
 </script>
-
-<style lang="scss">
-.header {
-  width:100%;
-  height:49px;
-  background:rgba(50,55,62,1);
-}
-.head-left {
-  line-height: 30px;
-}
-.register-view{
-  width: 100vw;
-  height: 100vh;
-  overflow: hidden; 
-}
-.loads .el-main {
-  padding:0;
-  overflow:hidden;
-}
-.loads .login-main {
-  height: 100vh;
-}
-.loads .el-form-item {
-  margin-bottom:6px;
-}
-.x-flex-center {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-.x-flex-around {
-  display: flex;
-  justify-content:space-around;
-  align-items: center;
-}
-.register-btn {
-  margin:20px 70px;
-  color:rgba(153,153,153,1);
-  span {
-    font-size: 18px;
-  }
-}
-.register-btn .button{
-   margin-right:10px;
-  
-}
-.register-btn .active {
-  color:#6A6A6A;
-}
-.x-flex  .com-right {
-  border:1px solid #1890FF;
-  color:#1890FF;
-  border-radius:0;
-}
-.register-content {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height:100%;
-  width:110%;
-  /* overflow:hidden; */
-  background: url('../assets/img/re-bg.png') no-repeat left center;
-  background-size:cover;
-}
-.form-box {
-  width:90%;
-  margin:0 auto;
-  overflow: hidden;
-}
-.register-box{
-  width: 536px;
-  /* height:420px; */
-  padding-bottom: 30px;
-  background:rgba(255,255,255,1);
-  box-shadow:0px 5px 18px 0px rgba(0, 0, 0, 0.15);
-  border-radius:5px;
-  margin-left:-8%;
-}
-.register-box .el-input__inner {
-  border-radius:3px;
-  background:#eee;
-  border:none;
-}
- .el-input-group{
-  .el-input__inner {
-    &:focus,&:hover{
-      border:none;
-    }
-  }
- }
-.register-box .el-input-group__prepend {
-  border:none;
-  background:#eee;
-  padding: 0 0 0 20px;
-  span {
-    opacity:1;
-    display:inline-block;
-  }
-}
-.register-box .error {
-  position:absolute;
-  top:16%;
-  right:0;
-  color:#FE2A00;
-  font-size:12px;
-}
-.register-box .errorInfo {
-  right:0;
-  width:100%;
-  height:20px;
-  top:-16px;
-  text-align:center;
-  line-height:20px;
-  background:rgba(254,42,0,0.1);
-  border-radius:3px;
- }
-.register-box .inputCode {
-  width: 70%!important;
-  margin-right:10px;
-  display:block;
-}
-.register-box .code-btn {
-  width: 130px!important;
-  position:absolute;
-  bottom:0;
-  right:0;
-  border-radius:0;
-}
-.register-box .disabled {
-  background:rgba(204,204,204,1);
-  border:none;
-}
-.register-box .password {
-  text-align:right;
-  color:#6A6A6A;
-  font-size:14px;
-}
-.register-box .el-button--primary{
-  width: 100%;
-}
-.texts{
-  text-align: center;
-}
-.passwords{
-  text-align: right;
-}
-.submit-btn{
-  margin-top: 10px;
-}
-.login{
-  background:linear-gradient(180deg,rgba(24,144,255,1),rgba(89,175,255,1));
-  border-radius:20px;
-  border:none;
-}
-.register-box .text {
-  text-align:right;
-  font-size:16px;
-  margin-right:30px;
-  color:#333333;
-  margin-top: 20px;
-}
-.text  a {
-  color:#1890FF;
-}
-.register-box .loginRight {
-  margin-top: 4px;
-  margin-left: 4px;
-}
-</style>

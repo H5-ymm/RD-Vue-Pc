@@ -102,6 +102,7 @@ export default {
   }
   .dialog-footer {
     margin-right: 6px;
+    padding: 0;
     .el-button {
       margin-right: 20px;
       border-radius: 3px;

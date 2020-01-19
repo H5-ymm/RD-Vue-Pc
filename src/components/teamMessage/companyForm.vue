@@ -29,19 +29,19 @@
         <el-form-item label="统一社会信用代码">
           <el-input v-model="companyForm.unified_social_credit_code" class="width408" placeholder="请输入统一社会信用代码"></el-input>
         </el-form-item>
-        <el-form-item label="从事行业" prop="com_sort" required>
-          <el-select v-model="companyForm.com_sort" class="width408" placeholder="请选择企业从事行业">
-            <el-option :label="item" :value="key" v-for="(item,key) in jobList" :key="key"></el-option>
+        <el-form-item label="从事行业" prop="com_sort">
+          <el-select v-model="companyForm.com_sort" value-key="label" class="width408" placeholder="请选择企业从事行业">
+            <el-option :label="item.label" :value="item.value" v-for="(item,key) in jobList" :key="key"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="企业性质" required>
-          <el-select v-model="companyForm.com_type" class="width408" placeholder="请选择企业性质">
-            <el-option :label="item" :value="index+1" v-for="(item,index) in comTypeList" :key="index"></el-option>
+          <el-select v-model="companyForm.com_type" class="width408" value-key="label" placeholder="请选择企业性质">
+            <el-option :label="item.label" :value="item.value" v-for="(item,index) in comTypeList" :key="index"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="企业规模" required>
           <el-select v-model="companyForm.com_scale" class="width408" placeholder="请选择企业规模">
-            <el-option :label="item" :value="index+1" v-for="(item,index) in comScaleList" :key="index"></el-option>
+            <el-option :label="item" :value="index" v-for="(item,index) in comScaleList" :key="index"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="公司地址" required>
@@ -84,6 +84,7 @@ import districtSelet from '../districtSelet'
 import { addCompanyInfo } from '@/api/company'
 import { uploadFile } from '@/api/upload'
 import { getCompanyDetail } from '@/api/company'
+import { getImgUrl } from '@/util/util'
 export default {
   components: {
     districtSelet
@@ -112,7 +113,7 @@ export default {
       },
       comScaleList: [],
       comTypeList: [],
-      jobList: {},
+      jobList: [],
       userType: localStorage.getItem('userType'),
       address: [],
       compnayInfo: {}
@@ -120,29 +121,49 @@ export default {
   },
   created () {
     let uid = localStorage.getItem('uid')
-    this.getCompanyInfo(uid)
     let params = 'com_type,com_scale,job_array'
     this.getList(params)
-
+    this.getCompanyInfo(uid)
   },
   methods: {
     getCompanyInfo (uid) {
       getCompanyDetail({ uid }).then(res => {
-        this.compnayInfo = res.data
-        for (let key in this.companyForm) {
-          this.companyForm[key] = this.compnayInfo[key]
+        this.companyForm = res.data
+        // for (let key in this.companyForm) {
+        //   this.companyForm[key] = this.compnayInfo[key]
+        // }
+        this.companyForm.companyName =  res.data.com_name
+        if (this.companyForm.link_tel){
+          let link_tel = this.companyForm.link_tel.split('-')
+          this.landlineStart = link_tel[0]
+          this.landlineEnd = link_tel[1]
         }
-        this.companyForm.companyName = this.compnayInfo.com_name
-        this.address = [this.compnayInfo.provinceid, this.compnayInfo.cityid, this.compnayInfo.three_cityid]
+        this.imageUrl = this.companyForm.logo_url
+        this.license_img = this.companyForm.license_url
+        if (this.companyForm.provinceid) {
+          this.address = [this.companyForm.provinceid, this.companyForm.cityid, this.companyForm.three_cityid]
+        }     
       })
     },
     getList (filed) {
       getConstant({ filed }).then(res => {
         const { com_scale, com_type, job_array } = res.data
         this.comScaleList = com_scale
-        this.comTypeList = com_type
-        this.jobList = job_array
+        this.comTypeList = this.getArray(com_type) 
+        console.log(this.comTypeList)
+        this.jobList = this.getArray(job_array) 
+        console.log(this.jobList) 
       })
+    },
+    getArray(obj) {
+      let arr = []
+      for(let key in obj) {
+        arr.push({
+          label: obj[key],
+          value: Number(key)
+        })
+      }
+      return arr
     },
     upload (params) {
       const _file = params.file;
@@ -152,19 +173,9 @@ export default {
         return false;
       }
       uploadFile(_file).then(res => {
-        this.imageUrl = this.getImg(_file)
+        this.imageUrl = getImgUrl(res.data.url)
+        
       })
-    },
-    getImg (file) {
-      let url = null;
-      if (window.createObjectURL != undefined) {
-        url = window.createObjectURL(_file)
-      } else if (window.URL != undefined) {
-        url = window.URL.createObjectURL(file)
-      } else if (window.webkitURL != undefined) {
-        url = window.webkitURL.createObjectURL(file)
-      }
-      return url;
     },
     uploadLicense (params) {
       const _file = params.file;
@@ -174,7 +185,7 @@ export default {
         return false;
       }
       uploadFile(_file).then(res => {
-        this.license_img = this.getImg(_file)
+        this.license_img = getImgUrl(res.data.url)
       })
     },
     change (val) {

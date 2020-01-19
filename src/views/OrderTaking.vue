@@ -116,9 +116,9 @@
                 </ul>
               </div>
             </div>
-            <div class="orderTaking-login" v-if="isShowLogin">
+            <!-- <div class="orderTaking-login" v-if="isShowLogin">
               <LoginBox @goLogin="goLogin"></LoginBox>
-            </div>
+            </div> -->
           </div>
         </div>
       </div>
@@ -133,7 +133,7 @@
 // @ is an alias to /src
 import homeAside from '@/components/Aside' //侧边栏
 import ModalCity from '@/components/ModalCity'
-import LoginBox from '@/components/LoginBox'
+// import LoginBox from '@/components/LoginBox'
 import HeaderView from '@/components/HeaderView'
 import FooterView from '@/components/FooterView'
 import AsideBox from '@/components/AsideBox'
@@ -146,7 +146,7 @@ export default {
   components: {
     homeAside,
     ModalCity,
-    LoginBox,
+    // LoginBox,
     AsideBox,
     HeaderView,
     FooterView,

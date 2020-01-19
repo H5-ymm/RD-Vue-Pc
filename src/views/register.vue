@@ -387,8 +387,8 @@ export default {
   position:absolute;
   bottom:0;
   right:0;
-  border-radius:0;
-  padding: 11px 0;
+  padding: 12px 0;
+  border-radius:3px;
 }
 .loads-box .el-col {
   display: flex;

@@ -225,7 +225,7 @@ export default {
   position:absolute;
   bottom:0;
   right:0;
-  border-radius:0;
+  border-radius:3px;
 }
 .login-view .code-btn.small-code-btn {
    width: 70px!important;

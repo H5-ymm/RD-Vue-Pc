@@ -108,7 +108,7 @@
             <span class="moneyType">{{rewardType}}</span>
           </template>
         </el-input>
-        <el-input placeholder="请输入" class="width160 text-input" @input="changeNeedtime" v-model="orderTakingForm.reward_needtime">
+        <el-input placeholder="请输入" class="width160 text-input" v-model="orderTakingForm.reward_needtime">
           <template slot="prepend">
             <span class="moneyType">需入职满</span>
           </template>
@@ -215,6 +215,7 @@ export default {
     changeReward (val) {
       if (val == 1) {
         this.orderTakingForm.settlement_type = 1
+        this.orderTakingForm.reward_money_type = 1
       }
       for (let key in this.orderTakingForm) {
         if (key != 'reward_type' && key != 'money_type' && key != 'money') {
@@ -230,9 +231,6 @@ export default {
       }
     },
     changeSettlementTime (val) {
-      console.log(val)
-    },
-    changeNeedtime (val) {
       console.log(val)
     },
     focusInput (e) {

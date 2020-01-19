@@ -1,5 +1,83 @@
+<style lang="scss">
+.member-dialog {
+  &.table-dialog {
+    .el-dialog {
+      height: 700px;
+      overflow: hidden;
+      .el-table--scrollable-x .el-table__body-wrapper {
+        height:100%;
+      }
+    }
+  }
+  .member-row  {
+    &.turnover-row {
+      text-align: left;
+      .member-col1 {
+        text-align: center;
+      }
+      .team-pagination {
+        margin-top: 15px;
+      }
+      .memberForm {
+        .el-input__inner {
+          height: 38px;
+          line-height: 38px;
+        }
+        .action-btn {
+          margin-bottom:  0;
+        }
+        .el-form-item {
+          margin-bottom: 12px;
+        }
+      }  
+    }
+  }
+  .table-edit {
+    .el-input__inner {
+      border: none;
+      outline: none;
+    }
+    .el-input__inner:hover {
+      border: none;
+      outline: none;
+    }
+  }
+}
+.member-table {
+  &.turnover-box {
+    font-size:14px;
+    padding: 20px 15px;
+    .width300 {
+      width: 300px;
+    }
+  }
+  .action-btn {
+      color: #333333;
+      margin-bottom: 15px;
+      .el-button {
+        border-radius: 0;
+        height: 38px;
+      }
+      .select-text {
+        font-size: 14px;
+        margin: 0 5px;
+        color: #6A6A6A;
+      }
+      .width100 {
+        width: 100px;
+      }
+    }
+    .table {
+      border-top: 1px solid #eee;
+      border-bottom: 1px solid #eee;
+      padding: 10px 0;
+      height: 430px;
+      overflow: auto;
+    }
+ }
+</style>
 <template>
-  <el-dialog width="75%" :visible="dialogTableVisible" class="member-dialog table-dialog" :show-close="false">
+  <el-dialog width="75%" :visible="dialogTableVisible" top="10vh" class="member-dialog table-dialog" :show-close="false">
     <div class="member-row turnover-row">
       <img src="../../assets/img/member/cancel.png" alt class="cancel-icon" @click="handleClose" />
       <section class="member-col1">
@@ -220,97 +298,3 @@ export default {
   }
 }
 </script>
-<style lang="scss">
-.member-dialog {
-  &.table-dialog {
-    .el-dialog {
-      height: 600px;
-      overflow: auto;
-      .el-table {
-        height: 300px;
-        overflow: auto;
-      }
-      .el-table--scrollable-x .el-table__body-wrapper {
-        height:100%;
-      }
-    }
-  }
-  .member-row  {
-    &.turnover-row {
-      text-align: left;
-      .member-col1 {
-        text-align: center;
-      }
-      .team-pagination {
-        margin-top: 15px;
-      }
-      .memberForm {
-        .el-input__inner {
-          height: 38px;
-          line-height: 38px;
-        }
-        .action-btn {
-          margin-bottom:  0;
-        }
-        .el-form-item {
-          margin-bottom: 12px;
-        }
-      }  
-    }
-  }
-  .table-edit {
-    .el-input__inner {
-      border: none;
-      outline: none;
-    }
-    .el-input__inner:hover {
-      border: none;
-      outline: none;
-    }
-  }
-}
-.member-table {
-  &.turnover-box {
-    font-size:14px;
-    padding: 20px 15px;
-    .width300 {
-      width: 300px;
-    }
-  }
-  .action-btn {
-      color: #333333;
-      margin-bottom: 15px;
-      .el-button {
-        border-radius: 0;
-        height: 38px;
-      }
-      .select-text {
-        font-size: 14px;
-        margin: 0 5px;
-        color: #6A6A6A;
-      }
-      .width100 {
-        width: 100px;
-      }
-    }
-    .table {
-      border-top: 1px solid #eee;
-      border-bottom: 1px solid #eee;
-      padding: 10px 0;
-    }
-    .status {
-      position: relative;
-      margin-left: 10px;
-      &::before{
-        position: absolute;
-        content: "";
-        width:6px;
-        height: 6px;
-        border-radius: 50%;
-        top: 7px;
-        left: -20px;
-        background: #FF0000;
-      }
-    }
-}
-</style>
