@@ -1,7 +1,8 @@
 <template>
   <el-dialog title="请选择城市" :visible="dialogVisible" width="60%" :before-close="handleClose" class="dialog-city">
     <div class="x-flex-start city-content">
-      <ul class="cityList">
+      <ul class="cityList">  
+        <li class="provice-hover" :class="{'provice-active': activeIndex==-1}"  @click="handle('code',-1)" >全国</li>
         <li v-for="(item,index) in provinceList" class="provice-hover" @click="handle(item,index)" :class="{'provice-active': index==activeIndex}" :key="index">{{item.name}}</li>
       </ul>
       <div class="x-flex-start list city-box">
@@ -19,28 +20,54 @@ export default {
     return {
       provinceList: [],
       cityList,
-      activeIndex: 0,
+      activeIndex: -1,
       code: '',
       codeList: []
     };
   },
   created () {
     this.getRegion()
+    this.codeList = []
+    this.activeIndex = -1
+  },
+  watch:{
+    dialogVisible(val) {
+      if (!val) {
+        this.getRegion()
+        this.codeList = []
+        this.activeIndex = -1
+      }
+    }
   },
   methods: {
     handleClose () {
       this.$emit('handleClose')
     },
     handle (item, index) {
-      this.code = item.value
-      this.codeList.push(this.code)
       this.activeIndex = index
-      this.getCityList(item.value)
+      if (index==-1) {
+        this.cityList = cityList
+      }
+      else {
+        this.code = item.value
+        this.codeList.push(this.code)
+        this.getCityList(item.value)
+      }
     },
     getCityCode (item) {
       this.codeList.push(item.value)
-      this.$emit('getCityCode', item)
-      this.codeList = []
+      let arr = [...new Set(this.codeList)]
+      this.getAreaList(item.value)
+      if (this.activeIndex==-1) {
+        if (arr.length==2) {
+          this.$emit('getCityCode', item)
+        }
+      }
+      else {
+        if (arr.length==3) {
+          this.$emit('getCityCode', item)
+        }
+      }
     },
     getProlist (list) {
       return list.map(item => {
@@ -48,6 +75,17 @@ export default {
           {
             value: item.provinceid,
             name: item.province,
+            children: []
+          }
+        return obj
+      })
+    },
+    getArray(list){
+      return list.map(item => {
+        let obj =
+          {
+            value: item.code,
+            name: item.name,
             children: []
           }
         return obj
@@ -62,9 +100,17 @@ export default {
     getCityList (code) {
       this.cityList = []
       getCitysList({ code }).then(res => {
-        this.cityList = res.data
+        let arr = this.getArray(res.data)
+        this.cityList = arr
       })
     },
+    getAreaList(code) {
+      this.cityList = []
+      getAreasList({ code }).then(res => {
+        let arr = this.getArray(res.data)
+        this.cityList = arr
+      })
+    }
   }
 };
 </script>

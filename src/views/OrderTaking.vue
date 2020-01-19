@@ -245,6 +245,7 @@ export default {
       this.dialogVisible = false
     },
     getCityCode (value) {
+      console.log(value)
       this.params.three_cityid = value[0]
       this.getData(this.params)
       this.dialogVisible = false

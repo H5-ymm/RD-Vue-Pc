@@ -6,7 +6,7 @@
       <el-col :span="24">
         <div class="names company-names">人事达</div>
         <div class="company-info">
-          <img src="../assets/img/img1.png" alt class="company-logo" v-if="baseInfo&&!baseInfo.logo_url" />
+          <img :src="baseInfo.logo_url" alt class="company-logo" v-if="baseInfo&&baseInfo.logo_url" />
           <img src="../assets/img/headIcon2.png" alt class="company-logo" v-else />
           <p class="company-name" v-if="baseInfo">{{baseInfo.com_name}}</p>
         </div>

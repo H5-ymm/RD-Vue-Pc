@@ -15,7 +15,10 @@
             <li class="home-footer-title">联系方式</li>
             <li>{{info.webname}}</li>
             <li>公司地址：{{info.address}}</li>
-            <li>服务热线：{{info.customerTel}}（{{info.workTime}})</li>
+            <li>
+              服务热线：{{info.customerTel}} 
+              <span v-if="info.workTime">（{{info.workTime}})</span>
+            </li>
             <li>违法和不良信息举报邮箱：{{info.owenerEmail}}</li>
           </ul>
         </el-col>
