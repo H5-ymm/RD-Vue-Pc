@@ -75,7 +75,7 @@
           </el-table-column>
           <el-table-column label="接单时间" prop="jddesc" sortable="custom" align="center" width="160">
             <template slot-scope="props">
-              <span>{{props.row.addtime?props.row.addtime:'--'}}</span>
+              <span>{{props.row.addtime?$moment(props.row.addtime).format('YYYY-MM-DD HH:mm'):'--'}}</span>
             </template>
           </el-table-column>
           <el-table-column label="返利模式" align="center" width="100">

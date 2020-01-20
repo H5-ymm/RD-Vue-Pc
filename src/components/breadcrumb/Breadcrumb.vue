@@ -31,19 +31,21 @@ export default {
   },
   methods: {
     closeView (item, index) {
-      if (index) {
+      // if (index) {
         let url = sessionStorage.getItem('menusUrl')
-        this.breadcrumbs.splice(index, 1)
-      }
+        // this.breadcrumbs.splice(index, 1)
+        console.log(index)
+        // this.$router.push('/teamData')
+      // }
     }
   },
   watch: {
     $route (to, from) {
       if (to.path == '/resumeResult' && from.path == '/teamInterviewPersonnel') {
-        this.breadcrumbs = ["接单管理", "面试结果"]
+        this.breadcrumbs = [ "面试结果"]
        }
       else if (to.path == '/teamEntryList' && from.path == '/resumeResult') {
-        this.breadcrumbs = ["接单管理", "入职结果"]
+        this.breadcrumbs = [ "入职结果"]
       }
       else {
         let  arr = JSON.parse(sessionStorage.getItem('menus'))

@@ -423,7 +423,7 @@ export default {
         item.submenu.forEach(val => {
           if (val.url == url) {
             title = val.title
-            list.push(item.title, title)
+            list.push(title)
           }
         })
       })

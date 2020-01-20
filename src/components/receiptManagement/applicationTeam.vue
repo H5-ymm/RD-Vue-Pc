@@ -43,7 +43,7 @@
           <el-table-column label="团队性质" prop="reward_money" align="center" width="150">
 
             <template slot-scope="props">
-              <span>{{props.row.team_type==1?'个人':'企业'}}</span>
+              <span>{{props.row.team_type==1?'企业':'个人'}}</span>
             </template>
           </el-table-column>
           <el-table-column label="申请日期" prop="jddesc" sortable align="center" width="150">

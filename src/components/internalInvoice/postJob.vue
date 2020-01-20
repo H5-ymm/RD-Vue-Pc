@@ -212,9 +212,7 @@ export default {
       return flag
     },
     submitForm (val) {
-      console.log(val)
-      console.log(this.tabIndex)
-      if (this.tabIndex < 2) {
+      if (this.tabIndex <= 2) {
         this.tabIndex = this.tabIndex + 1
       }
       if (this.tabIndex == 0) {
@@ -227,10 +225,10 @@ export default {
       }
       else {
         this.otherInfo = val
-        // this.comName = 'operationInfo'
+        this.comName = 'operationInfo'
       }
       this.formInfo = Object.assign(this.formInfo, val)
-      if (this.comName == 'operationInfo') {
+      if (this.comName == 'operationInfo'&&this.tabIndex==3) {
         addjob(this.formInfo).then(res => {
           if (res.data) {
             this.$message.success('发布成功')
