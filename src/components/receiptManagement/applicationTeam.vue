@@ -26,11 +26,11 @@
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="onSubmit" class="select-btn">查询</el-button>
-          <el-button type="primary" @click="onSubmit" class="select-btn">重置</el-button>
+          <el-button type="primary" @click="reset" class="select-btn">重置</el-button>
         </el-form-item>
       </el-form>
       <div class="member-table">
-        <el-table border :data="tableData" ref="multipleTable" style="width: 100%" @selection-change="handleSelectionChange">
+        <el-table border :data="tableData" ref="multipleTable" style="width: 100%">
           <el-table-column label="职位名称" align="center" width="150">
             <template slot-scope="props">
               <el-button type="text" @click="viewJob(props.row)">{{props.row.name}}</el-button>
@@ -79,7 +79,12 @@
 </template>
 
 <script>
-import { applyInvoiceList, auditInvoiceInfo, delCompanyTeamApply, companyReceiptShelf } from '@/api/receipt'
+import {
+  applyInvoiceList,
+  auditInvoiceInfo,
+  delCompanyTeamApply,
+  companyReceiptShelf
+} from '@/api/receipt'
 import customerService from '../common/customerService'
 import viewJob from '../common/viewJob'
 import viewTeam from '../common/viewTeam'
@@ -91,27 +96,26 @@ export default {
     viewTeam
   },
   filters: {
-    moneyType (val) {
+    moneyType(val) {
       let obj = moneyTypeList.find(item => {
         return val == item.value
       })
       return obj ? obj.label : '--'
     },
-    rewardType (val) {
+    rewardType(val) {
       let obj = rewardTypeList.find(item => {
         return val == item.value
       })
       return obj ? obj.label : '--'
     },
-    statusType (val) {
+    statusType(val) {
       let obj = applyStatusList.find(item => {
         return val == item.value
       })
       return obj ? obj.label : '--'
     }
-
   },
-  data () {
+  data() {
     return {
       moneyTypeList,
       rewardTypeList,
@@ -129,7 +133,7 @@ export default {
       teamTypeList: [
         { label: '全部', value: 0 },
         { label: '个人', value: 2 },
-        { label: '企业', value: 1 },
+        { label: '企业', value: 1 }
       ],
       teamId: '',
       id: '',
@@ -137,96 +141,100 @@ export default {
       jobId: ''
     }
   },
-  created () {
+  created() {
     // 初始化查询标签数据
     this.getList(this.formMember)
   },
   methods: {
-    getList (params) {
+    getList(params) {
       applyInvoiceList(params).then(res => {
         this.tableData = res.data.data
         this.total = res.data.count
       })
     },
-    handleSizeChange (val) {
+    handleSizeChange(val) {
       this.formMember.limit = val
       this.getList(this.formMember)
     },
-    handleCurrentChange (val) {
+    handleCurrentChange(val) {
       this.formMember.page = val
       this.getList(this.formMember)
     },
-    viewTeam (val) {
+    viewTeam(val) {
       this.teamId = val.team_id
       this.addTime = val.addtime
-      console.log(val)
       this.dialogTeamVisible = true
     },
-    viewJob (val) {
+    viewJob(val) {
       this.jobId = val.job_id
       this.dialogJobVisible = true
     },
-    handleAudit (status, val) {
+    handleAudit(status, val) {
       let params = {
         uid: localStorage.getItem('uid'),
         id: val.id,
         status: status
       }
-      auditInvoiceInfo(params).then(res => {
-        this.$message.success('操作成功')
-        this.getList(this.formMember)
-      }).catch(error => {
-        this.$message.warning(error.status.remind)
-      })
+      auditInvoiceInfo(params)
+        .then(res => {
+          if (res.data) {
+            this.$message.success('操作成功')
+            this.getList(this.formMember)
+          } else {
+            this.$message.error('操作失败')
+          }
+        })
+        .catch(error => {
+          this.$message.warning(error.status.remind)
+        })
     },
-    handleShelf (status, val) {
+    handleShelf(status, val) {
       let params = {
         uid: localStorage.getItem('uid'),
         id: val.id,
         status: status
       }
-      companyReceiptShelf(params).then(res => {
-        this.$message.success('操作成功')
-        this.getList(this.formMember)
-      }).catch(error => {
-        this.$message.warning(error.status.remind)
-      })
+      companyReceiptShelf(params)
+        .then(res => {
+          if (res.data) {
+            this.$message.success('操作成功')
+            this.getList(this.formMember)
+          } else {
+            this.$message.error('操作失败')
+          }
+        })
+        .catch(error => {
+          this.$message.warning(error.status.remind)
+        })
     },
-    handleDel (val) {
+    handleDel(val) {
       let params = {
         uid: localStorage.getItem('uid'),
-        id: val.id,
+        id: val.id
       }
-      delCompanyTeamApply(params).then(res => {
-        this.$message.success('删除成功')
-        this.getList(this.formMember)
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+      delCompanyTeamApply(params)
+        .then(res => {
+          if (res.data) {
+            this.$message.success('删除成功')
+            this.getList(this.formMember)
+          } else {
+            this.$message.error('删除失败')
+          }
+        })
+        .catch(error => {
+          this.$message.error(error.status.remind)
+        })
     },
-    submitMember (val) {
-      updateTeamUser(val).then(res => {
-        this.dialogTableVisible = false
-        this.getList(this.formMember)
-      })
+    onSubmit() {
+      this.getList(this.formMember)
     },
-    handleSelectionChange (val) {
-      this.len = val
-    },
-    addMember () {
-      this.visible = true
-    },
-    onSubmit (value) {
-      let params = Object.assign(this.formMember, value)
-      this.getList(params)
-    },
-    submitForm (val) {
-      this.visible = false
-      addTeamUser(val).then(res => {
-        this.getList(this.formMember)
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+    reset() {
+      formMember = {
+        uid: localStorage.getItem('uid'),
+        limit: 10,
+        page: 1
+      }
+      this.getList(this.formMember)
     }
   }
 }

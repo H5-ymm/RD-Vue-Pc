@@ -1,3 +1,38 @@
+<style lang="scss">
+.dialog {
+  box-shadow:0px 6px 14px 1px rgba(134,133,133,0.3);
+  border-radius:5px;
+}
+.dialog-centent {
+  width: 100%;
+  margin: 0 auto;
+  text-align: center;
+  .dialog-title {
+    font-size: 18px;
+    color:#333;
+    font-weight: bold;
+    padding-top: 25px;
+  }
+  .dialog-subtitle {
+    color: #333333;
+    font-size: 14px;
+    width: 80%;
+    margin: 10px auto;
+  }
+}
+.dialog .el-dialog__body {
+  padding: 25px
+}
+.dialog-footer {
+  padding: 0 20px 20px;
+}
+.dialog-footer .el-button {
+  width: 100px;
+  padding: 8px 20px;
+  margin: 0 15px;
+}
+</style>
+
 <template>
   <el-dialog
     title
@@ -38,40 +73,3 @@ export default {
   },
 };
 </script>
-<style lang="scss">
-.dialog {
-  box-shadow:0px 6px 14px 1px rgba(134,133,133,0.3);
-  border-radius:5px;
-}
-.dialog-centent {
-  width: 100%;
-  margin: 0 auto;
-  text-align: center;
-  .dialog-img {
-    
-  }
-  .dialog-title {
-    font-size: 18px;
-    color:#333;
-    font-weight: bold;
-    padding-top: 25px;
-  }
-  .dialog-subtitle {
-    color: #333333;
-    font-size: 14px;
-    width: 80%;
-    margin: 10px auto;
-  }
-}
-.dialog .el-dialog__body {
-  padding: 25px
-}
-.dialog-footer {
-  padding: 0 20px 20px;
-}
-.dialog-footer .el-button {
-  width: 100px;
-  padding: 8px 20px;
-  margin: 0 15px;
-}
-</style>

@@ -1,3 +1,52 @@
+<style lang="scss">
+.team-info-row {
+  .cardBg {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    max-width: 126px;
+  }
+  .box-card {
+    box-shadow: 2px 5px 17px 0px rgba(51, 51, 51, 0.2);
+    border-radius: 5px;
+    height: 126px;
+    padding-left: 20px;
+    padding-top: 10px;
+    position: relative;
+    &.box-card1 {
+      padding-right: 20px;
+      border: none;
+    }
+    &.el-card {
+      color: #fff;
+    }
+    &.name {
+      background: linear-gradient(150deg, #7f80fe, #729efe);
+    }
+    &.num {
+      background: linear-gradient(
+        117deg,
+        rgba(255, 110, 115, 1),
+        rgba(255, 116, 145, 1)
+      );
+    }
+    &.resumeNum {
+      background: linear-gradient(
+        117deg,
+        rgba(255, 146, 100, 1),
+        rgba(255, 176, 100, 1)
+      );
+    }
+    &.entryNum {
+      background: linear-gradient(
+        117deg,
+        rgba(166, 91, 251, 1),
+        rgba(189, 94, 255, 1)
+      );
+    }
+  }
+}
+</style>
 <template>
   <el-row :gutter="20" class="team-info-row">
     <el-col :span="6" v-for="(item,key) in userLabel" :key="key">
@@ -15,16 +64,15 @@
   </el-row>
 </template>
 <script>
-import { getTeamInfo } from '../../api/team'
 export default {
   props: ['userType', 'teamInfo'],
-  data () {
+  data() {
     return {
       userPosition: sessionStorage.getItem('userPosition')
     }
   },
   computed: {
-    userLabel () {
+    userLabel() {
       let obj = {}
       if (this.userPosition == 1) {
         obj = {
@@ -33,63 +81,19 @@ export default {
           resumeNum: '简历总数',
           entryNum: '已入职'
         }
-      }
-      else {
+      } else {
         obj = {
           name: '团队名称',
-          num: localStorage.getItem('departName') != 'null' ? localStorage.getItem('departName') : '--',
+          num:
+            localStorage.getItem('departName') != 'null'
+              ? localStorage.getItem('departName')
+              : '--',
           resumeNum: '简历总数',
           entryNum: '已入职'
         }
       }
       return obj
     }
-  },
-  created () {
-    console.log(this.teamInfo)
-    let uid = localStorage.getItem('uid')
-    getTeamInfo({ uid }).then(res => {
-      if (res && res.data) {
-        console.log(res)
-      }
-    })
-  },
+  }
 }
 </script>
-<style lang="scss">
-.team-info-row {
-  .cardBg {
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    max-width: 126px;
-  }
-  .box-card {
-    box-shadow:2px 5px 17px 0px rgba(51,51,51,0.2);
-    border-radius:5px;
-    height: 126px;
-    padding-left: 20px;
-    padding-top: 10px;
-    position: relative;
-    &.box-card1{
-      padding-right: 20px;
-      border:none;
-    }
-    &.el-card{
-      color: #fff;
-    }
-    &.name {
-      background:linear-gradient(150deg,#7F80FE,#729EFE);
-    }
-    &.num {
-      background:linear-gradient(117deg,rgba(255,110,115,1),rgba(255,116,145,1));
-    }
-    &.resumeNum {
-      background:linear-gradient(117deg,rgba(255,146,100,1),rgba(255,176,100,1));
-    }
-    &.entryNum {
-      background:linear-gradient(117deg,rgba(166,91,251,1),rgba(189,94,255,1));
-    }
-  }
-}
-</style>

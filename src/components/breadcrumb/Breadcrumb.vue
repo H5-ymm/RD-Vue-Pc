@@ -19,14 +19,15 @@ export default {
   data () {
     return {
       breadcrumbs: [],
-      type: localStorage.getItem('userType')
+      type: ''
     }
   },
   created () {
+    this.type = localStorage.getItem('userType')
     if (this.type == 1) {
       this.breadcrumbs = sessionStorage.getItem('menus') ? JSON.parse(sessionStorage.getItem('menus')) : ['新建接单']
     } else {
-      this.breadcrumbs = sessionStorage.getItem('menus') ? JSON.parse(sessionStorage.getItem('menus')) : ['论坛列表']
+      this.breadcrumbs = sessionStorage.getItem('menus') ? JSON.parse(sessionStorage.getItem('menus')) : ['团队中心']
     }
   },
   methods: {
@@ -48,8 +49,12 @@ export default {
         this.breadcrumbs = [ "入职结果"]
       }
       else {
-        let  arr = JSON.parse(sessionStorage.getItem('menus'))
-        this.breadcrumbs = arr ? arr.splice(0) : []
+        this.type = localStorage.getItem('userType')
+        if (this.type == 1) {
+          this.breadcrumbs = sessionStorage.getItem('menus') ? JSON.parse(sessionStorage.getItem('menus')) : ['新建接单']
+        } else {
+          this.breadcrumbs = sessionStorage.getItem('menus') ? JSON.parse(sessionStorage.getItem('menus')) : ['团队中心']
+        }
       }
     }
   }

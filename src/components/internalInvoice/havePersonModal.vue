@@ -32,53 +32,41 @@ export default {
       default: []
     }
   },
-  data () {
+  data() {
     return {
       form: {
         reason: ''
       },
-      name: '',
-      list: [
-        {
-          name: 'tttt',
-          time: '2019-10-20 10:22',
-          status: 0,
-          id: ''
-        }
-      ],
       ids: [],
       type: 'primary',
-      isCancel: false,
       currentId: []
     }
   },
   methods: {
-    handleClose () {
+    handleClose() {
       this.$emit('handleClose')
     },
-    checkHas (id, arr) {
+    checkHas(id, arr) {
       let flag = arr.indexOf(id)
       if (flag == -1) {
         return false
-      }
-      else {
+      } else {
         return true
       }
     },
-    handleCancle (id, index) {
+    handleCancle(id, index) {
       let flag = this.currentId.indexOf(id)
       if (flag == -1) {
         this.currentId.push(id)
       } else {
-        let ret = this.currentId.findIndex((v) => {
+        let ret = this.currentId.findIndex(v => {
           return v == id
         })
         this.currentId.splice(ret, 1)
       }
-      console.log(this.currentId)
       this.ids = [...new Set(this.currentId)]
     },
-    submit () {
+    submit() {
       this.$emit('handleOk', this.ids.join(','))
     }
   }
@@ -87,9 +75,10 @@ export default {
 
 <style lang="scss">
 .member-dialog {
-  box-shadow:0px 1px 43px 0px rgba(51,51,51,0.3);
-  border-radius:5px;
-  .el-dialog__body,.el-dialog__header {
+  box-shadow: 0px 1px 43px 0px rgba(51, 51, 51, 0.3);
+  border-radius: 5px;
+  .el-dialog__body,
+  .el-dialog__header {
     padding: 0;
   }
   .member-row {
@@ -113,19 +102,19 @@ export default {
         border-radius: 3px;
       }
       .personal-box {
-        padding: 10px 0 ;
+        padding: 10px 0;
         height: 300px;
         overflow: auto;
-        >li {
+        > li {
           margin-bottom: 15px;
         }
-        .item-name{
+        .item-name {
           color: #333;
           width: 80px;
           text-align: left;
         }
-        .item-time{
-          color: #6A6A6A;
+        .item-time {
+          color: #6a6a6a;
         }
         .cancle-btn {
           &.el-button {
@@ -165,10 +154,10 @@ export default {
       width: 84%;
     }
     .select-text {
-      font-size:14px;
-      color: #6A6A6A;
+      font-size: 14px;
+      color: #6a6a6a;
       .select-num {
-        color: #1890FF;
+        color: #1890ff;
       }
     }
   }

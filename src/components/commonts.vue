@@ -32,6 +32,7 @@
     height: 40px;
     line-height: 40px;
     color: #999;
+    font-size: 14px;
   }
 }
 
@@ -113,7 +114,7 @@
         <!-- 列表 -->
         <div v-show="list.length!=0" class="team-box-left-box" ref="commont">
           <person-card :list="list" :total="total" @selectComment="selectComment"></person-card>
-          <section class="view-card-row-more x-flex-center" v-if="isLoad" @click="loadMore">加载更多</section>
+          <section class="view-card-row-more x-flex-center" v-show="isLoad" @click="loadMore">加载更多</section>
         </div>
         <div class="no-data" v-if="list.length==0">
           <img src="../assets/img/nodata.png" class="nodata-bg" alt="">

@@ -1,5 +1,5 @@
 <style lang="scss">
-  @import '@/assets/css/resume.scss';
+@import '@/assets/css/resume.scss';
 </style>
 <template>
   <div class="tables-box billingManagement">
@@ -27,9 +27,8 @@
         </el-form-item>
       </el-form>
       <div class="member-table">
-        <el-table border :data="tableData" @sort-change="sortChange" ref="multipleTable" style="width: 100%" @selection-change="handleSelectionChange">
-          <el-table-column label="职位名称" prop="job_name" align="center" width="150">
-          </el-table-column>
+        <el-table border :data="tableData" @sort-change="sortChange" ref="multipleTable" style="width: 100%">
+          <el-table-column label="职位名称" prop="job_name" align="center" width="150"></el-table-column>
           <el-table-column label="团队名称" align="center" width="150">
             <template slot-scope="props">
               <span class="text-line">{{props.row.com_name}}</span>
@@ -86,28 +85,33 @@
 import { listApply, addApply, cancelApply, delApply } from '@/api/teamReceipt'
 import customerService from '../common/customerService'
 import viewJob from '../common/viewJob'
-import { moneyTypeList, rewardTypeList, payTypeList, weekList, applyStatusList } from '../../base/base'
+import {
+  moneyTypeList,
+  rewardTypeList,
+  payTypeList,
+  weekList,
+  applyStatusList
+} from '../../base/base'
 export default {
   components: {
     customerService,
     viewJob
   },
   filters: {
-    rewardType (val) {
+    rewardType(val) {
       let obj = rewardTypeList.find(item => {
         return val == item.value
       })
       return obj ? obj.label : '--'
     },
-    status (val) {
+    status(val) {
       let obj = applyStatusList.find(item => {
         return val == item.value
       })
       return obj ? obj.label : '--'
-
     }
   },
-  data () {
+  data() {
     return {
       moneyTypeList,
       rewardTypeList,
@@ -115,108 +119,97 @@ export default {
       dialogTableVisible: false,
       dialogJobVisible: false,
       tableData: [],
-      currentPage: 1,
-      userType: 1,
       formMember: {
         uid: localStorage.getItem('uid'),
         limit: 10,
         page: 1
       },
       total: 0,
-      userId: '',
-      form: {},
       jobId: ''
     }
   },
-  created () {
+  created() {
     // 初始化查询标签数据
     this.getList(this.formMember)
   },
   methods: {
-    getList (params) {
-      listApply(params).then(res => {
-        this.tableData = res.data.data
-        this.total = res.data.count
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+    getList(params) {
+      listApply(params)
+        .then(res => {
+          this.tableData = res.data.data
+          this.total = res.data.count
+        })
+        .catch(error => {
+          this.$message.error(error.status.remind)
+        })
     },
-    sortChange (column) {
+    sortChange(column) {
       if (column.order == 'ascending') {
         this.formMember[column.prop] = 'asc'
-      }
-      else {
+      } else {
         this.formMember[column.prop] = 'desc'
       }
       this.getList(this.formMember)
     },
-    handleSizeChange (val) {
+    handleSizeChange(val) {
       this.formMember.limit = val
       this.getList(this.formMember)
     },
-    handleCurrentChange (val) {
+    handleCurrentChange(val) {
       this.formMember.page = val
       this.getList(this.formMember)
     },
     // 查看职位
-    viewJob (val) {
+    viewJob(val) {
       this.jobId = val.job_id
       this.dialogJobVisible = true
     },
-    handleCancle (val) {
+    handleCancle(val) {
       let params = {
         uid: localStorage.getItem('uid'),
         id: val.id
       }
-      cancelApply(params).then(res => {
-        this.$message.success('取消成功')
-        this.getList(this.formMember)
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
-    },
-    handleDel (val) {
-      let params = {
-        uid: localStorage.getItem('uid'),
-        id: val.id
-      }
-      delApply(params).then(res => {
-        if (res.data) {
-          this.$message.success('删除成功')
+      cancelApply(params)
+        .then(res => {
+          this.$message.success('取消成功')
           this.getList(this.formMember)
-        }
-        else {
-          this.$message.error('删除失败')
-        }
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+        })
+        .catch(error => {
+          this.$message.error(error.status.remind)
+        })
     },
-    submitMember (val) {
-      updateTeamUser(val).then(res => {
-        this.dialogTableVisible = false
-        this.getList(this.params)
-      })
+    handleDel(val) {
+      let params = {
+        uid: localStorage.getItem('uid'),
+        id: val.id
+      }
+      delApply(params)
+        .then(res => {
+          if (res.data) {
+            this.$message.success('删除成功')
+            this.getList(this.formMember)
+          } else {
+            this.$message.error('删除失败')
+          }
+        })
+        .catch(error => {
+          this.$message.error(error.status.remind)
+        })
     },
-    handleSelectionChange (val) {
-      this.len = val
+    onSubmit() {
+      this.getList(this.formMember)
     },
-    addMember () {
-      this.visible = true
-    },
-    onSubmit (value) {
-      let params = Object.assign(this.formMember, value)
-      this.getList(params)
-    },
-    submitForm (val) {
+    submitForm(val) {
       this.visible = false
-      addTeamUser(val).then(res => {
-        this.getList(this.formMember)
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+      addTeamUser(val)
+        .then(res => {
+          this.getList(this.formMember)
+        })
+        .catch(error => {
+          this.$message.error(error.status.remind)
+        })
     },
-    reset () {
+    reset() {
       this.formMember = {
         uid: localStorage.getItem('uid'),
         limit: 10,

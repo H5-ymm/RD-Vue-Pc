@@ -1,3 +1,51 @@
+<style lang="scss">
+  .team-setting-view {
+    width: 100%;
+    margin: 0 auto;
+    text-align: center;  
+    overflow: hidden;
+    background: #fff;
+    &.team-box{
+      height: calc(100% - 70px);
+    }
+    .title {
+      font-size:22px;
+      color: #333333;
+      margin-top: 5%;
+      text-align: center;
+    }
+    .team-setting-box {
+      margin: 5% auto;
+    }
+    .grid-content-select {
+      width:236px;
+      height:276px;
+      background:rgba(255,255,255,1);
+      border:1px solid rgba(238,238,238,1);
+      box-shadow:0px 1px 10px 0px rgba(106,106,106,0.15);
+      border-radius:3px;
+      text-align: center;
+      line-height: 130px;
+      padding-top: 40px;
+      margin: 0 20px;
+      position: relative;
+      &.grid-content-active {
+        border:2px solid rgba(54,153,255,1);
+      }
+      .select-tag {
+        position: absolute;
+        right: -2px;
+        top: -2px;
+      }
+    }
+    .next-btn {
+      width:201px;
+      height:38px;
+      background:rgba(54,153,255,1);
+      border-radius:3px;
+    }
+  }
+</style>
 <template>
   <div class="team-setting-view">
     <p class="title">{{type?'团队性质':'请选择团队性质'}}</p>
@@ -73,51 +121,3 @@ export default {
   }
 }
 </script>
-<style lang="scss">
-  .team-setting-view {
-    width: 100%;
-    margin: 0 auto;
-    text-align: center;  
-    overflow: hidden;
-    background: #fff;
-    &.team-box{
-      height: calc(100% - 70px);
-    }
-    .title {
-      font-size:22px;
-      color: #333333;
-      margin-top: 5%;
-      text-align: center;
-    }
-    .team-setting-box {
-      margin: 5% auto;
-    }
-    .grid-content-select {
-      width:236px;
-      height:276px;
-      background:rgba(255,255,255,1);
-      border:1px solid rgba(238,238,238,1);
-      box-shadow:0px 1px 10px 0px rgba(106,106,106,0.15);
-      border-radius:3px;
-      text-align: center;
-      line-height: 130px;
-      padding-top: 40px;
-      margin: 0 20px;
-      position: relative;
-      &.grid-content-active {
-        border:2px solid rgba(54,153,255,1);
-      }
-      .select-tag {
-        position: absolute;
-        right: -2px;
-        top: -2px;
-      }
-    }
-    .next-btn {
-      width:201px;
-      height:38px;
-      background:rgba(54,153,255,1);
-      border-radius:3px;
-    }
-  }
-</style>

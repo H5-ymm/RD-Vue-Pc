@@ -89,7 +89,7 @@ export default {
   components: {
     districtSelet
   },
-  data () {
+  data() {
     return {
       companyForm: {
         uid: localStorage.getItem('uid'),
@@ -117,23 +117,20 @@ export default {
       userType: localStorage.getItem('userType'),
       address: [],
       compnayInfo: {}
-    };
+    }
   },
-  created () {
+  created() {
     let uid = localStorage.getItem('uid')
     let params = 'com_type,com_scale,job_array'
     this.getList(params)
     this.getCompanyInfo(uid)
   },
   methods: {
-    getCompanyInfo (uid) {
+    getCompanyInfo(uid) {
       getCompanyDetail({ uid }).then(res => {
         this.companyForm = res.data
-        // for (let key in this.companyForm) {
-        //   this.companyForm[key] = this.compnayInfo[key]
-        // }
-        this.companyForm.companyName =  res.data.com_name
-        if (this.companyForm.link_tel){
+        this.companyForm.companyName = res.data.com_name
+        if (this.companyForm.link_tel) {
           let link_tel = this.companyForm.link_tel.split('-')
           this.landlineStart = link_tel[0]
           this.landlineEnd = link_tel[1]
@@ -141,23 +138,25 @@ export default {
         this.imageUrl = this.companyForm.logo_url
         this.license_img = this.companyForm.license_url
         if (this.companyForm.provinceid) {
-          this.address = [this.companyForm.provinceid, this.companyForm.cityid, this.companyForm.three_cityid]
-        }     
+          this.address = [
+            this.companyForm.provinceid,
+            this.companyForm.cityid,
+            this.companyForm.three_cityid
+          ]
+        }
       })
     },
-    getList (filed) {
+    getList(filed) {
       getConstant({ filed }).then(res => {
         const { com_scale, com_type, job_array } = res.data
         this.comScaleList = com_scale
-        this.comTypeList = this.getArray(com_type) 
-        console.log(this.comTypeList)
-        this.jobList = this.getArray(job_array) 
-        console.log(this.jobList) 
+        this.comTypeList = this.getArray(com_type)
+        this.jobList = this.getArray(job_array)
       })
     },
     getArray(obj) {
       let arr = []
-      for(let key in obj) {
+      for (let key in obj) {
         arr.push({
           label: obj[key],
           value: Number(key)
@@ -165,63 +164,63 @@ export default {
       }
       return arr
     },
-    upload (params) {
-      const _file = params.file;
-      const isLt2M = _file.size / 1024 / 1024 < 2;
+    upload(params) {
+      const _file = params.file
+      const isLt2M = _file.size / 1024 / 1024 < 2
       if (!isLt2M) {
-        this.$message.error("请上传2M以下的.xlsx文件");
-        return false;
+        this.$message.error('请上传2M以下的.xlsx文件')
+        return false
       }
       uploadFile(_file).then(res => {
         this.imageUrl = getImgUrl(res.data.url)
-        
       })
     },
-    uploadLicense (params) {
-      const _file = params.file;
-      const isLt2M = _file.size / 1024 / 1024 < 2;
+    uploadLicense(params) {
+      const _file = params.file
+      const isLt2M = _file.size / 1024 / 1024 < 2
       if (!isLt2M) {
-        this.$message.error("请上传2M以下的.xlsx文件");
-        return false;
+        this.$message.error('请上传2M以下的.xlsx文件')
+        return false
       }
       uploadFile(_file).then(res => {
         this.license_img = getImgUrl(res.data.url)
       })
     },
-    change (val) {
+    change(val) {
       this.companyForm.provinceid = val[0]
       this.companyForm.cityid = val[1]
       this.companyForm.three_cityid = val[2]
     },
-    submitForm (companyForm) {
+    submitForm(companyForm) {
       if (this.landlineStart && this.landlineEnd) {
         this.companyForm.link_tel = this.landlineStart + '-' + this.landlineEnd
       }
-      this.$refs[companyForm].validate((valid) => {
+      this.$refs[companyForm].validate(valid => {
         if (valid) {
           this.createCompanyInfo()
         } else {
-          return false;
+          return false
         }
-      });
-    },
-    createCompanyInfo () {
-      this.companyForm.license_url = this.license_img
-      this.companyForm.logo_url = this.imageUrl
-      addCompanyInfo(this.companyForm).then(res => {
-        if (res.data) {
-          localStorage.setItem('teamType', 1)
-          this.$message.success('保存成功')
-          sessionStorage.setItem('baseInfo', JSON.stringify(this.companyForm))
-        }
-        else {
-          this.$message.error('保存失败')
-        }
-      }).catch(error => {
-        this.$message.error(error.status.remind)
       })
     },
-    resetForm (companyForm) {
+    createCompanyInfo() {
+      this.companyForm.license_url = this.license_img
+      this.companyForm.logo_url = this.imageUrl
+      addCompanyInfo(this.companyForm)
+        .then(res => {
+          if (res.data) {
+            localStorage.setItem('teamType', 1)
+            this.$message.success('保存成功')
+            sessionStorage.setItem('baseInfo', JSON.stringify(this.companyForm))
+          } else {
+            this.$message.error('保存失败')
+          }
+        })
+        .catch(error => {
+          this.$message.error(error.status.remind)
+        })
+    },
+    resetForm(companyForm) {
       this.$refs[companyForm].resetFields()
     }
   }

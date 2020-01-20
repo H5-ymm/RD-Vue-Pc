@@ -12,7 +12,26 @@
         <div class="search-main-box">
           <searchInput @searchQuery="searchQuery"></searchInput>
         </div>
-        <el-row class="home-img-box" v-if="imgList.length">
+        <el-row class="home-img-box" v-if="imgList.length&&imgList.length==1">
+          <el-col :span="24">
+            <div class="grid-content bg-purple-img">
+              <img :src="getImgUrl(imgList[0].image)" alt="">
+            </div>
+          </el-col>
+        </el-row>
+        <el-row class="home-img-box" v-if="imgList.length&&imgList.length==2">
+          <el-col :span="16">
+            <div class="grid-content bg-purple-img">
+              <img :src="getImgUrl(imgList[0].image)" alt="">
+            </div>
+          </el-col>
+          <el-col :span="8">
+            <div class="bg-purple-right grid-content">
+              <div class="bg-purple-img-right bg-purple-img-right2"><img :src="getImgUrl(imgList[1].image)" alt=""></div>
+            </div>
+          </el-col>
+        </el-row>
+         <el-row class="home-img-box" v-if="imgList.length&&imgList.length==3">
           <el-col :span="16">
             <div class="grid-content bg-purple-img">
               <img :src="getImgUrl(imgList[0].image)" alt="">
@@ -183,13 +202,6 @@ export default {
     window.addEventListener('scroll', this.windowScroll)
   },
   methods: {
-    handleCommand (val) {
-      this.$router.push(val)
-      if (val == 'login') {
-        localStorage.clear('')
-        sessionStorage.clear('')
-      }
-    },
     getImgUrl,
     getImgList () {
       let params = {
@@ -234,25 +246,20 @@ export default {
       })
     },
     handleApply (val) {
-      if (this.token) {
-        let params = {
-          job_id: val.id,
-          uid: localStorage.getItem('uid')
+      let params = {
+        job_id: val.id,
+        uid: localStorage.getItem('uid')
+      }
+      addApply(params).then(res => {
+        if (res.data) {
+          this.centerDialogVisible = true
         }
-        addApply(params).then(res => {
-          if (res.data) {
-            this.centerDialogVisible = true
-          }
-          else {
-            this.$message.error('接单失败')
-          }
-        }).catch(error => {
-          this.$message.error(error.status.remind)
-        })
-      }
-      else {
-        this.$router.push('login')
-      }
+        else {
+          this.$message.error('接单失败')
+        }
+      }).catch(error => {
+        this.$message.error(error.status.remind)
+      })
     },
     searchQuery (val) {
       let params = Object.assign(val, this.params)

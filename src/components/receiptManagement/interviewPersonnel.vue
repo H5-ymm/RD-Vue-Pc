@@ -1,5 +1,5 @@
 <style lang="scss">
-  @import '@/assets/css/resume.scss';
+@import '@/assets/css/resume.scss';
 </style>
 <template>
   <div class="tables-box billingManagement">
@@ -121,7 +121,13 @@
   </div>
 </template>
 <script>
-import { invoiceInterviewList, auditEntryResume, endInterview, exportInterviewResume, editEntryTime } from '@/api/receipt'
+import {
+  invoiceInterviewList,
+  auditEntryResume,
+  endInterview,
+  exportInterviewResume,
+  editEntryTime
+} from '@/api/receipt'
 import { moneyTypeList, rewardTypeList, entryStatusList3 } from '@/base/base'
 import receiptModal from './receiptModal'
 import modal from '../common/modal'
@@ -132,26 +138,26 @@ export default {
     modal
   },
   filters: {
-    moneyType (val) {
+    moneyType(val) {
       let obj = moneyTypeList.find(item => {
         return val == item.value
       })
       return obj.label
     },
-    rewardType (val) {
+    rewardType(val) {
       let obj = rewardTypeList.find(item => {
         return val == item.value
       })
       return obj.label
     },
-    statusType (val) {
+    statusType(val) {
       let obj = entryStatusList3.find(item => {
         return val == item.value
       })
       return obj.label
     }
   },
-  data () {
+  data() {
     return {
       moneyTypeList,
       rewardTypeList,
@@ -193,7 +199,7 @@ export default {
       entry_time: 0
     }
   },
-  created () {
+  created() {
     // 初始化查询标签数据
     if (this.$route.query.id) {
       this.formMember.jobId = this.$route.query.id
@@ -203,39 +209,42 @@ export default {
     this.getData(params)
   },
   methods: {
-    getData (filed) {
-      getConstant({ filed }).then(res => {
-        const { job_array } = res.data
-        this.jobList = job_array
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+    getData(filed) {
+      getConstant({ filed })
+        .then(res => {
+          const { job_array } = res.data
+          this.jobList = job_array
+        })
+        .catch(error => {
+          this.$message.error(error.status.remind)
+        })
     },
-    getList (params) {
-      invoiceInterviewList(params).then(res => {
-        const { data } = res
-        this.tableData = data.data
-        this.total = data.count
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+    getList(params) {
+      invoiceInterviewList(params)
+        .then(res => {
+          const { data } = res
+          this.tableData = data.data
+          this.total = data.count
+        })
+        .catch(error => {
+          this.$message.error(error.status.remind)
+        })
     },
-    handleSelectionChange (val) {
+    handleSelectionChange(val) {
       this.multipleSelection = val
       let arr = val.map(item => {
         return item.id
       })
       this.jobId = arr.join(',')
     },
-    exportResume () {
+    exportResume() {
       if (!this.jobId) {
         return this.$message.warning('请选择简历')
-      }
-      else {
+      } else {
         this.visible = true
       }
     },
-    handleOk () {
+    handleOk() {
       this.visible = false
       let params = {
         uid: localStorage.getItem('uid'),
@@ -243,74 +252,77 @@ export default {
       }
       exportInterviewResume(params)
     },
-    viewEntrytList (val) {
+    viewEntrytList(val) {
       this.jobId = val.id
       if (!val.entry_time) {
         this.dialogTableVisible = true
         this.entry_time = ''
-      }
-      else {
-        this.$router.push({ path: '/commonTable', query: { id: val.id, view: 6 } })
+      } else {
+        this.$router.push({
+          path: '/commonTable',
+          query: { id: val.id, view: 6 }
+        })
       }
     },
-    setEntryTime (val) {
+    setEntryTime(val) {
       this.jobId = val.id
       if (!val.entry_time) {
         this.dialogTableVisible = true
-      }
-      else {
+      } else {
         this.dialogTableVisible = true
         this.entry_time = val.entry_time
       }
     },
-    selectStatus (item, index) {
-      this.activeIndex = index
-      this.formMember.status = item.value
-    },
-    sortChange (column) {
+    sortChange(column) {
       if (column.order == 'ascending') {
         this.formMember[column.prop] = 'asc'
-      }
-      else {
+      } else {
         this.formMember[column.prop] = 'desc'
       }
       this.getList(this.formMember)
     },
-    handleSizeChange (val) {
+    handleSizeChange(val) {
       this.formMember.limit = val
       this.getList(this.formMember)
     },
-    handleCurrentChange (val) {
+    handleCurrentChange(val) {
       this.formMember.page = val
       this.getList(this.formMember)
     },
-    handleOver (val) {
+    handleOver(val) {
       let params = {
         uid: localStorage.getItem('uid'),
         jobId: val.id
       }
-      endInterview(params).then(res => {
-        this.$message.success('操作成功')
-        this.getList(this.formMember)
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+      endInterview(params)
+        .then(res => {
+          this.$message.success('操作成功')
+          this.getList(this.formMember)
+        })
+        .catch(error => {
+          this.$message.error(error.status.remind)
+        })
     },
-    handleSelectionChange (val) {
+    handleSelectionChange(val) {
       this.len = val
     },
     // 入职时间
-    submitForm (val) {
-      let params = Object.assign(val, { job_id: this.jobId, uid: this.formMember.uid })
-      editEntryTime(params).then(res => {
-        this.dialogTableVisible = false
-        sessionStorage.setItem('time', JSON.stringify(val))
-        this.getList(this.formMember)
-      }).catch(error => {
-        this.$message.error(error.status.remind)
+    submitForm(val) {
+      let params = Object.assign(val, {
+        job_id: this.jobId,
+        uid: this.formMember.uid
       })
+      editEntryTime(params)
+        .then(res => {
+          this.dialogTableVisible = false
+          sessionStorage.setItem('time', JSON.stringify(val))
+          this.getList(this.formMember)
+        })
+        .catch(error => {
+          this.$message.error(error.status.remind)
+        })
     },
-    onSubmit () {
+    onSubmit() {
       this.getList(this.formMember)
     }
   }

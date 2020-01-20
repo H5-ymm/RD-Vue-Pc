@@ -2,7 +2,7 @@
   <div class="salary-rebate">
     <el-form-item label="综合薪资" prop="offermoney_type">
       <div>
-        <el-select v-model="orderTakingForm.offermoney_type" class="width160" placeholder="请选择">
+        <el-select v-model="orderTakingForm.offermoney_type" @change="change" class="width160" placeholder="请选择">
           <el-option :label="item.label" :value="item.value" v-show="index" v-for="(item,index) in moneyTypeList" :key="item.label"></el-option>
         </el-select>
         <el-select v-model="orderTakingForm.offermoney" v-if="orderTakingForm.offermoney_type==1" class="width160" placeholder="请选择">
@@ -19,35 +19,21 @@
   </div>
 </template>
 <script>
-import { moneyTypeList, rewardTypeList, payTypeList, weekList } from '../../base/base'
+import { moneyTypeList } from '@/base/base'
 import { getConstant } from '@/api/dictionary'
 export default {
-  data () {
+  data() {
     return {
       orderTakingForm: {
         offermoney_type: 1
       },
-      comTypeList: [],
       moneyTypeList,
-      rewardTypeList,
-      payTypeList,
-      weekList,
-      reward_money_type: '',
-      rewardTipShow: false,
       moneyList: []
-    }
-  },
-  computed: {
-    payType () {
-      return this.orderTakingForm.reward_pay_type == 1 ? '次' : '本'
-    },
-    rewardType () {
-      return this.orderTakingForm.reward_money_type == 1 ? '日' : this.orderTakingForm.reward_money_type == 2 ? '周' : '月'
     }
   },
   watch: {
     orderTakingForm: {
-      handler (val, oldName) {
+      handler(val, oldName) {
         for (let key in val) {
           if (val[key] != '') {
             this.$emit('submit', val)
@@ -57,106 +43,94 @@ export default {
       deep: true
     }
   },
-  created () {
+  created() {
     let params = 'money_array'
     this.getList(params)
   },
   methods: {
-    getList (filed) {
+    getList(filed) {
       getConstant({ filed }).then(res => {
-        const { money_array } = res.data
-        this.moneyList = money_array
+        this.moneyList = res.data.money_array
       })
     },
-    focusInput () {
-      this.rewardTipShow = true
-    },
-    changePayType (val) {
-      console.log(val)
-    },
-    blurInput ($event) {
-      return false
-    },
-    changeInput (val) {
-      if (val) {
-        this.orderTakingForm.reward_money_type = `持续返利` + val + `月`
-        this.blurInput()
-      }
+    change(val) {
+      this.orderTakingForm.offermoney = ''
     }
   }
 }
 </script>
 <style lang="scss">
-  .salary-rebate {
-    padding-bottom: 20px;
-    .el-form-item{
-      display: inline-block!important;
-    }
-    .width500 {
-      width: 500px;
-    }
-    .width700 {
-      width: 700px;
-    }
-    .width110 {
-      width: 110px;
-      margin: 0 20px;
-    }
-    .reward_type {
-      margin-bottom: 10px;
-    }
-    .error {
-      top: -16px;
-      &.reward-error {
-        width: 300px;
-        left: 360px;
-        top: -10px;
-        ul {
-          margin-left:5px;
-          font-size:12px;
-          line-height: 20px;
-        }
-      }
-    }
-    .el-scrollbar__wrap {
-      width: 180px;
-      .text-input {
-        overflow: hidden;
-        border: none;
-        padding: 0 0 0 20px;
+.salary-rebate {
+  padding-bottom: 20px;
+  .el-form-item {
+    display: inline-block !important;
+  }
+  .width500 {
+    width: 500px;
+  }
+  .width700 {
+    width: 700px;
+  }
+  .width110 {
+    width: 110px;
+    margin: 0 20px;
+  }
+  .reward_type {
+    margin-bottom: 10px;
+  }
+  .error {
+    top: -16px;
+    &.reward-error {
+      width: 300px;
+      left: 360px;
+      top: -10px;
+      ul {
+        margin-left: 5px;
+        font-size: 12px;
+        line-height: 20px;
       }
     }
   }
-  .width160 {
-    width: 160px!important;
-    margin-right: 30px;
-    &.el-select  {
-      >.el-input{
-        width: 160px!important;
-      }
-    }
-    .moneyType {
-      color: #333;
-    }
-    .el-input-group__append,.el-input-group__prepend {   
-      border:none;
-      border-radius: 0;
-      background: none;
-      padding: 0;
-      background-color:none;
+  .el-scrollbar__wrap {
+    width: 180px;
+    .text-input {
+      overflow: hidden;
+      border: none;
+      padding: 0 0 0 20px;
     }
   }
-  .text-input {
-    padding: 0 10px;
-    box-sizing: border-box;
-    border: 1px solid #eee;
-    height: 38px;
-    .el-input__inner {
-      padding: 0 ;
-      height: 37px!important;
-      line-height: 37px!important;
-      text-align: center;
-      border: none!important;
+}
+.width160 {
+  width: 160px !important;
+  margin-right: 30px;
+  &.el-select {
+    > .el-input {
+      width: 160px !important;
     }
   }
+  .moneyType {
+    color: #333;
+  }
+  .el-input-group__append,
+  .el-input-group__prepend {
+    border: none;
+    border-radius: 0;
+    background: none;
+    padding: 0;
+    background-color: none;
+  }
+}
+.text-input {
+  padding: 0 10px;
+  box-sizing: border-box;
+  border: 1px solid #eee;
+  height: 38px;
+  .el-input__inner {
+    padding: 0;
+    height: 37px !important;
+    line-height: 37px !important;
+    text-align: center;
+    border: none !important;
+  }
+}
 </style>

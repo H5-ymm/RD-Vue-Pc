@@ -5,7 +5,7 @@
     <el-row class="tac">
       <el-col :span="24">
         <div class="names">人事达</div>
-        <el-menu class="el-menu-vertical-demo" background-color="#000" active-text-color="#1890FF" text-color="#fff" @open="handleOpen" :unique-opened="true" @close="handleClose" @select="selectMenus" router :default-active="routerli">
+        <el-menu class="el-menu-vertical-demo" background-color="#000" active-text-color="#1890FF" text-color="#fff" @open="handleOpen" :unique-opened="true" @select="selectMenus" router :default-active="routerli">
           <el-submenu :index="item.title" class="acts" v-for="(item,index) in menus" :key="index">
             <template slot="title">
               <img :src="require(`../assets/img/teamIcon/icon${index+1}.png`)" alt="" class="aside-icon">
@@ -277,13 +277,12 @@ export default {
           },
       ],
       title: '',
-      url: '/teamData',
+      url: '',
       userP: 0
     }
   },
   created () {
     this.userP =  this.userPosition
-    console.log(this.userP+'改变111')
     let teamType = localStorage.getItem('teamType')
     let teamId = localStorage.getItem('uid')
     if (this.userP == 1) {     
@@ -385,9 +384,10 @@ export default {
           }
         })
       }
-      console.log(this.menus)
     },
     $route (to, from) {
+      console.log(to)
+      console.log(from)
       if (to.path == '/commonTableList' && from.path == '/teamEntryList') {
         this.selectMenus(to.path, this.menus)
         this.url = '/teamEntryList'
@@ -407,10 +407,8 @@ export default {
     handleOpen (key, keyPath) {
       console.log(key, keyPath);
     },
-    handleClose (key, keyPath) {
-      //console.log(key, keyPath);
-    },
     selectMenus (key, keyPath) {
+      console.log(key)
       this.url = key
       let arr = this.getMenusTitle(key, this.menus)
       sessionStorage.setItem('menusUrl', this.url)

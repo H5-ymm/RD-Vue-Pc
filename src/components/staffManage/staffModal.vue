@@ -18,10 +18,10 @@
               </p>
               <div class="resume-card-row">
                 <div class="resume-card-item">
-                  <el-form-item label="姓名" required prop="name">
+                  <el-form-item label="姓名" prop="name">
                     <el-input v-model="formMember.name" placeholder="请输入姓名" class="width300"></el-input>
                   </el-form-item>
-                  <el-form-item label="手机号码" required prop="mobile">
+                  <el-form-item label="手机号码" prop="mobile">
                     <el-input v-model="formMember.mobile" placeholder="请输入手机号码" class="width300"></el-input>
                   </el-form-item>
                   <el-form-item label="年龄">
@@ -39,8 +39,8 @@
                     </el-radio-group>
                   </el-form-item>
                   <el-form-item label="学历">
-                    <el-select v-model="formMember.education" value-key="key" placeholder="请选择学历" class="width300">
-                      <el-option :label="item" :value="key" v-for="(item,key) in edu_type" :key="key"></el-option>
+                    <el-select v-model="formMember.education" placeholder="请选择学历" class="width300">
+                      <el-option :label="item" :value="index" v-for="(item,index) in edu_type" :key="index"></el-option>
                     </el-select>
                   </el-form-item>
                   <el-form-item label="详细地址">
@@ -122,6 +122,24 @@ export default {
       if (val) {
         this.getInfo()
       }
+      else {
+        this.formMember = {
+          sex:0,
+          education: '',
+          uid: localStorage.getItem('uid')
+        }
+       this.address = []
+      }
+    },
+    dialogTableVisible(val) {
+      if (!val) {
+        this.formMember = {
+         sex:0,
+         education: '',
+         uid: localStorage.getItem('uid')
+        }
+       this.address = []
+      }
     }
   },
   methods: {
@@ -132,6 +150,7 @@ export default {
       }
       selectCompanyResumeInfo(params).then(res => {
         this.formMember = res.data
+        this.formMember.education = Number(this.formMember.education)
         if (res.data.provinceid && res.data.cityid) {
           this.address = [res.data.provinceid, res.data.cityid]
         }

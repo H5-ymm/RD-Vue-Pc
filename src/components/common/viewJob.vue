@@ -120,23 +120,25 @@
 import { invoiceInfo } from '@/api/orderTarking'
 export default {
   props: ['dialogTableVisible', 'id'],
-  data () {
+  data() {
     return {
       jobInfo: {}
     }
   },
-  created () {
-
-  },
+  created() {},
   computed: {
-    rewardMoney () {
+    rewardMoney() {
       if (this.id) {
-        return this.jobInfo.money_type == 1 ? '月' : this.jobInfo.money_type == 2 ? '日' : '时'
+        return this.jobInfo.money_type == 1
+          ? '月'
+          : this.jobInfo.money_type == 2
+            ? '日'
+            : '时'
       }
     }
   },
   watch: {
-    id (val) {
+    id(val) {
       if (val) {
         let params = {
           id: val,
@@ -149,7 +151,7 @@ export default {
     }
   },
   methods: {
-    handleClose () {
+    handleClose() {
       this.$emit('handleClose')
     }
   }
@@ -158,13 +160,14 @@ export default {
 
 <style lang="scss">
 .member-dialog {
-  box-shadow:0px 1px 43px 0px rgba(51,51,51,0.3);
-  border-radius:5px;
-  .el-dialog__body,.el-dialog__header {
+  box-shadow: 0px 1px 43px 0px rgba(51, 51, 51, 0.3);
+  border-radius: 5px;
+  .el-dialog__body,
+  .el-dialog__header {
     padding: 0;
   }
   .member-col1 {
-    background:#EBF4FB;
+    background: #ebf4fb;
     padding: 21px 0 20px;
   }
   .member-row {
@@ -181,16 +184,16 @@ export default {
     &.job-info-box {
       .member-col1-jobName {
         color: #333;
-        font-size:24px;
+        font-size: 24px;
         margin: 10px 0;
         text-align: left;
       }
-      .member-col1-text{
-        color: #6A6A6A;
+      .member-col1-text {
+        color: #6a6a6a;
         font-size: 12px;
       }
       .member-col1-status {
-        background: #61BC74;
+        background: #61bc74;
         color: #fff;
         font-size: 12px;
         padding: 4px 14px;
@@ -232,7 +235,7 @@ export default {
             text-align: right;
             margin-right: 30px;
             font-size: 14px;
-            color: #6A6A6A;
+            color: #6a6a6a;
             &:nth-of-type(2) {
               text-align: left;
               color: #333;
@@ -258,10 +261,10 @@ export default {
     width: 92%;
     margin: 0 auto;
     .select-text {
-      font-size:14px;
-      color: #6A6A6A;
+      font-size: 14px;
+      color: #6a6a6a;
       .select-num {
-        color: #1890FF;
+        color: #1890ff;
       }
     }
   }

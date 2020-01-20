@@ -1,47 +1,47 @@
 <style lang="scss">
 @import '@/assets/css/formMessage.scss';
-  .teamMessage {
-    .error {
-      position:absolute;
-      top: -16px;
-      left:0;
-      color:#FE2A00;
-      font-size:12px;
-      &.error-job{
-        bottom: 0;
-        top: 95%;
-      }
-    }
-    .job_content {
-      border: 1px solid #eee;
-      height: 250px;
-      width: 400px;
-      color: #333;
-      padding-left: 10px;
-      position: relative;
-      padding-bottom: 30px;
-      margin-bottom: 30px;
-      .el-input__inner {
-        border: none!important;
-      }
-      .job_textarea {
-        width: 320px;
-        min-height: 20px;
-        outline: none;
-      }
-      .content-len {
-        color: #6A6A6A;
-        font-size: 12px;
-        position: absolute;
-        bottom: 0;
-        right: 0;
-        background:rgba(248,248,248,1);
-        border-radius:2px;
-        padding:0 15px;
-        line-height: 30px;
-      }
+.teamMessage {
+  .error {
+    position: absolute;
+    top: -16px;
+    left: 0;
+    color: #fe2a00;
+    font-size: 12px;
+    &.error-job {
+      bottom: 0;
+      top: 95%;
     }
   }
+  .job_content {
+    border: 1px solid #eee;
+    height: 250px;
+    width: 400px;
+    color: #333;
+    padding-left: 10px;
+    position: relative;
+    padding-bottom: 30px;
+    margin-bottom: 30px;
+    .el-input__inner {
+      border: none !important;
+    }
+    .job_textarea {
+      width: 320px;
+      min-height: 20px;
+      outline: none;
+    }
+    .content-len {
+      color: #6a6a6a;
+      font-size: 12px;
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      background: rgba(248, 248, 248, 1);
+      border-radius: 2px;
+      padding: 0 15px;
+      line-height: 30px;
+    }
+  }
+}
 </style>
 <template>
   <div class="teamMessage create-orderTaking-view">
@@ -139,15 +139,16 @@ export default {
     districtSelet,
     salaryAndRebate
   },
-  data () {
-    let validatereg = function (rule, value, callback) {   //验证用户名是否合法
-      let reg = /^1[3456789]\d{9}$/;
-      if (!(reg.test(value))) {
-        callback(new Error('手机号格式不正确'));
+  data() {
+    let validatereg = function(rule, value, callback) {
+      //验证用户名是否合法
+      let reg = /^1[3456789]\d{9}$/
+      if (!reg.test(value)) {
+        callback(new Error('手机号格式不正确'))
       } else {
-        callback();
+        callback()
       }
-    };
+    }
     return {
       orderTakingForm: {
         type: 1,
@@ -192,9 +193,9 @@ export default {
       id: '',
       address: [],
       from: null
-    };
+    }
   },
-  created () {
+  created() {
     let params = 'edu_type,money_array,job_array'
     this.getList(params)
     if (this.$route.query.id) {
@@ -203,16 +204,16 @@ export default {
     }
   },
   computed: {
-    len () {
-      let content = this.content.replace(/<[^>]+>/g, "").replace('/</br>/g', '')
+    len() {
+      let content = this.content.replace(/<[^>]+>/g, '').replace('/</br>/g', '')
       let content1 = this.jobContent
-      content = content.replace(/(^\s+)|(\s+$)/g, "")
+      content = content.replace(/(^\s+)|(\s+$)/g, '')
       let length = content.length
       return !this.jobContent ? content1.length + length : content1.length
     }
   },
   methods: {
-    getJobInfo () {
+    getJobInfo() {
       let params = {
         id: this.id,
         uid: localStorage.getItem('uid')
@@ -221,12 +222,16 @@ export default {
         this.from = res.data
         this.orderTakingForm = res.data
         if (res.data && res.data.provinceid) {
-          this.address = [res.data.provinceid, res.data.cityid, res.data.three_cityid]
+          this.address = [
+            res.data.provinceid,
+            res.data.cityid,
+            res.data.three_cityid
+          ]
           this.content = res.data.job_content
         }
       })
     },
-    getList (filed) {
+    getList(filed) {
       getConstant({ filed }).then(res => {
         const { edu_type, money_array, job_array } = res.data
         this.jobList = job_array
@@ -234,7 +239,7 @@ export default {
         this.moneyList = money_array
       })
     },
-    selectJob (val) {
+    selectJob(val) {
       for (let key in this.jobList) {
         if (key == val) {
           this.jobName = this.jobList[key]
@@ -244,7 +249,7 @@ export default {
         this.orderTakingForm.name = this.jobName
       }
     },
-    changeInput (val) {
+    changeInput(val) {
       if (val && val.length >= 2 && Number(val) < 16) {
         this.orderTakingForm.min_age = 16
       }
@@ -252,10 +257,7 @@ export default {
         this.orderTakingForm.min_age = 65
       }
     },
-    changeInputmax_age (val) {
-      // if (val.length == 1 && Number(val) < 17) {
-      //   this.orderTakingForm.max_age = 17
-      // }
+    changeInputmax_age(val) {
       if (val && val.length >= 2 && Number(val) < 16) {
         this.orderTakingForm.max_age = 17
       }
@@ -263,17 +265,19 @@ export default {
         this.orderTakingForm.max_age = 65
       }
     },
-    keepLastIndex (obj) {
-      if (window.getSelection) { //ie11 10 9 ff safari
+    keepLastIndex(obj) {
+      if (window.getSelection) {
+        //ie11 10 9 ff safari
         // obj.focus(); //解决ff不获取焦点无法定位问题
-        let range = window.getSelection().getRangeAt(0);//创建range
+        let range = window.getSelection().getRangeAt(0) //创建range
         // range.selectAllChildren(obj); //range 选择obj下所有子内容
         // range.collapseToEnd(); //光标移至最后
-      } else if (document.selection) { //ie10 9 8 7 6 5
-        let range = document.selection.createRange(); //创建选择对象
-        range.moveToElementText(obj); //range定位到obj
-        range.collapse(false); //光标移至最后
-        range.select();
+      } else if (document.selection) {
+        //ie10 9 8 7 6 5
+        let range = document.selection.createRange() //创建选择对象
+        range.moveToElementText(obj) //range定位到obj
+        range.collapse(false) //光标移至最后
+        range.select()
       }
       this.jobContent = obj.target.innerText
       if (!this.jobContent) {
@@ -281,36 +285,37 @@ export default {
       }
       this.orderTakingForm.job_content = obj.target.innerHTML
     },
-    numberChange (val) {
+    numberChange(val) {
       if (val && Number(val) < 2) {
         this.orderTakingForm.required_number = 2
       }
     },
-    onDivInput (e, key) {
+    onDivInput(e, key) {
       this[key] = e.target.innerHTML
     },
-    change (val) {
+    change(val) {
       this.orderTakingForm.provinceid = val[0]
       this.orderTakingForm.cityid = val[1]
       this.orderTakingForm.three_cityid = val[2]
     },
-    submitSalary (val) {
+    submitSalary(val) {
       if (val) {
         this.rateInfo = val
         this.disabled = true
         this.orderTakingForm = Object.assign(this.orderTakingForm, val)
-      }
-      else {
+      } else {
         this.rateInfo = 'null'
         this.disabled = false
       }
     },
-    submitForm (orderTakingForm) {
-      console.log(this.orderTakingForm.job_content)
+    submitForm(orderTakingForm) {
       if (Number(this.orderTakingForm.min_age) < 16) {
         return this.$message.warning('最小年龄不能小于16')
       }
-      if (Number(this.orderTakingForm.max_age) < Number(this.orderTakingForm.min_age)) {
+      if (
+        Number(this.orderTakingForm.max_age) <
+        Number(this.orderTakingForm.min_age)
+      ) {
         return this.$message.warning('最大年龄不能大于最小年龄')
       }
 
@@ -321,45 +326,46 @@ export default {
         return this.$message.warning('职位描述最低输入30个')
       }
 
-      this.$refs[orderTakingForm].validate((valid) => {
+      this.$refs[orderTakingForm].validate(valid => {
         if (valid) {
           // 修改发单
           if (this.orderTakingForm.id) {
             this.updateRecepit(this.orderTakingForm)
-          }
-          else {
+          } else {
             // 新增
-            createInvoice(this.orderTakingForm).then(res => {
-              if (res.data) {
-                this.$router.push('/checkReceipt')
-                this.resetForm()
-              }
-              else {
-                this.$message.error('发布失败')
-              }
-            }).catch(error => {
-              this.$message.error(error.status.remind)
-            })
+            createInvoice(this.orderTakingForm)
+              .then(res => {
+                if (res.data) {
+                  this.$router.push('/checkReceipt')
+                  this.resetForm()
+                } else {
+                  this.$message.error('发布失败')
+                }
+              })
+              .catch(error => {
+                this.$message.error(error.status.remind)
+              })
           }
         } else {
-          return false;
+          return false
         }
-      });
-    },
-    updateRecepit (orderTakingForm) {
-      updateInvoice(orderTakingForm).then(res => {
-        if (res.data) {
-          this.$router.push('checkReceipt')
-          this.resetForm()
-        }
-        else {
-          this.$message.error('发布失败')
-        }
-      }).catch(error => {
-        this.$message.error(error.status.remind)
       })
     },
-    resetForm () {
+    updateRecepit(orderTakingForm) {
+      updateInvoice(orderTakingForm)
+        .then(res => {
+          if (res.data) {
+            this.$router.push('checkReceipt')
+            this.resetForm()
+          } else {
+            this.$message.error('发布失败')
+          }
+        })
+        .catch(error => {
+          this.$message.error(error.status.remind)
+        })
+    },
+    resetForm() {
       this.orderTakingForm = {
         type: 1,
         required_number: 2,

@@ -63,17 +63,17 @@ export default {
   components: {
     districtSelet
   },
-  data () {
+  data() {
     var validate = (rule, value, callback) => {
       if (value === '') {
-        callback(new Error('请输入身份证号码'));
+        callback(new Error('请输入身份证号码'))
       } else {
         if (!validateIdCard(value)) {
-          callback(new Error('请输入正确的身份证号码'));
+          callback(new Error('请输入正确的身份证号码'))
         }
         callback()
       }
-    };
+    }
     return {
       personalForm: {
         type: 2,
@@ -90,18 +90,18 @@ export default {
           { validator: validate, trigger: 'blur' }
         ],
         user_name: [
-          { require: true, message: '请输入申请人姓名', trigger: 'blur' },
+          { require: true, message: '请输入申请人姓名', trigger: 'blur' }
         ],
         introduction: [
-          { require: true, message: '请输入团队简介', trigger: 'blur' },
-        ],
+          { require: true, message: '请输入团队简介', trigger: 'blur' }
+        ]
       },
       edu_type: [],
       uid: localStorage.getItem('uid'),
       address: []
-    };
+    }
   },
-  created () {
+  created() {
     this.personalForm.id = this.$route.query.teamId
     let params = 'edu_type'
     this.getList(params)
@@ -110,7 +110,7 @@ export default {
     }
   },
   methods: {
-    getInfo (uid) {
+    getInfo(uid) {
       getTeamInfo({ uid }).then(res => {
         if (res.data) {
           this.personalForm = res.data || {}
@@ -118,54 +118,59 @@ export default {
             this.imageUrl = getImgUrl(this.personalForm.log)
           }
           this.personalForm.type = this.$route.query.type
-          this.address.push(this.personalForm.provinceid, this.personalForm.cityid, this.personalForm.three_cityid)
+          this.address.push(
+            this.personalForm.provinceid,
+            this.personalForm.cityid,
+            this.personalForm.three_cityid
+          )
         }
       })
     },
-    getList (filed) {
+    getList(filed) {
       getConstant({ filed }).then(res => {
         this.edu_type = res.data.edu_type
       })
     },
-    upload (params) {
-      const _file = params.file;
-      const isLt2M = _file.size / 1024 / 1024 < 2;
+    upload(params) {
+      const _file = params.file
+      const isLt2M = _file.size / 1024 / 1024 < 2
       if (!isLt2M) {
-        this.$message.error("请上传2M以下的.xlsx文件");
-        return false;
+        this.$message.error('请上传2M以下的.xlsx文件')
+        return false
       }
       uploadFile(_file).then(res => {
         this.imageUrl = getImg(_file)
         this.personalForm.log = res.data.url
       })
     },
-    change (val) {
+    change(val) {
       this.personalForm.provinceid = val[0]
       this.personalForm.cityid = val[1]
       this.personalForm.three_cityid = val[2]
     },
-    submitForm (personalForm) {
-      this.$refs[personalForm].validate((valid) => {
+    submitForm(personalForm) {
+      this.$refs[personalForm].validate(valid => {
         if (valid) {
-          updateTeamInfo(this.personalForm).then(res => {
-            if (res.status.code == 200) {
-              localStorage.setItem('teamType', 2)
-              this.$message.success('保存成功')
-              this.$router.push('userlist')
-            }
-            else {
-              this.$message.error('保存失败')
-            }
-          }).catch(error => {
-            this.$message.error(error.status.remind)
-          })
+          updateTeamInfo(this.personalForm)
+            .then(res => {
+              if (res.data) {
+                localStorage.setItem('teamType', 2)
+                this.$message.success('保存成功')
+                this.$router.push('/userlist')
+              } else {
+                this.$message.error('保存失败')
+              }
+            })
+            .catch(error => {
+              this.$message.error(error.status.remind)
+            })
         } else {
           return false
         }
-      });
+      })
     },
-    resetForm () {
-      this.getInfo(this.personalForm.id)
+    resetForm() {
+      this.$router.push('/userlist')
     }
   }
 }

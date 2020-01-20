@@ -92,8 +92,8 @@
 // 部门经理只能编辑状态
 // 成员只能查看
 // 总经理可以编辑部门 职称 状态
-import { seeTeamUserInfo, departmentRoleList } from '../../api/team'
-import { getConstant } from '../../api/dictionary'
+import { seeTeamUserInfo, departmentRoleList } from '@/api/team'
+import { getConstant } from '@/api/dictionary'
 import memberTooltip from './memberTooltip'
 import { getImgUrl } from '@/util/util'
 export default {
@@ -101,7 +101,7 @@ export default {
   components: {
     memberTooltip
   },
-  data () {
+  data() {
     return {
       formMember: {},
       jobList: [],
@@ -111,15 +111,14 @@ export default {
       user: ''
     }
   },
-  created () {
+  created() {
     this.getJobList()
   },
   watch: {
-    userId (val) {
+    userId(val) {
       if (val) {
         this.getInfo(val)
-      }
-      else {
+      } else {
         this.formMember = {
           user_name: ''
         }
@@ -128,7 +127,7 @@ export default {
   },
   methods: {
     getImgUrl,
-    getInfo (id) {
+    getInfo(id) {
       let params = {
         userId: id,
         uid: localStorage.getItem('uid')
@@ -142,18 +141,20 @@ export default {
         if (this.formMember.grade_id && this.depList.length) {
           this.depId = this.getJob(this.depList, this.formMember.grade_id)
           this.jobList = this.getArr(this.depList, this.depId)
-        }
-        else {
+        } else {
           this.formMember.grade_id = ''
         }
         if (res.data.provinceid && res.data.cityid) {
-          this.address = [res.data.provinceid, res.data.cityid, res.data.three_cityid]
+          this.address = [
+            res.data.provinceid,
+            res.data.cityid,
+            res.data.three_cityid
+          ]
         }
-        // console.log(this.jobList)
       })
     },
     // 获取职位
-    getJob (arr, id) {
+    getJob(arr, id) {
       let depId
       arr.forEach(item => {
         if (item.child) {
@@ -166,7 +167,7 @@ export default {
       })
       return depId
     },
-    getArr (arr, id) {
+    getArr(arr, id) {
       let newArr = []
       arr.forEach(item => {
         if (item.id == id) {
@@ -176,19 +177,19 @@ export default {
       return newArr
     },
 
-    getJobList () {
+    getJobList() {
       let uid = localStorage.getItem('uid')
       departmentRoleList({ uid }).then(res => {
         this.depList = res.data
       })
     },
-    selectDep (val) {
+    selectDep(val) {
       this.jobList = this.getArr(this.depList, val)
     },
-    handleClose () {
+    handleClose() {
       this.$parent.dialogTableVisible = false
     },
-    submitMember () {
+    submitMember() {
       let params = {
         uid: this.formMember.uid,
         grade_id: this.formMember.grade_id,
@@ -205,12 +206,13 @@ export default {
 </script>
 <style lang="scss">
 .member-dialog {
-  box-shadow:0px 1px 43px 0px rgba(51,51,51,0.3);
-  border-radius:5px;
-  .el-dialog__body,.el-dialog__header {
+  box-shadow: 0px 1px 43px 0px rgba(51, 51, 51, 0.3);
+  border-radius: 5px;
+  .el-dialog__body,
+  .el-dialog__header {
     padding: 0;
   }
- .member-row {
+  .member-row {
     width: 100%;
     margin: 0 auto;
     text-align: center;
@@ -223,12 +225,12 @@ export default {
       right: 0;
     }
     .member-col1 {
-      background:#EBF4FB;
+      background: #ebf4fb;
       padding: 21px 0 20px;
       .head-box {
         padding: 10px 0 20px;
       }
-      .head {  
+      .head {
         width: 88px;
         height: 88px;
         border-radius: 100%;
@@ -242,7 +244,7 @@ export default {
         &:nth-of-type(1) {
           width: 100px;
           text-align: right;
-          color: #6A6A6A;
+          color: #6a6a6a;
         }
         &:nth-of-type(2) {
           flex: 1;
@@ -250,7 +252,6 @@ export default {
           margin-left: 30px;
         }
       }
-      
     }
     .member-col3 {
       width: 100%;
@@ -262,20 +263,22 @@ export default {
         .el-form-item {
           margin-bottom: 10px;
         }
-        .el-input__inner{
-          width:300px!important;
-          height:38px;
+        .el-input__inner {
+          width: 300px !important;
+          height: 38px;
           border-radius: 0;
         }
         .el-textarea {
-          width:300px!important;
+          width: 300px !important;
           border-radius: 0;
           height: 80px;
         }
         .el-form-item__content {
-          margin-left: 20px!important;
+          margin-left: 20px !important;
         }
-        .el-select,.el-radio-group,.el-textarea{
+        .el-select,
+        .el-radio-group,
+        .el-textarea {
           margin-left: -30px;
         }
         .el-radio.is-bordered {
@@ -283,9 +286,9 @@ export default {
           width: 145px;
           border-radius: 0;
           line-height: 38px;
-          padding:0;
+          padding: 0;
           margin-right: 0;
-          &+.el-radio.is-bordered {
+          & + .el-radio.is-bordered {
             margin-left: 10px;
           }
         }
@@ -296,7 +299,7 @@ export default {
         }
         .member-status {
           margin-top: 12px;
-          padding-left:14px;
+          padding-left: 14px;
           img {
             margin-right: 20px;
           }
@@ -305,5 +308,4 @@ export default {
     }
   }
 }
- 
 </style>

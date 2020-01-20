@@ -163,7 +163,9 @@ export default {
     getInfo (uid) {
       getTeamInfo({ uid }).then(res => {
         this.baseInfo = res.data || null
-        this.baseInfo.head_img = getImgUrl(res.data.head_img)
+        if (res.data&&res.data.log) {
+          this.baseInfo.head_img = getImgUrl(res.data.log)
+        }    
         sessionStorage.setItem('baseInfo', JSON.stringify(this.baseInfo))
       })
     },

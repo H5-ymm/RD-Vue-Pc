@@ -1,48 +1,48 @@
 <style lang="scss">
-  @import '@/assets/css/resume.scss';
-  .internal-invoice {
-    .table-list {
-      padding-top: 10px;
-      .member-table {
-        padding-left: 10px;
-      }
-    }
-    .select-status {
-      margin-right: 2px;
-    }
-    .default-status {
-      font-size: 12px;
-    }
-    .el-button {
-      padding: 10px;
+@import '@/assets/css/resume.scss';
+.internal-invoice {
+  .table-list {
+    padding-top: 10px;
+    .member-table {
+      padding-left: 10px;
     }
   }
-  .width120 {
-    width: 120px;
-    margin-right: 20px;
+  .select-status {
+    margin-right: 2px;
   }
-  .senior-search-btn{
-    color: #999999;
-    display: inline-block;
-    margin-left: 20px;
+  .default-status {
+    font-size: 12px;
   }
-  .senior-search-box {
-    background:rgba(255,255,255,0.6);
-    border:1px solid rgba(255,255,255,0.1);
-    box-shadow:0px 2px 13px 0px rgba(0, 0, 0, 0.1);
-    padding: 10px 10px 0;
-    margin-bottom: 10px;
-    position: relative;
-    margin-left: -10px;
-    .senior-search-col2 {
-      margin-left: 6%;
-    }
-    .up-box {
-      position: absolute;
-      right: 10px;
-      bottom: 20px;
-    }
+  .el-button {
+    padding: 10px;
   }
+}
+.width120 {
+  width: 120px;
+  margin-right: 20px;
+}
+.senior-search-btn {
+  color: #999999;
+  display: inline-block;
+  margin-left: 20px;
+}
+.senior-search-box {
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0px 2px 13px 0px rgba(0, 0, 0, 0.1);
+  padding: 10px 10px 0;
+  margin-bottom: 10px;
+  position: relative;
+  margin-left: -10px;
+  .senior-search-col2 {
+    margin-left: 6%;
+  }
+  .up-box {
+    position: absolute;
+    right: 10px;
+    bottom: 20px;
+  }
+}
 </style>
 <template>
   <div class="tables-box billingManagement receipt-manage internal-invoice">
@@ -158,35 +158,45 @@
 </template>
 
 <script>
-import { getJoblist, addPut, teamcollection, recvjob } from '@/api/internalInvoice'
-import { moneyTypeList, rewardTypeList, payTypeList, weekList, recommendStatusList, timeStatusList, positionStatusList } from '@/base/base'
+import {
+  getJoblist,
+  addPut,
+  teamcollection,
+  recvjob
+} from '@/api/internalInvoice'
+import {
+  moneyTypeList,
+  rewardTypeList,
+  recommendStatusList,
+  timeStatusList,
+  positionStatusList
+} from '@/base/base'
 import modal from '../common/modal'
 export default {
   components: {
     modal
   },
   filters: {
-    moneyType (val) {
+    moneyType(val) {
       let obj = moneyTypeList.find(item => {
         return val == item.value
       })
       return obj ? obj.label : '-'
     },
-    recommendStatus (val) {
+    recommendStatus(val) {
       let obj = recommendStatusList.find(item => {
         return val == item.value
       })
       return obj ? obj.label : '-'
     },
-    jobType (val) {
+    jobType(val) {
       let obj = positionStatusList.find(item => {
         return val == item.value
       })
       return obj ? obj.label : '-'
-
     }
   },
-  data () {
+  data() {
     return {
       moneyTypeList,
       rewardTypeList,
@@ -235,68 +245,57 @@ export default {
       uid: localStorage.getItem('uid')
     }
   },
-  created () {
+  created() {
     // 初始化查询标签数据
     this.getList(this.formMember)
   },
   methods: {
-    getList (params) {
-      getJoblist(params).then(res => {
-        const { data } = res
-        this.tableData = data.data
-        this.total = data.count
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+    getList(params) {
+      getJoblist(params)
+        .then(res => {
+          this.tableData = res.data.data
+          this.total = res.data.count
+        })
+        .catch(error => {
+          this.$message.error(error.status.remind)
+        })
     },
-    changeInput (val) {
+    changeInput(val) {
       this.formMember[this.type] = val
     },
-    selectStatus (key, item) {
+    selectStatus(key, item) {
       this.formMember[key] = item.value
     },
-    handleSizeChange (val) {
+    handleSizeChange(val) {
       this.formMember.limit = val
       this.getList(this.formMember)
     },
-    handleCurrentChange (val) {
+    handleCurrentChange(val) {
       this.formMember.page = val
       this.getList(this.formMember)
     },
-    handleRecommend (val) {
-      let params = {
-        jobId: val.jobId,
-        id: val.id,
-        uid: localStorage.getItem('uid')
-      }
-      recommendTeamUserJob(params).then(res => {
-        this.dialogTableVisible = true
-        this.getList(this.formMember)
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
-    },
-    handleApply (val) {
+    handleApply(val) {
       let params = {
         job_id: val.id,
         uid: localStorage.getItem('uid')
       }
-      recvjob(params).then(res => {
-        if (res.data) {
-          this.getList(this.formMember)
-          this.$message.success('领取成功')
-        }
-        else {
-          this.$message.error('领取失败')
-        }
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+      recvjob(params)
+        .then(res => {
+          if (res.data) {
+            this.getList(this.formMember)
+            this.$message.success('领取成功')
+          } else {
+            this.$message.error('领取失败')
+          }
+        })
+        .catch(error => {
+          this.$message.error(error.status.remind)
+        })
     },
-    handleOk () {
-      this.$router.push('teamApplication')
+    handleOk() {
+      this.$router.push('/teamApplication')
     },
-    handleSearch () {
+    handleSearch() {
       this.getList(this.formMember)
     }
   }

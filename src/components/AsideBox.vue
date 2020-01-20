@@ -1,5 +1,6 @@
 <template>
-  <ul class="fixed" v-if="isShow">
+  <div v-if="isShow"> 
+   <ul class="fixed">
     <li>
       <a href="#header">
         <el-tooltip class="item" effect="dark" content="一键置顶" placement="left">
@@ -12,19 +13,34 @@
         <img src="../assets/img/kefu.png" alt />
       </el-tooltip>
     </li>
-    <li class="help">
+    <li class="help" @click="helpmodalVisible=true">
       <el-tooltip class="item" effect="dark" content="帮助反馈" placement="left">
         <img src="../assets/img/help.png" alt />
       </el-tooltip>
     </li>
   </ul>
+   <customerService :dialogTableVisible="dialogTableVisible"></customerService>
+   <helpmodal :dialogTableVisible="helpmodalVisible" @submit="helpmodalVisible=false" @handleClose="helpmodalVisible=false"></helpmodal>
+  </div>
 </template>
 <script>
+import  customerService  from './common/customerService'
+import helpmodal from './common/helpmodal'
 export default {
+  components:{
+    customerService,
+    helpmodal
+  },
   props: ['isShow'],
+  data(){
+    return {
+      dialogTableVisible: false,
+      helpmodalVisible: false
+    }
+  },
   methods:{
     concat(){
-      console.log('m')
+      this.dialogTableVisible = true
     }
   }
 }

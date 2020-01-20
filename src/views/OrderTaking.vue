@@ -1,6 +1,6 @@
 
 <style lang="scss">
- @import '@/assets/css/orderTarking.scss';
+@import '@/assets/css/orderTarking.scss';
 </style>
 
 <template>
@@ -140,7 +140,13 @@ import AsideBox from '@/components/AsideBox'
 import searchInput from '@/components/searchInput'
 import { getList, addApply } from '@/api/orderTarking'
 import { getProvincesList, getCitysList, getAreasList } from '@/api/login'
-import { cityList, moneyTypeList, rewardList, requirePersonList, paymentTaxType } from '../base/base'
+import {
+  cityList,
+  moneyTypeList,
+  rewardList,
+  requirePersonList,
+  paymentTaxType
+} from '../base/base'
 export default {
   name: 'OrderTaking',
   components: {
@@ -152,7 +158,7 @@ export default {
     FooterView,
     searchInput
   },
-  data () {
+  data() {
     return {
       isShow: false,
       dialogVisible: false,
@@ -184,56 +190,56 @@ export default {
         closeText: '关闭',
         imgBg: require('../assets/img/success.png')
       }
-
     }
   },
-  created () {
+  created() {
     this.getData(this.params)
     this.getAreaList(this.code)
     if (!this.token) {
       this.isShowLogin = true
     }
   },
-  mounted () {
+  mounted() {
     document.scrollingElement.scrollTop = 0
     window.addEventListener('scroll', this.windowScroll)
   },
   methods: {
-    ctime (val) {
+    ctime(val) {
       let time = ''
       let newTime = this.$moment(Date.now(), 'YYYY-MM-DD HH:mm').valueOf()
       if (newTime - val > 0) {
         time = this.$moment.unix(val).format('YYYY-MM-DD')
-      }
-      else {
+      } else {
         time = this.$moment.unix(val).format('YYYY-MM-DD')
       }
       return time
     },
-    windowScroll () {
-      let scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
+    windowScroll() {
+      let scrollTop =
+        window.pageYOffset ||
+        document.documentElement.scrollTop ||
+        document.body.scrollTop
       if (scrollTop - document.documentElement.clientHeight + 500 >= 0) {
         this.isShow = true
-      }
-      else {
+      } else {
         this.isShow = false
       }
     },
-    goLogin (val) {
+    goLogin(val) {
       if (val) {
         this.token = val
         this.isShowLogin = false
       }
     },
-    handleOk () {
+    handleOk() {
       this.centerDialogVisible = false
       this.$router.push('teamApplication')
     },
-    switchNav (item, index) {
+    switchNav(item, index) {
       this.activeIndex = index
       this.$router.push(item.url)
     },
-    querySelect (val, key) {
+    querySelect(val, key) {
       this.params[key] = val
       this[key] = val
       if (key == 'cityid') {
@@ -241,83 +247,79 @@ export default {
       }
       this.getData(this.params)
     },
-    handleClose () {
+    handleClose() {
       this.dialogVisible = false
     },
-    getCityCode (value) {
+    getCityCode(value) {
       console.log(value)
       this.params.three_cityid = value[0]
       this.getData(this.params)
       this.dialogVisible = false
     },
-    getData (params) {
+    getData(params) {
       getList(params).then(res => {
         if (res.data.data) {
           this.list = res.data.data.data
           this.browsingList = res.data.data.browsing
           this.total = res.data.count
-        }
-        else {
+        } else {
           this.list = []
           this.browsingList = []
           this.total = 0
         }
       })
     },
-    handleApply (val) {
+    handleApply(val) {
       if (this.token) {
         let params = {
           job_id: val.id,
           uid: localStorage.getItem('uid')
         }
-        addApply(params).then(res => {
-          if (res.data) {
-            this.centerDialogVisible = true
-          }
-          else {
-            this.$message.error('接单失败')
-          }
-        }).catch(error => {
-          this.$message.error(error.status.remind)
-        })
-      }
-      else {
+        addApply(params)
+          .then(res => {
+            if (res.data) {
+              this.centerDialogVisible = true
+            } else {
+              this.$message.error('接单失败')
+            }
+          })
+          .catch(error => {
+            this.$message.error(error.status.remind)
+          })
+      } else {
         this.isShowLogin = true
       }
     },
-    searchQuery (val) {
+    searchQuery(val) {
       let params = Object.assign(val, this.params)
       this.getData(params)
     },
-    getmoneyType (type) {
+    getmoneyType(type) {
       return type === 1 ? '日' : type === 2 ? '月' : '时'
     },
-    getRewardType (type) {
+    getRewardType(type) {
       let text = ''
       if (type == 1) {
         text = '月返'
-      }
-      else if (type == 2) {
+      } else if (type == 2) {
         text = '日返'
-      }
-      else if (type == 3) {
+      } else if (type == 3) {
         text = '周返'
-      }
-      else {
+      } else {
         text = '一次性返利'
       }
       return text
     },
-    getAreaList (code) {
+    getAreaList(code) {
       getAreasList({ code }).then(res => {
         this.areaList = res.data
       })
     },
-    currentChange (page) {
+    currentChange(page) {
       this.params.page = page
       this.getData(this.params)
     },
-    clearQuery () {
+    clearQuery() {
       this.params = {
         limit: 20,
         page: 1
@@ -325,7 +327,7 @@ export default {
       this.getData(this.params)
     }
   },
-  destroyed () {
+  destroyed() {
     window.removeEventListener('scroll', this.windowScroll)
   }
 }

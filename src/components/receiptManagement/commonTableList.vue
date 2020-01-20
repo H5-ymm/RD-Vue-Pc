@@ -101,7 +101,14 @@
 </template>
 
 <script>
-import { incumbencyUserResumeList, entryUserResumeList, entryResumeList, updateEntryUser, auditEntryResume, quitResumeRecommend } from '../../api/receipt'
+import {
+  incumbencyUserResumeList,
+  entryUserResumeList,
+  entryResumeList,
+  updateEntryUser,
+  auditEntryResume,
+  quitResumeRecommend
+} from '../../api/receipt'
 import { moneyTypeList, rewardTypeList, payTypeList } from '../../base/base'
 import confirmDialog from '../common/confirmDialog'
 export default {
@@ -109,20 +116,20 @@ export default {
     confirmDialog
   },
   filters: {
-    moneyType (val) {
+    moneyType(val) {
       let obj = moneyTypeList.find(item => {
         return val == item.value
       })
       return obj ? obj.label : '--'
     },
-    rewardType (val) {
+    rewardType(val) {
       let obj = rewardTypeList.find(item => {
         return val == item.value
       })
       return obj ? obj.label : '--'
-    },
+    }
   },
-  data () {
+  data() {
     return {
       moneyTypeList,
       rewardTypeList,
@@ -158,7 +165,7 @@ export default {
       }
     }
   },
-  created () {
+  created() {
     // 初始化查询标签数据
     // viewType
     // 4.面试结果
@@ -170,82 +177,87 @@ export default {
     this.getList(this.formMember)
   },
   methods: {
-    getList (params) {
+    getList(params) {
       if (this.viewType == 4) {
-        entryUserResumeList(params).then(res => {
-          this.getData(res)
-        }).catch(error => {
-          this.$message.error(error.status.remind)
-        })
-      }
-      else if (this.viewType == 3 || this.viewType == 6) {
-        entryResumeList(params).then(res => {
-          this.getData(res)
-        }).catch(error => {
-          this.$message.error(error.status.remind)
-        })
-      }
-      else {
-        incumbencyUserResumeList(params).then(res => {
-          this.getData(res)
-        }).catch(error => {
-          this.$message.error(error.status.remind)
-        })
+        entryUserResumeList(params)
+          .then(res => {
+            this.getData(res)
+          })
+          .catch(error => {
+            this.$message.error(error.status.remind)
+          })
+      } else if (this.viewType == 3 || this.viewType == 6) {
+        entryResumeList(params)
+          .then(res => {
+            this.getData(res)
+          })
+          .catch(error => {
+            this.$message.error(error.status.remind)
+          })
+      } else {
+        incumbencyUserResumeList(params)
+          .then(res => {
+            this.getData(res)
+          })
+          .catch(error => {
+            this.$message.error(error.status.remind)
+          })
       }
     },
-    sortChange (column) {
+    sortChange(column) {
       if (column.order == 'ascending') {
         this.formMember[column.prop] = 'asc'
-      }
-      else {
+      } else {
         this.formMember[column.prop] = 'desc'
       }
       this.getList(this.formMember)
     },
-    handleSelectionChange (val) {
+    handleSelectionChange(val) {
       let arr = val.map(item => {
         return item.id
       })
       this.id = arr.join(',')
     },
-    handleUserQuit (val) {
+    handleUserQuit(val) {
       this.id = val.id
       this.resumeId = val.resume_id
       this.visible = true
     },
-    submitQuit (val) {
+    submitQuit(val) {
       let params = {
         uid: localStorage.getItem('uid'),
         id: this.id,
         resumeId: this.resumeId,
         content: val
       }
-      quitResumeRecommend(params).then(res => {
-        this.$message.success('操作成功')
-        this.visible = false
-        this.getList(this.formMember)
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+      quitResumeRecommend(params)
+        .then(res => {
+          this.$message.success('操作成功')
+          this.visible = false
+          this.getList(this.formMember)
+        })
+        .catch(error => {
+          this.$message.error(error.status.remind)
+        })
     },
-    getData (res) {
+    getData(res) {
       this.tableData = res.data.data
       this.total = res.itemdata.count
     },
-    selectStatus (item, index) {
+    selectStatus(item, index) {
       this.activeIndex = index
       this.formMember.status = item.value
       this.getList(this.formMember)
     },
-    handleSizeChange (val) {
+    handleSizeChange(val) {
       this.formMember.limit = val
       this.getList(this.formMember)
     },
-    handleCurrentChange (val) {
+    handleCurrentChange(val) {
       this.formMember.page = val
       this.getList(this.formMember)
     },
-    handleUser (status, val) {
+    handleUser(status, val) {
       if (!val) {
         return this.$message.warning('请选择简历')
       }
@@ -255,18 +267,22 @@ export default {
         status: status
       }
       if (this.viewType != 3) {
-        updateEntryUser(params).then(res => {
-          this.$message.success('操作成功')
-          this.getList(this.formMember)
-        }).catch(error => {
-          this.$message.error(error.status.remind)
-        })
-      }
-      else {
-
+        updateEntryUser(params)
+          .then(res => {
+            if (res.data) {
+              this.$message.success('操作成功')
+              this.getList(this.formMember)
+            } else {
+              this.$message.error('操作失败')
+            }
+          })
+          .catch(error => {
+            this.$message.error(error.status.remind)
+          })
+      } else {
       }
     },
-    handleResume (status, val) {
+    handleResume(status, val) {
       if (!val) {
         return this.$message.warning('请选择简历')
       }
@@ -275,20 +291,20 @@ export default {
         id: val,
         status: status
       }
-      auditEntryResume(params).then(res => {
-        this.$message.success('操作成功')
-        this.getList(this.formMember)
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+      auditEntryResume(params)
+        .then(res => {
+          if (res.data) {
+            this.$message.success('操作成功')
+            this.getList(this.formMember)
+          } else {
+            this.$message.error('操作失败')
+          }
+        })
+        .catch(error => {
+          this.$message.error(error.status.remind)
+        })
     },
-    submitMember (val) {
-      updateTeamUser(val).then(res => {
-        this.dialogTableVisible = false
-        this.getList(this.formMember)
-      })
-    },
-    onSubmit () {
+    onSubmit() {
       this.getList(this.formMember)
     }
   }

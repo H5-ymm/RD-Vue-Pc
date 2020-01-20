@@ -101,8 +101,16 @@
   </div>
 </template>
 <script>
-import {  getResumeList2, addUserResume, selectUserResumeInfo, giveUpResume, exportUserResume,
-  importUserResume, downloadTestTable, updateUserResume} from '@/api/resume'
+import {
+  getResumeList2,
+  addUserResume,
+  selectUserResumeInfo,
+  giveUpResume,
+  exportUserResume,
+  importUserResume,
+  downloadTestTable,
+  updateUserResume
+} from '@/api/resume'
 
 import { addPut } from '@/api/internalInvoice'
 import { moneyTypeList, rewardTypeList } from '../../base/base'
@@ -121,20 +129,20 @@ export default {
     leadResumeModal
   },
   filters: {
-    moneyType (val) {
+    moneyType(val) {
       let obj = moneyTypeList.find(item => {
         return val == item.value
       })
       return obj ? obj.label : '--'
     },
-    rewardType (val) {
+    rewardType(val) {
       let obj = rewardTypeList.find(item => {
         return val == item.value
       })
       return obj ? obj.label : '--'
-    },
+    }
   },
-  data () {
+  data() {
     return {
       moneyTypeList,
       rewardTypeList,
@@ -175,150 +183,149 @@ export default {
       timeList: []
     }
   },
-  created () {
+  created() {
     // 初始化查询标签数据
     this.getList(this.formMember)
   },
   methods: {
-    getList (params) {
+    getList(params) {
       getResumeList2(params).then(res => {
-        const { data } = res
-        this.tableData = data.data
-        this.total = data.count
+        this.tableData = res.data.data
+        this.total = res.data.count
       })
     },
     // 下载模板
-    download () {
+    download() {
       downloadTestTable()
     },
     // 导入
-    exportResumeData (file) {
+    exportResumeData(file) {
       this.leadResumeVisible = false
       importUserResume(file).then(res => {
         this.getList(this.formMember)
       })
     },
     // 导出
-    exportResume () {
+    exportResume() {
       let uid = localStorage.getItem('uid')
       exportUserResume(uid)
     },
-    sortChange (column) {
+    sortChange(column) {
       if (column.order == 'ascending') {
         this.formMember.timeDesc = 'asc'
-      }
-      else {
+      } else {
         this.formMember.timeDesc = 'desc'
       }
       this.getList(this.formMember)
     },
-    changeDate (val) {
+    changeDate(val) {
       this.formMember.beginTime = val ? val[0] : ''
       this.formMember.endTime = val ? val[1] : ''
     },
-    routerResume (val) {
+    routerResume(val) {
       let arr = JSON.parse(sessionStorage.getItem('menus'))
       arr[1] = '推荐岗位'
       sessionStorage.setItem('menus', JSON.stringify(arr))
       this.$router.push('/recommendJob?id=' + val.id)
     },
-    change (val) {
+    change(val) {
       this.formMember.provinceid = val ? val[0] : ''
       this.formMember.cityid = val ? val[1] : ''
     },
-    handleSizeChange (val) {
+    handleSizeChange(val) {
       this.formMember.limit = val
       this.getList(this.formMember)
     },
-    handleCurrentChange (val) {
+    handleCurrentChange(val) {
       this.formMember.page = val
       this.getList(this.formMember)
     },
-    viewRecord (val) {
+    viewRecord(val) {
       this.followUpRecordVisible = true
-      // this.trackList = val.trackList
       this.resumeId = val.id
     },
-    submitRecord (val) {
+    submitRecord(val) {
       this.followUpRecordVisible = false
       this.getList(this.formMember)
     },
-    handleEdit (val) {
+    handleEdit(val) {
       this.dialogTableVisible = true
       this.resumeId = val.id
     },
-    abandoned (val) {
+    abandoned(val) {
       this.visible = true
       this.resumeId = val.id
     },
-    handleClose () {
+    handleClose() {
       this.visible = false
       this.resumeId = ''
     },
-    submit (val) {
+    submit(val) {
       let params = {
         uid: localStorage.getItem('uid'),
         id: this.resumeId,
         reason: val.reason
       }
-      giveUpResume(params).then(res => {
-        this.resumeId = ''
-        this.visible = false
-        this.$message.success('操作成功')
-        this.getList(this.formMember)
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+      giveUpResume(params)
+        .then(res => {
+          this.resumeId = ''
+          this.visible = false
+          this.$message.success('操作成功')
+          this.getList(this.formMember)
+        })
+        .catch(error => {
+          this.$message.error(error.status.remind)
+        })
     },
-    handleSelectionChange (val) {
+    handleSelectionChange(val) {
       this.multipleSelection = val
     },
-    addResume () {
+    addResume() {
       this.resumeId = ''
       this.resumeInfo = {}
       this.dialogTableVisible = true
     },
-    onSubmit (value) {
-      let params = Object.assign(this.formMember, value)
-      this.getList(params)
+    onSubmit(value) {
+      this.getList(this.formMember)
     },
-    updateResume (val) {
+    updateResume(val) {
       val.uid = localStorage.getItem('uid')
       delete val.eduName
-      updateUserResume(val).then(res => {
-        if (res.data) {
-          this.dialogTableVisible = false
-          this.$message.success('保存成功')
-          this.getList(this.formMember)
-        }
-        else {
-          this.$message.error('保存失败')
-        }
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
-    },
-    submitForm (val) {
-      if (this.resumeId) {
-        this.updateResume(val)
-      }
-      else {
-        addUserResume(val).then(res => {
+      updateUserResume(val)
+        .then(res => {
           if (res.data) {
             this.dialogTableVisible = false
-            this.resumeId = ''
-            this.getList(this.formMember)
             this.$message.success('保存成功')
-          }
-          else {
+            this.getList(this.formMember)
+          } else {
             this.$message.error('保存失败')
           }
-        }).catch(error => {
+        })
+        .catch(error => {
           this.$message.error(error.status.remind)
         })
+    },
+    submitForm(val) {
+      if (this.resumeId) {
+        this.updateResume(val)
+      } else {
+        addUserResume(val)
+          .then(res => {
+            if (res.data) {
+              this.dialogTableVisible = false
+              this.resumeId = ''
+              this.getList(this.formMember)
+              this.$message.success('保存成功')
+            } else {
+              this.$message.error('保存失败')
+            }
+          })
+          .catch(error => {
+            this.$message.error(error.status.remind)
+          })
       }
     },
-    resetForm () {
+    resetForm() {
       this.formMember = {
         uid: localStorage.getItem('uid'),
         limit: 10,

@@ -115,7 +115,6 @@ export default {
       }
     },
     percentList(val){
-      console.log(val)
       if (val) {
         this.arr2 = val
         this.getLegenData(this.legendIndex)
@@ -166,15 +165,6 @@ export default {
       }
       return label
     },
-    getArray (obj) {
-      let arr = []
-      for (let i in obj) {
-        if (i) {
-          arr.push(obj[i])
-        }
-      }
-      return arr
-    },
     getXarr(obj){
       let arr = []
       for (let i in obj) {
@@ -192,9 +182,7 @@ export default {
       if (this.arr1&&this.arr1.length) {
         arr[0] = this.arr1
         arr[1] = this.eachartData[this.activeIndex-1]
-
       }
-      console.log(this.arr1)
       return arr
     },
     getData (index) {

@@ -120,8 +120,26 @@
 </template>
 
 <script>
-import { getcurapply, apportionJob, auditRecv, getpartMember, cancelTomember, curapportionList, addApportion, addTomember, changeApportion, getTeamManage, tomemberlist } from '@/api/teamReceipt'
-import { moneyTypeList, rewardTypeList, payTypeList, entryStatusList, applyStatusList1 } from '@/base/base'
+import {
+  getcurapply,
+  apportionJob,
+  auditRecv,
+  getpartMember,
+  cancelTomember,
+  curapportionList,
+  addApportion,
+  addTomember,
+  changeApportion,
+  getTeamManage,
+  tomemberlist
+} from '@/api/teamReceipt'
+import {
+  moneyTypeList,
+  rewardTypeList,
+  payTypeList,
+  entryStatusList,
+  applyStatusList1
+} from '@/base/base'
 import viewJob from '../common/viewJob'
 import modal from '../common/modal'
 import personalModal from '../common/personalModal'
@@ -134,26 +152,26 @@ export default {
     modal
   },
   filters: {
-    moneyType (val) {
+    moneyType(val) {
       let obj = moneyTypeList.find(item => {
         return val == item.value
       })
       return obj ? obj.label : '--'
     },
-    rewardType (val) {
+    rewardType(val) {
       let obj = rewardTypeList.find(item => {
         return val == item.value
       })
       return obj ? obj.label : '--'
     },
-    applyStatus (val) {
+    applyStatus(val) {
       let obj = applyStatusList1.find(item => {
         return val == item.value
       })
       return obj ? obj.label : '--'
     }
   },
-  data () {
+  data() {
     return {
       applyStatusList1,
       moneyTypeList,
@@ -189,78 +207,79 @@ export default {
       jobId: ''
     }
   },
-  created () {
+  created() {
     // 初始化查询标签数据
     this.getList(this.formMember)
   },
   methods: {
-    getList (params) {
+    getList(params) {
       getcurapply(params).then(res => {
         console.log(res.data)
         this.tableData = res.data.data
         this.total = res.data.count
       })
     },
-    viewJob (val) {
+    viewJob(val) {
       this.jobId = val.job_id
       this.dialogJobVisible = true
     },
-    handleSizeChange (val) {
+    handleSizeChange(val) {
       this.formMember.limit = val
       this.getList(this.formMember)
     },
-    handleCurrentChange (val) {
+    handleCurrentChange(val) {
       this.formMember.page = val
       this.getList(this.formMember)
     },
     // 分配操作
-    handleRecepit (status, val) {
+    handleRecepit(status, val) {
       this.handleStatus = status
       this.jobId = val.job_id
       if (status == 1) {
         if (this.userPosition == 2) {
           this.getPersonList()
-        }
-        else {
+        } else {
           this.getManagerList()
         }
-      }
-      else {
+      } else {
         if (this.userPosition == 2) {
           this.getTomemberlist()
-        }
-        else {
+        } else {
           this.getCurapportionList()
         }
       }
     },
-    getTomemberlist () {
+    getTomemberlist() {
       let params = {
         job_id: this.jobId,
         uid: localStorage.getItem('uid')
       }
-      tomemberlist(params).then(res => {
-        this.hasPersonList = res.data || []
-        this.personVisible = true
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+      tomemberlist(params)
+        .then(res => {
+          this.hasPersonList = res.data || []
+          this.personVisible = true
+        })
+        .catch(error => {
+          this.$message.error(error.status.remind)
+        })
     },
     // 团长获取所有列表
-    getManagerList () {
+    getManagerList() {
       let params = {
         job_id: this.jobId,
         uid: localStorage.getItem('uid')
       }
-      getTeamManage(params).then(res => {
-        this.personalList = this.getArray1(res.data)
-        this.dialogTableVisible = true
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+      getTeamManage(params)
+        .then(res => {
+          this.personalList = this.getArray1(res.data)
+          this.dialogTableVisible = true
+        })
+        .catch(error => {
+          this.$message.error(error.status.remind)
+        })
     },
     // 经理操作
-    handleRecepitManagers (status, val) {
+    handleRecepitManagers(status, val) {
       let params = {
         job_id: val.job_id,
         uid: localStorage.getItem('uid'),
@@ -270,26 +289,27 @@ export default {
         if (res.data) {
           this.$message.success('操作成功')
           this.getList(this.formMember)
-        }
-        else {
+        } else {
           this.$message.error('操作失败')
         }
       })
     },
     // 经理获取组员
-    getPersonList () {
+    getPersonList() {
       let params = {
         job_id: this.jobId,
         uid: localStorage.getItem('uid')
       }
-      getpartMember(params).then(res => {
-        this.personalList = this.getArray1(res.data)
-        this.dialogTableVisible = true
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+      getpartMember(params)
+        .then(res => {
+          this.personalList = this.getArray1(res.data)
+          this.dialogTableVisible = true
+        })
+        .catch(error => {
+          this.$message.error(error.status.remind)
+        })
     },
-    getArray (arr) {
+    getArray(arr) {
       let arr1 = []
       arr.forEach(item => {
         let obj = {
@@ -301,7 +321,7 @@ export default {
       })
       return arr1
     },
-    getArray1 (arr) {
+    getArray1(arr) {
       let arr1 = []
       arr.forEach(item => {
         let obj = {
@@ -313,19 +333,21 @@ export default {
       })
       return arr1
     },
-    getCurapportionList () {
+    getCurapportionList() {
       let params = {
         job_id: this.jobId,
         uid: localStorage.getItem('uid')
       }
-      curapportionList(params).then(res => {
-        this.hasPersonList = res.data || []
-        this.personVisible = true
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+      curapportionList(params)
+        .then(res => {
+          this.hasPersonList = res.data || []
+          this.personVisible = true
+        })
+        .catch(error => {
+          this.$message.error(error.status.remind)
+        })
     },
-    handleEdit (status, val) {
+    handleEdit(status, val) {
       let params = {
         uid: localStorage.getItem('uid'),
         status: status,
@@ -333,43 +355,44 @@ export default {
         uids: val.dsh_uid
       }
       if (this.userPosition == 1) {
-        auditRecv(params).then(res => {
-          this.getList(this.formMember)
-        }).catch(error => {
-          this.$message.error(error.status.remind)
-        })
-      }
-      else {
+        auditRecv(params)
+          .then(res => {
+            this.getList(this.formMember)
+          })
+          .catch(error => {
+            this.$message.error(error.status.remind)
+          })
+      } else {
         cancelTomember(params).then(res => {
           if (res.data) {
             this.$message.success('操作成功')
             this.getList(this.formMember)
             this.dialogTableVisible = false
-          }
-          else {
+          } else {
             this.$message.error('操作失败')
           }
         })
       }
     },
-    handleApply (val) {
+    handleApply(val) {
       let params = {
         uid: localStorage.getItem('uid'),
-        job_id: val.job_id,
+        job_id: val.job_id
       }
-      addApportion(params).then(res => {
-        if (res.data) {
-          this.$message.success('申请成功')
-          this.getList(this.formMember)
-        }
-        else {
-          this.$message.error('申请失败')
-        }
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+      addApportion(params)
+        .then(res => {
+          if (res.data) {
+            this.$message.success('申请成功')
+            this.getList(this.formMember)
+          } else {
+            this.$message.error('申请失败')
+          }
+        })
+        .catch(error => {
+          this.$message.error(error.status.remind)
+        })
     },
-    handleOk (val) {
+    handleOk(val) {
       let arr = val.map(val => {
         return val.uid
       })
@@ -379,34 +402,33 @@ export default {
         uids: arr.join(',')
       }
       if (this.userPosition == 1) {
-        apportionJob(params).then(res => {
-          if (res.data) {
-            this.$message.success('操作成功')
-            this.getList(this.formMember)
-            this.dialogTableVisible = false
-          }
-          else {
-            this.$message.error('操作失败')
-          }
-        }).catch(error => {
-          this.$message.error(error.status.remind)
-        })
-      }
-      else {
+        apportionJob(params)
+          .then(res => {
+            if (res.data) {
+              this.$message.success('操作成功')
+              this.getList(this.formMember)
+              this.dialogTableVisible = false
+            } else {
+              this.$message.error('操作失败')
+            }
+          })
+          .catch(error => {
+            this.$message.error(error.status.remind)
+          })
+      } else {
         addTomember(params).then(res => {
           if (res.data) {
             this.$message.success('操作成功')
             this.getList(this.formMember)
             this.dialogTableVisible = false
-          }
-          else {
+          } else {
             this.$message.error('操作失败')
           }
         })
       }
     },
     // 取消分配
-    handleOkPerson (val) {
+    handleOkPerson(val) {
       let params = {
         job_id: this.jobId,
         dsh_uid: val
@@ -414,31 +436,27 @@ export default {
       this.personVisible = false
       this.handleEdit(3, params)
     },
-    submitMember (val) {
-      updateTeamUser(val).then(res => {
-        this.dialogTableVisible = false
-        this.getList(this.params)
-      })
-    },
-    onSubmit () {
+    onSubmit() {
       this.getList(this.formMember)
     },
-    submitForm (val) {
+    submitForm(val) {
       this.visible = false
-      addTeamUser(val).then(res => {
-        this.getList(this.formMember)
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+      addTeamUser(val)
+        .then(res => {
+          this.getList(this.formMember)
+        })
+        .catch(error => {
+          this.$message.error(error.status.remind)
+        })
     },
-    reset () {
+    reset() {
       this.formMember = {
         uid: localStorage.getItem('uid'),
         limit: 10,
         page: 1
       }
       this.getList(this.formMember)
-    },
+    }
   }
 }
 </script>

@@ -63,48 +63,51 @@
 </template>
 <script>
 import { goLogin, getCode } from '../api/login'
-import { setTimeout } from 'timers';
+import { setTimeout } from 'timers'
 import Dialog from '../components/Dialog'
 export default {
   inject: ['reload'],
   components: {
     Dialog
   },
-  data () {
-    let validatereg = function (rule, value, callback) {   //验证用户名是否合法
-      let reg = /^1[3456789]\d{9}$/;
-      if (!(reg.test(value))) {
-        callback(new Error('手机号格式不正确'));
+  data() {
+    let validatereg = function(rule, value, callback) {
+      //验证用户名是否合法
+      let reg = /^1[3456789]\d{9}$/
+      if (!reg.test(value)) {
+        callback(new Error('手机号格式不正确'))
       } else {
-        callback();
+        callback()
       }
-    };
-    let validatePassReg = function (rule, value, callback) {   //验证密码是否合法
+    }
+    let validatePassReg = function(rule, value, callback) {
+      //验证密码是否合法
       // let reg = /^[a-zA-Z0-9]{6,17}$/;
       // if (reg.test(value) == true) {
       //   callback();
       // } else {
       //   callback(new Error('(请输入6到17位数字和字母混合)'));
       // }
-    };
+    }
     return {
       formTab: {
         name: '',
         type: '1'
       },
       checked: false,
-      formTabs: {  //验证规则
+      formTabs: {
+        //验证规则
         name: [
           { message: '请输入手机号', trigger: 'blur' },
           { validator: validatereg, trigger: 'blur' }
         ],
         passwords: [
-          { message: '请输入密码', trigger: 'blur' },
+          { message: '请输入密码', trigger: 'blur' }
           // { validator: validatePassReg, trigger: 'blur' }
         ]
       },
       loginWay: 1,
-      content: '发送验证码',  // 按钮里显示的内容
+      content: '发送验证码', // 按钮里显示的内容
       totalTime: 60,
       timer: null,
       canClick: true,
@@ -121,7 +124,7 @@ export default {
     }
   },
   watch: {
-    loginWay (val) {
+    loginWay(val) {
       if (val == 1) {
         if (localStorage.getItem('remindUserInfo')) {
           let userInfo = JSON.parse(localStorage.getItem('remindUserInfo'))
@@ -132,7 +135,7 @@ export default {
     }
   },
   methods: {
-    sendCode () {
+    sendCode() {
       if (!this.formTab.name) {
         return this.$message.warning('手机号不能为空')
       }
@@ -141,7 +144,7 @@ export default {
         this.token = res.data.token
       })
     },
-    countDown () {
+    countDown() {
       if (!this.canClick) return
       this.canClick = false
       this.content = this.totalTime + 's后重发'
@@ -152,77 +155,76 @@ export default {
           window.clearInterval(clock)
           this.content = '重新发送验证码'
           this.totalTime = 60
-          this.canClick = true  // 这里重新开启
+          this.canClick = true // 这里重新开启
         }
       }, 1000)
     },
-    switchLogin (index) {
+    switchLogin(index) {
       this.loginWay = index
       this.formTab = {
         name: '',
         type: index
       }
     },
-    remind (val) {
+    remind(val) {
       if (val) {
         let params = {
           name: this.formTab.name,
           password: this.formTab.passwords
         }
         localStorage.setItem('remindUserInfo', JSON.stringify(params))
-      }
-      else {
+      } else {
         localStorage.removeItem('remindUserInfo')
       }
     },
-    onSubmit () {
+    onSubmit() {
       if (this.loginWay == 2) {
         this.formTab.token = this.token
       }
       localStorage.clear('')
       sessionStorage.clear()
-      this.$refs['TabForm'].validate((valid) => {
+      this.$refs['TabForm'].validate(valid => {
         if (valid) {
-          this.$store.dispatch('loginSaveInfo', this.formTab).then(res => {
-            console.log(res)
-            // localStorage.setItem('userType', res.data.type)
-            // localStorage.setItem('userName', res.data.username)
-            // localStorage.setItem('departName', res.data.departName)
-            // localStorage.setItem('uid', res.data.uid)
-            // let registerType = res.data.type
-            // if (res.data.type == 1) {
-            //   this.$router.push('/createOrderTaking')
-            // }
-            // else {
-            //   localStorage.setItem('teamType', res.data.team_type)
-            //   // 登录人身份
-            //   sessionStorage.setItem('userPosition', res.data.gradeNum)
-            //   localStorage.setItem('userPosition', res.data.gradeNum)
-            //   this.$router.push('/teamData')
-            // }
-          }).catch(error => {
-            console.log(error)
-            if (error.status.code == 3010) {
-              this.isShowError = true
-              this.dialogVisible = false
-              this.isCodeError = false
-            }
-            else if (error.status.code == 1008) {
-              this.dialogVisible = true
-              this.isShowError = false
-            }
-            else if (error.status.code == 3008) {
-              this.isCodeError = true
-              this.isShowError = false
-              this.dialogVisible = false
-            }
-            else {
-              this.dialogVisible = false
-              this.isShowError = false
-              this.isCodeError = false
-              return this.$message.error(error.status.remind)
-            }
-          })
+          this.$store
+            .dispatch('loginSaveInfo', this.formTab)
+            .then(res => {
+              console.log(res)
+              // localStorage.setItem('userType', res.data.type)
+              // localStorage.setItem('userName', res.data.username)
+              // localStorage.setItem('departName', res.data.departName)
+              // localStorage.setItem('uid', res.data.uid)
+              // let registerType = res.data.type
+              // if (res.data.type == 1) {
+              //   this.$router.push('/createOrderTaking')
+              // }
+              // else {
+              //   localStorage.setItem('teamType', res.data.team_type)
+              //   // 登录人身份
+              //   sessionStorage.setItem('userPosition', res.data.gradeNum)
+              //   localStorage.setItem('userPosition', res.data.gradeNum)
+              //   this.$router.push('/teamData')
+              // }
+            })
+            .catch(error => {
+              console.log(error)
+              if (error.status.code == 3010) {
+                this.isShowError = true
+                this.dialogVisible = false
+                this.isCodeError = false
+              } else if (error.status.code == 1008) {
+                this.dialogVisible = true
+                this.isShowError = false
+              } else if (error.status.code == 3008) {
+                this.isCodeError = true
+                this.isShowError = false
+                this.dialogVisible = false
+              } else {
+                this.dialogVisible = false
+                this.isShowError = false
+                this.isCodeError = false
+                return this.$message.error(error.status.remind)
+              }
+            })
         } else {
           return false
         }

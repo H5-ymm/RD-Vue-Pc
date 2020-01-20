@@ -15,7 +15,7 @@
         </el-form-item>
       </el-form>
       <div class="member-table">
-        <el-table border :data="tableData" ref="multipleTable" style="width: 100%" @sort-change="sortChange" @selection-change="handleSelectionChange">
+        <el-table border :data="tableData" ref="multipleTable" style="width: 100%" @sort-change="sortChange">
           <el-table-column label="职位名称" align="center" width="150">
             <template slot-scope="props">
               <el-button type="text" @click="viewJob(props.row)">{{props.row.name}}</el-button>
@@ -75,34 +75,43 @@
 </template>
 
 <script>
-import { getReceiptList, companyReceiptShelf, delReceiptShelf } from '@/api/receipt'
-import { moneyTypeList, rewardTypeList, payTypeList, checkStatusList } from '@/base/base'
+import {
+  getReceiptList,
+  companyReceiptShelf,
+  delReceiptShelf
+} from '@/api/receipt'
+import {
+  moneyTypeList,
+  rewardTypeList,
+  payTypeList,
+  checkStatusList
+} from '@/base/base'
 import viewJob from '../common/viewJob'
 export default {
   components: {
     viewJob
   },
   filters: {
-    moneyType (val) {
+    moneyType(val) {
       let obj = moneyTypeList.find(item => {
         return val == item.value
       })
       return obj.label
     },
-    rewardType (val) {
+    rewardType(val) {
       let obj = rewardTypeList.find(item => {
         return val == item.value
       })
       return obj.label
     },
-    statusType (val) {
+    statusType(val) {
       let obj = checkStatusList.find(item => {
         return val == item.value
       })
       return obj.label
     }
   },
-  data () {
+  data() {
     return {
       moneyTypeList,
       rewardTypeList,
@@ -126,101 +135,87 @@ export default {
       id: ''
     }
   },
-  created () {
+  created() {
     // 初始化查询标签数据
     this.getList(this.formMember)
   },
   methods: {
-    getList (params) {
+    getList(params) {
       getReceiptList(params).then(res => {
         const { data } = res
         this.tableData = data.data
         this.total = data.count
       })
     },
-    sortChange (column) {
+    sortChange(column) {
       if (column.order == 'ascending') {
         this.formMember[column.prop] = 'asc'
-      }
-      else {
+      } else {
         this.formMember[column.prop] = 'desc'
       }
       this.getList(this.formMember)
     },
-    editJob (val) {
+    editJob(val) {
       this.$router.push('createOrderTaking?id=' + val.id)
     },
-    statusType (val) {
+    statusType(val) {
       let obj = this.statusList.find(item => {
         return val == item.value
       })
       return obj.label
     },
-    selectStatus (item, index) {
+    selectStatus(item, index) {
       this.activeIndex = index
       this.formMember.status = item.value
       this.getList(this.formMember)
     },
-    handleSizeChange (val) {
+    handleSizeChange(val) {
       this.formMember.limit = val
       this.getList(this.formMember)
     },
-    handleCurrentChange (val) {
+    handleCurrentChange(val) {
       this.formMember.page = val
       this.getList(this.formMember)
     },
-    handleRecceipt (status, val) {
+    handleRecceipt(status, val) {
       let params = {
         uid: localStorage.getItem('uid'),
         id: val.id,
         job_status: status
       }
-      companyReceiptShelf(params).then(res => {
-        this.$message.success('操作成功')
-        this.getList(this.formMember)
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+      companyReceiptShelf(params)
+        .then(res => {
+          this.$message.success('操作成功')
+          this.getList(this.formMember)
+        })
+        .catch(error => {
+          this.$message.error(error.status.remind)
+        })
     },
-    viewJob (val) {
+    viewJob(val) {
       this.id = val.id
       this.dialogJobVisible = true
     },
-    handleDel (val) {
+    handleDel(val) {
       let params = {
         uid: localStorage.getItem('uid'),
-        id: val.id,
+        id: val.id
       }
-      delReceiptShelf(params).then(res => {
-        this.$message.success('删除成功')
-        this.getList(this.formMember)
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+      delReceiptShelf(params)
+        .then(res => {
+          if (res.data) {
+            this.$message.success('删除成功')
+            this.getList(this.formMember)
+          } else {
+            this.$message.error('删除失败')
+          }
+        })
+        .catch(error => {
+          this.$message.error(error.status.remind)
+        })
     },
-    submitMember (val) {
-      updateTeamUser(val).then(res => {
-        this.dialogTableVisible = false
-        this.getList(this.params)
-      })
-    },
-    handleSelectionChange (val) {
-      this.len = val
-    },
-    addMember () {
-      this.visible = true
-    },
-    onSubmit (value) {
-      let params = Object.assign(this.formMember, value)
-      this.getList(params)
-    },
-    submitForm (val) {
-      this.visible = false
-      addTeamUser(val).then(res => {
-        this.getList(this.formMember)
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+    onSubmit() {
+      this.getList(this.formMember)
     }
   }
 }

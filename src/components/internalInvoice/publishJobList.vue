@@ -1,56 +1,56 @@
 <style lang="scss">
-  @import '@/assets/css/resume.scss';
-  .internal-invoice {
-    .table-list {
-      padding-top: 10px;
-      .member-table {
-        padding-left: 10px;
-      }
-    }
-    .internal-invoice-form {
-      .el-button {
-        padding: 10px;
-      }
-    }
-    .select-status {
-      margin-right: 2px;
-    }
-    .success-color {
-      color: #71D875;
-    }
-    .fail-color{
-      color: #FF0000;
-    }
-    .outline-color {
-      color: #999999;
+@import '@/assets/css/resume.scss';
+.internal-invoice {
+  .table-list {
+    padding-top: 10px;
+    .member-table {
+      padding-left: 10px;
     }
   }
-  .width120 {
-    width: 120px;
-    margin-right: 20px;
+  .internal-invoice-form {
+    .el-button {
+      padding: 10px;
+    }
   }
-  .senior-search-btn{
+  .select-status {
+    margin-right: 2px;
+  }
+  .success-color {
+    color: #71d875;
+  }
+  .fail-color {
+    color: #ff0000;
+  }
+  .outline-color {
     color: #999999;
-    display: inline-block;
-    margin-left: 20px;
   }
-  .senior-search-box {
-    background:rgba(255,255,255,0.6);
-    border:1px solid rgba(255,255,255,0.1);
-    box-shadow:0px 2px 13px 0px rgba(0, 0, 0, 0.1);
-    padding: 10px 10px 0;
-    margin-bottom: 10px;
-    position: relative;
-    margin-left: -10px;
-    .senior-search-col2 {
-      margin-left: 6%;
-    }
-    .up-box {
-      position: absolute;
-      right: 10px;
-      bottom: 20px;
-    }
+}
+.width120 {
+  width: 120px;
+  margin-right: 20px;
+}
+.senior-search-btn {
+  color: #999999;
+  display: inline-block;
+  margin-left: 20px;
+}
+.senior-search-box {
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0px 2px 13px 0px rgba(0, 0, 0, 0.1);
+  padding: 10px 10px 0;
+  margin-bottom: 10px;
+  position: relative;
+  margin-left: -10px;
+  .senior-search-col2 {
+    margin-left: 6%;
   }
+  .up-box {
+    position: absolute;
+    right: 10px;
+    bottom: 20px;
+  }
+}
 </style>
 <template>
   <div class="tables-box billingManagement receipt-manage internal-invoice">
@@ -212,8 +212,25 @@
 </template>
 
 <script>
-import { getJoblist, getobedistributedList, cancelrecvList, cancelTomember, cancelrecv, setjobtouser, getTomember, deleteJob, changestatus, getTeamManage } from '@/api/internalInvoice'
-import { moneyTypeList, rewardTypeList, payTypeList, weekList, recommendStatusList, timeStatusList, positionStatusList } from '@/base/base'
+import {
+  getJoblist,
+  getobedistributedList,
+  cancelrecvList,
+  cancelTomember,
+  cancelrecv,
+  setjobtouser,
+  getTomember,
+  deleteJob,
+  changestatus,
+  getTeamManage
+} from '@/api/internalInvoice'
+import {
+  moneyTypeList,
+  rewardTypeList,
+  recommendStatusList,
+  timeStatusList,
+  positionStatusList
+} from '@/base/base'
 import personalModal from '../common/personalModal'
 import havePersonModal from './havePersonModal'
 import infoTip from '../common/infoTip'
@@ -224,32 +241,32 @@ export default {
     infoTip
   },
   filters: {
-    moneyType (val) {
+    moneyType(val) {
       let obj = moneyTypeList.find(item => {
         return val == item.value
       })
       return obj ? obj.label : ''
     },
-    rewardType (val) {
+    rewardType(val) {
       let obj = rewardTypeList.find(item => {
         return val == item.value
       })
       return obj ? obj.label : ''
     },
-    recommendStatus (val) {
+    recommendStatus(val) {
       let obj = recommendStatusList.find(item => {
         return val == item.value
       })
       return obj ? obj.label : ''
     },
-    jobType (val) {
+    jobType(val) {
       let obj = positionStatusList.find(item => {
         return val == item.value
       })
       return obj ? obj.label : '-'
     }
   },
-  data () {
+  data() {
     return {
       moneyTypeList,
       rewardTypeList,
@@ -303,10 +320,10 @@ export default {
         closeText: '',
         imgBg: require('../../assets/img/info.png')
       },
-      dialogVisible: false,
+      dialogVisible: false
     }
   },
-  created () {
+  created() {
     // 初始化查询标签数据
     // viewType 1 管理内部发单
     // 2.已发布职位
@@ -321,47 +338,47 @@ export default {
     this.getList(this.formMember)
   },
   watch: {
-    $route (to, from) {
+    $route(to, from) {
       this.viewType = to.query.view
       this.getList(this.formMember)
     }
   },
   methods: {
-    getList (params) {
-      getJoblist(params).then(res => {
-        const { data } = res
-        this.tableData = data.data
-        this.total = data.count
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+    getList(params) {
+      getJoblist(params)
+        .then(res => {
+          this.tableData = res.data.data
+          this.total = res.data.count
+        })
+        .catch(error => {
+          this.$message.error(error.status.remind)
+        })
     },
-    putJob () {
+    putJob() {
       if (localStorage.getItem('teamType') == 0) {
         this.dialogVisible = true
         return false
       }
-      this.$router.push('postJob')
+      this.$router.push('/postJob')
     },
-    changeInput (val) {
+    changeInput(val) {
       this.formMember[this.type] = val
     },
-    selectStatus (key, item) {
+    selectStatus(key, item) {
       this.formMember[key] = item.value
       this.getList(this.formMember)
     },
-    handleSizeChange (val) {
+    handleSizeChange(val) {
       this.formMember.limit = val
       this.getList(this.formMember)
     },
-    handleCurrentChange (val) {
+    handleCurrentChange(val) {
       this.formMember.page = val
       this.getList(this.formMember)
     },
-    getArray (arr) {
+    getArray(arr) {
       let arr1 = []
       arr.forEach(item => {
-        console.log(item.isget)
         let obj = {
           user_name: item.user_name,
           uid: item.uid,
@@ -372,96 +389,100 @@ export default {
       return arr1
     },
     // 分配跟进人列表
-    getPersonList () {
+    getPersonList() {
       let params = {
         job_id: this.jobId,
         uid: this.uid
       }
       if (this.userPosition == 1) {
-        getTeamManage(params).then(res => {
-          let arr = res.data || []
-          this.personalList = this.getArray(arr)
-          this.dialogTableVisible = true
-        }).catch(error => {
-          this.$message.error(error.status.remind)
-        })
+        getTeamManage(params)
+          .then(res => {
+            let arr = res.data || []
+            this.personalList = this.getArray(arr)
+            this.dialogTableVisible = true
+          })
+          .catch(error => {
+            this.$message.error(error.status.remind)
+          })
+      } else {
+        getobedistributedList(params)
+          .then(res => {
+            let arr = res.data || []
+            this.personalList = this.getArray(arr)
+            this.dialogTableVisible = true
+          })
+          .catch(error => {
+            this.$message.error(error.status.remind)
+          })
       }
-      else {
-        getobedistributedList(params).then(res => {
-          let arr = res.data || []
-          this.personalList = this.getArray(arr)
-          this.dialogTableVisible = true
-        }).catch(error => {
-          this.$message.error(error.status.remind)
-        })
-      }
-
     },
     // 删除
-    delJob (val) {
+    delJob(val) {
       let params = {
         id: val.id,
         uid: this.uid
       }
-      deleteJob(params).then(res => {
-        if (res.data) {
-          this.$message.success('删除成功')
-          this.getList(this.formMember)
-        }
-        else {
-          this.$message.error('删除失败')
-        }
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+      deleteJob(params)
+        .then(res => {
+          if (res.data) {
+            this.$message.success('删除成功')
+            this.getList(this.formMember)
+          } else {
+            this.$message.error('删除失败')
+          }
+        })
+        .catch(error => {
+          this.$message.error(error.status.remind)
+        })
     },
     // 上下架
-    changeJobstatus (status, val) {
+    changeJobstatus(status, val) {
       let params = {
         id: val.id,
         uid: this.uid,
         status
       }
-      changestatus(params).then(res => {
-        if (res.data) {
-          this.$message.success('操作成功')
-          this.getList(this.formMember)
-        }
-        else {
-          this.$message.error('操作失败')
-        }
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+      changestatus(params)
+        .then(res => {
+          if (res.data) {
+            this.$message.success('操作成功')
+            this.getList(this.formMember)
+          } else {
+            this.$message.error('操作失败')
+          }
+        })
+        .catch(error => {
+          this.$message.error(error.status.remind)
+        })
     },
     // 发单操作
-    handleRecepit (status, val) {
+    handleRecepit(status, val) {
       this.handleStatus = status
       this.jobId = val.id
       if (status == 1) {
         this.getPersonList()
-      }
-      else {
+      } else {
         this.getCancelrecvList()
       }
     },
     // 取消分配
-    cancleAssigned (params) {
-      cancelrecv(params).then(res => {
-        if (res.data) {
-          this.personVisible = false
-          this.$message.success('取消成功')
-          this.getList(this.formMember)
-        }
-        else {
-          this.$message.error('取消失败')
-        }
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+    cancleAssigned(params) {
+      cancelrecv(params)
+        .then(res => {
+          if (res.data) {
+            this.personVisible = false
+            this.$message.success('取消成功')
+            this.getList(this.formMember)
+          } else {
+            this.$message.error('取消失败')
+          }
+        })
+        .catch(error => {
+          this.$message.error(error.status.remind)
+        })
     },
     // 已经领取人列表
-    getCancelrecvList () {
+    getCancelrecvList() {
       let params = {
         job_id: this.jobId,
         uid: this.uid
@@ -472,10 +493,9 @@ export default {
         this.hasPersonList = this.getHasList1(arr)
       })
     },
-    getHasList (arr) {
+    getHasList(arr) {
       let arr1 = []
       arr.forEach(item => {
-        console.log(item)
         let obj = {
           user_name: item.user_name,
           touid: item.uid,
@@ -485,10 +505,9 @@ export default {
       })
       return arr1
     },
-    getHasList1 (arr) {
+    getHasList1(arr) {
       let arr1 = []
       arr.forEach(item => {
-        console.log(item)
         let obj = {
           user_name: item.user_name,
           touid: item.id,
@@ -499,21 +518,22 @@ export default {
       return arr1
     },
     // 分配跟进人
-    setAssigned (params) {
-      setjobtouser(params).then(res => {
-        if (res.data) {
-          this.dialogTableVisible = false
-          this.getList(this.formMember)
-          this.$message.success('分配跟进人成功')
-        }
-        else {
-          this.$message.error('分配跟进人失败')
-        }
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+    setAssigned(params) {
+      setjobtouser(params)
+        .then(res => {
+          if (res.data) {
+            this.dialogTableVisible = false
+            this.getList(this.formMember)
+            this.$message.success('分配跟进人成功')
+          } else {
+            this.$message.error('分配跟进人失败')
+          }
+        })
+        .catch(error => {
+          this.$message.error(error.status.remind)
+        })
     },
-    handleOk (val) {
+    handleOk(val) {
       let params = {
         job_id: this.jobId,
         uid: this.uid
@@ -525,13 +545,12 @@ export default {
         params.uids = arr.join(',')
         // 分配跟进人接口
         this.setAssigned(params)
-      }
-      else {
+      } else {
         params.ids = val
         this.cancleAssigned(params)
       }
     },
-    handleSearch () {
+    handleSearch() {
       this.getList(this.formMember)
     }
   }

@@ -18,7 +18,11 @@ import addDepModal from './department/addDepModal'
 import successModal from './department/successModal'
 import outDep from './department/outDep'
 import turnoverModal from './department/turnoverModal'
-import { getDepartmentList, addTeamDepartment, delDepartment } from '../api/department'
+import {
+  getDepartmentList,
+  addTeamDepartment,
+  delDepartment
+} from '../api/department'
 export default {
   components: {
     tableList,
@@ -27,17 +31,14 @@ export default {
     outDep,
     turnoverModal
   },
-  data () {
+  data() {
     return {
-      breadcrumb: ['设置', '管理控制', '全部管理员'],
       dialogTableVisible: false,
       visible: false,
       visible1: false,
       delVisible: false,
       turnoverVisible: false,
       tableData: [],
-      currentPage: 1,
-      userType: 1,
       formMember: {
         uid: localStorage.getItem('uid'),
         limit: 10,
@@ -48,101 +49,96 @@ export default {
       uid: localStorage.getItem('uid')
     }
   },
-  created () {
+  created() {
     // 初始化查询标签数据
-    // this.reverseUser()
     this.getList(this.formMember)
   },
   methods: {
-    handleSizeChange (val) {
+    handleSizeChange(val) {
       this.formMember.limit = val
       this.getList(this.formMember)
     },
-    handleCurrentChange (val) {
+    handleCurrentChange(val) {
       this.formMember.page = val
       this.getList(this.formMember)
     },
-    getList (params) {
-      getDepartmentList(params).then(res => {
-        const { data } = res
-        this.tableData = data.data
-        this.delVisible = this.tableData.some(item => {
-          return !item.user_name
+    getList(params) {
+      getDepartmentList(params)
+        .then(res => {
+          this.tableData = res.data.data
+          this.total = res.data.count
+          this.delVisible = this.tableData.some(item => {
+            return !item.user_name
+          })
         })
-        this.total = data.count
-      }).catch(error => {
-        if (error.status) {
-          this.$message.error(error.status.remind)
-        }
-      })
+        .catch(error => {
+          if (error && error.status) {
+            this.$message.error(error.status.remind)
+          }
+        })
     },
-    handleEdit (val) {
+    handleEdit(val) {
       this.visible1 = false
       this.departId = val || this.tableData[0].id
       this.dialogTableVisible = true
     },
-    handleDel (val) {
+    handleDel(val) {
       let params = {
         departId: val,
         uid: this.uid
       }
-      delDepartment(params).then(res => {
-        if (res.status.code == 200) {
-          // this.delVisible = true
-          this.getList(this.formMember)
-          this.$message.error('删除成功')
-        }
-      }).catch(error => {
-        this.$message.error(res.status.remind)
-      })
+      delDepartment(params)
+        .then(res => {
+          if (res.status.code == 200) {
+            this.getList(this.formMember)
+            this.$message.error('删除成功')
+          }
+        })
+        .catch(error => {
+          this.$message.error(res.status.remind)
+        })
     },
-    handle (index) {
+    handle(index) {
       this.dialogTableVisible = false
       if (index) {
         this.getList(this.formMember)
       }
     },
-    handleUser () {
-      // this.dialogTableVisible = true
+    handleUser() {
       this.delVisible = false
     },
-    addMember () {
-      this.visible = true
-    },
-    onSubmit (value) {
-      let params = Object.assign(this.formMember, value)
-      this.getList(params)
-    },
-    submitForm (val) {
-      this.visible = false
-      addTeamDepartment(val).then(res => {
-        this.visible1 = true
-        this.getList(this.formMember)
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+    submitForm(val) {
+      addTeamDepartment(val)
+        .then(res => {
+          this.visible1 = true
+          this.visible = false
+          this.getList(this.formMember)
+        })
+        .catch(error => {
+          this.$message.error(error.status.remind)
+        })
     }
   }
 }
 </script>
 
 <style lang="scss">
-  .tables-box{
-    overflow: hidden;
-    .table-list {
-      background: #fff;
-      border-radius:10px;
-      // height: calc(100% - 100px);
-      padding: 15px;
-      .add-member {
-        border-radius: 0;
-        height: 38px;
-        margin-bottom: 15px;
-      }
-      .team-pagination {
-        margin-top: 20px;
-        margin-left: 20px;
-      }
+.tables-box {
+  overflow: hidden;
+  .table-list {
+    background: #fff;
+    border-radius: 10px;
+    // height: calc(100% - 100px);
+    padding: 15px;
+    .add-member {
+      border-radius: 0;
+      height: 38px;
+      margin-bottom: 15px;
+    }
+    .team-pagination {
+      margin-top: 20px;
+      margin-left: 20px;
     }
   }
+}
 </style>

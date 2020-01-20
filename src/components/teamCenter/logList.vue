@@ -2,7 +2,7 @@
 <style lang="scss">
   .team-center-section {
     background: #fff;
-    padding: 20px 15px 0;
+    padding: 20px 15px;
     .team-center-table {
       margin: 20px 0;
     }

@@ -1,3 +1,58 @@
+<style lang="scss">
+.account-save-view.team-box {
+  background: #fff;
+  margin-bottom: 100px;
+  &.account-password {
+    height: calc(100% - 100px);
+    margin-bottom: 50px;
+  }
+  .account-save-box {
+    padding: 0 10px;
+  }
+  .account-save-col1 {
+    padding-left: 100px;
+    text-align: center;
+    width: 90px;
+    img {
+      height: 100%;
+    }
+  }
+  .account-save-item {
+    padding: 30px 0;
+    border-bottom: 1px solid #eee;
+    .account-save-col2 {
+      line-height: 25px;
+      width: 76%;
+      text-align: left;
+      .account-title {
+        color: #000;
+        font-size: 16px;
+      }
+      .account-tip {
+        color: #999999;
+        font-size: 12px;
+      }
+    }
+  }
+  .account-save-col3 {
+    padding-right: 110px;
+    span {
+      padding: 6px 0;
+      margin-left: 30px;
+      font-size: 16px;
+      width: 66px;
+      text-align: center;
+      display: inline-block;
+      color: #333333;
+    }
+    .account-btn {
+      border-radius: 4px;
+      border: 1px solid #3699ff;
+      color: #3699ff;
+    }
+  }
+}
+</style>
 <template>
   <div class="account-save-view account-password">
     <div class="account-save-box">
@@ -38,7 +93,14 @@
 </template>
 
 <script>
-import { getUserBinkInfo, getUserMobile, setLoginPassword, editPayPassword, setPayPassword, editUserPassword } from '@/api/user'
+import {
+  getUserBinkInfo,
+  getUserMobile,
+  setLoginPassword,
+  editPayPassword,
+  setPayPassword,
+  editUserPassword
+} from '@/api/user'
 import accountDialog from './account/accountDialog'
 import setUserPas from './account/setUserPas'
 import setZfbPas from './account/setZfbPas'
@@ -48,27 +110,29 @@ export default {
     accountDialog,
     noBindZfb
   },
-  data () {
+  data() {
     return {
       personalForm: {},
       dialogTableVisible: false,
       visible: false,
       uid: localStorage.getItem('uid'),
       isEdit: false,
-      list: [{
-        type: '',
-        status: 0,
-        img: require('../assets/img/account/password1.png'),
-        text: '当前密码强度：',
-        title: '账户密码'
-      },
-      {
-        type: '',
-        status: 0,
-        img: require('../assets/img/account/password2.png'),
-        text: '',
-        title: '支付密码'
-      }],
+      list: [
+        {
+          type: '',
+          status: 0,
+          img: require('../assets/img/account/password1.png'),
+          text: '当前密码强度：',
+          title: '账户密码'
+        },
+        {
+          type: '',
+          status: 0,
+          img: require('../assets/img/account/password2.png'),
+          text: '',
+          title: '支付密码'
+        }
+      ],
       slotName: '',
       title: '',
       isShowFooter: true,
@@ -79,12 +143,12 @@ export default {
       activeIndex: -1
     }
   },
-  created () {
+  created() {
     this.getInfo(this.uid)
     this.getMobilePas(this.uid)
   },
   methods: {
-    getInfo (uid) {
+    getInfo(uid) {
       getUserBinkInfo({ uid }).then(res => {
         if (res.data) {
           const { uid, mobile, alipay_status, bank_status } = res.data
@@ -93,11 +157,10 @@ export default {
         }
       })
     },
-    submitFormZfb(){
-      this.visible = false,
-      this.$router.push('accountSafe')
+    submitFormZfb() {
+      ;(this.visible = false), this.$router.push('accountSafe')
     },
-    getMobilePas (uid) {
+    getMobilePas(uid) {
       getUserMobile({ uid }).then(res => {
         if (res.data) {
           const { uid, phone, password } = res.data
@@ -106,7 +169,7 @@ export default {
         }
       })
     },
-    setPassword (val, index) {
+    setPassword(val, index) {
       this.activeIndex = index
       this.isUpdate = !this.isUpdate
       if (index == 0) {
@@ -120,14 +183,13 @@ export default {
           this.slotName = 'setZfbPas'
           this.dialogTableVisible = false
           this.visible = false
-        }
-        else {
+        } else {
           this.dialogTableVisible = false
           this.visible = true
         }
       }
     },
-    editPassword (val, index) {
+    editPassword(val, index) {
       this.isUpdate = true
       this.activeIndex = index
       if (index == 0) {
@@ -140,14 +202,13 @@ export default {
           this.title = '修改支付密码'
           this.dialogTableVisible = true
           this.slotName = 'setZfbPas'
-        }
-        else {
+        } else {
           this.visible = true
           this.dialogTableVisible = false
         }
       }
     },
-    hanbleBind (val, index) {
+    hanbleBind(val, index) {
       if (index == 0) {
         this.title = '设置账户密码'
         this.slotName = 'userPas'
@@ -158,135 +219,75 @@ export default {
         if (this.alipay_status) {
           this.dialogTableVisible = false
           this.slotName = 'zfbPas'
-        }
-        else {
+        } else {
           this.visible = true
           this.dialogTableVisible = false
         }
       }
     },
-    submitForm (val) {
-      console.log(val)
+    submitForm(val) {
       if (this.activeIndex == 0) {
         if (this.isUpdate) {
           this.updatePas(val)
-        }
-        else {
+        } else {
           this.setPas(val)
         }
-      }
-      else {
+      } else {
         if (this.isUpdate) {
           this.setPayPas(val)
-        }
-        else {
+        } else {
           this.updatePayPas(val)
         }
       }
     },
-    setPas (val) {
-      setLoginPassword(val).then(res => {
-        if (res.status.code == 200) {
-          this.dialogTableVisible = false
-          this.getUserMobile(this.uid)
-        }
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+    setPas(val) {
+      setLoginPassword(val)
+        .then(res => {
+          if (res.status.code == 200) {
+            this.dialogTableVisible = false
+            this.getUserMobile(this.uid)
+          }
+        })
+        .catch(error => {
+          this.$message.error(error.status.remind)
+        })
     },
-    updatePas (val) {
-      editUserPassword(val).then(res => {
-        if (res.status.code == 200) {
-          this.dialogTableVisible = false
-        }
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+    updatePas(val) {
+      editUserPassword(val)
+        .then(res => {
+          if (res.status.code == 200) {
+            this.dialogTableVisible = false
+          }
+        })
+        .catch(error => {
+          this.$message.error(error.status.remind)
+        })
     },
-    setPayPas (val) {
-      setPayPassword(val).then(res => {
-        if (res.status.code == 200) {
-          this.dialogTableVisible = false
-        }
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+    setPayPas(val) {
+      setPayPassword(val)
+        .then(res => {
+          if (res.status.code == 200) {
+            this.dialogTableVisible = false
+          }
+        })
+        .catch(error => {
+          this.$message.error(error.status.remind)
+        })
     },
-    updatePayPas (val) {
-      editPayPassword(val).then(res => {
-        if (res.status.code == 200) {
-          this.dialogTableVisible = false
-        }
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+    updatePayPas(val) {
+      editPayPassword(val)
+        .then(res => {
+          if (res.status.code == 200) {
+            this.dialogTableVisible = false
+          }
+        })
+        .catch(error => {
+          this.$message.error(error.status.remind)
+        })
     },
-    resetForm (personalForm) {
-      this.$refs[personalForm].resetFields();
-    },
-    handleAvatarSuccess () { }
+    resetForm(personalForm) {
+      this.$refs[personalForm].resetFields()
+    }
   }
 }
 </script>
-<style lang="scss">
-  .account-save-view.team-box {
-    // height: 100%;
-    // overflow: hidden;
-    background: #fff;
-    margin-bottom: 100px;
-    &.account-password {
-      height: calc(100% - 100px);
-      margin-bottom: 50px;
-    }
-    .account-save-box {
-      padding: 0 10px;
-    }
-    .account-save-col1 {
-      padding-left: 100px;
-      text-align: center;
-      width: 90px;
-      img {
-        height: 100%;
-      }
-    }
-    .account-save-item {
-      padding: 30px 0;
-      border-bottom: 1px solid #eee;
-      .account-save-col2 {
-        line-height: 25px;
-        width: 76%;
-        text-align: left;
-        .account-title {
-          color: #000;
-          font-size:16px;
-        }
-        .account-tip {
-          color: #999999;
-          font-size:12px;
-        }
-      }
-    }
-    .account-save-col3 {
-      padding-right:110px;
-      span {
-        padding: 6px 0;
-        margin-left: 30px;
-        font-size:16px;
-        width: 66px;
-        text-align: center;
-        display: inline-block;
-        color: #333333;
-      }
-      .account-btn {
-        border-radius:4px;
-        border: 1px solid #3699FF;
-        color: #3699FF;
-      }
-    }
-}
-  .x-flex-end {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-  }
-</style>

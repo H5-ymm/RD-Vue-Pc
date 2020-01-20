@@ -86,35 +86,49 @@
 </template>
 
 <script>
-import { getTeamList, loginOutTeam, addTeamUser, updateTeamUser } from '../../api/team'
-import { auditResumeList, auditResumeRecommend, entryResumeList, auditEntryResume } from '../../api/receipt'
-import { moneyTypeList, rewardTypeList, checkStatusList1 } from '../../base/base'
+import {
+  getTeamList,
+  loginOutTeam,
+  addTeamUser,
+  updateTeamUser
+} from '../../api/team'
+import {
+  auditResumeList,
+  auditResumeRecommend,
+  entryResumeList,
+  auditEntryResume
+} from '../../api/receipt'
+import {
+  moneyTypeList,
+  rewardTypeList,
+  checkStatusList1
+} from '../../base/base'
 import modal from '../common/modal'
 export default {
   components: {
     modal
   },
   filters: {
-    moneyType (val) {
+    moneyType(val) {
       let obj = moneyTypeList.find(item => {
         return val == item.value
       })
       return obj ? obj.label : '--'
     },
-    rewardType (val) {
+    rewardType(val) {
       let obj = rewardTypeList.find(item => {
         return val == item.value
       })
       return obj ? obj.label : '--'
     },
-    status (val) {
+    status(val) {
       let obj = checkStatusList1.find(item => {
         return val == item.value
       })
       return obj ? obj.label : '--'
     }
   },
-  data () {
+  data() {
     return {
       checkStatusList1,
       moneyTypeList,
@@ -157,11 +171,11 @@ export default {
     }
   },
   computed: {
-    label () {
+    label() {
       return this.viewType == 3 ? '审核简历' : '审核面试'
     }
   },
-  created () {
+  created() {
     // 初始化查询标签数据
     this.viewType = this.$route.query.view
     if (this.viewType == 3) {
@@ -179,52 +193,47 @@ export default {
     }
   },
   methods: {
-    getList (params) {
+    getList(params) {
       if (this.viewType == 3) {
         auditResumeList(params).then(res => {
-          const { data } = res
-          this.tableData = data.data
-          this.total = data.count
+          this.tableData = res.data.data
+          this.total = res.data.count
         })
-      }
-      else {
+      } else {
         entryResumeList(params).then(res => {
-          const { data } = res
-          this.tableData = data.data
-          this.total = data.count
+          this.tableData = res.data.data
+          this.total = res.data.count
         })
       }
-
     },
-    getStatus (val) {
+    getStatus(val) {
       let obj = this.statusList1.find(item => {
         return val == item.value
       })
       return obj ? obj.label : '--'
     },
-    sortChange (column) {
+    sortChange(column) {
       if (column.order == 'ascending') {
         this.formMember[column.prop] = 'asc'
-      }
-      else {
+      } else {
         this.formMember[column.prop] = 'desc'
       }
       this.getList(this.formMember)
     },
-    selectStatus (item, index) {
+    selectStatus(item, index) {
       this.activeIndex = index
       this.formMember.status = item.value
       this.getList(this.formMember)
     },
-    handleSizeChange (val) {
+    handleSizeChange(val) {
       this.formMember.limit = val
       this.getList(this.formMember)
     },
-    handleCurrentChange (val) {
+    handleCurrentChange(val) {
       this.formMember.page = val
       this.getList(this.formMember)
     },
-    handlResume (status, id) {
+    handlResume(status, id) {
       if (!id) {
         return this.$message.warning('请选择简历')
       }
@@ -238,57 +247,45 @@ export default {
       this.id = id
       this.checkResume()
     },
-    handleOk () {
+    handleOk() {
       this.checkResume()
     },
-    checkResume () {
+    checkResume() {
       let params = {
         uid: localStorage.getItem('uid'),
         id: this.id,
         status: this.status
       }
       if (this.viewType == 3) {
-        auditResumeRecommend(params).then(res => {
-          this.$message.success('操作成功')
-          this.dialogTableVisible = false
-          this.getList(this.formMember)
-        }).catch(error => {
-          this.$message.error(error.status.remind)
-        })
-      }
-      else {
-        auditEntryResume(params).then(res => {
-          this.$message.success('操作成功')
-          this.getList(this.formMember)
-        }).catch(error => {
-          this.$message.error(error.status.remind)
-        })
+        auditResumeRecommend(params)
+          .then(res => {
+            this.$message.success('操作成功')
+            this.dialogTableVisible = false
+            this.getList(this.formMember)
+          })
+          .catch(error => {
+            this.$message.error(error.status.remind)
+          })
+      } else {
+        auditEntryResume(params)
+          .then(res => {
+            this.$message.success('操作成功')
+            this.getList(this.formMember)
+          })
+          .catch(error => {
+            this.$message.error(error.status.remind)
+          })
       }
     },
-    submitMember (val) {
-      updateTeamUser(val).then(res => {
-        this.dialogTableVisible = false
-        this.getList(this.formMember)
-      })
-    },
-    handleSelectionChange (val) {
+    handleSelectionChange(val) {
       this.multipleSelection = val
       let arr = val.map(item => {
         return item.id
       })
       this.id = arr.join(',')
     },
-    onSubmit (value) {
-      let params = Object.assign(this.formMember, value)
-      this.getList(params)
-    },
-    submitForm (val) {
-      this.visible = false
-      addTeamUser(val).then(res => {
-        this.getList(this.formMember)
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+    onSubmit() {
+      this.getList(this.formMember)
     }
   }
 }

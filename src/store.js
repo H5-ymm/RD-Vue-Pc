@@ -122,6 +122,7 @@ export default new Vuex.Store({
           commit('getTeamInfo', res.data)
           let registerType = res.data.type
           if (res.data.type == 1) {
+            sessionStorage.setItem('menus',JSON.stringify(['新建接单']))
             router.push('/createOrderTaking?userType=' + res.data.type)
           }
           else {
@@ -129,6 +130,7 @@ export default new Vuex.Store({
             // 登录人身份
             sessionStorage.setItem('userPosition', res.data.gradeNum)
             localStorage.setItem('userPosition', res.data.gradeNum)
+            sessionStorage.setItem('menus',JSON.stringify(['团队中心']))
             router.push('/teamData?userType=' + res.data.type)
           }
           resolve(res)

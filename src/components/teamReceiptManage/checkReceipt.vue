@@ -1,5 +1,5 @@
 <style lang="scss">
-  @import '@/assets/css/resume.scss';
+@import '@/assets/css/resume.scss';
 </style>
 <template>
   <div class="tables-box billingManagement">
@@ -52,25 +52,30 @@
 </template>
 
 <script>
-import { getTeamList, loginOutTeam, addTeamUser, updateTeamUser } from '../../api/team'
-import { getReceiptList } from '../../api/receipt'
-import { moneyTypeList, rewardTypeList, payTypeList, weekList } from '../../base/base'
+import {
+  getTeamList,
+  loginOutTeam,
+  addTeamUser,
+  updateTeamUser
+} from '@/api/team'
+import { getReceiptList } from '@/api/receipt'
+import { moneyTypeList, rewardTypeList } from '@/base/base'
 export default {
   filters: {
-    moneyType (val) {
+    moneyType(val) {
       let obj = moneyTypeList.find(item => {
         return val == item.value
       })
       return obj.label
     },
-    rewardType (val) {
+    rewardType(val) {
       let obj = rewardTypeList.find(item => {
         return val == item.value
       })
       return obj.label
-    },
+    }
   },
-  data () {
+  data() {
     return {
       moneyTypeList,
       rewardTypeList,
@@ -99,66 +104,67 @@ export default {
       activeIndex: 0
     }
   },
-  created () {
+  created() {
     // 初始化查询标签数据
     this.getList(this.formMember)
   },
   methods: {
-    getList (params) {
+    getList(params) {
       getReceiptList(params).then(res => {
         const { data } = res
         this.tableData = data.data
         this.total = data.count
       })
     },
-    selectStatus (item, index) {
+    selectStatus(item, index) {
       this.activeIndex = index
       this.formMember.status = item.value
     },
-    handleSizeChange (val) {
+    handleSizeChange(val) {
       this.formMember.limit = val
       this.getList(this.formMember)
     },
-    handleCurrentChange (val) {
+    handleCurrentChange(val) {
       this.formMember.page = val
       this.getList(this.formMember)
     },
-    handleEdit (val) {
+    handleEdit(val) {
       this.dialogTableVisible = true
       this.userId = val
       console.log(this.userId)
     },
-    handleDel (uid) {
-      loginOutTeam({ uid }).then(res => {
-        this.$message.success('退出成功')
-        this.getList(this.formMember)
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+    handleDel(uid) {
+      loginOutTeam({ uid })
+        .then(res => {
+          this.$message.success('退出成功')
+          this.getList(this.formMember)
+        })
+        .catch(error => {
+          this.$message.error(error.status.remind)
+        })
     },
-    submitMember (val) {
+    submitMember(val) {
       updateTeamUser(val).then(res => {
         this.dialogTableVisible = false
         this.getList(this.params)
       })
     },
-    handleSelectionChange (val) {
+    handleSelectionChange(val) {
       this.len = val
     },
-    addMember () {
-      this.visible = true
-    },
-    onSubmit (value) {
+    onSubmit(value) {
       let params = Object.assign(this.formMember, value)
       this.getList(params)
     },
-    submitForm (val) {
+    submitForm(val) {
       this.visible = false
-      addTeamUser(val).then(res => {
-        this.getList(this.formMember)
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+      addTeamUser(val)
+        .then(res => {
+          this.getList(this.formMember)
+        })
+        .catch(error => {
+          this.$message.error(error.status.remind)
+        })
     }
   }
 }

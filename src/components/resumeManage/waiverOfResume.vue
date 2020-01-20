@@ -102,8 +102,21 @@
   </div>
 </template>
 <script>
-import { giveupResumeList, exportGiveUpResume, delResumeList, exportDelResume, delResum, receiveResume, reductionDelResume, delResume } from '@/api/resume'
-import { moneyTypeList, rewardTypeList, followStatusList } from '../../base/base'
+import {
+  giveupResumeList,
+  exportGiveUpResume,
+  delResumeList,
+  exportDelResume,
+  delResum,
+  receiveResume,
+  reductionDelResume,
+  delResume
+} from '@/api/resume'
+import {
+  moneyTypeList,
+  rewardTypeList,
+  followStatusList
+} from '../../base/base'
 import followUpRecord from './followUpRecord'
 import confirmDialog from '../common/confirmDialog'
 import modal from '../common/modal'
@@ -116,20 +129,20 @@ export default {
     modal
   },
   filters: {
-    moneyType (val) {
+    moneyType(val) {
       let obj = moneyTypeList.find(item => {
         return val == item.value
       })
       return obj ? obj.label : '--'
     },
-    rewardType (val) {
+    rewardType(val) {
       let obj = rewardTypeList.find(item => {
         return val == item.value
       })
       return obj ? obj.label : '--'
-    },
+    }
   },
-  data () {
+  data() {
     return {
       moneyTypeList,
       rewardTypeList,
@@ -144,7 +157,8 @@ export default {
         placeholder: '请输入删除简历理由'
       },
       modalObj: {
-        content: '简历领取成功，</br> 已添加到新增简历，现在就去推荐新的岗位吗？',
+        content:
+          '简历领取成功，</br> 已添加到新增简历，现在就去推荐新的岗位吗？',
         okText: '推荐岗位',
         closeText: '继续浏览'
       },
@@ -166,15 +180,13 @@ export default {
       viewType: 1
     }
   },
-  mounted () {
+  mounted() {
     // 初始化查询标签数据
     this.viewType = this.$route.query.view
-    console.log(this.viewType)
     this.getList(this.formMember)
   },
   watch: {
-    $route (to, from) {
-      console.log(to)
+    $route(to, from) {
       if (to) {
         this.viewType = to.query.view
         this.getList(this.formMember)
@@ -182,119 +194,110 @@ export default {
     }
   },
   methods: {
-    getList (params) {
+    getList(params) {
       if (this.viewType == 1) {
-        giveupResumeList(params).then(res => {
-          const { data } = res
-          this.tableData = data.data
-          this.total = data.count
-        }).catch(error => {
-          this.$message.waring(error.status.remind)
-        })
-      }
-      else {
-        console.log(this.viewType)
-        delResumeList(params).then(res => {
-          const { data } = res
-          this.tableData = data.data
-          this.total = data.count
-        }).catch(error => {
-          this.$message.waring(error.status.remind)
-        })
+        giveupResumeList(params)
+          .then(res => {
+            this.tableData = res.data.data
+            this.total = res.data.count
+          })
+          .catch(error => {
+            this.$message.waring(error.status.remind)
+          })
+      } else {
+        delResumeList(params)
+          .then(res => {
+            this.tableData = res.data.data
+            this.total = res.data.count
+          })
+          .catch(error => {
+            this.$message.waring(error.status.remind)
+          })
       }
     },
-    changeDate (val) {
+    changeDate(val) {
       this.formMember.beginTime = val ? val[0] : ''
       this.formMember.endTime = val ? val[1] : ''
     },
-    exportResume () {
+    exportResume() {
       let uid = localStorage.getItem('uid')
       if (this.viewType == 1) {
         exportGiveUpResume(uid)
-      }
-      else {
+      } else {
         exportDelResume(uid)
       }
     },
-    sortChange (column) {
+    sortChange(column) {
       if (column.order == 'ascending') {
         this.formMember[column.prop] = 'asc'
-      }
-      else {
+      } else {
         this.formMember[column.prop] = 'desc'
       }
       this.getList(this.formMember)
     },
-    change (val) {
+    change(val) {
       this.formMember.provinceid = val[0]
       this.formMember.cityid = val[1]
     },
-    handleSizeChange (val) {
+    handleSizeChange(val) {
       this.formMember.limit = val
       this.getList(this.formMember)
     },
-    handleCurrentChange (val) {
+    handleCurrentChange(val) {
       this.formMember.page = val
       this.getList(this.formMember)
     },
-    viewReason (val) {
+    viewReason(val) {
       this.visible = true
       this.reason = val.name
     },
-    viewRecord (val) {
+    viewRecord(val) {
       this.resumeId = val.id
       this.followUpRecordVisible = true
     },
-    submitRecord (val) {
+    submitRecord(val) {
       this.followUpRecordVisible = false
     },
-    handleOk () {
+    handleOk() {
       let params = {
         uid: localStorage.getItem('uid'),
         resumeId: this.resumeId
       }
       if (this.viewType == 1) {
         this.dialogTableVisible = false
-        // this.getList(this.formMember)
         this.$router.push('/recommendJob?id=') + this.resumeId
-        // receiveResume(params).then(res => {
-        //   this.resumeId = ''
-        //   this.getList(this.formMember)
-        // }).catch(error => {
-        //   this.$message.waring(error.status.remind)
-        // })
-        //
-      }
-      else {
-        reductionDelResume(params).then(res => {
-          this.resumeId = ''
-          this.dialogTableVisible = false
-          this.getList(this.formMember)
-        }).catch(error => {
-          this.$message.waring(error.status.remind)
-        })
+      } else {
+        reductionDelResume(params)
+          .then(res => {
+            this.resumeId = ''
+            this.dialogTableVisible = false
+            this.getList(this.formMember)
+          })
+          .catch(error => {
+            this.$message.waring(error.status.remind)
+          })
       }
     },
-    handleResume (index, val) {
+    handleResume(index, val) {
       if (index == 1) {
         let params = {
           uid: localStorage.getItem('uid'),
           resumeId: val.id
         }
-        receiveResume(params).then(res => {
-          if (res.data) {
-            this.isShow = true
-            this.dialogTableVisible = true
-          }
-          else {
-            this.$message.waring('领取失败')
-          }
-          // this.getList(this.formMember)
-        }).catch(error => {
-          this.$message.waring(error.status.remind)
-        })
-      }
-      else if (index == 3) {
+        receiveResume(params)
+          .then(res => {
+            if (res.data) {
+              this.isShow = true
+              this.dialogTableVisible = true
+            } else {
+              this.$message.waring('领取失败')
+            }
+            // this.getList(this.formMember)
+          })
+          .catch(error => {
+            this.$message.waring(error.status.remind)
+          })
+      } else if (index == 3) {
         this.modalObj = {
           content: ' 你确定要还原简历到（放弃简历列表）吗？',
           okText: '确认',
@@ -302,46 +305,47 @@ export default {
         }
         this.isShow = false
         this.dialogTableVisible = true
-      }
-      else {
+      } else {
         this.isShow = false
         this.visible = true
       }
       this.resumeId = val.id
     },
-    handleClose () {
+    handleClose() {
       this.visible = false
       this.resumeId = ''
       this.reason = ''
     },
-    submit (val) {
+    submit(val) {
       this.visible = false
       let params = {
         uid: localStorage.getItem('uid'),
         resumeId: this.resumeId,
         reason: val.reason
       }
-      delResume(params).then(res => {
-        if (res.data) {
-          this.resumeId = ''
-          this.getList(this.formMember)
-        }
-        else {
-          this.$message.waring('操作失败')
-        }
-      }).catch(error => {
-        this.$message.waring(error.status.remind)
-      })
+      delResume(params)
+        .then(res => {
+          if (res.data) {
+            this.resumeId = ''
+            this.getList(this.formMember)
+          } else {
+            this.$message.waring('操作失败')
+          }
+        })
+        .catch(error => {
+          this.$message.waring(error.status.remind)
+        })
     },
-    onSubmit () {
+    onSubmit() {
       this.getList(this.formMember)
     },
-    onReset () {
+    onReset() {
       this.formMember = {
         uid: localStorage.getItem('uid'),
         limit: 10,
         page: 1
       }
+      this.timeList = []
       this.getList(this.formMember)
     }
   }

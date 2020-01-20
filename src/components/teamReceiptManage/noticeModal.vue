@@ -25,10 +25,6 @@
         </el-form>
       </section>
     </div>
-    <!-- <div slot="footer" class="notice-footer-btn">
-      <el-button @click="submitForm">取消</el-button>
-      <el-button type="primary" @click="submitForm">确定</el-button>
-    </div> -->
   </el-dialog>
 </template>
 <script>
@@ -51,12 +47,12 @@ export default {
       default: false
     }
   },
-  data () {
+  data() {
     return {
       formMember: {
         depart_name: '',
         user_id: '',
-        uid: localStorage.getItem('uid'),
+        uid: localStorage.getItem('uid')
       },
       userList: [],
       uid: localStorage.getItem('uid'),
@@ -65,7 +61,7 @@ export default {
     }
   },
   watch: {
-    viewTimeInfo (val) {
+    viewTimeInfo(val) {
       if (val) {
         console.log(val)
         let arr = val.content.split('&')
@@ -74,17 +70,15 @@ export default {
       }
     }
   },
-  created () {
-
-  },
+  created() {},
   methods: {
-    handleClose () {
+    handleClose() {
       this.$parent.visible = false
     },
-    changeAddress (val) {
+    changeAddress(val) {
       this.address = val.join(',')
     },
-    submitForm () {
+    submitForm() {
       let date = this.formMember.date + this.formMember.time
       let date1 = this.$moment(date, 'YYYY-MM-DD HH:mm').valueOf()
       let address = this.address.join('/')
@@ -93,7 +87,7 @@ export default {
         time: date1.substring(0, 10),
         content: address + '/' + this.formMember.content
       }
-      this.$refs['formMember'].validate((valid) => {
+      this.$refs['formMember'].validate(valid => {
         if (valid) {
           this.$emit('submitForm', params)
         } else {
@@ -106,12 +100,13 @@ export default {
 </script>
 <style lang="scss">
 .receipt-dialog {
-  box-shadow:0px 1px 43px 0px rgba(51,51,51,0.3);
-  border-radius:5px;
-  .el-dialog__body,.el-dialog__header {
+  box-shadow: 0px 1px 43px 0px rgba(51, 51, 51, 0.3);
+  border-radius: 5px;
+  .el-dialog__body,
+  .el-dialog__header {
     padding: 0;
   }
- .receipt-row {
+  .receipt-row {
     width: 100%;
     // margin: 0 auto;
     text-align: center;
@@ -123,12 +118,13 @@ export default {
       right: 0;
     }
     .member-col1 {
-      background: #EBF4FB;
+      background: #ebf4fb;
       padding: 18px 0 17px;
     }
     .el-form-item {
       width: 100%;
-      .width400,.el-form-item__content {
+      .width400,
+      .el-form-item__content {
         width: 400px;
       }
     }
@@ -136,7 +132,7 @@ export default {
       margin-top: 6px;
     }
     .el-textarea__inner {
-      height: 160px!important;
+      height: 160px !important;
     }
     .member-col3 {
       width: 100%;
@@ -153,12 +149,12 @@ export default {
           margin-left: 48px;
         }
         .width195 {
-          width: 195px!important;
-          .el-input__inner{ 
-            width: 195px!important;     
+          width: 195px !important;
+          .el-input__inner {
+            width: 195px !important;
           }
         }
-        .el-input__inner{
+        .el-input__inner {
           border-radius: 3px;
         }
       }

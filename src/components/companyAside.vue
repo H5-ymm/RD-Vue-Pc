@@ -10,7 +10,7 @@
           <img src="../assets/img/headIcon2.png" alt class="company-logo" v-else />
           <p class="company-name" v-if="baseInfo">{{baseInfo.com_name}}</p>
         </div>
-        <el-menu class="el-menu-vertical-demo" background-color="#262626" active-text-color="#1890FF" text-color="#fff" @open="handleOpen" :unique-opened="true" @close="handleClose" @select="selectMenus" router :default-active="routerli">
+        <el-menu class="el-menu-vertical-demo" background-color="#262626" active-text-color="#1890FF" text-color="#fff" @open="handleOpen" :unique-opened="true" @select="selectMenus" router :default-active="routerli">
           <el-submenu :index="item.title" class="acts" v-for="(item,index) in menus" :key="index">
             <template slot="title">
               <!-- <i class="el-icon-collection"></i> -->
@@ -156,11 +156,7 @@ export default {
       })
     },
     handleOpen (key, keyPath) {
-      console.log(key, keyPath);
       this.title = key
-    },
-    handleClose (key, keyPath) {
-      //console.log(key, keyPath);
     },
     selectMenus (key, keyPath) {
       this.url = key
@@ -188,6 +184,9 @@ export default {
         this.selectMenus(to.path, this.menus)
       }
       if (to.path == '/entryList' && from.path == '/interviewPersonnel') {
+        this.selectMenus(to.path, this.menus)
+      }
+      if (to.path == '/accountSafe' && from.path == '/passwordManage') {
         this.selectMenus(to.path, this.menus)
       }
     }

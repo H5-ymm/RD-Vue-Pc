@@ -1,26 +1,26 @@
 <style lang="scss">
-  .team-center-view {
-    padding-bottom:50px;
-    .team-center-form {
-      padding-top: 20px;
-      .el-select {
-        margin-right: 10px;
-      }
-      .width300 {
-        width: 300px;
-      }
-      .width120 {
-        width: 120px;
-      }
-      .select-btn {
-        padding: 11px 20px;
-        margin-left: 20px;
-      }
+.team-center-view {
+  padding-bottom: 50px;
+  .team-center-form {
+    padding-top: 20px;
+    .el-select {
+      margin-right: 10px;
     }
-    .team-panel-section1 {
-      min-height: 306px;
+    .width300 {
+      width: 300px;
+    }
+    .width120 {
+      width: 120px;
+    }
+    .select-btn {
+      padding: 11px 20px;
+      margin-left: 20px;
     }
   }
+  .team-panel-section1 {
+    min-height: 306px;
+  }
+}
 </style>
 <template>
   <div class="team-center-view">
@@ -81,7 +81,14 @@ import logTable from './logTable'
 import receiptLogTable from './receiptLogTable'
 import orderQuery from './orderQuery'
 import allOrder from './allOrder'
-import { getrank, getCompare, getTeamLog, getnumLeader, getmemberList, getapplyLog } from '@/api/teamCenter'
+import {
+  getrank,
+  getCompare,
+  getTeamLog,
+  getnumLeader,
+  getmemberList,
+  getapplyLog
+} from '@/api/teamCenter'
 import { departmentRoleList } from '@/api/department'
 import infoTip from '../common/infoTip'
 export default {
@@ -95,7 +102,7 @@ export default {
     allOrder,
     infoTip
   },
-  data () {
+  data() {
     return {
       formMember: {
         uid: localStorage.getItem('uid')
@@ -152,7 +159,6 @@ export default {
       personList: [],
       tableData: [],
       tableTeamData: [],
-      timeout: null,
       userName: '',
       depId: '',
       userPosition: sessionStorage.getItem('userPosition'), // 1 总经理，2经理，3 成员
@@ -160,14 +166,11 @@ export default {
       allData: {}
     }
   },
-  created () {
-  },
-  mounted () {
+  mounted() {
     if (localStorage.getItem('teamType') == 0) {
       this.dialogVisible = true
       return false
-    }
-    else {
+    } else {
       if (localStorage.getItem('userType') == 2) {
         this.getData(this.paramsEchart)
         this.getList(this.params)
@@ -181,108 +184,95 @@ export default {
     }
   },
   computed: {
-    titleLog () {
-      return this.userPosition == 1 ? '团队' : this.userPosition == 2 ? '部门' : '个人'
+    titleLog() {
+      return this.userPosition == 1
+        ? '团队'
+        : this.userPosition == 2
+          ? '部门'
+          : '个人'
     }
   },
   methods: {
-    querySearchAsync (queryString, cb) {
+    querySearchAsync(queryString, cb) {
       let params = {
         uid: localStorage.getItem('uid'),
         depart_id: this.depId,
         name: queryString
       }
       this.getPerson(params)
-      var restaurants = this.personList;
-      var results = queryString ? restaurants.filter(this.createStateFilter(queryString)) : restaurants;
-      clearTimeout(this.timeout);
-      this.timeout = setTimeout(() => {
-        cb(results);
-      }, 3000 * Math.random());
+      var restaurants = this.personList
+      var results = queryString
+        ? restaurants.filter(this.createStateFilter(queryString))
+        : restaurants
+      cb(results)
     },
-    createStateFilter (queryString) {
-      return (restaurant) => {
-        return (restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
-      };
+    createStateFilter(queryString) {
+      return restaurant => {
+        return (
+          restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) ===
+          0
+        )
+      }
     },
-    handleSelect (item) {
-    },
-    changeDep (val) {
+    handleSelect(item) {},
+    changeDep(val) {
       this.depId = val
     },
-    getPerson (params) {
-      getmemberList(params).then(res => {
-        this.personList = res.data || []
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+    getPerson(params) {
+      getmemberList(params)
+        .then(res => {
+          this.personList = res.data || []
+        })
+        .catch(error => {
+          this.$message.error(error.status.remind)
+        })
     },
-    getKey (index) {
+    getKey(index) {
       let label = ''
-        if (index) {
-          if (index == 1) {
+      if (index) {
+        if (index == 1) {
           label = 'total'
-        }
-        else if (index == 2) {
+        } else if (index == 2) {
           label = 'put'
-        }
-        else if (index == 3) {
+        } else if (index == 3) {
           label = 'view'
-        }
-        else {
+        } else {
           label = 'entry'
         }
       }
       return label
     },
-    getData (params, last,index) {
-      let obj  = {}
+    getData(params, last, index) {
+      let obj = {}
       if (last) {
-        obj = Object.assign(params,{last:1})
+        obj = Object.assign(params, { last: 1 })
+      } else {
+        obj = Object.assign(params, { last: '' })
       }
-      else {
-        obj  = Object.assign(params,{last:''})
-      }
-      getnumLeader(obj).then(res => {
-        this.allData = res.data
-        this.percentList = this.allData
-        let key = this.getKey(index)
-        if (last) {
-          this.list = this.getArray(res.data[key])
-          this.activeIndex = index
-        }
-        else {
-          
-          this.eachartData = this.getNewList(res.data)
-          console.log( this.eachartData)       
-        }
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+      getnumLeader(obj)
+        .then(res => {
+          this.allData = res.data
+          this.percentList = this.allData
+          let key = this.getKey(index)
+          if (last) {
+            this.list = this.getArray(res.data[key])
+            this.activeIndex = index
+          } else {
+            this.eachartData = this.getNewList(res.data)
+          }
+        })
+        .catch(error => {
+          this.$message.error(error.status.remind)
+        })
     },
-    getArray (obj) {
+    getArray(obj) {
       let arr = []
       for (let i in obj) {
         arr.push(obj[i])
       }
       return arr
     },
-    getXarr (obj) {
-      let arr = []
-      for (let i in obj) {
-        if (i) {
-          arr.push(i)
-        }
-      }
-      return arr
-    },
-    getNewArr (obj) {
-      for (let key in obj) {
-        arr[key] = this.getArray(val[obj[key]]).splice(0)
-      }
-      return arr
-    },
-    getNewList (val) {
+    getNewList(val) {
       let arr = []
       let obj = {
         0: 'total',
@@ -293,69 +283,85 @@ export default {
       for (let key in obj) {
         arr[key] = this.getArray(val[obj[key]]).splice(0)
       }
-      console.log(arr)
       return arr
     },
-    getDep () {
+    getDep() {
       let uid = localStorage.getItem('uid')
-      departmentRoleList({ uid }).then(res => {
-        this.depList = res.data || []
-      }).catch(error => {
-        console.log(error)
-        this.$message.error(error.status.remind)
-      })
+      departmentRoleList({ uid })
+        .then(res => {
+          this.depList = res.data || []
+        })
+        .catch(error => {
+          if (error) {
+            this.$message.error(error.status.remind)
+          }
+        })
     },
-    getCompareInfo (params) {
-      getCompare(params).then(res => {
-        this.teamCenterInfo = res.data
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+    getCompareInfo(params) {
+      getCompare(params)
+        .then(res => {
+          this.teamCenterInfo = res.data
+        })
+        .catch(error => {
+          if (error) {
+            this.$message.error(error.status.remind)
+          }
+        })
     },
-    getLogList (params) {
-      getapplyLog(params).then(res => {
-        this.tableData = res.data.data || []
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+    getLogList(params) {
+      getapplyLog(params)
+        .then(res => {
+          this.tableData = res.data.data || []
+        })
+        .catch(error => {
+          if (error) {
+            this.$message.error(error.status.remind)
+          }
+        })
     },
-    getTeamList (params) {
-      getTeamLog(params).then(res => {
-        this.tableTeamData = res.data.data || []
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+    getTeamList(params) {
+      getTeamLog(params)
+        .then(res => {
+          this.tableTeamData = res.data.data || []
+        })
+        .catch(error => {
+          if (error) {
+            this.$message.error(error.status.remind)
+          }
+        })
     },
-    select (index) {
-      console.log(index + '下班')
-      this.getData(this.paramsEchart, 1,index)
+    select(index) {
+      this.getData(this.paramsEchart, 1, index)
       this.getData(this.paramsEchart)
     },
-    getList (params) {
-      getrank(params).then(res => {
-        this.orderData = res.data
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+    getList(params) {
+      getrank(params)
+        .then(res => {
+          this.orderData = res.data
+        })
+        .catch(error => {
+          if (error) {
+            this.$message.error(error.status.remind)
+          }
+        })
     },
-    querySearch () {
+    querySearch() {
       this.paramsInfo.depart_id = this.formMember.depart_id
       this.getCompareInfo(this.paramsInfo)
       this.paramsEchart.depart_id = this.formMember.depart_id
       this.paramsEchart.search_uid = this.formMember.name
       this.getData(this.paramsEchart)
     },
-    selectQueryOrder (val) {
+    selectQueryOrder(val) {
       this.params = Object.assign(this.params, val)
       this.getList(this.params)
     },
-    selectQuery (val) {
+    selectQuery(val) {
       this.paramsEchart = Object.assign(this.paramsEchart, val)
       this.paramsEchart = Object.assign(this.paramsEchart, 0)
       this.getData(this.paramsEchart)
       this.legendIndex = val.type
     }
-  },
-
+  }
 }
 </script>

@@ -34,7 +34,6 @@ export default {
   methods: {
     getInfo(){
       getConfigInfo().then(res=>{
-        console.log(res.data)
         this.info = res.data
       })
     },
@@ -48,6 +47,7 @@ export default {
 .customer-service {
   box-shadow:0px 6px 14px 1px rgba(134,133,133,0.3);
   border-radius:5px;
+  z-index: 444;
   .el-dialog__title {
     color: #000;
   }

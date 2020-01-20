@@ -47,7 +47,6 @@ export default {
   },
   created () {
     if (localStorage.getItem('teamType') == 0) {
-      console.log(localStorage.getItem('teamType'))
       this.dialogVisible = true
       return false
     }

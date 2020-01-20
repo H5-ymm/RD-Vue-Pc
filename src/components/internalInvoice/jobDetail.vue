@@ -1,8 +1,8 @@
 <style lang="scss">
-.job-detail-view{
-  border-radius:10px;
+.job-detail-view {
+  border-radius: 10px;
   background: #fff;
- .member-row {
+  .member-row {
     width: 100%;
     margin: 0 auto 75px;
     text-align: center;
@@ -24,7 +24,7 @@
     .resume-card {
       margin-bottom: 20px;
       .resume-col1 {
-        color: #6A6A6A;
+        color: #6a6a6a;
         width: 100px;
         text-align: right;
         margin-right: 20px;
@@ -44,14 +44,14 @@
     .resume-main-title {
       border-bottom: 1px solid #eee;
       padding-bottom: 10px;
-      >img {
+      > img {
         width: 20px;
         margin-right: 12px;
       }
     }
     .resume-card-row {
       margin: 20px 0 0 -15px;
-       .resume-card-item {
+      .resume-card-item {
         width: 50%;
         text-align: left;
         font-size: 14px;
@@ -62,7 +62,7 @@
     }
     .company-info-box {
       text-align: center;
-      >img {
+      > img {
         width: 80px;
         height: 80px;
         border-radius: 100%;
@@ -297,32 +297,43 @@ import { getJobinfo } from '@/api/internalInvoice'
 import { positionStatusList } from '@/base/base'
 export default {
   filters: {
-    positionStatus (val) {
+    positionStatus(val) {
       let obj = positionStatusList.find(item => {
         return val == item.value
       })
       return obj ? obj.label : '--'
-    },
+    }
   },
-  data () {
+  data() {
     return {
       formMember: {},
       id: '',
       positionStatusList
     }
   },
-  created () {
+  created() {
     this.id = this.$route.query.id
     this.getInfo(this.id)
   },
   computed: {
-    jobStatus () {
-      return !this.formMember.address && !this.formMember.working_hours && !this.formMember.entry_requirements && !this.formMember.job_description
+    jobStatus() {
+      return (
+        !this.formMember.address &&
+        !this.formMember.working_hours &&
+        !this.formMember.entry_requirements &&
+        !this.formMember.job_description
+      )
     },
-    otherInfoStatus () {
-      return !this.formMember.sex && !this.formMember.age_min && !this.formMember.five_risks && !this.formMember.reserve_fund && !this.formMember.com_introduction
+    otherInfoStatus() {
+      return (
+        !this.formMember.sex &&
+        !this.formMember.age_min &&
+        !this.formMember.five_risks &&
+        !this.formMember.reserve_fund &&
+        !this.formMember.com_introduction
+      )
     },
-    rewardType () {
+    rewardType() {
       let text
       if (this.formMember.reward_type == 1) {
         text = '月'
@@ -335,7 +346,7 @@ export default {
       }
       return text
     },
-    rewaryMoneType () {
+    rewaryMoneType() {
       let text
       if (this.formMember.reward_money_type == 1) {
         text = '天'
@@ -350,14 +361,16 @@ export default {
     }
   },
   methods: {
-    getInfo (id) {
-      getJobinfo({ id }).then(res => {
-        this.formMember = res.data
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+    getInfo(id) {
+      getJobinfo({ id })
+        .then(res => {
+          this.formMember = res.data
+        })
+        .catch(error => {
+          this.$message.error(error.status.remind)
+        })
     }
-  },
+  }
 }
 </script>
 

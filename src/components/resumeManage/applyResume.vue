@@ -116,8 +116,23 @@
   </div>
 </template>
 <script>
-import { teamRecommendResumeList, entryResumeList, interviewTeamResumeList, addUserResume, editRecommendResumeStatus, selectUserResumeInfo, exportUserResume } from '@/api/resume'
-import { moneyTypeList, rewardTypeList, followStatusList, viewStatusList1, checkStatusList1, entryStatusList4 } from '@/base/base'
+import {
+  teamRecommendResumeList,
+  entryResumeList,
+  interviewTeamResumeList,
+  addUserResume,
+  editRecommendResumeStatus,
+  selectUserResumeInfo,
+  exportUserResume
+} from '@/api/resume'
+import {
+  moneyTypeList,
+  rewardTypeList,
+  followStatusList,
+  viewStatusList1,
+  checkStatusList1,
+  entryStatusList4
+} from '@/base/base'
 import viewResume from './viewResume'
 import followUpRecord from './followUpRecord'
 import leadResumeModal from './leadResumeModal'
@@ -133,38 +148,38 @@ export default {
     leadResumeModal
   },
   filters: {
-    moneyType (val) {
+    moneyType(val) {
       let obj = moneyTypeList.find(item => {
         return val == item.value
       })
       return obj ? obj.label : '--'
     },
-    rewardType (val) {
+    rewardType(val) {
       let obj = rewardTypeList.find(item => {
         return val == item.value
       })
       return obj ? obj.label : '--'
     },
-    checkStatus (val) {
+    checkStatus(val) {
       let obj = checkStatusList1.find(item => {
         return val == item.value
       })
       return obj ? obj.label : '--'
     },
-    viewStatus (val) {
+    viewStatus(val) {
       let obj = viewStatusList1.find(item => {
         return val == item.value
       })
       return obj ? obj.label : '--'
     },
-    entryStatus (val) {
+    entryStatus(val) {
       let obj = entryStatusList4.find(item => {
         return val == item.value
       })
       return obj ? obj.label : '--'
     }
   },
-  data () {
+  data() {
     return {
       entryStatusList4,
       checkStatusList1,
@@ -209,13 +224,13 @@ export default {
       id: ''
     }
   },
-  mounted () {
+  mounted() {
     // 初始化查询标签数据
     this.viewType = this.$route.query.view
     this.getList(this.formMember)
   },
   watch: {
-    $route (to, from) {
+    $route(to, from) {
       if (to) {
         this.viewType = to.query.view
         this.getList(this.formMember)
@@ -223,37 +238,42 @@ export default {
     }
   },
   computed: {
-    label () {
-      return this.viewType == 1 ? '报名状态' : this.viewType == 2 ? '入职状态' : '面试状态'
+    label() {
+      return this.viewType == 1
+        ? '报名状态'
+        : this.viewType == 2
+          ? '入职状态'
+          : '面试状态'
     },
-    labelTime () {
-      return this.viewType == 1 ? '报名时间' : this.viewType == 2 ? '入职时间' : '面试时间'
+    labelTime() {
+      return this.viewType == 1
+        ? '报名时间'
+        : this.viewType == 2
+          ? '入职时间'
+          : '面试时间'
     }
   },
   methods: {
-    getList (params) {
+    getList(params) {
       if (this.viewType == 1) {
         teamRecommendResumeList(params).then(res => {
           const { data } = res
           this.tableData = data.data || []
           this.total = data.count
         })
-      }
-      else if (this.viewType == 2) {
+      } else if (this.viewType == 2) {
         entryResumeList(params).then(res => {
           const { data } = res
           this.tableData = data.data || []
           this.total = data.count
         })
-      }
-      else if (this.viewType == 8) {
+      } else if (this.viewType == 8) {
         entryResumeList(params).then(res => {
           const { data } = res
           this.tableData = data.data || []
           this.total = data.count
         })
-      }
-      else {
+      } else {
         interviewTeamResumeList(params).then(res => {
           const { data } = res
           this.tableData = data.data || []
@@ -261,75 +281,70 @@ export default {
         })
       }
     },
-    changeDate (val) {
+    changeDate(val) {
       this.formMember.beginTime = val ? val[0] : ''
       this.formMember.endTime = val ? val[1] : ''
       // this.getList(this.formMember)
     },
-    routerResume (val) {
+    routerResume(val) {
       let arr = JSON.parse(sessionStorage.getItem('menus'))
       arr[1] = '推荐岗位'
       sessionStorage.setItem('menus', JSON.stringify(arr))
       this.$router.push('/recommendJob?id=' + val.id)
     },
-    exportResume () {
+    exportResume() {
       if (!this.tableData.length) {
         return this.$message.warning('没有数据导出')
       }
       let uid = localStorage.getItem('uid')
-      // let query = new FormData()
-      // query.append('uid', uid)
       exportUserResume(uid)
     },
-    sortChange (column) {
+    sortChange(column) {
       console.log(column)
       if (column.order == 'ascending') {
         this.formMember[column.prop] = 'asc'
-      }
-      else {
+      } else {
         this.formMember[column.prop] = 'desc'
       }
       this.getList(this.formMember)
     },
-    change (val) {
+    change(val) {
       this.formMember.provinceid = val[0]
       this.formMember.cityid = val[1]
     },
-    selectStatus (item, index) {
+    selectStatus(item, index) {
       this.activeIndex = index
       this.formMember.status = item.value
     },
-    handleSizeChange (val) {
+    handleSizeChange(val) {
       this.formMember.limit = val
       this.getList(this.formMember)
     },
-    handleCurrentChange (val) {
+    handleCurrentChange(val) {
       this.formMember.page = val
       this.getList(this.formMember)
     },
-    viewRecord (val) {
+    viewRecord(val) {
       this.followUpRecordVisible = true
       this.resumeId = val.resume_id
     },
-    viewResume (val) {
+    viewResume(val) {
       this.dialogTableVisible = true
       this.resumeInfo = val
       this.resumeId = val.resume_id
     },
-    submitRecord (val) {
+    submitRecord(val) {
       this.followUpRecordVisible = false
     },
-    abandoned (index, val) {
+    abandoned(index, val) {
       this.status = index
       if (index == 1) {
         this.dialogObj.title = '放弃报名'
         this.isShow = true
-      }
-      else if (index == 1) {
+      } else if (index == 1) {
         this.dialogObj.title = '放弃面试'
         this.isShow = true
-      }
-      else {
+      } else {
         this.dialogObj.title = '放弃用户'
         this.isShow = false
       }
@@ -337,11 +352,11 @@ export default {
       this.resumeId = val.resume_id
       this.id = val.id
     },
-    handleClose () {
+    handleClose() {
       this.visible = false
       this.resumeId = ''
     },
-    submit (val) {
+    submit(val) {
       let params = {
         uid: localStorage.getItem('uid'),
         id: this.id,
@@ -356,30 +371,33 @@ export default {
         this.getList(this.formMember)
       })
     },
-    onSubmit (value) {
+    onSubmit(value) {
       let params = Object.assign(this.formMember, value)
       this.getList(params)
     },
-    updateResume (val) {
+    updateResume(val) {
       updateTeamUser(val).then(res => {
         this.getList(this.params)
       })
     },
-    submitForm (val) {
+    submitForm(val) {
       this.dialogTableVisible = false
       if (this.resumeId) {
         this.updateResume(val)
-      }
-      else {
-        addUserResume(val).then(res => {
-          this.getList(this.formMember)
-          this.$message.success('保存成功')
-        }).catch(error => {
-          this.$message.error(error.status.remind)
-        })
+      } else {
+        addUserResume(val)
+          .then(res => {
+            if (res.data) {
+              this.getList(this.formMember)
+              this.$message.success('保存成功')
+            }
+          })
+          .catch(error => {
+            this.$message.error(error.status.remind)
+          })
       }
     },
-    onReset () {
+    onReset() {
       this.formMember = {
         uid: localStorage.getItem('uid'),
         limit: 10,
