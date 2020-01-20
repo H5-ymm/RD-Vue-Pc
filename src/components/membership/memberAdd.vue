@@ -43,22 +43,21 @@
         width: 90%;
         margin: 10px auto;
         .el-form-item {
-          margin-bottom: 10px;
+          margin-bottom: 20px;
         }
         .el-input__inner {
           width: 300px !important;
-          height: 38px;
-          line-height: 38px;
-          border-radius: 0;
         }
         .el-textarea {
           width: 300px !important;
-          border-radius: 0;
+          border-radius: 3px;
           height: 80px;
-          // margin-left: 0;
         }
         .el-form-item__content {
           margin-left: 20px !important;
+        }
+        .el-form-item__error {
+          left: 123px;
         }
         .el-select,
         .el-radio-group {
@@ -67,7 +66,7 @@
         .el-radio.is-bordered {
           height: 38px;
           width: 145px;
-          border-radius: 0;
+          border-radius: 2px;
           line-height: 38px;
           padding: 0;
           margin-right: 0;
@@ -250,15 +249,21 @@ export default {
     },
     getJobList() {
       let uid = this.formMember.uid
-      departmentRoleList({ uid }).then(res => {
-        // this.depList = res.data
-        if (this.userPosition == 1) {
-          this.currentDepList = res.data.splice(0)
-        } else {
-          this.currentDepList = this.getCurrentDepList(res.data)
-          this.jobList = this.getArr(this.currentDepList, this.depId)
-        }
-      })
+      departmentRoleList({ uid })
+        .then(res => {
+          // this.depList = res.data
+          if (this.userPosition == 1) {
+            this.currentDepList = res.data.splice(0)
+          } else {
+            this.currentDepList = this.getCurrentDepList(res.data)
+            this.jobList = this.getArr(this.currentDepList, this.depId)
+          }
+        })
+        .catch(error => {
+          if (error) {
+            this.$message.error(error.status.remind)
+          }
+        })
     },
     getCurrentDepList(array) {
       let arr = []

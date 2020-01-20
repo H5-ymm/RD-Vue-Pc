@@ -126,9 +126,10 @@ export default {
   border: 1px solid #eee;
   height: 38px;
   .el-input__inner {
-    padding: 0;
-    height: 37px !important;
-    line-height: 37px !important;
+    // padding: 0;
+    // height: 37px !important;
+    // line-height: 37px !important;
+    padding: 18px 0;
     text-align: center;
     border: none !important;
   }

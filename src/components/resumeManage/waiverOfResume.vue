@@ -17,7 +17,7 @@
           <el-input v-model="formMember.job" class="width300" placeholder="请输入意向岗位关键字"></el-input>
         </el-form-item>
         <el-form-item label="录入人：">
-          <el-input v-model="formMember.name" class="width300" placeholder="请输入录入人关键字"></el-input>
+          <el-input v-model="formMember.inputName" class="width300" placeholder="请输入录入人关键字"></el-input>
         </el-form-item>
         <el-form-item label="意向地区：">
           <div class="width300">
@@ -25,11 +25,11 @@
           </div>
         </el-form-item>
         <el-form-item label="跟进人：">
-          <el-input v-model="formMember.name" class="width300" placeholder="请输入跟进人关键字"></el-input>
+          <el-input v-model="formMember.track_name" class="width300" placeholder="请输入跟进人关键字"></el-input>
         </el-form-item>
         <el-form-item label="意向工资：">
-          <el-select v-model="formMember.industry" class="width300" placeholder="请选择意向工资">
-            <el-option :label="item.label" :value="item.value" v-for="(item,index) in moneyTypeList" :key="index"></el-option>
+          <el-select v-model="formMember.money" class="width300" placeholder="请选择意向工资">
+            <el-option :label="item" :value="key" v-for="(item,key) in moneyArray" :key="key"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="跟进时间：">
@@ -121,6 +121,7 @@ import followUpRecord from './followUpRecord'
 import confirmDialog from '../common/confirmDialog'
 import modal from '../common/modal'
 import districtSelet from '../districtSelet'
+import { getConstant } from '@/api/dictionary'
 export default {
   components: {
     districtSelet,
@@ -163,27 +164,26 @@ export default {
         closeText: '继续浏览'
       },
       tableData: [],
-      currentPage: 1,
-      userType: 1,
       formMember: {
         uid: localStorage.getItem('uid'),
         limit: 10,
         page: 1
       },
       total: 0,
-      len: 0,
       resumeId: '',
-      trackList: [],
       timeList: [],
       isShow: true,
       reason: '',
-      viewType: 1
+      viewType: 1,
+      moneyArray: {}
     }
   },
   mounted() {
     // 初始化查询标签数据
     this.viewType = this.$route.query.view
     this.getList(this.formMember)
+    let params = 'resume_intention_salary'
+    this.getData(params)
   },
   watch: {
     $route(to, from) {
@@ -214,6 +214,17 @@ export default {
             this.$message.waring(error.status.remind)
           })
       }
+    },
+    getData(filed) {
+      getConstant({ filed })
+        .then(res => {
+          this.moneyArray = res.data.resume_intention_salary
+        })
+        .catch(error => {
+          if (error) {
+            this.$message.error(error.status.remind)
+          }
+        })
     },
     changeDate(val) {
       this.formMember.beginTime = val ? val[0] : ''

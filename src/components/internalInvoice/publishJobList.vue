@@ -154,7 +154,7 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column label="面试情况" prop="depart_name" align="center" width="220">
+          <el-table-column label="面试情况" prop="depart_name" align="center" width="200">
             <template slot-scope="props">
               <div>
                 <span class="el-icon-circle-check success-color">&nbsp;{{props.row.view_yes}}</span>
@@ -183,7 +183,7 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column label="操作" align="center" width="240" fixed="right">
+          <el-table-column label="操作" align="center" width="260" fixed="right">
             <template slot-scope="scope">
               <div v-if="viewType==1">
                 <el-button @click="$router.push('jobDetail?id='+scope.row.id)" type="text" size="small" v-if="scope.row.uid!=uid&&userPosition!=1">详情</el-button>
@@ -323,7 +323,7 @@ export default {
       dialogVisible: false
     }
   },
-  created() {
+  mounted() {
     // 初始化查询标签数据
     // viewType 1 管理内部发单
     // 2.已发布职位
@@ -351,7 +351,9 @@ export default {
           this.total = res.data.count
         })
         .catch(error => {
-          this.$message.error(error.status.remind)
+          if (error) {
+            this.$message.error(error.status.remind)
+          }
         })
     },
     putJob() {
@@ -402,7 +404,9 @@ export default {
             this.dialogTableVisible = true
           })
           .catch(error => {
-            this.$message.error(error.status.remind)
+            if (error) {
+              this.$message.error(error.status.remind)
+            }
           })
       } else {
         getobedistributedList(params)
@@ -412,7 +416,9 @@ export default {
             this.dialogTableVisible = true
           })
           .catch(error => {
-            this.$message.error(error.status.remind)
+            if (error) {
+              this.$message.error(error.status.remind)
+            }
           })
       }
     },
@@ -432,7 +438,9 @@ export default {
           }
         })
         .catch(error => {
-          this.$message.error(error.status.remind)
+          if (error) {
+            this.$message.error(error.status.remind)
+          }
         })
     },
     // 上下架
@@ -452,7 +460,9 @@ export default {
           }
         })
         .catch(error => {
-          this.$message.error(error.status.remind)
+          if (error) {
+            this.$message.error(error.status.remind)
+          }
         })
     },
     // 发单操作
@@ -478,7 +488,9 @@ export default {
           }
         })
         .catch(error => {
-          this.$message.error(error.status.remind)
+          if (error) {
+            this.$message.error(error.status.remind)
+          }
         })
     },
     // 已经领取人列表
@@ -530,7 +542,9 @@ export default {
           }
         })
         .catch(error => {
-          this.$message.error(error.status.remind)
+          if (error) {
+            this.$message.error(error.status.remind)
+          }
         })
     },
     handleOk(val) {

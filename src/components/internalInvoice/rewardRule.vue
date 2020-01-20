@@ -24,7 +24,6 @@
       }
       .resume-col3 {
         width: 100%;
-        // border-top: 1px solid #eee;
         padding-top: 10px;
         margin: 0 auto;
         .demo-form-inline {
@@ -32,11 +31,6 @@
           margin: 10px auto;
           .el-form-item {
             margin-bottom: 10px;
-          }
-          .el-input__inner {
-            height: 38px;
-            line-height: 38px;
-            border-radius: 3px;
           }
         }
       }
@@ -68,9 +62,6 @@
             margin-top: 12px;
             margin-right: 10px;
           }
-        }
-        .el-form-item__error {
-          top: -50%;
         }
       }
     }

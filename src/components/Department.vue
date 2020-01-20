@@ -1,3 +1,22 @@
+<style lang="scss">
+.tables-box {
+  overflow: hidden;
+  .table-list {
+    background: #fff;
+    border-radius: 10px;
+    padding: 15px;
+    .add-member {
+      border-radius: 0;
+      height: 38px;
+      margin-bottom: 15px;
+    }
+    .team-pagination {
+      margin-top: 20px;
+      margin-left: 20px;
+    }
+  }
+}
+</style>
 <template>
   <div class="tables-box">
     <div class="table-list">
@@ -122,23 +141,3 @@ export default {
 }
 </script>
 
-<style lang="scss">
-.tables-box {
-  overflow: hidden;
-  .table-list {
-    background: #fff;
-    border-radius: 10px;
-    // height: calc(100% - 100px);
-    padding: 15px;
-    .add-member {
-      border-radius: 0;
-      height: 38px;
-      margin-bottom: 15px;
-    }
-    .team-pagination {
-      margin-top: 20px;
-      margin-left: 20px;
-    }
-  }
-}
-</style>

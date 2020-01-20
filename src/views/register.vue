@@ -90,46 +90,47 @@ export default {
     personalRule
   },
   name: 'register',
-  data () {
-    let validatereg = (rule, value, callback) => {   //验证用户名是否合法
-      let reg = /^1[3456789]\d{9}$/;
+  data() {
+    let validatereg = (rule, value, callback) => {
+      //验证用户名是否合法
+      let reg = /^1[3456789]\d{9}$/
       if (value === '') {
         this.isShowPhone = true
-        callback();
-      }
-      else if (!(reg.test(value))) {
+        callback()
+      } else if (!reg.test(value)) {
         this.isShowPhone = false
-        callback(new Error('手机号格式不正确'));
+        callback(new Error('手机号格式不正确'))
       } else {
         this.isShowPhone = false
-        callback();
+        callback()
       }
-    };
+    }
     let validatePass = (rule, value, callback) => {
       if (value === '') {
         this.isShowPasword = true
-        callback();
+        callback()
       } else {
         if (this.formTab.password !== '') {
           this.$refs.TabForm.validateField('passworded')
         }
-        let reg = /^[a-zA-Z0-9]{6,17}$/;
+        let reg = /^[a-zA-Z0-9]{6,17}$/
         if (reg.test(value) == true) {
-          callback();
+          callback()
         } else {
-          callback(new Error('(请输入6到17位数字和字母混合)'));
+          callback(new Error('(请输入6到17位数字和字母混合)'))
         }
         this.isShowPasword = false
-        callback();
+        callback()
       }
-    };
-    let validatePassReg = (rule, value, callback) => {   //验证密码是否合法
+    }
+    let validatePassReg = (rule, value, callback) => {
+      //验证密码是否合法
       if (value == this.formTab.password) {
         this.isShowPas = false
-        callback();
+        callback()
       } else {
         this.isShowPas = true
-        callback();
+        callback()
       }
     }
     return {
@@ -155,10 +156,9 @@ export default {
         passwords: 'test1234',
         checked: false
       },
-      formTabs: {  //验证规则
-        mobile: [
-          { validator: validatereg, trigger: 'blur' }
-        ],
+      formTabs: {
+        //验证规则
+        mobile: [{ validator: validatereg, trigger: 'blur' }],
         password: [
           // { message: '请输入密码', trigger: 'blur' },
           { validator: validatePass, trigger: 'blur' }
@@ -167,9 +167,7 @@ export default {
           { message: '请再次输入密码', trigger: 'blur' },
           { validator: validatePassReg, trigger: 'blur' }
         ],
-        name: [
-          { message: '请输入公司名称', trigger: 'blur' },
-        ]
+        name: [{ message: '请输入公司名称', trigger: 'blur' }]
       },
       registerType: 1,
       value: [],
@@ -179,41 +177,47 @@ export default {
       departmentOptions: [],
       cascaderData: [],
       selectedOptions: [],
-      content: '发送验证码',  // 按钮里显示的内容
+      content: '发送验证码', // 按钮里显示的内容
       totalTime: 60,
       timer: null,
       canClick: true,
       dialogTableVisible: false,
-      dialogPersonVisible:false,
-      checked:false
+      dialogPersonVisible: false,
+      checked: false
     }
   },
   methods: {
-    districtChange (val) {
+    districtChange(val) {
       this.formTab.province = val[0]
       this.formTab.city = val[1]
       this.formTab.area = val[2]
     },
-    format (percentage) {
-      return percentage === 100 ? '强度：高' : percentage === 70 ? '强度：中' : '强度：低';
+    format(percentage) {
+      return percentage === 100
+        ? '强度：高'
+        : percentage === 70
+          ? '强度：中'
+          : '强度：低'
     },
-    goRegister (index) {
+    goRegister(index) {
       this.registerType = index
       this.formTab.type = index
     },
-    sendCode () {
+    sendCode() {
       if (!this.formTab.mobile) {
         return this.$message.warning('手机号不能为空')
       }
       this.countDown()
-      getCode({ mobile: this.formTab.mobile }).then(res => {
-        this.formTab.token = res.data.token
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+      getCode({ mobile: this.formTab.mobile })
+        .then(res => {
+          this.formTab.token = res.data.token
+        })
+        .catch(error => {
+          this.$message.error(error.status.remind)
+        })
     },
-    countDown () {
-      if (!this.canClick) return  //改动的是这两行代码
+    countDown() {
+      if (!this.canClick) return //改动的是这两行代码
       this.canClick = false
       this.content = this.totalTime + 's后重发'
       let clock = window.setInterval(() => {
@@ -223,13 +227,12 @@ export default {
           window.clearInterval(clock)
           this.content = '重新发送验证码'
           this.totalTime = 60
-          this.canClick = true  //这里重新开启
+          this.canClick = true //这里重新开启
         }
       }, 1000)
     },
-    onSubmit () {
-
-      this.$refs['TabForm'].validate((valid) => {
+    onSubmit() {
+      this.$refs['TabForm'].validate(valid => {
         if (valid) {
           if (this.formTab.province == '') {
             this.isShowCom = true
@@ -238,33 +241,35 @@ export default {
           if (!this.checked) {
             return this.$message.warning('请先阅读注册协议')
           }
-          userRegister(this.formTab).then(res => {
-            localStorage.setItem('userType', this.registerType)
-            localStorage.setItem('token', res.data.token)
-            localStorage.setItem('teamType', 0)
-            this.$store.commit('getUid', res.data.uid)
-            localStorage.setItem('uid', res.data.uid)
-            sessionStorage.setItem('userPosition', 1)
-            if (res.data.type == 1) {
-              this.$router.push('/createOrderTaking')
-            }
-            else {
-              this.$router.push('/teamData')
-            }
-          }).catch(error => {
-            this.$message.error(error.status.remind)
-          })
+          userRegister(this.formTab)
+            .then(res => {
+              localStorage.setItem('userType', this.registerType)
+              localStorage.setItem('token', res.data.token)
+              localStorage.setItem('teamType', 0)
+              this.$store.commit('getUid', res.data.uid)
+              localStorage.setItem('uid', res.data.uid)
+              sessionStorage.setItem('userPosition', 1)
+              if (res.data.type == 1) {
+                this.$router.push('/createOrderTaking')
+              } else {
+                this.$router.push('/teamData')
+              }
+            })
+            .catch(error => {
+              this.$message.error(error.status.remind)
+            })
         } else {
           this.isShowCom = false
-          return false;
+          return false
         }
       })
     },
-    onForget () {
+    onForget() {
       this.$router.push('/register')
     }
   },
-  created () {  //验证Token   
+  created() {
+    //验证Token
     // this.getPro()
   }
 }
@@ -272,175 +277,170 @@ export default {
 
 <style lang="scss">
 .header {
-  width:100%;
-  height:49px;
-  background:rgba(50,55,62,1);
-  color:#fff;
-  font-size:14px;
+  width: 100%;
+  height: 49px;
+  background: rgba(50, 55, 62, 1);
+  color: #fff;
+  font-size: 14px;
+  span {
+    font-weight: bold;
+    color: #1890ff;
+    margin-right: 30px;
+  }
+  .welcome {
+    font-size: 18px;
+  }
+  .header-left {
+    font-size: 26px;
+  }
 }
-.header span{
-  font-weight:bold;
-  color:#1890FF;
-  margin-right:30px;
-}
-.header .welcome {
-  font-size: 18px;
-}
-.header .header-left {
-  font-size:26px;
-}
-.loads{
+.loads {
   width: 100vw;
+  &.login-page {
+    height: 100%;
+  }
+  .el-main {
+    padding: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+  .el-form-item {
+    margin-bottom: 6px;
+  }
+  .error {
+    position: absolute;
+    top: 18%;
+    right: 0;
+    color: #fe2a00;
+    font-size: 12px;
+    transition: 3s;
+  }
+  .error1 {
+    top: 60%;
+    z-index: 23;
+  }
+  .passwordSave {
+    right: 30%;
+  }
+  .progress {
+    width: 100px;
+    margin-right: -50px;
+  }
+  .el-progress__text {
+    font-size: 10px;
+    position: absolute;
+    top: -15px;
+    left: -16px;
+    transform: scale(0.8);
+  }
 }
-.login-page {
-  height: 100%;
-}
-.loads .el-main {
-  padding:0;
-  overflow-x: hidden;
-  overflow-y: auto;
-}
-
-.loads .el-form-item {
-  margin-bottom:6px;
-}
-.loads .city-cascader {
-  display:block;
-}
-.loads .error {
-  position:absolute;
-  top:18%;
-  right:0;
-  color:#FE2A00;
-  font-size:12px;
-  transition: 3s;
-}
-.loads .error1 {
-  top:60%;
-  z-index:23;
-}
-.loads .passwordSave {
-  right:30%;
-}
-.loads .progress {
-  width:100px;
-  margin-right:-50px;
-}
-.loads .el-progress__text {
-  font-size:10px;
-  position:absolute;
-  top:-15px;
-  left:-16px;
-  transform:scale(0.8); 
-}
-.login-btn  .button {
-  padding:8px 30px;
-  margin-bottom: 30px; 
-}
-.x-flex  .comRight {
-  border:1px solid #1890FF;
-  color:#1890FF;
-  border-radius:0;
+.login-btn {
+  .button {
+    padding: 8px 30px;
+    margin-bottom: 30px;
+  }
+  .comRight {
+    border: 1px solid #1890ff;
+    color: #1890ff;
+    border-radius: 0;
+  }
 }
 .login-primary {
-  color:#1890FF;
+  color: #1890ff;
 }
 .content {
   display: flex;
   justify-content: center;
   align-items: center;
-  height:100%;
-  width:110%;
+  height: 100%;
+  width: 110%;
   background: url('../assets/img/bg.png') no-repeat left center;
-  background-size:cover;
+  background-size: cover;
+  &.register-form {
+    height: auto;
+  }
 }
 .timerContent {
   background: url('../assets/img/comBg.jpg') no-repeat left center;
-  background-size:cover;
+  background-size: cover;
 }
 .register-form-box {
-  width:90%;
+  width: 90%;
   padding: 40px 0;
   height: 630px;
+  .text {
+    text-align: left;
+    font-size: 12px;
+    margin-top: 10px;
+  }
 }
-.loads-box{
+.loads-box {
   width: 60%;
-  background:rgba(255,255,255,1);
-  box-shadow:0px 5px 18px 0px rgba(0, 0, 0, 0.15);
-  border-radius:5px;
+  background: rgba(255, 255, 255, 1);
+  box-shadow: 0px 5px 18px 0px rgba(0, 0, 0, 0.15);
+  border-radius: 5px;
   margin: 40px 0 40px -8%;
-}
-.loads-box .el-input__inner {
-  border-radius:0;
-  border:1px solid rgba(238,238,238,1);
-}
-.el-input__inner:focus {
-  border:1px solid #1890FF;
-}
-.loads-box .inputCode {
-  width: 68%!important;
-  margin-right:10px;
-  display:block;
-}
-.loads-box .code-btn {
-  width: 110px!important;
-  position:absolute;
-  bottom:0;
-  right:0;
-  padding: 12px 0;
-  border-radius:3px;
-}
-.loads-box .el-col {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-wrap: wrap;
-  height:100%;
+  .el-button--primary {
+    width: 100%;
+  }
+  .code-btn {
+    width: 110px !important;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    padding: 12px 0;
+    border-radius: 3px;
+  }
+  .inputCode {
+    width: 70% !important;
+    margin-right: 10px;
+    display: block;
+  }
+  .el-col {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    height: 100%;
+  }
 }
 .grid-content {
-  background:rgba(248,248,248,1);
-  border-radius:0px 5px 5px 0px;
-  width:100%;
-  flex-wrap:wrap;
-}
-.register-grid-content {
-  height:720px;
-}
-.register-form-box .text {
-  text-align:left;
-  font-size:12px;
-  margin-top: 10px;
-}
-.grid-content .text {
-  text-align:right;
-  font-size:12px;
-  position: absolute;
-  bottom: 55px;
-  right: 30px;
-  font-size: 18px;
-}
-.text .loginRight {
-  margin-top: 2px;
-  margin-left: 5px;
-  width: 18px;
-}
-.grid-content img {
-  max-width: 1200px;
-  margin: 0 auto ;
-}
-.loads-box .el-button--primary{
+  background: rgba(248, 248, 248, 1);
+  border-radius: 0px 5px 5px 0px;
   width: 100%;
+  flex-wrap: wrap;
+  &.register-grid-content {
+    height: 720px;
+  }
+  .text {
+    text-align: right;
+    font-size: 12px;
+    position: absolute;
+    bottom: 55px;
+    right: 30px;
+    font-size: 18px;
+    .loginRight {
+      margin-top: 2px;
+      margin-left: 5px;
+      width: 18px;
+    }
+  }
+  img {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
 }
-.texts{
+.texts {
   text-align: center;
 }
-.passwords{
-  text-align: right;
-}
-.register{
-  background:linear-gradient(180deg,rgba(24,144,255,1),rgba(89,175,255,1));
-  border-radius:5px;
-  border:none;
+.register {
+  background: linear-gradient(
+    180deg,
+    rgba(24, 144, 255, 1),
+    rgba(89, 175, 255, 1)
+  );
+  border-radius: 5px;
+  border: none;
   margin: 20px 0 0;
 }
 </style>

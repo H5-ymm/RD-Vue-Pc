@@ -43,7 +43,7 @@
     <memberCard :userType="userType" @refurbish="refurbish" :teamInfo="teamInfo"></memberCard>
     <div class="table-list">
       <memberQuery @onSubmit="onSubmit"></memberQuery>
-      <memberTable :total="total" :tableData="tableData" @handleEdit="handleEdit" @dismissTeam="dismissTeam" @handleView="handleView" @addMember="addMember" @handleDel="handleDel" @handleSelectionChange="handleSelectionChange"></memberTable>
+      <memberTable :total="total" :tableData="tableData" @handleEdit="handleEdit" @dismissTeam="dismissTeam" @handleView="handleView" @addMember="addMember" @handleDel="handleDel"></memberTable>
       <el-pagination class="team-pagination" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="formMember.page" :page-sizes="[10, 30, 50, 100]" :page-size="formMember.limit" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
     </div>
     <memberAdd :dialogTableVisible="visible" @handleClose="visible=false,userId='',teamInfo={}" :id="userId" @submitForm="submitForm"></memberAdd>
@@ -93,7 +93,6 @@ export default {
         page: 1
       },
       total: 0,
-      len: 0,
       userId: '',
       teamInfo: {},
       userType: localStorage.getItem('userType'),
@@ -118,11 +117,17 @@ export default {
       this.getList(this.formMember)
     },
     getList(params) {
-      getTeamList(params).then(res => {
-        this.tableData = res.data.data
-        this.total = res.data.count
-        this.teamInfo = res.data.teamInfo
-      })
+      getTeamList(params)
+        .then(res => {
+          this.tableData = res.data.data
+          this.total = res.data.count
+          this.teamInfo = res.data.teamInfo
+        })
+        .catch(error => {
+          if (error) {
+            this.$message.error(error.status.remind)
+          }
+        })
     },
     handleView(val) {
       this.userId = val
@@ -151,7 +156,9 @@ export default {
           }
         })
         .catch(error => {
-          this.$message.error(error.status.remind)
+          if (error) {
+            this.$message.error(error.status.remind)
+          }
         })
     },
     handleDel(uid) {
@@ -165,11 +172,10 @@ export default {
           this.getList(this.formMember)
         })
         .catch(error => {
-          this.$message.error(error.status.remind)
+          if (error) {
+            this.$message.error(error.status.remind)
+          }
         })
-    },
-    handleSelectionChange(val) {
-      this.len = val
     },
     addMember() {
       // 如果没有认证 团队性质
@@ -198,7 +204,9 @@ export default {
             }
           })
           .catch(error => {
-            this.$message.error(error.status.remind)
+            if (error) {
+              this.$message.error(error.status.remind)
+            }
           })
       }
     },
@@ -214,7 +222,9 @@ export default {
           }
         })
         .catch(error => {
-          this.$message.error(error.status.remind)
+          if (error) {
+            this.$message.error(error.status.remind)
+          }
         })
     }
   }

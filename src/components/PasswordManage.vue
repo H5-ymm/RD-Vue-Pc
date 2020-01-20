@@ -158,7 +158,8 @@ export default {
       })
     },
     submitFormZfb() {
-      ;(this.visible = false), this.$router.push('accountSafe')
+      this.visible = false
+      this.$router.push('/accountSafe')
     },
     getMobilePas(uid) {
       getUserMobile({ uid }).then(res => {
@@ -234,9 +235,9 @@ export default {
         }
       } else {
         if (this.isUpdate) {
-          this.setPayPas(val)
-        } else {
           this.updatePayPas(val)
+        } else {
+          this.setPayPas(val)
         }
       }
     },
@@ -249,7 +250,9 @@ export default {
           }
         })
         .catch(error => {
-          this.$message.error(error.status.remind)
+          if (error) {
+            this.$message.error(error.status.remind)
+          }
         })
     },
     updatePas(val) {
@@ -260,7 +263,9 @@ export default {
           }
         })
         .catch(error => {
-          this.$message.error(error.status.remind)
+          if (error) {
+            this.$message.error(error.status.remind)
+          }
         })
     },
     setPayPas(val) {
@@ -282,7 +287,9 @@ export default {
           }
         })
         .catch(error => {
-          this.$message.error(error.status.remind)
+          if (error) {
+            this.$message.error(error.status.remind)
+          }
         })
     },
     resetForm(personalForm) {

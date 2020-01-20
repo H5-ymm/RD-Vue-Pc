@@ -1,51 +1,53 @@
 <style lang="scss">
-  .demo-form-inline {
-    &.account-bind{
-        .el-form-item {
-          text-align: left;
+.demo-form-inline {
+  &.account-bind {
+    .el-form-item {
+      text-align: left;
+    }
+    .bind-input-code {
+      overflow: hidden;
+      display: block;
+      &.el-input {
+        width: 280px;
+        float: left;
+      }
+      .el-input__inner {
+        width: 280px !important;
+      }
+    }
+    .el-input__inner {
+      width: 400px !important;
+    }
+    .el-radio__label {
+      float: left;
+      margin-left: 10px;
+    }
+    .el-radio.is-bordered {
+      width: 195px;
+      height: 42px;
+      line-height: 42px;
+      padding: 0;
+      margin-right: 0;
+      & + .el-radio.is-bordered {
+        margin-left: 10px;
+      }
+    }
+    .el-radio__input {
+      float: right;
+      margin-top: 12px;
+      margin-right: 10px;
+    }
+    .code-btn {
+      padding: 11px 20px;
+      &.el-button--primary.is-plain {
+        &:hover {
+          background-color: #1890ff;
+          color: #fff;
         }
-        .bind-input-code {
-          overflow: hidden;
-          &.el-input {
-            width: 280px;
-            float: left;
-          }
-          .el-input__inner {
-            width: 280px!important;
-          }
-        }
-        .el-input__inner {
-          width: 400px!important;
-        }
-        .el-radio__label {
-          float: left;
-          margin-left: 10px;
-        }
-        .el-radio.is-bordered {
-          width: 195px;
-          height: 42px;
-          line-height: 42px;
-          padding:0;
-          margin-right: 0;
-          &+.el-radio.is-bordered {
-            margin-left: 10px;
-          }
-        }
-        .el-radio__input {
-          float: right;
-          margin-top: 12px;
-          margin-right: 10px;
-        }
-        .code-btn {
-          &.el-button--primary.is-plain{
-            &:hover {
-              background-color: #1890ff;
-              color: #fff;
-            }
-          }
-        }
-     }
+      }
+    }
   }
+}
 </style>
 <template>
   <el-form :model="formMember" :rules="rules" :inline="true" label-position="left" ref="formMember" class="demo-form-inline account-bind">
@@ -93,17 +95,17 @@ import { getBankList, sendPayPassword } from '../../api/user'
 import { validateIdCard } from '../../util/util'
 export default {
   props: ['dialogTableVisible'],
-  data () {
+  data() {
     var validate = (rule, value, callback) => {
       if (value === '') {
-        callback(new Error('请输入身份证号码'));
+        callback(new Error('请输入身份证号码'))
       } else {
         if (!validateIdCard(value)) {
-          callback(new Error('请输入正确的身份证号码'));
+          callback(new Error('请输入正确的身份证号码'))
         }
         callback()
       }
-    };
+    }
     return {
       formMember: {
         uid: localStorage.getItem('uid'),
@@ -113,31 +115,25 @@ export default {
         token: ''
       },
       rules: {
-        user_name: [
-          { required:true,message: '请输入姓名', trigger: 'blur' }
-        ],
+        user_name: [{ required: true, message: '请输入姓名', trigger: 'blur' }],
         idCard: [
-          { required:true,message: '请输入身份证号码', trigger: 'blur' },
+          { required: true, message: '请输入身份证号码', trigger: 'blur' },
           { validator: validate, trigger: 'blur' }
         ],
         bankNum: [
-          { required:true,message: '请输入银行卡号', trigger: 'blur' }
+          { required: true, message: '请输入银行卡号', trigger: 'blur' }
         ],
         card_type: [
-          { required:true,message: '请选择银行卡类型', trigger: 'blur' },
+          { required: true, message: '请选择银行卡类型', trigger: 'blur' }
         ],
         card_attribute: [
-          { required:true,message: '请选择银行卡属性', trigger: 'blur' }
+          { required: true, message: '请选择银行卡属性', trigger: 'blur' }
         ],
         bank_name: [
-          { required:true,message: '请选择银行卡', trigger: 'change' },
+          { required: true, message: '请选择银行卡', trigger: 'change' }
         ],
-        mobile: [
-          { required:true,message: '请输入手机号', trigger: 'blur' }
-        ],
-        code: [
-          { required:true,message: '请输入验证码', trigger: 'blur' }
-        ]
+        mobile: [{ required: true, message: '请输入手机号', trigger: 'blur' }],
+        code: [{ required: true, message: '请输入验证码', trigger: 'blur' }]
       },
       bankList: [],
       uid: localStorage.getItem('uid'),
@@ -145,16 +141,16 @@ export default {
       canClick: false
     }
   },
-  created () {
+  created() {
     this.getList()
   },
   methods: {
-    getList () {
+    getList() {
       getBankList({}).then(res => {
         this.bankList = res.data
       })
     },
-    sendCode () {
+    sendCode() {
       if (!this.formMember.mobile) {
         return this.$message.warning('手机号不能为空')
       }
@@ -163,8 +159,8 @@ export default {
         this.formMember.token = res.data.token
       })
     },
-    countDown () {
-      if (!this.canClick) return  //改动的是这两行代码
+    countDown() {
+      if (!this.canClick) return //改动的是这两行代码
       this.canClick = false
       this.content = this.totalTime + 's后重发'
       let clock = window.setInterval(() => {
@@ -174,15 +170,15 @@ export default {
           window.clearInterval(clock)
           this.content = '重新发送验证码'
           this.totalTime = 60
-          this.canClick = true  //这里重新开启
+          this.canClick = true //这里重新开启
         }
       }, 1000)
     },
-    handleClose () {
+    handleClose() {
       this.$emit('handleClose')
     },
-    submitForm () {
-      this.$refs['formMember'].validate((valid) => {
+    submitForm() {
+      this.$refs['formMember'].validate(valid => {
         if (valid) {
           this.$emit('submitForm', this.formMember)
         } else {

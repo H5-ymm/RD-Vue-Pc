@@ -1,105 +1,129 @@
 .salary-rebate {
+
   // padding-bottom: 20px;
   .width500 {
     width: 500px;
   }
+
   .width700 {
     width: 700px;
   }
+
   .width110 {
     width: 110px;
     margin: 0 20px;
   }
+
   .reward_type {
     margin-bottom: 10px;
+
     .width160 {
       .text-input {
-        &.el-input-group--prepend{ 
+        &.el-input-group--prepend {
           .el-input__inner {
-            width: 100%!important;
+            width: 100% !important;
           }
         }
       }
     }
   }
+
   .el-form-item {
     .error {
       top: 0;
+
       &.reward-error {
         width: 300px;
         left: 360px;
         top: -10px;
+
         ul {
-          margin-left:5px;
-          font-size:12px;
+          margin-left: 5px;
+          font-size: 12px;
           line-height: 20px;
         }
       }
     }
   }
+
   .el-scrollbar__wrap {
     width: 180px;
+
     .text-input {
       overflow: hidden;
       border: none;
       padding: 0 0 0 20px;
     }
   }
+
   .duration_time {
     margin-top: 20px;
   }
 }
+
 .width160 {
-  width: 160px!important;
+  width: 160px !important;
   margin-right: 30px;
-  &.el-select  {
-    >.el-input{
-      width: 160px!important;
+
+  &.el-select {
+    >.el-input {
+      width: 160px !important;
       margin-right: 0;
     }
   }
+
   .moneyType {
     color: #333;
   }
-  .el-input-group__append,.el-input-group__prepend {   
-    border:none;
+
+  .el-input-group__append,
+  .el-input-group__prepend {
+    border: none;
     border-radius: 0;
     background: none;
     padding: 0;
-    background-color:none;
+    background-color: none;
   }
 }
+
 .text-input {
   padding: 0 10px;
   box-sizing: border-box;
   border: 1px solid #eee;
   height: 38px;
+
   .el-input__inner {
-    padding: 0 ;
-    height: 37px!important;
-    line-height: 37px!important;
+    padding: 0;
+    padding: 18px 10px;
+    // height: 37px!important;
+    // line-height: 37px!important;
     text-align: center;
-    border: none!important;
+    border: none !important;
   }
 }
+
 .width160 {
   .text-input {
     border: none;
     border-bottom: 1px solid #eee;
+
     .el-input__inner {
-      width: 160px!important;
+      width: 160px !important;
     }
   }
+
   &.money_type {
     .el-input__inner {
-      width: 85px!important;
+      width: 85px !important;
     }
   }
+
   &.reward-input {
     margin-right: 0;
+
     .el-input-group.text-input {
       .el-input__inner {
-        width:60px!important;
+        width: 60px !important;
       }
     }
   }

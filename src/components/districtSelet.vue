@@ -11,7 +11,7 @@ export default {
     canAll: { type: Array, default: _ => [true, true, true] },
     address: { type: Array, default: _ => [] }
   },
-  data () {
+  data() {
     return {
       options: [],
       districtList: [],
@@ -26,85 +26,80 @@ export default {
       list1: []
     }
   },
-  created () {
+  created() {
     if (!this.address.length) {
       this.districtList = []
       this.getRegion([])
-    }
-    else {
+    } else {
       this.getRegion(this.address)
-      this.districtList = this.address.map(item => { return item + '' })
+      this.districtList = this.address.map(item => {
+        return item + ''
+      })
     }
   },
   watch: {
     address: {
-      handler (val, oldVal) {
-        console.log(val)
+      handler(val, oldVal) {
         if (val.length) {
           this.getRegion(val)
           setTimeout(() => {
-            this.districtList = this.address.map(item => { return item + '' })
+            this.districtList = this.address.map(item => {
+              return item + ''
+            })
           }, 1000)
-          // this.getRegion(val)
-          // this.districtList = this.address.map(item => { return item + '' })
-        }
-        else {
+        } else {
           this.getRegion([])
           this.districtList = []
         }
       },
-      deep: true  // 可以深度检测到 person 对象的属性值的变化
+      deep: true // 可以深度检测到 person 对象的属性值的变化
     }
   },
   methods: {
-    handleItemChange (val) {
+    handleItemChange(val) {
       this.getCityList(val)
     },
-    getProlist (list) {
+    getProlist(list) {
       return list.map(item => {
-        let obj =
-          {
-            code: item.provinceid,
-            name: item.province,
-            children: []
-          }
+        let obj = {
+          code: item.provinceid,
+          name: item.province,
+          children: []
+        }
         return obj
       })
     },
-    getProlist1 (list) {
+    getProlist1(list) {
       return list.map(item => {
-        let obj =
-          {
-            code: item.code,
-            name: item.name,
-            children: []
-          }
+        let obj = {
+          code: item.code,
+          name: item.name,
+          children: []
+        }
         return obj
       })
     },
-    getList (list) {
+    getList(list) {
       return list.map(item => {
-        let obj =
-          {
-            code: item.code,
-            name: item.name
-          }
+        let obj = {
+          code: item.code,
+          name: item.name
+        }
         return obj
       })
     },
-    getRegion (value) {
+    getRegion(value) {
       getProvincesList().then(res => {
         let arr = this.getProlist(res.data)
         this.options = arr
         this.getCityList(value)
       })
     },
-    getCityList (value) {
+    getCityList(value) {
       let code = ''
       if (!value.length) {
         code = '110000'
-      }
-      else {
+      } else {
         code = value[0]
       }
       getCitysList({ code }).then(res => {
@@ -112,8 +107,7 @@ export default {
         if (!this.disabled) {
           arr = this.getProlist1(res.data)
           this.getAreaList(value)
-        }
-        else {
+        } else {
           arr = this.getList(res.data)
         }
         this.options.forEach(item => {
@@ -124,12 +118,11 @@ export default {
         })
       })
     },
-    getAreaList (value) {
+    getAreaList(value) {
       let code = ''
       if (!value[1]) {
         code = '110100'
-      }
-      else {
+      } else {
         code = value[1]
       }
       getAreasList({ code }).then(res => {
@@ -150,7 +143,7 @@ export default {
         })
       })
     },
-    changeData (val) {
+    changeData(val) {
       if (this.arr.length) {
         this.arr.forEach(item => {
           if (val[2] && item.code == val[2]) {
@@ -170,7 +163,7 @@ export default {
 <style scoped>
 .cascader {
   display: block;
-  width: 100%!important;
+  width: 100% !important;
 }
 </style>
 

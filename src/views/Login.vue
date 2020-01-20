@@ -2,7 +2,6 @@
 <style lang="scss">
 @import '@/assets/css/login.scss';
 </style>
-
 <template>
   <el-container class="loads register-view">
     <el-header class="header x-flex-around">
@@ -206,7 +205,6 @@ export default {
               // }
             })
             .catch(error => {
-              console.log(error)
               if (error.status.code == 3010) {
                 this.isShowError = true
                 this.dialogVisible = false

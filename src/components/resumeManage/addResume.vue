@@ -28,7 +28,7 @@
         </el-form-item>
         <el-form-item label="意向工资：">
           <el-select v-model="formMember.money" class="width300" placeholder="请选择意向工资">
-            <el-option :label="item.label" :value="item.value" v-for="(item,index) in moneyTypeList" :key="index"></el-option>
+            <el-option :label="item" :value="key" v-for="(item,key) in moneyArray" :key="key"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="跟进时间：">
@@ -180,19 +180,44 @@ export default {
       resumeId: '',
       resumeInfo: {},
       trackList: [],
-      timeList: []
+      timeList: [],
+      moneyArray: {}
     }
   },
   created() {
     // 初始化查询标签数据
     this.getList(this.formMember)
+    let params = 'resume_intention_salary'
+    this.getData(params)
   },
   methods: {
     getList(params) {
-      getResumeList2(params).then(res => {
-        this.tableData = res.data.data
-        this.total = res.data.count
-      })
+      getResumeList2(params)
+        .then(res => {
+          this.tableData = res.data.data
+          this.total = res.data.count
+        })
+        .catch(error => {
+          if (error) {
+            this.$message.error(error.status.remind)
+          }
+        })
+    },
+    getData(filed) {
+      getConstant({ filed })
+        .then(res => {
+          this.moneyArray = res.data.resume_intention_salary
+        })
+        .catch(error => {
+          if (error) {
+            this.$message.error(error.status.remind)
+          }
+        })
+        .catch(error => {
+          if (error) {
+            this.$message.error(error.status.remind)
+          }
+        })
     },
     // 下载模板
     download() {
@@ -274,7 +299,9 @@ export default {
           this.getList(this.formMember)
         })
         .catch(error => {
-          this.$message.error(error.status.remind)
+          if (error) {
+            this.$message.error(error.status.remind)
+          }
         })
     },
     handleSelectionChange(val) {
@@ -302,7 +329,9 @@ export default {
           }
         })
         .catch(error => {
-          this.$message.error(error.status.remind)
+          if (error) {
+            this.$message.error(error.status.remind)
+          }
         })
     },
     submitForm(val) {
@@ -321,7 +350,9 @@ export default {
             }
           })
           .catch(error => {
-            this.$message.error(error.status.remind)
+            if (error) {
+              this.$message.error(error.status.remind)
+            }
           })
       }
     },

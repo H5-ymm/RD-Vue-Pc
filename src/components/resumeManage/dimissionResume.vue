@@ -28,7 +28,7 @@
         </el-form-item>
         <el-form-item label="意向工资：">
           <el-select v-model="formMember.money" class="width300" placeholder="请选择意向工资">
-            <el-option :label="item.label" :value="item.value" v-for="(item,index) in moneyTypeList" :key="index"></el-option>
+            <el-option :label="item" :value="key" v-for="(item,key) in moneyArray" :key="key"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="跟进时间：">
@@ -96,16 +96,12 @@
 </template>
 <script>
 import { quitResumeList, quitUser, exportDelResumeList } from '@/api/resume'
-import {
-  moneyTypeList,
-  rewardTypeList,
-  followStatusList
-} from '../../base/base'
+import { moneyTypeList, rewardTypeList, followStatusList } from '@/base/base'
 import followUpRecord from './followUpRecord'
 import confirmDialog from '../common/confirmDialog'
 import districtSelet from '../districtSelet'
 import viewResume from './viewResume'
-import { getConstant } from '../../api/dictionary'
+import { getConstant } from '@/api/dictionary'
 export default {
   components: {
     viewResume,
@@ -149,12 +145,15 @@ export default {
       },
       total: 0,
       resumeId: '',
-      timeList: []
+      timeList: [],
+      moneyArray: {}
     }
   },
   created() {
     // 初始化查询标签数据
     this.getList(this.formMember)
+    let params = 'resume_intention_salary'
+    this.getData(params)
   },
   methods: {
     getList(params) {
@@ -162,6 +161,17 @@ export default {
         this.tableData = res.data.data
         this.total = res.data.count
       })
+    },
+    getData(filed) {
+      getConstant({ filed })
+        .then(res => {
+          this.moneyArray = res.data.resume_intention_salary
+        })
+        .catch(error => {
+          if (error) {
+            this.$message.error(error.status.remind)
+          }
+        })
     },
     changeDate(val) {
       this.formMember.beginTime = val ? val[0] : ''

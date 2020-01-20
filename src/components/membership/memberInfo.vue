@@ -261,16 +261,15 @@ export default {
         width: 90%;
         margin: 10px auto;
         .el-form-item {
-          margin-bottom: 10px;
+          margin-bottom: 20px;
         }
         .el-input__inner {
           width: 300px !important;
-          height: 38px;
-          border-radius: 0;
+          padding: 19px 10px;
         }
         .el-textarea {
           width: 300px !important;
-          border-radius: 0;
+          border-radius: 3px;
           height: 80px;
         }
         .el-form-item__content {
@@ -284,7 +283,7 @@ export default {
         .el-radio.is-bordered {
           height: 38px;
           width: 145px;
-          border-radius: 0;
+          border-radius: 2px;
           line-height: 38px;
           padding: 0;
           margin-right: 0;

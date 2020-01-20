@@ -32,12 +32,7 @@
         margin: 10px auto;
         padding: 0 16px;
         .el-form-item {
-          margin-bottom: 10px;
-        }
-        .el-input__inner {
-          height: 38px;
-          line-height: 38px;
-          border-radius: 3px;
+          margin-bottom: 20px;
         }
         .el-textarea {
           border-radius: 3px;
@@ -67,9 +62,6 @@
             margin-right: 0;
           }
         }
-      }
-      .el-form-item__error {
-        top: -50%;
       }
     }
   }

@@ -69,7 +69,7 @@ export default {
     personalModal
   },
   props: ['formJob', 'tabIndex'],
-  data () {
+  data() {
     return {
       dialogTableVisible: false,
       formMember: {
@@ -84,22 +84,25 @@ export default {
       index: 2
     }
   },
-  created () {
-  },
+  created() {},
   methods: {
-    selectPerson () {
+    selectPerson() {
       let uid = localStorage.getItem('uid')
-      getTeamManage({ uid }).then(res => {
-        this.personalList = res.data
-        this.dialogTableVisible = true
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+      getTeamManage({ uid })
+        .then(res => {
+          this.personalList = res.data
+          this.dialogTableVisible = true
+        })
+        .catch(error => {
+          this.$message.error(error.status.remind)
+        })
     },
-    changeType (e) {
-      e === this.formMember.job_type ? this.formMember.job_type = '' : this.formMember.job_type = e
+    changeType(e) {
+      e === this.formMember.job_type
+        ? (this.formMember.job_type = '')
+        : (this.formMember.job_type = e)
     },
-    handleOk (val) {
+    handleOk(val) {
       this.list = val
       let arr = val.map(item => {
         return item.uid
@@ -107,7 +110,7 @@ export default {
       this.formMember.assign_uids = arr.join(',')
       this.dialogTableVisible = false
     },
-    submitForm () {
+    submitForm() {
       if (this.formMember.is_assign == 1 && !this.list.length) {
         return this.$message.warning('请选择指定人')
       }
@@ -121,8 +124,8 @@ export default {
 }
 </script>
 <style lang="scss">
-.job-detail-view{
-  border-radius:10px;
+.job-detail-view {
+  border-radius: 10px;
   background: #fff;
   &.reward-rule-row {
     .job-detail-row {
@@ -131,91 +134,83 @@ export default {
       text-align: center;
       color: #333333;
       padding: 40px 0 10px;
-      .el-form-item{
+      .el-form-item {
         display: block;
       }
       .width406 {
         width: 406px;
       }
-      .width180{
+      .width180 {
         width: 180px;
       }
       .line {
         margin: 0 10px;
-        color: #BEBEBE;
+        color: #bebebe;
       }
       .resume-col3 {
         width: 100%;
         padding-top: 10px;
         margin: 0 auto;
-       .demo-form-inline {
+        .demo-form-inline {
           width: 95%;
           margin: 10px auto;
           .el-form-item {
-            margin-bottom: 10px;
-          }
-          .el-input__inner{
-            height:38px;
-            line-height:38px;
-            border-radius:3px;
+            margin-bottom: 20px;
           }
         }
       }
     }
-    .resume-card {  
-     .resume-card-row {
-       margin: 0;
-      .resume-card-item {
-        width: 100%;
-        text-align: left;
-        &:nth-child(2) {
-          .el-form-item {
-            margin-right:0;
+    .resume-card {
+      .resume-card-row {
+        margin: 0;
+        .resume-card-item {
+          width: 100%;
+          text-align: left;
+          &:nth-child(2) {
+            .el-form-item {
+              margin-right: 0;
+            }
+          }
+          .el-radio.is-bordered {
+            height: 38px;
+            width: 198.5px;
+            border-radius: 3px;
+            line-height: 38px;
+            padding: 0;
+            border: 1px solid #eee;
+            margin-right: 0;
+            & + .el-radio.is-bordered {
+              margin-left: 10px;
+            }
+            &.width126 {
+              width: 128.5px;
+            }
+          }
+          .el-radio__input {
+            float: right;
+            margin-top: 12px;
+            margin-right: 10px;
           }
         }
-        .el-radio.is-bordered {
-          height: 38px;
-          width: 198.5px;
-          border-radius: 3px;
-          line-height: 38px;
-          padding:0;
-          border: 1px solid #eee;
-          margin-right: 0;
-          &+.el-radio.is-bordered {
-            margin-left: 10px;
-          }
-          &.width126 {
-            width: 128.5px;
-          }
-        }
-        .el-radio__input {
-          float: right;
-          margin-top: 12px;
-          margin-right: 10px;
-        }
-      }
-      .el-form-item__error{
-        top:-50%;
-      }
-    }  
-  }
-  .select-people-box {
-    border: 1px solid #eee;
-    padding: 0 10px;
-    margin: 10px 0 ;
-    width: 385px;
-    border-radius: 3px;
-    .select-people-text {
-      color: #999999;
-      span {
-        margin-right: 5px;
       }
     }
+    .select-people-box {
+      border: 1px solid #eee;
+      padding: 0 10px;
+      margin: 10px 0;
+      width: 385px;
+      border-radius: 3px;
+      .select-people-text {
+        color: #999999;
+        span {
+          margin-right: 5px;
+        }
+      }
+    }
+    .resume-footer-btn {
+      margin-left: 126px;
+      padding-bottom: 32px;
+    }
   }
-  .resume-footer-btn {
-    margin-left: 126px;
-    padding-bottom: 32px;
-  }
- }
 }
 </style>

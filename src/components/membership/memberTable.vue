@@ -66,7 +66,7 @@ export default {
     }
   },
   props: ['tableData'],
-  data () {
+  data() {
     return {
       memberInfo: {},
       teamId: '',
@@ -76,69 +76,67 @@ export default {
     }
   },
   methods: {
-    addMember () {
+    addMember() {
       this.$emit('addMember')
     },
-    handleEdit (val) {
+    handleEdit(val) {
       if (!val) {
         return this.$message.warning('请选择组员')
       }
       this.$emit('handleEdit', val)
     },
-    handleView (val) {
+    handleView(val) {
       this.$emit('handleView', val)
     },
-    handleSelectionChange (val) {
-      this.multipleSelection = val;
+    handleSelectionChange(val) {
+      this.multipleSelection = val
       let arr = val.map(item => {
         return item.uid
       })
       this.uid = arr.join(',')
-      this.$emit('handleSelectionChange', this.multipleSelection.length)
     },
-    handleDel (val) {
+    handleDel(val) {
       if (!val) {
         return this.$message.warning('请选择组员')
       }
       this.$emit('handleDel', val)
     },
-    dismissTeam () {
+    dismissTeam() {
       this.$emit('dismissTeam')
     }
   }
 }
 </script>
 <style lang="scss">
-  .table {
-    border-top: 1px solid #eee;
-    border-bottom: 1px solid #eee;
-    padding: 10px 0;
-    height: 76%;
-    color: #333;
-    .status {
-      position: relative;
-      margin-left: 10px;   
-      &::before{
-        position: absolute;
-        content: "";
-        width:6px;
-        height: 6px;
-        border-radius: 50%;
-        top: 7px;
-        left: -20px;
-        background: #FF0000;
+.table {
+  border-top: 1px solid #eee;
+  border-bottom: 1px solid #eee;
+  padding: 10px 0;
+  height: 76%;
+  color: #333;
+  .status {
+    position: relative;
+    margin-left: 10px;
+    &::before {
+      position: absolute;
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      top: 7px;
+      left: -20px;
+      background: #ff0000;
+    }
+    &.active-status {
+      &::before {
+        background: #71d875;
       }
-      &.active-status{
-        &::before{
-          background: #71D875
-        }
-      }
-      &.active-status1{
-        &::before{
-          background: #1890FF;
-        }
+    }
+    &.active-status1 {
+      &::before {
+        background: #1890ff;
       }
     }
   }
-  
+}
 </style>

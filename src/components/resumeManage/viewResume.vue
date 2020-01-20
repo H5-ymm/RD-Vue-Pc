@@ -1,3 +1,119 @@
+<style lang="scss">
+.member-dialog {
+  box-shadow: 0px 1px 43px 0px rgba(51, 51, 51, 0.3);
+  border-radius: 5px;
+  .el-dialog__body,
+  .el-dialog__header {
+    padding: 0;
+  }
+  .member-row {
+    width: 100%;
+    margin: 0 auto;
+    text-align: center;
+    color: #333333;
+    padding: 0 0 10px;
+    position: relative;
+    .cancel-icon {
+      position: absolute;
+      top: 5px;
+      right: 0;
+    }
+    .member-col1 {
+      background: #ebf4fb;
+      padding: 21px 0 20px;
+    }
+    .member-col2 {
+      line-height: 30px;
+      margin: 10px auto;
+      width: 65%;
+      p {
+        &:nth-of-type(1) {
+          width: 100px;
+          text-align: right;
+          color: #6a6a6a;
+        }
+        &:nth-of-type(2) {
+          flex: 1;
+          text-align: left;
+          margin-left: 30px;
+        }
+      }
+    }
+    .resume-col3 {
+      width: 100%;
+      border-top: 1px solid #eee;
+      padding-top: 10px;
+      margin: 0 auto;
+      .demo-form-inline {
+        width: 82%;
+        margin: 10px auto;
+      }
+    }
+  }
+  .resume-info-card {
+    .resume-card {
+      margin-bottom: 20px;
+      .resume-col1 {
+        color: #6a6a6a;
+        width: 90px;
+        text-align: right;
+        margin-right: 20px;
+      }
+      p {
+        &:nth-of-type(2) {
+          flex: 1;
+          line-height: 25px;
+        }
+      }
+      .resume-card-row {
+        margin: 10px 0;
+        .resume-card-item {
+          width: 100%;
+        }
+      }
+    }
+  }
+  .resume-card {
+    .resume-main-title {
+      border-bottom: 1px solid #eee;
+      padding-bottom: 10px;
+      > img {
+        width: 20px;
+        margin-right: 10px;
+      }
+    }
+    .resume-card-row {
+      margin: 20px 0 0 -15px;
+      .resume-card-item {
+        width: 50%;
+        text-align: left;
+        &.view-resume-item {
+          line-height: 30px;
+          color: #333;
+        }
+        &:nth-child(2) {
+          .el-form-item {
+            padding-left: 55px;
+            margin-right: 0;
+          }
+        }
+      }
+      .resume-address {
+        position: absolute;
+        top: 0;
+        right: -310px;
+      }
+    }
+  }
+  .resume-footer-btn {
+    margin-right: 20px;
+    .el-button {
+      border-radius: 3px;
+      margin-right: 20px;
+    }
+  }
+}
+</style>
 <template>
   <el-dialog width="500px" top="8vh" :visible="dialogTableVisible" class="member-dialog" :show-close="false">
     <div class="member-row">
@@ -109,7 +225,7 @@ export default {
     districtSelet
   },
   props: ['dialogTableVisible', 'resumeId', 'resumeInfo'],
-  data () {
+  data() {
     return {
       formMember: {
         is_five_risks: 0,
@@ -133,7 +249,7 @@ export default {
       entryTime: []
     }
   },
-  created () {
+  created() {
     let params = 'edu_type,money_array'
     for (let i = 16; i < 46; i++) {
       this.ageList.push(i)
@@ -141,15 +257,14 @@ export default {
     this.getList(params)
   },
   watch: {
-    resumeId (val, oldVal) {
-      console.log(oldVal)
+    resumeId(val, oldVal) {
       if (val && val != oldVal) {
         this.getInfo()
       }
     }
   },
   methods: {
-    getInfo () {
+    getInfo() {
       let params = {
         uid: localStorage.getItem('uid'),
         resumeId: this.resumeId
@@ -160,29 +275,29 @@ export default {
         this.entryTime[1] = res.data.entry_endtime
       })
     },
-    getList (filed) {
+    getList(filed) {
       getConstant({ filed }).then(res => {
         this.edu_type = res.data.edu_type
         this.moneyArray = res.data.money_array
       })
     },
-    changeDate (val) {
+    changeDate(val) {
       this.formMember.entry_begintime = val[0]
       this.formMember.entry_endtime = val[1]
     },
-    change (val) {
+    change(val) {
       this.formMember.provinceid = val[0]
       this.formMember.cityid = val[1]
     },
-    changeExpect (val) {
+    changeExpect(val) {
       this.formMember.expect_provindeid = val[0]
       this.formMember.expect_cityid = val[1]
     },
-    handleClose () {
+    handleClose() {
       this.$emit('handleClose')
     },
-    submitForm () {
-      this.$refs['formMember'].validate((valid) => {
+    submitForm() {
+      this.$refs['formMember'].validate(valid => {
         if (valid) {
           this.$emit('submitForm', this.formMember)
         } else {
@@ -193,123 +308,3 @@ export default {
   }
 }
 </script>
-<style lang="scss">
-.member-dialog {
-  box-shadow:0px 1px 43px 0px rgba(51,51,51,0.3);
-  border-radius:5px;
-  .el-dialog__body,.el-dialog__header {
-    padding: 0;
-  }
- .member-row {
-    width: 100%;
-    margin: 0 auto;
-    text-align: center;
-    color: #333333;
-    padding: 0 0 10px;
-    position: relative;
-    .cancel-icon {
-      position: absolute;
-      top: 5px;
-      right: 0;
-    }
-    .member-col1 {
-    background:#EBF4FB;
-    padding: 21px 0 20px;
-  }
-    .member-col2 {
-      line-height: 30px;
-      margin: 10px auto;
-      width: 65%;
-      p {
-        &:nth-of-type(1) {
-          width: 100px;
-          text-align: right;
-          color: #6A6A6A;
-        }
-        &:nth-of-type(2) {
-          flex: 1;
-          text-align: left;
-          margin-left: 30px;
-        }
-      }
-      
-    }
-    .resume-col3 {
-      width: 100%;
-      border-top: 1px solid #eee;
-      padding-top: 10px;
-      margin: 0 auto;
-      .demo-form-inline {
-        width: 82%;
-        margin: 10px auto;
-      }
-    }
-  }
-  .resume-info-card {
-    .resume-card {
-      margin-bottom: 20px;
-      .resume-col1 {
-        color: #6A6A6A;
-        width: 90px;
-        text-align: right;
-        margin-right: 20px;
-      }
-      p {
-        &:nth-of-type(2) {
-          flex: 1;
-          line-height: 25px
-        }
-      }
-      .resume-card-row {
-        margin: 10px 0;
-         .resume-card-item {
-            width: 100%;
-         }
-      }
-    }
-  }
-  .resume-card {   
-    .resume-main-title {
-      border-bottom: 1px solid #eee;
-      padding-bottom: 10px;
-      >img {
-        width: 20px;
-        margin-right: 10px;
-      }
-    }
-    .resume-card-row {
-      margin: 20px 0 0 -15px;
-       .resume-card-item {
-        width: 50%;
-        text-align: left;
-        &.view-resume-item {
-          line-height: 30px;
-          // margin-left: 20px;
-          color: #333;
-        }
-        &:nth-child(2) {
-          .el-form-item {
-            padding-left: 55px;
-            margin-right:0;
-          }
-        } 
-      }
-      .resume-address {
-        position: absolute;
-        top: 0;
-        right: -310px;
-      }
-      .el-form-item__error{
-        top:-50%;
-      }
-    }  
-  }
-  .resume-footer-btn {
-    margin-right: 20px;
-    .el-button {
-      border-radius: 3px;
-      margin-right: 20px;
-    }
-  }
-}
-</style>

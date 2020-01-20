@@ -224,7 +224,9 @@ export default {
           this.personList = res.data || []
         })
         .catch(error => {
-          this.$message.error(error.status.remind)
+          if (error) {
+            this.$message.error(error.status.remind)
+          }
         })
     },
     getKey(index) {
@@ -262,7 +264,9 @@ export default {
           }
         })
         .catch(error => {
-          this.$message.error(error.status.remind)
+          if (error) {
+            this.$message.error(error.status.remind)
+          }
         })
     },
     getArray(obj) {

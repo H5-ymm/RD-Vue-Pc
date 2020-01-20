@@ -77,7 +77,7 @@ import { mapState, mapActions, mapMutations } from 'vuex'
 export default {
   name: 'team',
   inject: ['reload'],
-  data () {
+  data() {
     return {
       breadcrumb: [],
       type: '',
@@ -87,8 +87,8 @@ export default {
       userInfo: {},
       uid: '',
       departName: '',
-      userPosition:'',
-      transitionName: 'slide-left'//默认动画
+      userPosition: '',
+      transitionName: 'slide-left' //默认动画
     }
   },
   components: {
@@ -96,12 +96,12 @@ export default {
     Breadcrumb,
     companyAside
   },
-  computed:{
+  computed: {
     ...mapState({
-     teamInfo: state => state.teamInfo
+      teamInfo: state => state.teamInfo
     })
   },
-  created () {
+  created() {
     // type 1 企业
     this.type = localStorage.getItem('userType')
     this.uid = localStorage.getItem('uid')
@@ -109,14 +109,13 @@ export default {
     this.departName = localStorage.getItem('departName')
     if (this.type == 1) {
       this.aside = 'companyAside'
-      this.height = "88px"
+      this.height = '88px'
       if (this.uid) {
         this.getCompanyInfo(this.uid)
       }
-    }
-    else {
+    } else {
       this.aside = 'homeAside'
-      this.height = "74px"
+      this.height = '74px'
       if (this.uid) {
         this.getUserAll()
         this.getInfo(this.uid)
@@ -125,25 +124,22 @@ export default {
     if (sessionStorage.getItem('menus')) {
       this.breadcrumb = JSON.parse(sessionStorage.getItem('menus'))
     }
-    this.getUserAll()
-    console.log( localStorage.getItem('userPosition'))
   },
   watch: {
-    $route (to, from) {
+    $route(to, from) {
       if (to.query.userType) {
         this.userPosition = localStorage.getItem('userPosition')
         this.departName = localStorage.getItem('departName')
         this.type = to.query.userType
         if (this.type == 1) {
           this.aside = 'companyAside'
-          this.height = "88px"
+          this.height = '88px'
           if (this.uid) {
             this.getCompanyInfo(this.uid)
           }
-        }
-        else {
+        } else {
           this.aside = 'homeAside'
-          this.height = "74px"
+          this.height = '74px'
           if (this.uid) {
             this.getUserAll()
             this.getInfo(this.uid)
@@ -153,57 +149,58 @@ export default {
     }
   },
   methods: {
-    getUserAll () {
-      this.$store.dispatch('getUserAllInfo').then((res) => {
+    getUserAll() {
+      this.$store.dispatch('getUserAllInfo').then(res => {
         this.$store.commit('getUserInfo', res.data)
         this.userInfo = res.data
       })
     },
     getImgUrl,
-    getInfo (uid) {
+    getInfo(uid) {
       getTeamInfo({ uid }).then(res => {
         this.baseInfo = res.data || null
-        if (res.data&&res.data.log) {
+        if (res.data && res.data.log) {
           this.baseInfo.head_img = getImgUrl(res.data.log)
-        }    
+        }
         sessionStorage.setItem('baseInfo', JSON.stringify(this.baseInfo))
       })
     },
-    getCompanyInfo (uid) {
+    getCompanyInfo(uid) {
       getCompanyDetail({ uid }).then(res => {
         this.baseInfo = res.data
+        sessionStorage.setItem('baseInfo', JSON.stringify(this.baseInfo))
         if (res.data && res.data.logo_url) {
           this.baseInfo.logo_url = res.data.logo_url
         }
-        sessionStorage.setItem('baseInfo', JSON.stringify(this.baseInfo))
-        let userInfo = {
-          user_name: res.data.com_name,
-          mobile: res.data.link_phone,
-          head_img: res.data.logo_url
+        if (res.data) {
+          let userInfo = {
+            user_name: res.data.com_name,
+            mobile: res.data.link_phone,
+            head_img: res.data.logo_url
+          }
+          sessionStorage.setItem('userInfo', JSON.stringify(userInfo))
         }
-        sessionStorage.setItem('userInfo', JSON.stringify(userInfo))
       })
     },
-    handleCommand (val) {
+    handleCommand(val) {
       if (val == '/login') {
         // let uid = this.$store.state.uid ? this.$store.state.uid : localStorage.getItem('uid')
-        this.$store.dispatch('logoutUser').then((res) => {
+        this.$store.dispatch('logoutUser').then(res => {
           this.reload()
           this.$message.success('退出登录成功')
           this.$router.replace(val)
         })
-      }
-      else {
+      } else {
         this.$router.push(val)
       }
     }
-  },
+  }
 }
 </script>
 
 <style scoped lang="scss">
 @import '@/assets/css/common.scss';
-.el-container.is-vertical{
+.el-container.is-vertical {
   height: 100vh;
 }
 // .slide-right-enter-active,
@@ -214,27 +211,27 @@ export default {
 //   transition: all 500ms;
 //   position: absolute;
 // }
- 
+
 // .slide-right-enter {
 //   opacity: 0;
 //   transform: translate3d(-100%, 0, 0);
 // }
- 
+
 // .slide-right-leave-active {
 //   opacity: 0;
 //   transform: translate3d(100%, 0, 0);
 // }
- 
+
 // .slide-left-enter {
 //   opacity: 0;
 //   transform: translate3d(100%, 0, 0);
 // }
- 
+
 // .slide-left-leave-active {
 //   opacity: 0;
 //   transform: translate3d(-100%, 0, 0);
 // }
-.team-main-view{
+.team-main-view {
   width: 100vw;
   height: 100vh;
   overflow: hidden;
@@ -248,19 +245,19 @@ export default {
   .team-header {
     padding: 0 30px;
     height: 40px;
-    &.comany-team-header{
-       height: 50px;
+    &.comany-team-header {
+      height: 50px;
     }
   }
   .team-logo {
     width: 30px;
     height: 30px;
-    border-radius:3px;
+    border-radius: 3px;
     margin-right: 10px;
     &.no-logo {
       border: 1px solid #eee;
     }
-    &.user-logo{
+    &.user-logo {
       border-radius: 50%;
     }
   }
@@ -268,17 +265,17 @@ export default {
 .team .team-header {
   padding: 0 38px;
 }
-.team-aside{
+.team-aside {
   overflow: hidden;
 }
-.team-main{
+.team-main {
   height: 100vh;
   /* overflow: hidden; */
-  background: #F0F2F5;
+  background: #f0f2f5;
   padding: 10px 30px;
   box-sizing: border-box;
   &.comany-main-page {
-    padding: 0 ;
+    padding: 0;
   }
 }
 </style>

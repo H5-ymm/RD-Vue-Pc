@@ -25,7 +25,7 @@ import { mapState } from 'vuex'
 export default {
   name: 'Aside',
   props: ['userPosition'],
-  data () {
+  data() {
     return {
       menus: [
         {
@@ -118,8 +118,7 @@ export default {
             {
               title: '离职简历',
               url: '/dimissionResume'
-            }
-            ,
+            },
             {
               title: '放弃简历',
               url: '/waiverOfResume?view=1'
@@ -127,7 +126,7 @@ export default {
             {
               title: '已删除简历',
               url: '/waiverOfResume?view=2'
-            },
+            }
           ]
         },
         {
@@ -191,14 +190,14 @@ export default {
         url: '/userRecommend'
       },
       job: [
-         {
-            title: '已发布职位',
-            url: '/publishJobList?view=2'
-          },
-          {
-            title: '已推荐简历',
-            url: '/putList'
-          }
+        {
+          title: '已发布职位',
+          url: '/publishJobList?view=2'
+        },
+        {
+          title: '已推荐简历',
+          url: '/putList'
+        }
       ],
       internalInvoiceRoot: [
         {
@@ -223,28 +222,14 @@ export default {
         }
       ],
       receiptRoot: [
-         {
-              title: '申请接单',
-              url: '/teamApplication'
-            },
-            {
-              title: '接单分配',
-              url: '/receiptTable'
-            },
-            {
-              title: '输送人才',
-              url: '/teamInterviewPersonnel'
-            },
-            {
-              title: '面试结果',
-              url: '/resumeResult'
-            },
-            {
-              title: '入职名单',
-              url: '/teamEntryList'
-            },
-      ],
-      receiptRoot2:[
+        {
+          title: '申请接单',
+          url: '/teamApplication'
+        },
+        {
+          title: '接单分配',
+          url: '/receiptTable'
+        },
         {
           title: '输送人才',
           url: '/teamInterviewPersonnel'
@@ -256,48 +241,60 @@ export default {
         {
           title: '入职名单',
           url: '/teamEntryList'
+        }
+      ],
+      receiptRoot2: [
+        {
+          title: '输送人才',
+          url: '/teamInterviewPersonnel'
         },
+        {
+          title: '面试结果',
+          url: '/resumeResult'
+        },
+        {
+          title: '入职名单',
+          url: '/teamEntryList'
+        }
       ],
       receiptRoot1: [
-          {
-            title: '接单分配',
-            url: '/receiptTable'
-          },
-          {
-            title: '输送人才',
-            url: '/teamInterviewPersonnel'
-          },
-          {
-            title: '面试结果',
-            url: '/resumeResult'
-          },
-          {
-            title: '入职名单',
-            url: '/teamEntryList'
-          },
+        {
+          title: '接单分配',
+          url: '/receiptTable'
+        },
+        {
+          title: '输送人才',
+          url: '/teamInterviewPersonnel'
+        },
+        {
+          title: '面试结果',
+          url: '/resumeResult'
+        },
+        {
+          title: '入职名单',
+          url: '/teamEntryList'
+        }
       ],
       title: '',
       url: '',
       userP: 0
     }
   },
-  created () {
-    this.userP =  this.userPosition
+  created() {
+    this.userP = this.userPosition
     let teamType = localStorage.getItem('teamType')
     let teamId = localStorage.getItem('uid')
-    if (this.userP == 1) {     
+    if (this.userP == 1) {
       if (teamType == 1) {
         this.root.submenu[0].url = `/teamCompanyForm?teamId=${teamId}&type=${teamType}`
-      }
-      else if (teamType == 2) {
+      } else if (teamType == 2) {
         this.root.submenu[0].url = `/personalForm?teamId=${teamId}&type=${teamType}`
-      }
-      else {
+      } else {
         this.root.submenu[0].url = `/teamSetting`
       }
       this.menus.splice(4, 0, this.root)
-      this.menus.forEach((item,index) =>{
-        if(item.title=='接单管理') {      
+      this.menus.forEach((item, index) => {
+        if (item.title == '接单管理') {
           this.menus[index].submenu = [...this.receiptRoot]
         }
         if (item.title == '内部发单') {
@@ -306,9 +303,9 @@ export default {
       })
     }
     if (this.userP == 2) {
-      this.menus.forEach((item,index) =>{
+      this.menus.forEach((item, index) => {
         if (item.title == '团队设置') {
-          this.menus.splice(index,1)
+          this.menus.splice(index, 1)
         }
         if (item.title == '接单管理') {
           this.menus[index].submenu = [...this.receiptRoot1]
@@ -319,38 +316,35 @@ export default {
       })
     }
     if (this.userP == 3) {
-      this.menus.forEach((item,index) =>{
+      this.menus.forEach((item, index) => {
         if (item.title == '团队设置') {
-          this.menus.splice(index,1)
+          this.menus.splice(index, 1)
         }
         if (item.title == '接单管理') {
           this.menus[index].submenu = [...this.receiptRoot2]
         }
         if (item.title == '内部发单') {
-          this.menus[index].submenu = [... this.job]
+          this.menus[index].submenu = [...this.job]
         }
       })
     }
   },
   watch: {
-    userPosition(val){
-      console.log(val+'改变')
+    userPosition(val) {
       this.userP = val
       let teamType = localStorage.getItem('teamType')
       let teamId = localStorage.getItem('uid')
       if (val == 1) {
         if (teamType == 1) {
           this.root.submenu[0].url = `/teamCompanyForm?teamId=${teamId}&type=${teamType}`
-        }
-        else if (teamType == 2) {
+        } else if (teamType == 2) {
           this.root.submenu[0].url = `/personalForm?teamId=${teamId}&type=${teamType}`
-        }
-        else {
+        } else {
           this.root.submenu[0].url = `/teamSetting`
         }
         this.menus.splice(4, 0, this.root)
-        this.menus.forEach((item,index) =>{
-          if(item.title=='接单管理') {      
+        this.menus.forEach((item, index) => {
+          if (item.title == '接单管理') {
             this.menus[index].submenu = [...this.receiptRoot]
           }
           if (item.title == '内部发单') {
@@ -359,9 +353,9 @@ export default {
         })
       }
       if (val == 2) {
-        this.menus.forEach((item,index) =>{
+        this.menus.forEach((item, index) => {
           if (item.title == '团队设置') {
-            this.menus.splice(index,1)
+            this.menus.splice(index, 1)
           }
           if (item.title == '接单管理') {
             this.menus[index].submenu = [...this.receiptRoot1]
@@ -372,9 +366,9 @@ export default {
         })
       }
       if (val == 3) {
-        this.menus.forEach((item,index) =>{
+        this.menus.forEach((item, index) => {
           if (item.title == '团队设置') {
-            this.menus.splice(index,1)
+            this.menus.splice(index, 1)
           }
           if (item.title == '接单管理') {
             this.menus[index].submenu = [...this.receiptRoot2]
@@ -385,14 +379,17 @@ export default {
         })
       }
     },
-    $route (to, from) {
-      console.log(to)
-      console.log(from)
+    $route(to, from) {
       if (to.path == '/commonTableList' && from.path == '/teamEntryList') {
         this.selectMenus(to.path, this.menus)
-        this.url = '/teamEntryList'
       }
       if (to.path == '/teamEntryList' && from.path == '/resumeResult') {
+        this.selectMenus(to.path, this.menus)
+      }
+      if (
+        to.path == '/resumeResult' &&
+        from.path == '/teamInterviewPersonnel'
+      ) {
         this.selectMenus(to.path, this.menus)
       }
       if (to.path == '/putList' && from.path == '/publishJobList') {
@@ -404,17 +401,16 @@ export default {
     }
   },
   methods: {
-    handleOpen (key, keyPath) {
-      console.log(key, keyPath);
+    handleOpen(key, keyPath) {
+      console.log(key, keyPath)
     },
-    selectMenus (key, keyPath) {
-      console.log(key)
+    selectMenus(key, keyPath) {
       this.url = key
       let arr = this.getMenusTitle(key, this.menus)
       sessionStorage.setItem('menusUrl', this.url)
       sessionStorage.setItem('menus', JSON.stringify(arr))
     },
-    getMenusTitle (url, arr) {
+    getMenusTitle(url, arr) {
       let title = ''
       let list = []
       arr.forEach(item => {
@@ -429,7 +425,7 @@ export default {
     }
   },
   computed: {
-    routerli () {
+    routerli() {
       // 对应路由
       // let pathStr = this.$route.path.split('/')
       return this.$route.path
@@ -448,11 +444,11 @@ export default {
   padding-right: 20px;
   font-size: 16px;
 }
-.el-submenu  .aside-icon {
+.el-submenu .aside-icon {
   width: 18px;
   margin-right: 10px;
 }
-.el-menu-vertical-demo{
+.el-menu-vertical-demo {
   border: 0px solid #ffffff;
   height: 100vh;
   overflow: auto;
@@ -463,22 +459,22 @@ export default {
 }
 .el-menu-item {
   background-color: rgba(0, 0, 0, 0.1) !important;
-  padding-left: 50px!important;
+  padding-left: 50px !important;
   box-sizing: border-box;
   margin-right: 30px;
 }
 .el-menu-item.is-active {
-  background:#1890FF!important;
-  border-right: 4px solid #1890FF;
-  color: #fff!important;
+  background: #1890ff !important;
+  border-right: 4px solid #1890ff;
+  color: #fff !important;
 }
-.names{
+.names {
   width: 100%;
   height: 60px;
   text-align: center;
   color: #fff;
-  background:#20222A;
-  height:46px;
+  background: #20222a;
+  height: 46px;
   line-height: 46px;
 }
 </style>

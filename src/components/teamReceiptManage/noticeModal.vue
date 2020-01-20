@@ -154,9 +154,6 @@ export default {
             width: 195px !important;
           }
         }
-        .el-input__inner {
-          border-radius: 3px;
-        }
       }
     }
   }

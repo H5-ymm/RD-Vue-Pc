@@ -1,3 +1,43 @@
+<style lang="scss">
+.member-dialog {
+  .member-row {
+    width: 100%;
+    margin: 0 auto;
+    text-align: center;
+    color: #333333;
+    padding: 0 0 10px;
+    position: relative;
+    .cancel-icon {
+      position: absolute;
+      top: 5px;
+      right: 0;
+    }
+    .member-col1 {
+      background: #ebf4fb;
+      padding: 18px 0 17px;
+    }
+    .member-col3 {
+      width: 82%;
+      border-top: 1px solid #eee;
+      padding-top: 10px;
+      margin: 0 auto;
+      .check-box {
+        text-align: left;
+      }
+    }
+  }
+  .dialog-footer {
+    margin-right: 6px;
+    padding: 0;
+    .el-button {
+      margin-right: 20px;
+      border-radius: 3px;
+    }
+  }
+}
+</style>
+
+
 <template>
   <el-dialog width="500px" :visible.sync="dialogTableVisible" class="member-dialog" :show-close="false">
     <div class="member-row">
@@ -30,36 +70,34 @@ export default {
     isShow: false,
     reason: { type: String, default: '' }
   },
-  data () {
+  data() {
     return {
       form: {
         reason: ''
       },
       checked: false,
       rules: {
-        reason: [
-          { message: '请输入理由', trigger: 'blur' },
-        ]
+        reason: [{ message: '请输入理由', trigger: 'blur' }]
       }
     }
   },
   watch: {
-    reason (val) {
+    reason(val) {
       if (val) {
         this.form.reason = val
       }
     }
   },
   methods: {
-    handleClose () {
+    handleClose() {
       this.$emit('handleClose')
     },
-    submit () {
+    submit() {
       if (this.reason) {
         this.$emit('handleClose')
         return false
       }
-      this.$refs['form'].validate((valid) => {
+      this.$refs['form'].validate(valid => {
         if (valid) {
           this.$emit('submit', this.form)
           // this.form.reason = ''
@@ -71,43 +109,4 @@ export default {
   }
 }
 </script>
-
-<style lang="scss">
-.member-dialog {
-  .member-row {
-    width: 100%;
-    margin: 0 auto;
-    text-align: center;
-    color: #333333;
-    padding: 0 0 10px;
-    position: relative;
-    .cancel-icon {
-      position: absolute;
-      top: 5px;
-      right: 0;
-    }
-     .member-col1 {
-      background: #EBF4FB;
-      padding: 18px 0 17px;
-    }
-    .member-col3 {
-      width: 82%;
-      border-top: 1px solid #eee;
-      padding-top: 10px;
-      margin: 0 auto;
-      .check-box {
-        text-align: left;
-      }
-    }
-  }
-  .dialog-footer {
-    margin-right: 6px;
-    padding: 0;
-    .el-button {
-      margin-right: 20px;
-      border-radius: 3px;
-    }
-  }
-}
-</style>
 

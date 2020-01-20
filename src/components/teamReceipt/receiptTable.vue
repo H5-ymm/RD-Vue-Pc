@@ -39,7 +39,7 @@
           <el-table-column label="岗位薪资" prop="money" align="center" width="150">
             <template slot-scope="scope">
               <div>
-                {{scope.row.money}}元/{{scope.row.money==1?'月':scope.row.money?'日':'时'}}
+                {{scope.row.money}}元/{{scope.row.money_type==1?'月':scope.row.money_type==2?'日':'时'}}
               </div>
             </template>
           </el-table-column>

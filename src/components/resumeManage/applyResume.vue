@@ -31,7 +31,7 @@
         </el-form-item>
         <el-form-item label="意向工资：" v-if="viewType!=3">
           <el-select v-model="formMember.money" class="width300" placeholder="请选择意向工资">
-            <el-option :label="item.label" :value="item.value" v-for="(item,index) in moneyTypeList" :key="index"></el-option>
+            <el-option :label="item" :value="key" v-for="(item,key) in moneyArray" :key="key"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item :label="labelTime+'：'">
@@ -138,7 +138,7 @@ import followUpRecord from './followUpRecord'
 import leadResumeModal from './leadResumeModal'
 import confirmDialog from '../common/confirmDialog'
 import districtSelet from '../districtSelet'
-import { getConstant } from '../../api/dictionary'
+import { getConstant } from '@/api/dictionary'
 export default {
   components: {
     viewResume,
@@ -198,8 +198,6 @@ export default {
         placeholder: '请输入放弃理由'
       },
       tableData: [],
-      currentPage: 1,
-      userType: 1,
       formMember: {
         uid: localStorage.getItem('uid'),
         limit: 10,
@@ -221,13 +219,16 @@ export default {
       isShow: true,
       viewType: 1,
       status: 0,
-      id: ''
+      id: '',
+      moneyArray: {}
     }
   },
   mounted() {
     // 初始化查询标签数据
     this.viewType = this.$route.query.view
     this.getList(this.formMember)
+    let params = 'resume_intention_salary'
+    this.getData(params)
   },
   watch: {
     $route(to, from) {
@@ -254,6 +255,17 @@ export default {
     }
   },
   methods: {
+    getData(filed) {
+      getConstant({ filed })
+        .then(res => {
+          this.moneyArray = res.data.resume_intention_salary
+        })
+        .catch(error => {
+          if (error) {
+            this.$message.error(error.status.remind)
+          }
+        })
+    },
     getList(params) {
       if (this.viewType == 1) {
         teamRecommendResumeList(params).then(res => {
@@ -300,7 +312,6 @@ export default {
       exportUserResume(uid)
     },
     sortChange(column) {
-      console.log(column)
       if (column.order == 'ascending') {
         this.formMember[column.prop] = 'asc'
       } else {
