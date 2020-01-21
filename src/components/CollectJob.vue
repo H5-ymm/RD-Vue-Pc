@@ -214,7 +214,9 @@ export default {
           }
         })
         .catch(error => {
-          this.$message.error(error.status.remind)
+          if (error) {
+            this.$message.warning(error.status.remind)
+          }
         })
     },
     handleCancle(val) {
@@ -232,7 +234,9 @@ export default {
           }
         })
         .catch(error => {
-          this.$message.error(error.status.remind)
+          if (error) {
+            this.$message.warning(error.status.remind)
+          }
         })
     },
     handleApply(val) {
@@ -248,7 +252,9 @@ export default {
           this.getList(this.formMember)
         })
         .catch(error => {
-          this.$message.error(error.status.remind)
+          if (error) {
+            this.$message.warning(error.status.remind)
+          }
         })
     },
     handleOk() {

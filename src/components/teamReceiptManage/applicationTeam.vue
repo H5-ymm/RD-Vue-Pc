@@ -193,7 +193,9 @@ export default {
           }
         })
         .catch(error => {
-          this.$message.error(error.status.remind)
+          if (error) {
+            this.$message.warning(error.status.remind)
+          }
         })
     },
     onSubmit() {
@@ -206,7 +208,9 @@ export default {
           this.getList(this.formMember)
         })
         .catch(error => {
-          this.$message.error(error.status.remind)
+          if (error) {
+            this.$message.warning(error.status.remind)
+          }
         })
     },
     reset() {

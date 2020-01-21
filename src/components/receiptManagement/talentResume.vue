@@ -191,15 +191,27 @@ export default {
   },
   methods: {
     getData(filed) {
-      getConstant({ filed }).then(res => {
-        this.jobList = res.data.job_array
-      })
+      getConstant({ filed })
+        .then(res => {
+          this.jobList = res.data.job_array
+        })
+        .catch(error => {
+          if (error) {
+            this.$message.warning(error.status.remind)
+          }
+        })
     },
     getList(params) {
-      companyResumeList(params).then(res => {
-        this.tableData = res.data.data
-        this.total = res.data.count
-      })
+      companyResumeList(params)
+        .then(res => {
+          this.tableData = res.data.data
+          this.total = res.data.count
+        })
+        .catch(error => {
+          if (error) {
+            this.$message.warning(error.status.remind)
+          }
+        })
     },
     checkResume(val) {
       if (!val.recommendResume) {
@@ -293,7 +305,9 @@ export default {
           }
         })
         .catch(error => {
-          this.$message.error(error.status.remind)
+          if (error) {
+            this.$message.warning(error.status.remind)
+          }
         })
     }
   }

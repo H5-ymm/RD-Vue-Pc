@@ -141,11 +141,16 @@ export default {
   },
   methods: {
     getList(params) {
-      getReceiptList(params).then(res => {
-        const { data } = res
-        this.tableData = data.data
-        this.total = data.count
-      })
+      getReceiptList(params)
+        .then(res => {
+          this.tableData = res.data.data
+          this.total = res.data.count
+        })
+        .catch(error => {
+          if (error) {
+            this.$message.warning(error.status.remind)
+          }
+        })
     },
     sortChange(column) {
       if (column.order == 'ascending') {
@@ -189,7 +194,9 @@ export default {
           this.getList(this.formMember)
         })
         .catch(error => {
-          this.$message.error(error.status.remind)
+          if (error) {
+            this.$message.warning(error.status.remind)
+          }
         })
     },
     viewJob(val) {
@@ -211,7 +218,9 @@ export default {
           }
         })
         .catch(error => {
-          this.$message.error(error.status.remind)
+          if (error) {
+            this.$message.warning(error.status.remind)
+          }
         })
     },
     onSubmit() {

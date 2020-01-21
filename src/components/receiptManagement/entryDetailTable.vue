@@ -134,10 +134,16 @@ export default {
   },
   methods: {
     getList(params) {
-      entryUserResumeList(params).then(res => {
-        this.tableData = res.data.data
-        this.total = res.data.count
-      })
+      entryUserResumeList(params)
+        .then(res => {
+          this.tableData = res.data.data
+          this.total = res.data.count
+        })
+        .catch(error => {
+          if (error) {
+            this.$message.warning(error.status.remind)
+          }
+        })
     },
     selectStatus(item, index) {
       this.activeIndex = index
@@ -195,8 +201,10 @@ export default {
           }
         })
         .catch(error => {
-          this.dialogTableVisible = false
-          this.$message.error(error.status.remind)
+          if (error) {
+            this.dialogTableVisible = false
+            this.$message.error(error.status.remind)
+          }
         })
     },
     onSubmit() {

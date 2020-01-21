@@ -216,7 +216,9 @@ export default {
           this.jobList = job_array
         })
         .catch(error => {
-          this.$message.error(error.status.remind)
+          if (error) {
+            this.$message.warning(error.status.remind)
+          }
         })
     },
     getList(params) {
@@ -227,7 +229,9 @@ export default {
           this.total = data.count
         })
         .catch(error => {
-          this.$message.error(error.status.remind)
+          if (error) {
+            this.$message.warning(error.status.remind)
+          }
         })
     },
     handleSelectionChange(val) {
@@ -300,7 +304,9 @@ export default {
           this.getList(this.formMember)
         })
         .catch(error => {
-          this.$message.error(error.status.remind)
+          if (error) {
+            this.$message.warning(error.status.remind)
+          }
         })
     },
     handleSelectionChange(val) {
@@ -319,7 +325,9 @@ export default {
           this.getList(this.formMember)
         })
         .catch(error => {
-          this.$message.error(error.status.remind)
+          if (error) {
+            this.$message.warning(error.status.remind)
+          }
         })
     },
     onSubmit() {

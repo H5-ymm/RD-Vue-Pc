@@ -174,7 +174,9 @@ export default {
             this.total = res.data.count
           })
           .catch(error => {
-            this.$message.error(error.status.remind)
+            if (error) {
+              this.$message.warning(error.status.remind)
+            }
           })
       } else {
         getInternalMatchingList(params)
@@ -183,7 +185,9 @@ export default {
             this.total = res.data.count
           })
           .catch(error => {
-            this.$message.error(error.status.remind)
+            if (error) {
+              this.$message.warning(error.status.remind)
+            }
           })
       }
     },
@@ -195,7 +199,9 @@ export default {
             this.total = res.data.count
           })
           .catch(error => {
-            this.$message.error(error.status.remind)
+            if (error) {
+              this.$message.warning(error.status.remind)
+            }
           })
       } else {
         getInternalInvoiceList(params)
@@ -205,7 +211,9 @@ export default {
             this.total = res.data.count
           })
           .catch(error => {
-            this.$message.error(error.status.remind)
+            if (error) {
+              this.$message.warning(error.status.remind)
+            }
           })
       }
     },

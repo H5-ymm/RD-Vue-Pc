@@ -76,16 +76,15 @@
   </el-dialog>
 </template>
 <script>
-
 import { getConstant } from '@/api/dictionary'
 import districtSelet from '../districtSelet'
 import { selectCompanyResumeInfo } from '@/api/staff'
 export default {
   props: ['dialogTableVisible', 'staffId'],
   components: {
-    districtSelet,
+    districtSelet
   },
-  data () {
+  data() {
     return {
       formMember: {
         sex: 0,
@@ -95,22 +94,18 @@ export default {
         address: '',
         provinceid: '',
         cityid: '',
-        uid: localStorage.getItem('uid'),
+        uid: localStorage.getItem('uid')
       },
       rules: {
-        name: [
-          { required: true, message: '请输入名字', trigger: 'blur' },
-        ],
-        mobile: [
-          { required: true, message: '请输入手机号', trigger: 'blur' }
-        ]
+        name: [{ required: true, message: '请输入名字', trigger: 'blur' }],
+        mobile: [{ required: true, message: '请输入手机号', trigger: 'blur' }]
       },
       edu_type: [],
       ageList: [],
       address: []
     }
   },
-  created () {
+  created() {
     let params = 'edu_type'
     for (let i = 16; i < 46; i++) {
       this.ageList.push(i)
@@ -118,59 +113,63 @@ export default {
     this.getList(params)
   },
   watch: {
-    staffId (val) {
+    staffId(val) {
       if (val) {
         this.getInfo()
-      }
-      else {
+      } else {
         this.formMember = {
-          sex:0,
+          sex: 0,
           education: '',
           uid: localStorage.getItem('uid')
         }
-       this.address = []
+        this.address = []
       }
     },
     dialogTableVisible(val) {
       if (!val) {
         this.formMember = {
-         sex:0,
-         education: '',
-         uid: localStorage.getItem('uid')
+          sex: 0,
+          education: '',
+          uid: localStorage.getItem('uid')
         }
-       this.address = []
+        this.address = []
       }
     }
   },
   methods: {
-    getInfo () {
+    getInfo() {
       let params = {
         uid: localStorage.getItem('uid'),
         id: this.staffId
       }
-      selectCompanyResumeInfo(params).then(res => {
-        this.formMember = res.data
-        this.formMember.education = Number(this.formMember.education)
-        if (res.data.provinceid && res.data.cityid) {
-          this.address = [res.data.provinceid, res.data.cityid]
-        }
-
-      })
+      selectCompanyResumeInfo(params)
+        .then(res => {
+          this.formMember = res.data
+          this.formMember.education = Number(this.formMember.education)
+          if (res.data.provinceid && res.data.cityid) {
+            this.address = [res.data.provinceid, res.data.cityid]
+          }
+        })
+        .catch(error => {
+          if (error) {
+            this.$message.warning(error.status.remind)
+          }
+        })
     },
-    getList (filed) {
+    getList(filed) {
       getConstant({ filed }).then(res => {
         this.edu_type = res.data.edu_type
       })
     },
-    change (val) {
+    change(val) {
       this.formMember.provinceid = val[0]
       this.formMember.cityid = val[1]
     },
-    handleClose () {
+    handleClose() {
       this.$emit('handleClose')
     },
-    submitForm () {
-      this.$refs['formMember'].validate((valid) => {
+    submitForm() {
+      this.$refs['formMember'].validate(valid => {
         if (valid) {
           this.formMember.uid = localStorage.getItem('uid')
           this.$emit('submitForm', this.formMember)

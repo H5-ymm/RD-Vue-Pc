@@ -218,18 +218,24 @@ export default {
         id: this.id,
         uid: localStorage.getItem('uid')
       }
-      getInvoice(params).then(res => {
-        this.from = res.data
-        this.orderTakingForm = res.data
-        if (res.data && res.data.provinceid) {
-          this.address = [
-            res.data.provinceid,
-            res.data.cityid,
-            res.data.three_cityid
-          ]
-          this.content = res.data.job_content
-        }
-      })
+      getInvoice(params)
+        .then(res => {
+          this.from = res.data
+          this.orderTakingForm = res.data
+          if (res.data && res.data.provinceid) {
+            this.address = [
+              res.data.provinceid,
+              res.data.cityid,
+              res.data.three_cityid
+            ]
+            this.content = res.data.job_content
+          }
+        })
+        .catch(error => {
+          if (error) {
+            this.$message.warning(error.status.remind)
+          }
+        })
     },
     getList(filed) {
       getConstant({ filed }).then(res => {
@@ -362,7 +368,9 @@ export default {
           }
         })
         .catch(error => {
-          this.$message.error(error.status.remind)
+          if (error) {
+            this.$message.warning(error.status.remind)
+          }
         })
     },
     resetForm() {

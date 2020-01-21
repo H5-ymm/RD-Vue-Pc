@@ -251,7 +251,6 @@ export default {
       this.dialogVisible = false
     },
     getCityCode(value) {
-      console.log(value)
       this.params.three_cityid = value[0]
       this.getData(this.params)
       this.dialogVisible = false
@@ -284,7 +283,9 @@ export default {
             }
           })
           .catch(error => {
-            this.$message.error(error.status.remind)
+            if (error) {
+              this.$message.warning(error.status.remind)
+            }
           })
       } else {
         this.isShowLogin = true

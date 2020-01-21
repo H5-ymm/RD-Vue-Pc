@@ -147,7 +147,6 @@ export default {
     },
     handelForget() {
       this.isShow = !this.isShow
-      console.log(this.isShow)
       this.formMember = {
         uid: localStorage.getItem('uid')
       }

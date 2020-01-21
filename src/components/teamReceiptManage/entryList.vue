@@ -177,7 +177,9 @@ export default {
           this.jobList = res.data.job_array
         })
         .catch(error => {
-          this.$message.error(error.status.remind)
+          if (error) {
+            this.$message.warning(error.status.remind)
+          }
         })
     },
     viewTime(val) {
@@ -189,7 +191,9 @@ export default {
           this.viewTimeInfo = res.data
         })
         .catch(error => {
-          this.$message.error(error.status.remind)
+          if (error) {
+            this.$message.warning(error.status.remind)
+          }
         })
     },
     getList(params) {

@@ -213,11 +213,16 @@ export default {
   },
   methods: {
     getList(params) {
-      getcurapply(params).then(res => {
-        console.log(res.data)
-        this.tableData = res.data.data
-        this.total = res.data.count
-      })
+      getcurapply(params)
+        .then(res => {
+          this.tableData = res.data.data
+          this.total = res.data.count
+        })
+        .catch(error => {
+          if (error) {
+            this.$message.warning(error.status.remind)
+          }
+        })
     },
     viewJob(val) {
       this.jobId = val.job_id
@@ -260,7 +265,9 @@ export default {
           this.personVisible = true
         })
         .catch(error => {
-          this.$message.error(error.status.remind)
+          if (error) {
+            this.$message.warning(error.status.remind)
+          }
         })
     },
     // 团长获取所有列表
@@ -275,7 +282,9 @@ export default {
           this.dialogTableVisible = true
         })
         .catch(error => {
-          this.$message.error(error.status.remind)
+          if (error) {
+            this.$message.warning(error.status.remind)
+          }
         })
     },
     // 经理操作
@@ -306,7 +315,9 @@ export default {
           this.dialogTableVisible = true
         })
         .catch(error => {
-          this.$message.error(error.status.remind)
+          if (error) {
+            this.$message.warning(error.status.remind)
+          }
         })
     },
     getArray(arr) {
@@ -344,7 +355,9 @@ export default {
           this.personVisible = true
         })
         .catch(error => {
-          this.$message.error(error.status.remind)
+          if (error) {
+            this.$message.warning(error.status.remind)
+          }
         })
     },
     handleEdit(status, val) {
@@ -360,7 +373,9 @@ export default {
             this.getList(this.formMember)
           })
           .catch(error => {
-            this.$message.error(error.status.remind)
+            if (error) {
+              this.$message.warning(error.status.remind)
+            }
           })
       } else {
         cancelTomember(params).then(res => {
@@ -413,7 +428,9 @@ export default {
             }
           })
           .catch(error => {
-            this.$message.error(error.status.remind)
+            if (error) {
+              this.$message.warning(error.status.remind)
+            }
           })
       } else {
         addTomember(params).then(res => {

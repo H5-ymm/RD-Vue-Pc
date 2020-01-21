@@ -98,9 +98,17 @@
 </template>
 
 <script>
-import {  getStaffResumeList, quitCompanyResumeList,
-  addCompanyResume, delCompanyResumeInfo, editCompanyResumeInfo,
-  exportCompanyResume, doQuitCompanyResume, importCompanyResume, uploadsCompanyList} from '@/api/staff'
+import {
+  getStaffResumeList,
+  quitCompanyResumeList,
+  addCompanyResume,
+  delCompanyResumeInfo,
+  editCompanyResumeInfo,
+  exportCompanyResume,
+  doQuitCompanyResume,
+  importCompanyResume,
+  uploadsCompanyList
+} from '@/api/staff'
 import { getConstant } from '@/api/dictionary'
 import modal from '../common/modal'
 import leadResumeModal from '../resumeManage/leadResumeModal'
@@ -113,7 +121,7 @@ export default {
     staffModal,
     viewStaff
   },
-  data () {
+  data() {
     return {
       dialogTableVisible: false,
       leadResumeVisible: false,
@@ -139,13 +147,13 @@ export default {
       sexList: [
         { label: '全部', value: 0 },
         { label: '男', value: 1 },
-        { label: '女', value: 2 },
+        { label: '女', value: 2 }
       ],
       staffId: '',
       timeList: []
     }
   },
-  created () {
+  created() {
     // 初始化查询标签数据
     this.viewType = this.$route.query.view
     this.getList(this.formMember)
@@ -153,60 +161,81 @@ export default {
     this.getData(params)
   },
   watch: {
-    $route(to,from) {
+    $route(to, from) {
       if (to.query.view) {
         this.viewType = to.query.view
         this.getList(this.formMember)
         this.staffId = ''
-     }    
+      }
     }
   },
   methods: {
-    getData (filed) {
-      getConstant({ filed }).then(res => {
-        this.edu_type = res.data.edu_type
-      })
+    getData(filed) {
+      getConstant({ filed })
+        .then(res => {
+          this.edu_type = res.data.edu_type
+        })
+        .catch(error => {
+          if (error) {
+            this.$message.warning(error.status.remind)
+          }
+        })
     },
-    getList (params) {
+    getList(params) {
       if (this.viewType == 1) {
-        getStaffResumeList(params).then(res => {
-          this.tableData = res.data.data
-          this.total = res.data.count
-        })
+        getStaffResumeList(params)
+          .then(res => {
+            this.tableData = res.data.data
+            this.total = res.data.count
+          })
+          .catch(error => {
+            if (error) {
+              this.$message.warning(error.status.remind)
+            }
+          })
       } else {
-        quitCompanyResumeList(params).then(res => {
-          this.tableData = res.data.data
-          this.total = res.data.count
-        })
+        quitCompanyResumeList(params)
+          .then(res => {
+            this.tableData = res.data.data
+            this.total = res.data.count
+          })
+          .catch(error => {
+            if (error) {
+              this.$message.warning(error.status.remind)
+            }
+          })
       }
     },
-    changeDate (val) {
+    changeDate(val) {
       this.formMember.beginTime = val ? val[0] : ''
       this.formMember.endTime = val ? val[1] : ''
     },
-    handleSelectionChange (val) {
+    handleSelectionChange(val) {
       this.multipleSelection = val
       let arr = val.map(item => {
         return item.id
       })
       this.staffId = arr.join(',')
     },
-    download () {
+    download() {
       uploadsCompanyList()
     },
-    exportResumeData (file) {
-      importCompanyResume(file).then(res => {
-        this.leadResumeVisible = false
-        this.getList(this.formMember)
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+    exportResumeData(file) {
+      importCompanyResume(file)
+        .then(res => {
+          this.leadResumeVisible = false
+          this.getList(this.formMember)
+        })
+        .catch(error => {
+          if (error) {
+            this.$message.warning(error.status.remind)
+          }
+        })
     },
-    exportResume () {
+    exportResume() {
       if (!this.staffId) {
         return this.$message.warning('请选择员工')
-      }
-      else {
+      } else {
         let params = {
           uid: localStorage.getItem('uid'),
           listId: this.staffId
@@ -214,24 +243,23 @@ export default {
         exportCompanyResume(params)
       }
     },
-    sortChange (column) {
+    sortChange(column) {
       if (column.order == 'ascending') {
         this.formMember.desc = 'asc'
-      }
-      else {
+      } else {
         this.formMember.desc = 'desc'
       }
       this.getList(this.formMember)
     },
-    handleSizeChange (val) {
+    handleSizeChange(val) {
       this.formMember.limit = val
       this.getList(this.formMember)
     },
-    handleCurrentChange (val) {
+    handleCurrentChange(val) {
       this.formMember.page = val
       this.getList(this.formMember)
     },
-    handleUser (index, id) {
+    handleUser(index, id) {
       if (!id) {
         return this.$message.warning('请先选择员工')
       }
@@ -240,53 +268,57 @@ export default {
       if (index == 1) {
         this.dialogTableVisible = true
         this.modalObj.content = '你确定该操作员工离职吗？'
-      }
-      else if (index == 2) {
+      } else if (index == 2) {
         this.dialogTableVisible = true
-        this.modalObj.content = '您确定要删除选中的员工吗？</br>一经操作不可恢复！'
-      }
-      else {
+        this.modalObj.content =
+          '您确定要删除选中的员工吗？</br>一经操作不可恢复！'
+      } else {
         this.staffVisible = true
       }
     },
-    submitForm (params) {
+    submitForm(params) {
       this.staffVisible = false
       if (this.staffId) {
         this.updateStaff(params)
-      }
-      else {
+      } else {
         this.addStaff(params)
       }
     },
-    addStaff (params) {
-      addCompanyResume(params).then(res => {
-        if(res.data) {
-          this.$message.success('保存成功')
-          this.staffId = ''
-          this.getList(this.formMember)
-        }
-        else {
-          this.$message.error('保存失败')
-        }
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+    addStaff(params) {
+      addCompanyResume(params)
+        .then(res => {
+          if (res.data) {
+            this.$message.success('保存成功')
+            this.staffId = ''
+            this.getList(this.formMember)
+          } else {
+            this.$message.error('保存失败')
+          }
+        })
+        .catch(error => {
+          if (error) {
+            this.$message.warning(error.status.remind)
+          }
+        })
     },
-    updateStaff (params) {
-      editCompanyResumeInfo(params).then(res => {
-        if(res.data) {
-          this.$message.success('保存成功')
-          this.staffId = ''
-          this.getList(this.formMember)
-        }
-        else {
-          this.$message.error('保存失败')
-        }
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+    updateStaff(params) {
+      editCompanyResumeInfo(params)
+        .then(res => {
+          if (res.data) {
+            this.$message.success('保存成功')
+            this.staffId = ''
+            this.getList(this.formMember)
+          } else {
+            this.$message.error('保存失败')
+          }
+        })
+        .catch(error => {
+          if (error) {
+            this.$message.warning(error.status.remind)
+          }
+        })
     },
-    handleOk () {
+    handleOk() {
       this.dialogTableVisible = false
       let params = {
         uid: localStorage.getItem('uid'),
@@ -294,44 +326,49 @@ export default {
       }
       if (this.overType == 1) {
         this.handleQuit(params)
-      }
-      else {
+      } else {
         this.handelDel(params)
       }
     },
     // 离职
-    handleQuit (params) {
-      doQuitCompanyResume(params).then(res => {
-       if(res.data) {
-          this.$message.success('操作成功')
-          this.staffId = ''
-          this.getList(this.formMember)
-        }
-        else {
-          this.$message.error('操作失败')
-        }
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+    handleQuit(params) {
+      doQuitCompanyResume(params)
+        .then(res => {
+          if (res.data) {
+            this.$message.success('操作成功')
+            this.staffId = ''
+            this.getList(this.formMember)
+          } else {
+            this.$message.error('操作失败')
+          }
+        })
+        .catch(error => {
+          if (error) {
+            this.$message.warning(error.status.remind)
+          }
+        })
     },
-    handelDel (params) {
-      delCompanyResumeInfo(params).then(res => {
-        if(res.data) {
-          this.$message.success('操作成功')
-          this.staffId = ''
-          this.getList(this.formMember)
-        }
-        else {
-          this.$message.error('操作失败')
-        }
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+    handelDel(params) {
+      delCompanyResumeInfo(params)
+        .then(res => {
+          if (res.data) {
+            this.$message.success('操作成功')
+            this.staffId = ''
+            this.getList(this.formMember)
+          } else {
+            this.$message.error('操作失败')
+          }
+        })
+        .catch(error => {
+          if (error) {
+            this.$message.warning(error.status.remind)
+          }
+        })
     },
-    onSubmit () {
+    onSubmit() {
       this.getList(this.formMember)
     },
-    reset () {
+    reset() {
       this.formMember = {
         uid: localStorage.getItem('uid'),
         limit: 10,
@@ -345,5 +382,5 @@ export default {
 </script>
 
 <style lang="scss">
- @import '@/assets/css/resume';
+@import '@/assets/css/resume';
 </style>

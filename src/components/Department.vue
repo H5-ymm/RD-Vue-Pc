@@ -114,7 +114,9 @@ export default {
           }
         })
         .catch(error => {
-          this.$message.error(res.status.remind)
+          if (error) {
+            this.$message.warning(error.status.remind)
+          }
         })
     },
     handle(index) {
@@ -134,7 +136,9 @@ export default {
           this.getList(this.formMember)
         })
         .catch(error => {
-          this.$message.error(error.status.remind)
+          if (error) {
+            this.$message.warning(error.status.remind)
+          }
         })
     }
   }

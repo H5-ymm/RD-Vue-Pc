@@ -110,11 +110,16 @@ export default {
   },
   methods: {
     getList(params) {
-      getReceiptList(params).then(res => {
-        const { data } = res
-        this.tableData = data.data
-        this.total = data.count
-      })
+      getReceiptList(params)
+        .then(res => {
+          this.tableData = res.data.data
+          this.total = res.data.count
+        })
+        .catch(error => {
+          if (error) {
+            this.$message.warning(error.status.remind)
+          }
+        })
     },
     selectStatus(item, index) {
       this.activeIndex = index
@@ -131,7 +136,6 @@ export default {
     handleEdit(val) {
       this.dialogTableVisible = true
       this.userId = val
-      console.log(this.userId)
     },
     handleDel(uid) {
       loginOutTeam({ uid })
@@ -140,7 +144,9 @@ export default {
           this.getList(this.formMember)
         })
         .catch(error => {
-          this.$message.error(error.status.remind)
+          if (error) {
+            this.$message.warning(error.status.remind)
+          }
         })
     },
     submitMember(val) {
@@ -163,7 +169,9 @@ export default {
           this.getList(this.formMember)
         })
         .catch(error => {
-          this.$message.error(error.status.remind)
+          if (error) {
+            this.$message.warning(error.status.remind)
+          }
         })
     }
   }

@@ -89,11 +89,17 @@ export default {
       })
     },
     getRegion(value) {
-      getProvincesList().then(res => {
-        let arr = this.getProlist(res.data)
-        this.options = arr
-        this.getCityList(value)
-      })
+      getProvincesList()
+        .then(res => {
+          let arr = this.getProlist(res.data)
+          this.options = arr
+          this.getCityList(value)
+        })
+        .catch(error => {
+          if (error) {
+            this.$message.warning(error.status.remind)
+          }
+        })
     },
     getCityList(value) {
       let code = ''

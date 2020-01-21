@@ -184,7 +184,9 @@ export default {
             this.getData(res)
           })
           .catch(error => {
-            this.$message.error(error.status.remind)
+            if (error) {
+              this.$message.warning(error.status.remind)
+            }
           })
       } else if (this.viewType == 3 || this.viewType == 6) {
         entryResumeList(params)
@@ -192,7 +194,9 @@ export default {
             this.getData(res)
           })
           .catch(error => {
-            this.$message.error(error.status.remind)
+            if (error) {
+              this.$message.warning(error.status.remind)
+            }
           })
       } else {
         incumbencyUserResumeList(params)
@@ -200,7 +204,9 @@ export default {
             this.getData(res)
           })
           .catch(error => {
-            this.$message.error(error.status.remind)
+            if (error) {
+              this.$message.warning(error.status.remind)
+            }
           })
       }
     },
@@ -277,7 +283,9 @@ export default {
             }
           })
           .catch(error => {
-            this.$message.error(error.status.remind)
+            if (error) {
+              this.$message.warning(error.status.remind)
+            }
           })
       } else {
       }

@@ -202,9 +202,15 @@ export default {
       this.getList(this.formMember)
     },
     getData(filed) {
-      getConstant({ filed }).then(res => {
-        this.jobList = res.data.job_array
-      })
+      getConstant({ filed })
+        .then(res => {
+          this.jobList = res.data.job_array
+        })
+        .catch(error => {
+          if (error) {
+            this.$message.warning(error.status.remind)
+          }
+        })
     },
     getList(params) {
       teamRecommendResumeList(params)
@@ -214,7 +220,9 @@ export default {
           this.total = data.count
         })
         .catch(error => {
-          this.$message.error(error.status.remind)
+          if (error) {
+            this.$message.warning(error.status.remind)
+          }
         })
     },
     changeDate(val) {
@@ -313,7 +321,9 @@ export default {
             }
           })
           .catch(error => {
-            this.$message.error(error.status.remind)
+            if (error) {
+              this.$message.warning(error.status.remind)
+            }
           })
       }
     },

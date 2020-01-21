@@ -147,10 +147,16 @@ export default {
   },
   methods: {
     getList(params) {
-      applyInvoiceList(params).then(res => {
-        this.tableData = res.data.data
-        this.total = res.data.count
-      })
+      applyInvoiceList(params)
+        .then(res => {
+          this.tableData = res.data.data
+          this.total = res.data.count
+        })
+        .catch(error => {
+          if (error) {
+            this.$message.warning(error.status.remind)
+          }
+        })
     },
     handleSizeChange(val) {
       this.formMember.limit = val
@@ -185,7 +191,9 @@ export default {
           }
         })
         .catch(error => {
-          this.$message.warning(error.status.remind)
+          if (error) {
+            this.$message.warning(error.status.remind)
+          }
         })
     },
     handleShelf(status, val) {

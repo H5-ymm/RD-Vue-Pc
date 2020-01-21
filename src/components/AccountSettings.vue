@@ -178,25 +178,32 @@ export default {
   },
   methods: {
     getInfo(uid) {
-      getUserInfo({ uid }).then(res => {
-        if (res.data) {
-          let form = res.data || {}
-          for (let key in this.personalForm) {
-            this.personalForm[key] = form[key]
+      getUserInfo({ uid })
+        .then(res => {
+          if (res.data) {
+            let form = res.data || {}
+            for (let key in this.personalForm) {
+              this.personalForm[key] = form[key]
+            }
+            if (this.personalForm.head_img) {
+              this.imageUrl = getImgUrl(this.personalForm.head_img)
+            }
+            if (form.provinceid) {
+              this.place =
+                form.provinceName + form.cityName + form.three_cityName
+              this.address = [
+                this.personalForm.provinceid,
+                this.personalForm.cityid,
+                this.personalForm.three_cityid
+              ]
+            }
           }
-          if (this.personalForm.head_img) {
-            this.imageUrl = getImgUrl(this.personalForm.head_img)
+        })
+        .catch(error => {
+          if (error) {
+            this.$message.warning(error.status.remind)
           }
-          if (form.provinceid) {
-            this.place = form.provinceName + form.cityName + form.three_cityName
-            this.address = [
-              this.personalForm.provinceid,
-              this.personalForm.cityid,
-              this.personalForm.three_cityid
-            ]
-          }
-        }
-      })
+        })
     },
     upload(params) {
       const _file = params.file
@@ -205,10 +212,16 @@ export default {
         this.$message.error('请上传2M以下的.xlsx文件')
         return false
       }
-      uploadFile(_file).then(res => {
-        this.imageUrl = getImg(_file)
-        this.personalForm.head_img = res.data.url
-      })
+      uploadFile(_file)
+        .then(res => {
+          this.imageUrl = getImg(_file)
+          this.personalForm.head_img = res.data.url
+        })
+        .catch(error => {
+          if (error) {
+            this.$message.warning(error.status.remind)
+          }
+        })
     },
     change(val) {
       this.personalForm.provinceid = val[0]
@@ -226,7 +239,9 @@ export default {
               }
             })
             .catch(error => {
-              this.$message.error(error.status.remind)
+              if (error) {
+                this.$message.warning(error.status.remind)
+              }
             })
         } else {
           return false

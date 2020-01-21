@@ -1,50 +1,50 @@
 <style lang="scss">
-  .team-setting-view {
-    width: 100%;
-    margin: 0 auto;
-    text-align: center;  
-    overflow: hidden;
-    background: #fff;
-    &.team-box{
-      height: calc(100% - 70px);
+.team-setting-view {
+  width: 100%;
+  margin: 0 auto;
+  text-align: center;
+  overflow: hidden;
+  background: #fff;
+  &.team-box {
+    height: calc(100% - 70px);
+  }
+  .title {
+    font-size: 22px;
+    color: #333333;
+    margin-top: 5%;
+    text-align: center;
+  }
+  .team-setting-box {
+    margin: 5% auto;
+  }
+  .grid-content-select {
+    width: 236px;
+    height: 276px;
+    background: rgba(255, 255, 255, 1);
+    border: 1px solid rgba(238, 238, 238, 1);
+    box-shadow: 0px 1px 10px 0px rgba(106, 106, 106, 0.15);
+    border-radius: 3px;
+    text-align: center;
+    line-height: 130px;
+    padding-top: 40px;
+    margin: 0 20px;
+    position: relative;
+    &.grid-content-active {
+      border: 2px solid rgba(54, 153, 255, 1);
     }
-    .title {
-      font-size:22px;
-      color: #333333;
-      margin-top: 5%;
-      text-align: center;
-    }
-    .team-setting-box {
-      margin: 5% auto;
-    }
-    .grid-content-select {
-      width:236px;
-      height:276px;
-      background:rgba(255,255,255,1);
-      border:1px solid rgba(238,238,238,1);
-      box-shadow:0px 1px 10px 0px rgba(106,106,106,0.15);
-      border-radius:3px;
-      text-align: center;
-      line-height: 130px;
-      padding-top: 40px;
-      margin: 0 20px;
-      position: relative;
-      &.grid-content-active {
-        border:2px solid rgba(54,153,255,1);
-      }
-      .select-tag {
-        position: absolute;
-        right: -2px;
-        top: -2px;
-      }
-    }
-    .next-btn {
-      width:201px;
-      height:38px;
-      background:rgba(54,153,255,1);
-      border-radius:3px;
+    .select-tag {
+      position: absolute;
+      right: -2px;
+      top: -2px;
     }
   }
+  .next-btn {
+    width: 201px;
+    height: 38px;
+    background: rgba(54, 153, 255, 1);
+    border-radius: 3px;
+  }
+}
 </style>
 <template>
   <div class="team-setting-view">
@@ -64,59 +64,72 @@
 <script>
 import { getTeamInfo } from '../api/team'
 export default {
-  data () {
+  data() {
     return {
       activIndex: 0,
-      menus: [{
-        title: '个人团队',
-        imgUrl: require('../assets/img/team/person.png'),
-        url: 'personalForm',
-        type: 2
-      }, {
-        title: '企业团队',
-        imgUrl: require('../assets/img/team/team.png'),
-        url: 'teamCompanyForm',
-        type: 1
-      }],
+      menus: [
+        {
+          title: '个人团队',
+          imgUrl: require('../assets/img/team/person.png'),
+          url: 'personalForm',
+          type: 2
+        },
+        {
+          title: '企业团队',
+          imgUrl: require('../assets/img/team/team.png'),
+          url: 'teamCompanyForm',
+          type: 1
+        }
+      ],
       url: 'personalForm',
       teamId: '',
       type: ''
     }
   },
-  created () {
+  created() {
     let uid = localStorage.getItem('uid')
-    getTeamInfo({ uid }).then(res => {
-      if (res && res.data) {
-        this.teamId = res.data.uid
-        this.type = res.data.type
-        if (this.type) {
-          this.activIndex = this.type == 2 ? 0 : 1
-          this.$router.replace({ path: this.url, query: { teamId: this.teamId, type: this.type } })
+    getTeamInfo({ uid })
+      .then(res => {
+        if (res && res.data) {
+          this.teamId = res.data.uid
+          this.type = res.data.type
+          if (this.type) {
+            this.activIndex = this.type == 2 ? 0 : 1
+            this.$router.replace({
+              path: this.url,
+              query: { teamId: this.teamId, type: this.type }
+            })
+          }
+        } else {
+          this.teamId = ''
+          this.type = ''
+          this.activIndex = 0
         }
-      }
-      else {
-        this.teamId = ''
-        this.type = ''
-        this.activIndex = 0
-      }
-    })
+      })
+      .catch(error => {
+        if (error) {
+          this.$message.warning(error.status.remind)
+        }
+      })
   },
   methods: {
-    selectType (index, item) {
+    selectType(index, item) {
       if (!this.type) {
         this.activIndex = index
         this.url = item.url
         this.type = item.type
-      }
-      else {
+      } else {
         return
       }
     },
-    next () {
+    next() {
       if (!this.activIndex) {
         this.type = 2
       }
-      this.$router.push({ path: this.url, query: { teamId: this.teamId, type: this.type } })
+      this.$router.push({
+        path: this.url,
+        query: { teamId: this.teamId, type: this.type }
+      })
     }
   }
 }

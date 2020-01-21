@@ -184,7 +184,9 @@ export default {
             this.teamInfo = res.data
           })
           .catch(error => {
-            this.$message.error(error.status.remind)
+            if (error) {
+              this.$message.warning(error.status.remind)
+            }
           })
       }
     },

@@ -195,15 +195,27 @@ export default {
   methods: {
     getList(params) {
       if (this.viewType == 3) {
-        auditResumeList(params).then(res => {
-          this.tableData = res.data.data
-          this.total = res.data.count
-        })
+        auditResumeList(params)
+          .then(res => {
+            this.tableData = res.data.data
+            this.total = res.data.count
+          })
+          .catch(error => {
+            if (error) {
+              this.$message.warning(error.status.remind)
+            }
+          })
       } else {
-        entryResumeList(params).then(res => {
-          this.tableData = res.data.data
-          this.total = res.data.count
-        })
+        entryResumeList(params)
+          .then(res => {
+            this.tableData = res.data.data
+            this.total = res.data.count
+          })
+          .catch(error => {
+            if (error) {
+              this.$message.warning(error.status.remind)
+            }
+          })
       }
     },
     getStatus(val) {
@@ -264,7 +276,9 @@ export default {
             this.getList(this.formMember)
           })
           .catch(error => {
-            this.$message.error(error.status.remind)
+            if (error) {
+              this.$message.warning(error.status.remind)
+            }
           })
       } else {
         auditEntryResume(params)
@@ -273,7 +287,9 @@ export default {
             this.getList(this.formMember)
           })
           .catch(error => {
-            this.$message.error(error.status.remind)
+            if (error) {
+              this.$message.warning(error.status.remind)
+            }
           })
       }
     },

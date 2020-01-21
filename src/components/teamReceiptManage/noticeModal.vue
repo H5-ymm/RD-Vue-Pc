@@ -63,7 +63,6 @@ export default {
   watch: {
     viewTimeInfo(val) {
       if (val) {
-        console.log(val)
         let arr = val.content.split('&')
         this.address = arr[0]
         this.content = arr[3]

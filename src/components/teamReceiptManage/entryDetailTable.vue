@@ -123,11 +123,16 @@ export default {
   },
   methods: {
     getList(params) {
-      getReceiptList(params).then(res => {
-        const { data } = res
-        this.tableData = data.data
-        this.total = data.count
-      })
+      getReceiptList(params)
+        .then(res => {
+          this.tableData = res.data.data
+          this.total = res.data.count
+        })
+        .catch(error => {
+          if (error) {
+            this.$message.warning(error.status.remind)
+          }
+        })
     },
     selectStatus(item, index) {
       this.activeIndex = index

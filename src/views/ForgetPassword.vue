@@ -44,7 +44,7 @@
             </el-form-item>
             <p class="text">
               已有账户，
-              <a href="/register">现在登录</a>
+              <a href="/login">现在登录</a>
               <img src="../assets/img/loginRight.png" alt class="loginRight" />
             </p>
           </el-form>
@@ -56,63 +56,83 @@
 <script>
 import { goLogin, getCode, userRegister } from '../api/login'
 import { sendVerification, editUserPassword } from '../api/user'
+import Dialog from '../components/Dialog'
 export default {
-  data () {
-    let validatereg = function (rule, value, callback) {   //验证用户名是否合法
-      let reg = /^1[3456789]\d{9}$/;
-      if (!(reg.test(value))) {
-        callback(new Error('手机号格式不正确'));
+  components: {
+    Dialog
+  },
+  data() {
+    let validatereg = function(rule, value, callback) {
+      //验证用户名是否合法
+      let reg = /^1[3456789]\d{9}$/
+      if (!reg.test(value)) {
+        callback(new Error('手机号格式不正确'))
       } else {
-        callback();
+        callback()
       }
-    };
-    let validatePassReg = function (rule, value, callback) {   //验证密码是否合法
-      let reg = /^[a-zA-Z][a-zA-Z0-9]{6,30}$/;
+    }
+    let validatePassReg = function(rule, value, callback) {
+      //验证密码是否合法
+      let reg = /^[a-zA-Z][a-zA-Z0-9]{6,30}$/
       if (reg.test(value) == true) {
-        callback();
+        callback()
       } else {
-        callback(new Error('密码不合法(请输入数字或字母)'));
+        callback(new Error('密码不合法(请输入数字或字母)'))
       }
-    };
+    }
     return {
       formTab: {
         mobile: '',
         type: '2'
       },
       checked: false,
-      formTabs: {  //验证规则
+      formTabs: {
+        //验证规则
         mobile: [
           { message: '请输入手机号', trigger: 'blur' },
           { validator: validatereg, trigger: 'blur' }
         ],
         newPassword: [
-          { message: '请输入密码', trigger: 'blur' },
+          { message: '请输入密码', trigger: 'blur' }
+          // { validator: validatePassReg, trigger: 'blur' }
+        ],
+        newPassworded: [
+          { message: '请输入确认密码', trigger: 'blur' }
           // { validator: validatePassReg, trigger: 'blur' }
         ]
       },
-      content: '发送验证码',  // 按钮里显示的内容
+      content: '发送验证码', // 按钮里显示的内容
       totalTime: 60,
       timer: null,
       canClick: true,
       token: '',
       isShowError: false,
-      isCodeError: false
+      isCodeError: false,
+      dialogVisible: false,
+      modalInfo: {
+        title: '账号已锁定',
+        okText: '',
+        closeText: '',
+        imgBg: require('../assets/img/lock.png')
+      }
     }
   },
   methods: {
-    sendCode () {
+    sendCode() {
       if (!this.formTab.mobile) {
         return this.$message.warning('手机号不能为空')
       }
       this.countDown()
-      sendVerification({ mobile: this.formTab.mobile }).then(res => {
-        this.token = res.data.tken
-        this.formTab.token = res.data.tken
-      }).catch(error => {
-        return this.$message.error(error.status.remind)
-      })
+      sendVerification({ mobile: this.formTab.mobile })
+        .then(res => {
+          this.token = res.data.tken
+          this.formTab.token = res.data.tken
+        })
+        .catch(error => {
+          return this.$message.error(error.status.remind)
+        })
     },
-    countDown () {
+    countDown() {
       if (!this.canClick) return
       this.canClick = false
       this.content = this.totalTime + 's后重发'
@@ -123,60 +143,59 @@ export default {
           window.clearInterval(clock)
           this.content = '重新发送验证码'
           this.totalTime = 60
-          this.canClick = true  // 这里重新开启
+          this.canClick = true // 这里重新开启
         }
       }, 1000)
     },
-    switchLogin (index) {
+    switchLogin(index) {
       this.loginWay = index
       this.formTab.type = index
       this.formTab.name = ''
       this.formTab.passwords = ''
       this.formTab.code = ''
     },
-    remind (val) {
+    remind(val) {
       if (val) {
         let params = {
           name: this.formTab.name,
           password: this.formTab.passwords
         }
         localStorage.setItem('remindUserInfo', JSON.stringify(params))
-      }
-      else {
+      } else {
         localStorage.removeItem('remindUserInfo')
       }
     },
-    onSubmit () {
+    onSubmit() {
       if (this.loginWay == 2) {
         this.formTab.token = this.token
       }
-      this.$refs['TabForm'].validate((valid) => {
+      this.$refs['TabForm'].validate(valid => {
         if (valid) {
-          goLogin(this.formTab).then(res => {
-            localStorage.setItem('userType', res.data.type)
-            let registerType = res.data.type
-            localStorage.setItem('token', res.data.token)
-            localStorage.setItem('uid', res.data.uid)
-            localStorage.setItem('userName', res.data.username)
-            if (registerType == 2) {
-              this.$router.push('/commonts')
-            }
-            else {
-              this.$router.push('/createOrderTaking')
-            }
-          }).catch(error => {
-            if (error.status.code == 3010) {
-              this.isShowError = true
-            }
-            else if (error.status.code == 3008) {
-              this.isCodeError = true
-            }
-            else {
-              this.isShowError = false
-              this.isCodeError = false
-              return this.$message.error(error.status.remind)
-            }
-          })
+          editUserPassword(this.formTab)
+            .then(res => {
+              if (res.data) {
+                this.$router.push('/login')
+              }
+            })
+            .catch(error => {
+              if (error.status.code == 3010) {
+                this.isShowError = true
+                this.dialogVisible = false
+                this.isCodeError = false
+              } else if (error.status.code == 1008) {
+                this.dialogVisible = true
+                this.isShowError = false
+              } else if (error.status.code == 3008) {
+                this.isCodeError = true
+                this.isShowError = false
+                this.dialogVisible = false
+              } else {
+                this.dialogVisible = false
+                this.isShowError = false
+                this.isCodeError = false
+                return this.$message.error(error.status.remind)
+              }
+            })
         } else {
           return false
         }

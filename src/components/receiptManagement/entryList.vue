@@ -170,9 +170,15 @@ export default {
   },
   methods: {
     getData(filed) {
-      getConstant({ filed }).then(res => {
-        this.jobList = res.data.job_array
-      })
+      getConstant({ filed })
+        .then(res => {
+          this.jobList = res.data.job_array
+        })
+        .catch(error => {
+          if (error) {
+            this.$message.warning(error.status.remind)
+          }
+        })
     },
     getList(params) {
       entryInvoiceList(params)
@@ -181,7 +187,9 @@ export default {
           this.total = res.data.count
         })
         .catch(error => {
-          this.$message.error(error.status.remind)
+          if (error) {
+            this.$message.warning(error.status.remind)
+          }
         })
     },
     selectStatus(item, index) {
@@ -229,7 +237,9 @@ export default {
           this.getList(this.formMember)
         })
         .catch(error => {
-          this.$message.error(error.status.remind)
+          if (error) {
+            this.$message.warning(error.status.remind)
+          }
         })
     },
     // 结束面试
@@ -240,7 +250,9 @@ export default {
           this.getList(this.formMember)
         })
         .catch(error => {
-          this.$message.error(error.status.remind)
+          if (error) {
+            this.$message.warning(error.status.remind)
+          }
         })
     },
     onSubmit() {
