@@ -31,7 +31,7 @@
                 </template>
               </el-input>
             </el-form-item>
-            <el-form-item prop="passwords" label="密码" v-if="loginWay==1">
+            <el-form-item prop="password" label="密码" v-if="loginWay==1">
               <el-input v-model="formTab.password" placeholder="请输入密码" @keyup.enter.native="onSubmit('TabForm')" type="password"></el-input>
             </el-form-item>
             <el-form-item label="发送验证码" v-if="loginWay==2">
@@ -41,7 +41,7 @@
             </el-form-item>
             <el-form-item v-if="loginWay==1">
               <div class="x-flex-between">
-                <el-checkbox v-model="checked" @change="remind">记住密码</el-checkbox>
+                <el-checkbox v-model="checked">记住密码</el-checkbox>
                 <el-link :underline="false" class="password" href="forgetPassword">忘记密码</el-link>
               </div>
             </el-form-item>
@@ -100,7 +100,7 @@ export default {
           { message: '请输入手机号', trigger: 'blur' },
           { validator: validatereg, trigger: 'blur' }
         ],
-        passwords: [
+        password: [
           { message: '请输入密码', trigger: 'blur' }
           // { validator: validatePassReg, trigger: 'blur' }
         ]
@@ -122,15 +122,15 @@ export default {
       }
     }
   },
-  watch: {
-    loginWay(val) {
-      if (val == 1) {
-        if (localStorage.getItem('remindUserInfo')) {
-          let userInfo = JSON.parse(localStorage.getItem('remindUserInfo'))
-          this.formTab.name = userInfo.name
-          this.formTab.passwords = userInfo.password
-        }
+  created() {
+    if (localStorage.getItem('remindUserInfo')) {
+      let userInfo = JSON.parse(localStorage.getItem('remindUserInfo'))
+      this.formTab = {
+        name: userInfo.name,
+        type: '1',
+        password: userInfo.password
       }
+      this.checked = true
     }
   },
   methods: {
@@ -165,22 +165,20 @@ export default {
         type: index
       }
     },
-    remind(val) {
-      if (val) {
+    onSubmit() {
+      if (this.checked) {
         let params = {
           name: this.formTab.name,
-          password: this.formTab.passwords
+          password: this.formTab.password
         }
         localStorage.setItem('remindUserInfo', JSON.stringify(params))
       } else {
         localStorage.removeItem('remindUserInfo')
       }
-    },
-    onSubmit() {
       if (this.loginWay == 2) {
         this.formTab.token = this.token
       }
-      localStorage.clear('')
+      // localStorage.clear('')
       sessionStorage.clear()
       this.$refs['TabForm'].validate(valid => {
         if (valid) {

@@ -44,19 +44,22 @@
     overflow-y: scroll;
     overflow-x: hidden;
   }
-}
-.team-box-left .el-input__inner {
-  padding: 22px 10px;
-}
-.team-box-left .el-input__icon {
-  height: auto;
-}
-.team-box-left .team-input .el-input__inner {
-  padding: 22px 0;
-  background: rgba(255, 255, 255, 1);
-  border: 1px solid rgba(238, 238, 238, 1);
-  box-shadow: 0px 4px 4px 0px rgba(106, 106, 106, 0.1);
-  border-radius: 5px 0px 0px 5px;
+  .el-input__inner {
+    padding: 22px 10px;
+  }
+  .el-input__icon {
+    height: auto;
+    line-height: 44px;
+  }
+  .team-input {
+    .el-input__inner {
+      padding: 21px 10px 21px 30px;
+      background: rgba(255, 255, 255, 1);
+      border: 1px solid rgba(238, 238, 238, 1);
+      box-shadow: 0px 4px 4px 0px rgba(106, 106, 106, 0.1);
+      border-radius: 5px 0px 0px 5px;
+    }
+  }
 }
 .team-box-content {
   width: 80%;
@@ -84,9 +87,6 @@
 .tables-box {
   height: 100%;
   margin-bottom: 50px;
-}
-.foots {
-  margin-top: 30px;
 }
 </style>
 

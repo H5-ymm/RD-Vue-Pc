@@ -67,6 +67,7 @@
       .team-info-card-row {
         width: 50%;
         text-align: left;
+        margin-top: 10px;
         .team-info-card-item {
           line-height: 36px;
           span {
@@ -131,7 +132,7 @@
       <section class="member-col3">
         <div class="member-col3-box">
           <p class="member-col3-title">接单详情</p>
-          <ul class="x-flex-between">
+          <ul class="x-flex-start-between">
             <li class="team-info-card-row">
               <div class="team-info-card-item">
                 <span>需求人数</span>
