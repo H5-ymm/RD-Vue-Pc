@@ -18,6 +18,13 @@ module.exports = {
     port: 8081, //配置端口号
     https: false, //是否配置https
     hotOnly: false, //是否热更新
+    // proxy: {
+    //   '/api': {
+    //     target: 'http://tiantianxsg.com:39888/', // target host
+    //     ws: true, // proxy websockets 
+    //     changeOrigin: true, // needed for virtual hosted sites
+    //   }
+    // }
   },
   chainWebpack: () => {},
   productionSourceMap: false,

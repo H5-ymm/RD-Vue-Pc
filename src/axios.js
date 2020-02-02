@@ -9,6 +9,7 @@ const $axios = axios.create({
   timeout: 4000
 });
 const baseURL = 'http://tiantianxsg.com:39888/index.php'
+// const baseURL = 'api/index.php'
 //请求拦截
 $axios.interceptors.request.use(
   function (config) {
