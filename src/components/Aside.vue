@@ -381,22 +381,22 @@ export default {
     },
     $route(to, from) {
       if (to.path == '/commonTableList' && from.path == '/teamEntryList') {
-        this.selectMenus(to.path, this.menus)
+        this.selectMenus(to.fullPath, this.menus)
       }
       if (to.path == '/teamEntryList' && from.path == '/resumeResult') {
-        this.selectMenus(to.path, this.menus)
+        this.selectMenus(to.fullPath, this.menus)
       }
       if (
         to.path == '/resumeResult' &&
         from.path == '/teamInterviewPersonnel'
       ) {
-        this.selectMenus(to.path, this.menus)
+        this.selectMenus(to.fullPath, this.menus)
       }
       if (to.path == '/putList' && from.path == '/publishJobList') {
-        this.selectMenus(to.path, this.menus)
+        this.selectMenus(to.fullPath, this.menus)
       }
       if (to.path == '/accountSafe' && from.path == '/passwordManage') {
-        this.selectMenus(to.path, this.menus)
+        this.selectMenus(to.fullPath, this.menus)
       }
     }
   },
@@ -427,8 +427,9 @@ export default {
   computed: {
     routerli() {
       // 对应路由
+      console.log(this.$route)
       // let pathStr = this.$route.path.split('/')
-      return this.$route.path
+      return this.$route.fullPath
     }
   }
 }

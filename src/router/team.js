@@ -218,7 +218,7 @@ let children = [{ // 团队论坛
     }
   },
   {
-    path: '/putList', // 日志
+    path: '/putList', // 
     component: putList,
     meta: {
       requiresAuth: 2

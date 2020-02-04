@@ -149,7 +149,6 @@
 </template>
 
 <script>
-// import { getTeamList, loginOutTeam, addTeamUser, updateTeamUser } from '../../api/team'
 import { gettalent, addPut, getapplyInfo } from '@/api/teamReceipt'
 import { addPutSelf } from '@/api/internalInvoice'
 import {

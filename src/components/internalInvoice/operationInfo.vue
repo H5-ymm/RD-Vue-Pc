@@ -62,7 +62,7 @@
   </div>
 </template>
 <script>
-import { getTeamManage } from '@/api/internalInvoice'
+import { getTeamManage, getassignlist } from '@/api/internalInvoice'
 import personalModal from '../common/personalModal'
 export default {
   components: {
@@ -84,7 +84,10 @@ export default {
       index: 2
     }
   },
-  created() {},
+  created() {
+    this.formMember = this.formJob.setinfo
+    // console.log(this.formJob)
+  },
   methods: {
     selectPerson() {
       let uid = localStorage.getItem('uid')

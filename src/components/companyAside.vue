@@ -31,10 +31,8 @@ import { getCompanyDetail } from '@/api/company'
 import { getImgUrl } from '@/util/util'
 export default {
   name: 'companyAside',
-  props: {
-
-  },
-  data () {
+  props: {},
+  data() {
     return {
       menus: [
         {
@@ -134,13 +132,13 @@ export default {
       baseInfo: {}
     }
   },
-  created () {
+  created() {
     let uid = localStorage.getItem('uid')
     this.getCompanyInfo(uid)
   },
   methods: {
     getImgUrl,
-    getCompanyInfo (uid) {
+    getCompanyInfo(uid) {
       getCompanyDetail({ uid }).then(res => {
         this.baseInfo = res.data
         if (res.data && res.data.logo_url) {
@@ -155,16 +153,16 @@ export default {
         sessionStorage.setItem('userInfo', JSON.stringify(userInfo))
       })
     },
-    handleOpen (key, keyPath) {
+    handleOpen(key, keyPath) {
       this.title = key
     },
-    selectMenus (key, keyPath) {
+    selectMenus(key, keyPath) {
       this.url = key
       let arr = this.getMenusTitle(key, this.menus)
       sessionStorage.setItem('menusUrl', this.url)
       sessionStorage.setItem('menus', JSON.stringify(arr))
     },
-    getMenusTitle (url, arr) {
+    getMenusTitle(url, arr) {
       let title = ''
       let list = []
       arr.forEach(item => {
@@ -179,24 +177,23 @@ export default {
     }
   },
   watch: {
-    $route (to, from) {
+    $route(to, from) {
       if (to.path == '/interviewPersonnel' && from.path == '/talentResume') {
-        this.selectMenus(to.path, this.menus)
+        this.selectMenus(to.fullPath, this.menus)
       }
       if (to.path == '/entryList' && from.path == '/interviewPersonnel') {
-        this.selectMenus(to.path, this.menus)
+        this.selectMenus(to.fullPath, this.menus)
       }
       if (to.path == '/accountSafe' && from.path == '/passwordManage') {
-        this.selectMenus(to.path, this.menus)
+        this.selectMenus(to.fullPath, this.menus)
       }
     }
   },
   computed: {
-    routerli () {
+    routerli() {
       // 对应路由
       // let pathStr = this.$route.path.split('/')
-      return this.$route.path
-
+      return this.$route.fullPath
     }
   }
 }
@@ -205,36 +202,36 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss">
 .company-aside {
-   height: 100%;
-   background: #32373E;
+  height: 100%;
+  background: #32373e;
   .el-menu-item.is-active {
-    background:#1890FF!important;
-    border-right: 4px solid #06ADFB;
+    background: #1890ff !important;
+    border-right: 4px solid #06adfb;
     box-sizing: border-box;
     color: #fff;
-    padding-left: 50px!important;
+    padding-left: 50px !important;
     margin-right: 0;
   }
   .is-opened {
     .el-submenu__title {
-      color: #1890FF!important;
+      color: #1890ff !important;
     }
     i {
-      color: #1890FF!important;
+      color: #1890ff !important;
     }
   }
 }
 .el-submenu {
-  padding-right:0;
+  padding-right: 0;
   span {
     font-size: 16px;
   }
 }
-.el-submenu  .aside-icon {
+.el-submenu .aside-icon {
   width: 17px;
   margin-right: 10px;
 }
-.el-menu-vertical-demo{
+.el-menu-vertical-demo {
   border: 0px solid #ffffff;
   height: 100vh;
   overflow: auto;
@@ -245,11 +242,11 @@ export default {
 }
 .names {
   &.company-names {
-    background: #1890FF;
-    font-size:26px;
+    background: #1890ff;
+    font-size: 26px;
     font-weight: bold;
     color: #fff;
-    height:50px;
+    height: 50px;
     line-height: 50px;
   }
 }
@@ -265,7 +262,7 @@ export default {
     margin: 10px auto;
   }
   .company-name {
-    font-size:14px;
+    font-size: 14px;
     color: #fff;
     width: 140px;
     margin-left: 35px;

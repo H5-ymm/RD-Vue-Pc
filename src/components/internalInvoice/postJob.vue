@@ -7,12 +7,12 @@
   // width: 100%;
   .tab-box {
     margin: 0 0 25px;
-    >li {
-      width:200px;
-      height:40px;
-      background:#fff;
-      box-shadow:2px 5px 17px 0px rgba(51,51,51,0.2);
-      border-radius:5px;
+    > li {
+      width: 200px;
+      height: 40px;
+      background: #fff;
+      box-shadow: 2px 5px 17px 0px rgba(51, 51, 51, 0.2);
+      border-radius: 5px;
       color: #333333;
       margin-right: 40px;
       text-align: center;
@@ -22,15 +22,15 @@
         height: 14px;
       }
       &.tab-active {
-        background:#1890FF;
+        background: #1890ff;
         color: #fff;
       }
       .no-info-icon {
         font-size: 12px;
-        color: #FE2A00;
+        color: #fe2a00;
       }
-      .has-info-icon {  
-        color: #83D260;
+      .has-info-icon {
+        color: #83d260;
       }
       span {
         font-size: 12px;
@@ -85,9 +85,9 @@ export default {
   components: {
     baseInfo,
     rewardRule,
-    operationInfo,
+    operationInfo
   },
-  data () {
+  data() {
     return {
       tabIndex: 0,
       comName: 'baseInfo',
@@ -116,7 +116,7 @@ export default {
       rewardInfo: {
         reward_type: '', // 返利类型(1月返 2日返 3时返 4一次性返)
         reward_money: '', // 返利金额(根据类型修改单位)
-        reward_money_type: '', // 1日2周3月(针对日返和时返) 1长期2持续（针对月返）结算类型 
+        reward_money_type: '', // 1日2周3月(针对日返和时返) 1长期2持续（针对月返）结算类型
         settlement_time: '', // 结算时间(针对月返：次月第XX多少天；)
         reward_needtime: '', // 需求入职天数/周数/月数(一次性时：0表示当天返)
         duration_time: '', // 持续 (天数/周数/月数)
@@ -141,69 +141,73 @@ export default {
       otherInfo: null
     }
   },
-  created () {
+  created() {
     if (this.$route.query.id) {
       this.id = this.$route.query.id
       this.getInfo(this.id)
     }
   },
   methods: {
-    switchTab (index) {
+    switchTab(index) {
       this.tabIndex = index
       if (index == 0) {
         this.comName = 'baseInfo'
-      }
-      else if (index == 1) {
+      } else if (index == 1) {
         this.comName = 'rewardRule'
-      }
-      else {
+      } else {
         this.comName = 'operationInfo'
       }
     },
-    isCheck (obj) {
+    isCheck(obj) {
+      console.log(obj)
       let flag = false
       for (let key in obj) {
         if (obj[key] == '') {
           flag = false
-        }
-        else {
+        } else {
           flag = true
         }
       }
       return flag
     },
-    getInfo (id) {
-      getJobinfo({ id }).then(res => {
-        this.formMember = res.data
-        this.baseInfo = { ...this.formMember }
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+    getInfo(id) {
+      getJobinfo({ id })
+        .then(res => {
+          this.formMember = res.data
+          this.formInfo = res.data
+          for (let key in this.baseInfo) {
+            this.baseInfo[key] = res.data[key]
+          }
+          console.log(this.baseInfo)
+        })
+        .catch(error => {
+          this.$message.error(error.status.remind)
+        })
     },
-    isCheckReward (info) {
+    isCheckReward(info) {
       let flag = false
       if (info.type == 2) {
         flag = true
-      }
-      else if (info.tabIndex) {
+      } else if (info.tabIndex) {
         return false
-      }
-      else {
+      } else {
         for (let key in info) {
           if (info.reward_type == 1) {
-            if (info[key] != '' && key != 'reward_needtime' && key != 'duration_time' && key != 'type') {
+            if (
+              info[key] != '' &&
+              key != 'reward_needtime' &&
+              key != 'duration_time' &&
+              key != 'type'
+            ) {
               flag = true
-              break;
-            }
-            else {
+              break
+            } else {
               flag = false
             }
-          }
-          else {
+          } else {
             if (info[key] != '' && key != 'type') {
               flag = true
-            }
-            else {
+            } else {
               flag = false
             }
           }
@@ -211,34 +215,49 @@ export default {
       }
       return flag
     },
-    submitForm (val) {
+    submitForm(val) {
       if (this.tabIndex <= 2) {
         this.tabIndex = this.tabIndex + 1
       }
       if (this.tabIndex == 0) {
         this.comName = 'baseInfo'
         this.baseInfo = val
-      }
-      else if (this.tabIndex == 1) {
+      } else if (this.tabIndex == 1) {
         this.comName = 'rewardRule'
         this.rewardInfo = val
-      }
-      else {
+      } else {
         this.otherInfo = val
         this.comName = 'operationInfo'
       }
       this.formInfo = Object.assign(this.formInfo, val)
-      if (this.comName == 'operationInfo'&&this.tabIndex==3) {
-        addjob(this.formInfo).then(res => {
-          if (res.data) {
-            this.$message.success('发布成功')
-            this.$router.push('publishJobList?view=1')
-          } else {
-            this.$message.error('发布失败')
-          }
-        }).catch(error => {
-          this.$message.error(error.status.remind)
-        })
+      if (this.comName == 'operationInfo' && this.tabIndex == 3) {
+        if (this.formMember.id) {
+          savejob(this.formInfo)
+            .then(res => {
+              if (res.data) {
+                this.$message.success('修改成功')
+                this.$router.push('publishJobList?view=1')
+              } else {
+                this.$message.error('修改失败')
+              }
+            })
+            .catch(error => {
+              this.$message.error(error.status.remind)
+            })
+        } else {
+          addjob(this.formInfo)
+            .then(res => {
+              if (res.data) {
+                this.$message.success('发布成功')
+                this.$router.push('publishJobList?view=1')
+              } else {
+                this.$message.error('发布失败')
+              }
+            })
+            .catch(error => {
+              this.$message.error(error.status.remind)
+            })
+        }
       }
     }
   }

@@ -1,4 +1,6 @@
-import { $post } from '../axios'
+import {
+  $post
+} from '../axios'
 
 export const addApply = data => $post('/teamapply/add_apply', data) // 添加接单
 export const cancelApply = data => $post('/teamapply/cancel_apply', data) // 取消接单

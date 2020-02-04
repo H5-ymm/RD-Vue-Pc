@@ -38,18 +38,18 @@
           <el-table-column type="selection" align="center" width="60"></el-table-column>
           <el-table-column label="企业名称" align="center" width="150">
             <template slot-scope="props">
-              <span class="text-line width140">{{props.row.com_name}}</span>
+              <span class="text-line width140">{{props.row.com_name||props.row.company_name}}</span>
             </template>
           </el-table-column>
           <el-table-column label="岗位名称" align="center" width="150">
             <template slot-scope="props">
-              <span class="text-line width140">{{props.row.name}}</span>
+              <span class="text-line width140">{{props.row.name||props.row.job_name}}</span>
             </template>
           </el-table-column>
           <!-- <el-table-column label="返利模式" prop="offermoney_type" align="center" width="120"></el-table-column> -->
           <el-table-column label="返利模式" align="center" width="150">
             <template slot-scope="props">
-              <span>{{props.row.reward_type | moneyType}}</span>
+              <span>{{props.row.reward_type | rewardType}}</span>
             </template>
           </el-table-column>
           <el-table-column label="岗位城市" align="center" width="150">
@@ -59,13 +59,20 @@
           </el-table-column>
           <el-table-column label="工资" align="center" width="150">
             <template slot-scope="props">
-              <span v-if="props.row.reward_type==1">{{props.row.money_min}} ~ {{props.row.money_max}}</span>
-              <span v-else>{{props.row.money}}</span>
+              <div v-if="!tabIndex">
+                <span v-if="props.row.money_type==1">{{props.row.money_min}} ~ {{props.row.money_max}}/{{props.row.money_type | moneyType}}</span>
+                <span v-else>{{props.row.money}}</span>
+              </div>
+              <div v-if="tabIndex">
+                <span v-if="props.row.offermoney_type==1">{{props.row.money_min}} ~ {{props.row.money_max}}/{{props.row.offermoney_type | moneyType}}</span>
+                <span v-else>{{props.row.offermoney}}</span>
+              </div>
             </template>
           </el-table-column>
           <el-table-column label="接单状态" align="center" width="150">
             <template slot-scope="props">
-              <span class="status">{{props.row.job_status ==1 ? '进行中': '已下架'}}</span>
+              <!-- <span class="status">{{props.row.job_status ==1 ? '进行中': '已下架'}}</span> -->
+              <span class="status">进行中</span>
             </template>
           </el-table-column>
           <el-table-column label="岗位匹配度" align="center" width="150">
@@ -95,10 +102,12 @@ import {
   getMatchingResume,
   getInternalInvoiceList,
   getMatchingJobList,
-  getInternalMatchingList
+  getInternalMatchingList,
+  addPut
 } from '@/api/resume'
-import { addPut } from '@/api/teamReceipt'
-import { moneyTypeList, rewardTypeList } from '@/base/base'
+
+import { addPutSelf } from '@/api/internalInvoice'
+import { moneyTypeList1, rewardTypeList1 } from '@/base/base'
 import jobMate from './jobMate'
 export default {
   components: {
@@ -106,13 +115,14 @@ export default {
   },
   filters: {
     moneyType(val) {
-      let obj = moneyTypeList.find(item => {
+      let obj = moneyTypeList1.find(item => {
         return val == item.value
       })
       return obj ? obj.label : '--'
     },
     rewardType(val) {
-      let obj = rewardTypeList.find(item => {
+      console.log(val)
+      let obj = rewardTypeList1.find(item => {
         return val == item.value
       })
       return obj ? obj.label : '--'
@@ -120,8 +130,8 @@ export default {
   },
   data() {
     return {
-      moneyTypeList,
-      rewardTypeList,
+      moneyTypeList1,
+      rewardTypeList1,
       dialogTableVisible: false,
       visible: false,
       tableData: [],
@@ -147,13 +157,13 @@ export default {
   },
   created() {
     this.resumeId = this.$route.query.id
+    this.formMember.resumeId = this.$route.query.id
     if (this.$route.query.index) {
       this.tabIndex = this.$route.query.index
     } else {
       this.tabIndex = 0
     }
     // 职位匹配简历
-    this.formMember.resumeId = this.$route.query.id
     this.getList(this.formMember)
   },
   watch: {
@@ -234,24 +244,45 @@ export default {
       if (!this.multipleSelection.length && !apply_id) {
         return this.$message.warning('请选择职位')
       }
-      let params = {
-        apply_id: apply_id,
-        uid: localStorage.getItem('uid'),
-        resume_id: this.resumeId
+      if (!this.tabIndex) {
+        let params = {
+          apply_id: apply_id,
+          uid: localStorage.getItem('uid'),
+          resume_id: this.resumeId
+        }
+        addPut(params)
+          .then(res => {
+            if (res.data) {
+              this.dialogTableVisible = true
+              this.$message.success('推荐成功')
+              this.getList(this.formMember)
+            } else {
+              this.$message.error('推荐失败')
+            }
+          })
+          .catch(error => {
+            this.$message.error(error.status.remind)
+          })
+      } else {
+        let params = {
+          job_id: apply_id,
+          uid: localStorage.getItem('uid'),
+          resume_id: this.resumeId
+        }
+        addPutSelf(params)
+          .then(res => {
+            if (res.data) {
+              this.dialogTableVisible = true
+              this.$message.success('推荐成功')
+              this.getList(this.formMember)
+            } else {
+              this.$message.error('推荐失败')
+            }
+          })
+          .catch(error => {
+            this.$message.error(error.status.remind)
+          })
       }
-      addPut(params)
-        .then(res => {
-          if (res.data) {
-            this.dialogTableVisible = true
-            this.$message.success('推荐成功')
-            this.getList(this.formMember)
-          } else {
-            this.$message.error('推荐失败')
-          }
-        })
-        .catch(error => {
-          this.$message.error(error.status.remind)
-        })
     },
     handleSelectionChange(val) {
       this.multipleSelection = val

@@ -18,8 +18,6 @@ Vue.config.productionTip = false
 
 // 注册element-ui
 Vue.use(ElementUI);
-
-
 new Vue({
   router,
   store,

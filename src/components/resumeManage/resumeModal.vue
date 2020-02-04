@@ -325,6 +325,12 @@ export default {
       selectUserResumeInfo(params)
         .then(res => {
           this.formMember = res.data
+          this.formMember.salary_type = res.data.salary_type
+            ? res.data.salary_type
+            : ''
+          console.log(res.data.salary_type)
+          console.log(res.data.money)
+          this.formMember.money = res.data.money ? res.data.money : ''
           if (res.data.entry_begintime) {
             this.entryTime[0] = this.$moment
               .unix(res.data.entry_begintime)

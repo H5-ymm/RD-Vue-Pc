@@ -197,7 +197,7 @@
                 <el-button @click="$router.push('/jobDetail?id='+scope.row.id)" type="text" size="small">详情</el-button>
                 <el-button @click="$router.push('/recommendResume?jobId='+scope.row.id+'&index=1')" v-if="scope.row.is_up==1" type="text" size="small">推荐简历</el-button>
                 <span v-if="!scope.row.is_up" class="default-status">推荐简历</span>
-                <el-button @click="$router.push('/putList?id='+scope.row.id)" type="text" size="small">已推荐简历</el-button>
+                <el-button @click="goRouter(scope.row.id)" type="text" size="small">已推荐简历</el-button>
               </div>
             </template>
           </el-table-column>
@@ -344,6 +344,10 @@ export default {
     }
   },
   methods: {
+    goRouter(id) {
+      sessionStorage.setItem('menus', JSON.stringify(['已推荐简历']))
+      this.$router.push('/putList?id=' + id)
+    },
     getList(params) {
       getJoblist(params)
         .then(res => {

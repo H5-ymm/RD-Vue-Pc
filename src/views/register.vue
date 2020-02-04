@@ -248,10 +248,11 @@ export default {
               localStorage.setItem('teamType', 0)
               this.$store.commit('getUid', res.data.uid)
               localStorage.setItem('uid', res.data.uid)
-              sessionStorage.setItem('userPosition', 1)
               if (res.data.type == 1) {
                 this.$router.push('/createOrderTaking')
               } else {
+                localStorage.setItem('userPosition', 1)
+                sessionStorage.setItem('userPosition', 1)
                 this.$router.push('/teamData')
               }
             })

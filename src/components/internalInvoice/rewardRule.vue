@@ -134,20 +134,19 @@ export default {
   created() {
     let params = 'money_array'
     this.getList(params)
-    this.rewardForm.type = 1
+    if (this.formJob) {
+      this.formMember.type = this.formJob.type
+      if (this.formJob.type == 1) {
+        for (let key in this.rewardForm) {
+          this.rewardForm[key] = this.formJob[key]
+        }
+      }
+    } else {
+      this.formMember.type = 1
+    }
+    console.log(this.formJob)
   },
   methods: {
-    getInfo() {
-      let params = {
-        uid: localStorage.getItem('uid'),
-        resumeId: this.resumeId
-      }
-      selectUserResumeInfo(params).then(res => {
-        this.formMember = res.data
-        this.entryTime[0] = res.data.entry_begintime
-        this.entryTime[1] = res.data.entry_endtime
-      })
-    },
     getList(filed) {
       getConstant({ filed }).then(res => {
         this.moneyArray = res.data.money_array
@@ -213,6 +212,7 @@ export default {
         if (this.rewardForm.reward_type == 4 && !this.rewardForm.reward_money) {
           return this.$message.warning('请设置返利模式规则')
         }
+        this.formMember = Object.assign(this.formMember, this.rewardForm)
         this.$emit('submitForm', this.formMember)
       } else {
         this.$emit('submitForm', this.formMember)
