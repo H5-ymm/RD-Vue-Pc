@@ -345,7 +345,8 @@ export default {
   },
   methods: {
     goRouter(id) {
-      sessionStorage.setItem('menus', JSON.stringify(['已推荐简历']))
+      console.log(id)
+
       this.$router.push('/putList?id=' + id)
     },
     getList(params) {

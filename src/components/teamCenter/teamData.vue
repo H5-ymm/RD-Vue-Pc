@@ -166,15 +166,15 @@ export default {
       allData: {}
     }
   },
-  mounted() {
+  created() {
     if (localStorage.getItem('teamType') == 0) {
       this.dialogVisible = true
       return false
     } else {
       if (localStorage.getItem('userType') == 2) {
+        this.getCompareInfo(this.paramsInfo)
         this.getData(this.paramsEchart)
         this.getList(this.params)
-        this.getCompareInfo(this.paramsInfo)
         this.getTeamList(this.paramsLog)
         this.getLogList(this.paramsLog)
         if (this.userPosition == 1) {

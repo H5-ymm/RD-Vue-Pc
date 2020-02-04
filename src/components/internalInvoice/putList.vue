@@ -53,7 +53,7 @@
           </el-table-column>
           <el-table-column label="报名时间" sortable="custom" prop="msdesc" align="center" width="160">
             <template slot-scope="props">
-              <span>{{props.row.addtime?props.row.addtime:'--'}}</span>
+              <span>{{props.row.addtime?$moment(props.row.addtime).format('YYYY-MM-DD HH:mm'):''}}</span>
             </template>
           </el-table-column>
           <el-table-column label="岗位名称" prop="job_name" align="center" width="150"></el-table-column>

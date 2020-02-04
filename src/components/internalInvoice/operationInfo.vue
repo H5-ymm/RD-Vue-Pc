@@ -36,7 +36,7 @@
                 <el-form-item label="负责人电话" prop="user_name">
                   <el-input v-model="formMember.link_tel" class="width406" placeholder="请输入负责人电话"></el-input>
                 </el-form-item>
-                <el-form-item label="指定招聘人">
+                <el-form-item label="指定招聘人" v-if="!id">
                   <el-radio-group v-model="formMember.is_assign">
                     <el-radio :label="1" border>是</el-radio>
                     <el-radio :label="2" border>否</el-radio>
@@ -64,6 +64,7 @@
 <script>
 import { getTeamManage, getassignlist } from '@/api/internalInvoice'
 import personalModal from '../common/personalModal'
+import { thistle } from 'color-name'
 export default {
   components: {
     personalModal
@@ -81,12 +82,15 @@ export default {
       meeting_time: '',
       personalList: [],
       list: [],
-      index: 2
+      index: 2,
+      id: ''
     }
   },
   created() {
-    this.formMember = this.formJob.setinfo
-    // console.log(this.formJob)
+    if (this.formJob && this.formJob.setinfo) {
+      this.formMember = this.formJob.setinfo
+      this.id = this.formMember.id
+    }
   },
   methods: {
     selectPerson() {

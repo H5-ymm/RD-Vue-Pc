@@ -393,6 +393,7 @@ export default {
         this.selectMenus(to.fullPath, this.menus)
       }
       if (to.path == '/putList' && from.path == '/publishJobList') {
+        console.log(to.fullPath)
         this.selectMenus(to.fullPath, this.menus)
       }
       if (to.path == '/accountSafe' && from.path == '/passwordManage') {
@@ -406,7 +407,7 @@ export default {
     },
     selectMenus(key, keyPath) {
       this.url = key
-      let arr = this.getMenusTitle(key, this.menus)
+      let arr = this.getMenusTitle(key.split('?')[0], this.menus)
       sessionStorage.setItem('menusUrl', this.url)
       sessionStorage.setItem('menus', JSON.stringify(arr))
     },

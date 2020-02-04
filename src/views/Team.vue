@@ -130,6 +130,7 @@ export default {
       if (to.query.userType) {
         this.userPosition = localStorage.getItem('userPosition')
         this.departName = localStorage.getItem('departName')
+        this.uid = localStorage.getItem('uid')
         this.type = to.query.userType
         if (this.type == 1) {
           this.aside = 'companyAside'
@@ -142,6 +143,7 @@ export default {
           this.height = '74px'
           if (this.uid) {
             this.getUserAll()
+            console.log(this.uid + 'uid')
             this.getInfo(this.uid)
           }
         }
