@@ -13,7 +13,7 @@
         <el-col :span="12">
           <ul class="home-footer-box">
             <li class="home-footer-title">联系方式</li>
-            <li>仁达网络科技(上海)有限公司}</li>
+            <li>仁达网络科技(上海)有限公司</li>
             <li>公司地址：上海市浦东新区金海路2588号1幢A区310室</li>
             <li>
               服务热线：021-51991869（9:00-18:00)

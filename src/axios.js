@@ -8,8 +8,8 @@ const $axios = axios.create({
   baseURL: process.env.REACT_APP_BASE_URL,
   timeout: 4000
 });
-const baseURL = 'http://tiantianxsg.com:39888/index.php'
-// const baseURL = 'api/index.php'
+const baseURL = 'https://a.rsd123.com/index.php'
+// const baseURL = 'http://tiantianxsg.com:39888wxConfig.env'
 //请求拦截
 $axios.interceptors.request.use(
   function (config) {
@@ -119,7 +119,7 @@ export function $post(url, params) {
   });
 }
 export function $get(url) {
-  window.location.href = `http://tiantianxsg.com:39888/uploads/test/${url}`
+  window.location.href = `https://a.rsd123.com/uploads/test/${url}`
 }
 export function postFormData(url, params) {
   window.location.href = `${baseURL}${url}?uid=${params}`

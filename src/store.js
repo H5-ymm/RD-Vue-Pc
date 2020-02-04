@@ -24,7 +24,6 @@ export default new Vuex.Store({
     userInfo: sessionStorage.getItem('userInfo') ? JSON.parse(sessionStorage.getItem('userInfo')) : {}, //用户信息
     token: localStorage.getItem('token'), //token
     uid: '',
-    baseUrl: 'http://tiantianxsg.com:39888/index.php/',
     teamType: '', // 团队性质
     userType: '', // 登录身份
     baseInfo: {},

@@ -20,7 +20,7 @@ module.exports = {
     hotOnly: false, //是否热更新
     // proxy: {
     //   '/api': {
-    //     target: 'http://tiantianxsg.com:39888/', // target host
+    //     target: 'https://a.rsd123.com/', // target host
     //     ws: true, // proxy websockets 
     //     changeOrigin: true, // needed for virtual hosted sites
     //   }
