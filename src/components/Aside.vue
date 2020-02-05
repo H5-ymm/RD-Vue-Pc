@@ -404,10 +404,18 @@ export default {
   methods: {
     handleOpen(key, keyPath) {
       console.log(key, keyPath)
+      // sessionStorage.setItem('menus', JSON.stringify(keyPath))
     },
     selectMenus(key, keyPath) {
       this.url = key
-      let arr = this.getMenusTitle(key.split('?')[0], this.menus)
+
+      let newUrl = ''
+      if (key.split('?')[0] == '/personalForm') {
+        newUrl = key
+      } else {
+        newUrl = key.split('?')[0]
+      }
+      let arr = this.getMenusTitle(newUrl, this.menus)
       sessionStorage.setItem('menusUrl', this.url)
       sessionStorage.setItem('menus', JSON.stringify(arr))
     },

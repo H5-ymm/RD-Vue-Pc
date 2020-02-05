@@ -6,16 +6,16 @@
   overflow: hidden;
   background: #fff;
   &.team-box {
-    height: calc(100% - 70px);
+    height: 100%;
   }
   .title {
     font-size: 22px;
     color: #333333;
-    margin-top: 5%;
+    margin-top: 40px;
     text-align: center;
   }
   .team-setting-box {
-    margin: 5% auto;
+    margin: 40px auto;
   }
   .grid-content-select {
     width: 236px;
@@ -27,7 +27,7 @@
     text-align: center;
     line-height: 130px;
     padding-top: 40px;
-    margin: 0 20px;
+    // margin: 0 20px;
     position: relative;
     &.grid-content-active {
       border: 2px solid rgba(54, 153, 255, 1);

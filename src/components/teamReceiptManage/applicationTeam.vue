@@ -63,7 +63,7 @@
               <span class="status" :class="`status${props.row.status}`">{{props.row.status|status}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="操作" align="center" width="150">
+          <el-table-column label="操作" align="center" min-width="150">
             <template slot-scope="scope">
               <el-button @click="viewJob(scope.row)" type="text" size="small" v-if="scope.row.status!=3">查看职位</el-button>
               <el-button @click="handleCancle(scope.row)" type="text" size="small" v-if="scope.row.status==0">取消申请</el-button>
