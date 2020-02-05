@@ -1,6 +1,6 @@
 
 <style lang="scss">
- @import '@/assets/css/home.scss';
+@import '@/assets/css/home.scss';
 </style>
 <template>
   <el-container>
@@ -31,7 +31,7 @@
             </div>
           </el-col>
         </el-row>
-         <el-row class="home-img-box" v-if="imgList.length&&imgList.length==3">
+        <el-row class="home-img-box" v-if="imgList.length&&imgList.length==3">
           <el-col :span="16">
             <div class="grid-content bg-purple-img">
               <img :src="getImgUrl(imgList[0].image)" alt="">
@@ -129,7 +129,7 @@ export default {
     Dialog,
     HeaderView
   },
-  data () {
+  data() {
     return {
       activeIndex: 0,
       keywords: '',
@@ -174,23 +174,27 @@ export default {
     }
   },
   computed: {
-    ommandList () {
+    ommandList() {
       let arr = []
       if (localStorage.getItem('userType') == 2) {
         arr = [
-          { name: '团队中心', url: 'teamData' }, { name: '接单管理', url: 'teamApplication' },
-          { name: '简历管理', url: 'addResume' }, { name: '退出登录', url: 'login' }
+          { name: '团队中心', url: 'teamData' },
+          { name: '接单管理', url: 'teamApplication' },
+          { name: '简历管理', url: 'addResume' },
+          { name: '退出登录', url: 'login' }
         ]
       } else {
         arr = [
-          { name: '发单招聘', url: 'createOrderTaking' }, { name: '发单管理', url: 'checkReceipt' },
-          { name: '账户设置', url: 'companyForm' }, { name: '退出登录', url: 'login' }
+          { name: '发单招聘', url: 'createOrderTaking' },
+          { name: '发单管理', url: 'checkReceipt' },
+          { name: '账户设置', url: 'companyForm' },
+          { name: '退出登录', url: 'login' }
         ]
       }
       return arr
     }
   },
-  created () {
+  created() {
     this.getImgList()
     this.getList(this.params)
     this.getInfoList(this.paramsInfo)
@@ -198,94 +202,111 @@ export default {
       this.userInfo = JSON.parse(sessionStorage.getItem('userInfo'))
     }
   },
-  mounted () {
+  mounted() {
     window.addEventListener('scroll', this.windowScroll)
   },
   methods: {
     getImgUrl,
-    getImgList () {
+    getImgList() {
       let params = {
         limit: 3,
         page: 1
       }
-      advertisementList(params).then(res => {
-        this.imgList = res.data.data
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+      advertisementList(params)
+        .then(res => {
+          this.imgList = res.data.data
+        })
+        .catch(error => {
+          this.$message.error(error.status.remind)
+        })
     },
-    handleOk () {
+    handleOk() {
       this.centerDialogVisible = false
       this.$router.push('teamApplication')
     },
-    windowScroll () {
-      let scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
+    windowScroll() {
+      let scrollTop =
+        window.pageYOffset ||
+        document.documentElement.scrollTop ||
+        document.body.scrollTop
       if (scrollTop - document.documentElement.clientHeight + 500 >= 0) {
         this.isShow = true
-      }
-      else {
+      } else {
         this.isShow = false
       }
     },
-    switchNav (item, index) {
+    switchNav(item, index) {
       this.activeIndex = index
       this.$router.push(item.url)
     },
-    getInfoList (params) {
-      inquiryList(params).then(res => {
-        this.informationList = res.data.data
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+    getInfoList(params) {
+      inquiryList(params)
+        .then(res => {
+          this.informationList = res.data.data
+        })
+        .catch(error => {
+          this.$message.error(error.status.remind)
+        })
     },
-    getList (params) {
-      homeList(params).then(res => {
-        this.list = res.data.data.data
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+    getList(params) {
+      homeList(params)
+        .then(res => {
+          this.list = res.data.data.data
+        })
+        .catch(error => {
+          this.$message.error(error.status.remind)
+        })
     },
-    handleApply (val) {
+    handleApply(val) {
       let params = {
         job_id: val.id,
         uid: localStorage.getItem('uid')
       }
-      addApply(params).then(res => {
-        if (res.data) {
-          this.centerDialogVisible = true
-        }
-        else {
-          this.$message.error('接单失败')
-        }
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+      addApply(params)
+        .then(res => {
+          if (res.data.error == 1) {
+            if (res.data.is_lock == 1) {
+              return this.$message.error('团队账号已锁定，不能接单')
+            } else if (res.data.status == 1) {
+              return this.$message.error('团队账号未审核，不能接单')
+            } else if (res.data.status == 3) {
+              return this.$message.error('团队账号审核未通过，不能接单')
+            } else {
+              return this.$message.error('接单失败')
+            }
+          }
+          if (res.data) {
+            this.centerDialogVisible = true
+          } else {
+            this.$message.error('接单失败')
+          }
+        })
+        .catch(error => {
+          this.$message.error(error.status.remind)
+        })
     },
-    searchQuery (val) {
+    searchQuery(val) {
       let params = Object.assign(val, this.params)
       this.getList(params)
     },
-    getmoneyType (type) {
+    getmoneyType(type) {
       return type === 1 ? '日' : type === 2 ? '月' : '时'
     },
-    getRewardType (type) {
+    getRewardType(type) {
       let text = ''
       if (type == 1) {
         text = '月返'
-      }
-      else if (type == 2) {
+      } else if (type == 2) {
         text = '日返'
-      }
-      else if (type == 3) {
+      } else if (type == 3) {
         text = '时返'
-      }
-      else {
+      } else {
         text = '一次性返利'
       }
       return text
-    },
+    }
   },
-  destroyed () {
+  destroyed() {
     window.removeEventListener('scroll', this.windowScroll)
   }
 }

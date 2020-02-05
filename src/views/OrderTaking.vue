@@ -276,6 +276,17 @@ export default {
         }
         addApply(params)
           .then(res => {
+            if (res.data.error == 1) {
+              if (res.data.is_lock == 1) {
+                return this.$message.error('团队账号已锁定，不能接单')
+              } else if (res.data.status == 1) {
+                return this.$message.error('团队账号未审核，不能接单')
+              } else if (res.data.status == 3) {
+                return this.$message.error('团队账号审核未通过，不能接单')
+              } else {
+                return this.$message.error('接单失败')
+              }
+            }
             if (res.data) {
               this.centerDialogVisible = true
             } else {

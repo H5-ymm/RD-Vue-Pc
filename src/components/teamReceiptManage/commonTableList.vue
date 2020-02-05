@@ -205,7 +205,22 @@ export default {
       }
       addApply(params)
         .then(res => {
-          this.getList(this.formMember)
+          if (res.data.error == 1) {
+            if (res.data.is_lock == 1) {
+              return this.$message.error('团队账号已锁定，不能接单')
+            } else if (res.data.status == 1) {
+              return this.$message.error('团队账号未审核，不能接单')
+            } else if (res.data.status == 3) {
+              return this.$message.error('团队账号审核未通过，不能接单')
+            } else {
+              return this.$message.error('接单失败')
+            }
+          }
+          if (res.data) {
+            this.getList(this.formMember)
+          } else {
+            this.$message.error('接单失败')
+          }
         })
         .catch(error => {
           if (error) {

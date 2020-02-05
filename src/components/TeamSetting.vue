@@ -114,13 +114,10 @@ export default {
   },
   methods: {
     selectType(index, item) {
-      if (!this.type) {
-        this.activIndex = index
-        this.url = item.url
-        this.type = item.type
-      } else {
-        return
-      }
+      // if (!this.type) {
+      this.activIndex = index
+      this.url = item.url
+      this.type = item.type
     },
     next() {
       if (!this.activIndex) {
