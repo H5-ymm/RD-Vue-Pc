@@ -1,3 +1,6 @@
+<style lang="scss">
+@import '@/assets/css/dialog.scss';
+</style>
 <template>
   <el-dialog width="500px" :visible="dialogTableVisible" class="member-dialog" :show-close="false">
     <div class="member-row" v-if="formMember">
@@ -22,11 +25,11 @@
           <p>学历</p>
           <p>{{formMember.educationName}}</p>
         </div>
-        <div class="x-flex-center">
+        <div class="x-flex-center" v-if="userPosition!=1||isView">
           <p>当前职称</p>
           <p>{{formMember.grade_name}}</p>
         </div>
-        <div class="x-flex-center">
+        <div class="x-flex-center" v-if="userPosition!=1||isView">
           <p>部门</p>
           <p>{{formMember.depart_name}}</p>
         </div>
@@ -42,20 +45,18 @@
           <p>最后登录时间</p>
           <p>{{formMember.logout_time?$moment.unix(formMember.logout_time).format('YYYY-MM-DD HH:mm'):'-'}}</p>
         </div>
-        <div class="x-flex-center" v-if="userPosition==3">
+        <div class="x-flex-center" v-if="userPosition==3||isView">
           <p>当前状态</p>
           <p>{{formMember.status == 1 ? '正常': '锁定'}}</p>
         </div>
-        <div class="x-flex-center" v-if="userPosition!=1">
-          <p>部门</p>
-          <p>{{formMember.depart_name}}</p>
-        </div>
-        <div class="x-flex-center" v-if="userPosition!=1">
-          <p>当前职称</p>
-          <p>{{formMember.grade_name}}</p>
+        <div class="x-flex-center" v-if="userPosition!=3&&isView">
+          <p>认证信息</p>
+          <p>
+            <memberTooltip :formMember="formMember"></memberTooltip>
+          </p>
         </div>
       </section>
-      <section class="member-col3">
+      <section class="member-col3" :class="{'member-col4':isView}" v-if="!isView">
         <el-form :model="formMember" class="demo-form-inline" label-width="120px">
           <el-form-item label="部门" v-if="userPosition==1">
             <el-select placeholder="请选择" :disabled="isView&&user!=1" v-model="depId" @change="selectDep">
@@ -67,14 +68,14 @@
               <el-option :label="item.grade_name" :value="item.id" v-for="item in jobList" :key="item.grade_name"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="当前状态" v-if="userPosition!=3">
+          <el-form-item label="当前状态">
             <el-radio-group v-model="formMember.status" :disabled="isView">
               <el-radio :label="1" border>正常</el-radio>
               <el-radio :label="2" border>锁定</el-radio>
             </el-radio-group>
           </el-form-item>
           <el-form-item label="活动形式" v-if="formMember.status==2">
-            <el-input type="textarea" :readonly="isView" v-model="formMember.remark" placeholder="请输入锁定说明（必填）"></el-input>
+            <el-input type="textarea" :autosize="{ minRows: 3}" :readonly="isView" v-model="formMember.remark" placeholder="请输入锁定说明（必填）"></el-input>
           </el-form-item>
           <el-form-item label="认证信息">
             <memberTooltip :formMember="formMember"></memberTooltip>
@@ -82,7 +83,7 @@
         </el-form>
       </section>
     </div>
-    <div slot="footer">
+    <div slot="footer" class="member-footer">
       <el-button @click="handleClose">关闭</el-button>
       <el-button type="primary" v-if="!isView" @click="submitMember">确定</el-button>
     </div>
@@ -204,107 +205,3 @@ export default {
   }
 }
 </script>
-<style lang="scss">
-.member-dialog {
-  box-shadow: 0px 1px 43px 0px rgba(51, 51, 51, 0.3);
-  border-radius: 5px;
-  .el-dialog__body,
-  .el-dialog__header {
-    padding: 0;
-  }
-  .member-row {
-    width: 100%;
-    margin: 0 auto;
-    text-align: center;
-    color: #333333;
-    padding: 0 0 10px;
-    position: relative;
-    .cancel-icon {
-      position: absolute;
-      top: 5px;
-      right: 0;
-    }
-    .member-col1 {
-      background: #ebf4fb;
-      padding: 21px 0 20px;
-      .head-box {
-        padding: 10px 0 20px;
-      }
-      .head {
-        width: 88px;
-        height: 88px;
-        border-radius: 100%;
-      }
-    }
-    .member-col2 {
-      line-height: 30px;
-      margin: 10px auto;
-      width: 65%;
-      p {
-        &:nth-of-type(1) {
-          width: 100px;
-          text-align: right;
-          color: #6a6a6a;
-        }
-        &:nth-of-type(2) {
-          flex: 1;
-          text-align: left;
-          margin-left: 30px;
-        }
-      }
-    }
-    .member-col3 {
-      width: 100%;
-      border-top: 1px solid #eee;
-      padding-top: 10px;
-      .demo-form-inline {
-        width: 90%;
-        margin: 10px auto;
-        .el-form-item {
-          margin-bottom: 20px;
-        }
-        .el-input__inner {
-          width: 300px !important;
-          padding: 19px 10px;
-        }
-        .el-textarea {
-          width: 300px !important;
-          border-radius: 3px;
-          height: 80px;
-        }
-        .el-form-item__content {
-          margin-left: 20px !important;
-        }
-        .el-select,
-        .el-radio-group,
-        .el-textarea {
-          margin-left: -30px;
-        }
-        .el-radio.is-bordered {
-          height: 38px;
-          width: 145px;
-          border-radius: 2px;
-          line-height: 38px;
-          padding: 0;
-          margin-right: 0;
-          & + .el-radio.is-bordered {
-            margin-left: 10px;
-          }
-        }
-        .el-radio__input {
-          float: right;
-          margin-top: 12px;
-          margin-right: 10px;
-        }
-        .member-status {
-          margin-top: 12px;
-          padding-left: 14px;
-          img {
-            margin-right: 20px;
-          }
-        }
-      }
-    }
-  }
-}
-</style>

@@ -163,6 +163,8 @@ export default {
     } else {
       this.tabIndex = 0
     }
+    let arr = ['新增简历', '推荐岗位']
+    this.$store.commit('setMenus', arr)
     // 职位匹配简历
     this.getList(this.formMember)
   },

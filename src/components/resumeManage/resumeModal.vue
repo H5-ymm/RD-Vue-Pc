@@ -74,6 +74,7 @@
         width: 50%;
         text-align: left;
         &:nth-child(2) {
+          box-sizing: border-box;
           .el-form-item {
             padding-left: 55px;
             margin-right: 0;

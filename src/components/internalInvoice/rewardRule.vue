@@ -135,7 +135,7 @@ export default {
     let params = 'money_array'
     this.getList(params)
     if (this.formJob) {
-      this.formMember.type = this.formJob.type
+      this.formMember.type = this.formJob.type || 1
       if (this.formJob.type == 1) {
         for (let key in this.rewardForm) {
           this.rewardForm[key] = this.formJob[key]

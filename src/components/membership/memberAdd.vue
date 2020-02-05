@@ -1,104 +1,5 @@
-<style lang="scss">
-.member-dialog {
-  box-shadow: 0px 1px 43px 0px rgba(51, 51, 51, 0.3);
-  border-radius: 5px;
-  .el-dialog__body,
-  .el-dialog__header {
-    padding: 0;
-  }
-  .member-row {
-    width: 100%;
-    margin: 0 auto;
-    text-align: center;
-    color: #333333;
-    padding: 0 0 10px;
-    position: relative;
-    .cancel-icon {
-      position: absolute;
-      top: 5px;
-      right: 0;
-    }
-    .member-col2 {
-      line-height: 30px;
-      margin: 10px auto;
-      width: 65%;
-      p {
-        &:nth-of-type(1) {
-          width: 100px;
-          text-align: right;
-          color: #6a6a6a;
-        }
-        &:nth-of-type(2) {
-          flex: 1;
-          text-align: left;
-          margin-left: 30px;
-        }
-      }
-    }
-    .member-col3 {
-      width: 100%;
-      border-top: 1px solid #eee;
-      padding-top: 10px;
-      .demo-form-inline {
-        width: 90%;
-        margin: 10px auto;
-        .el-form-item {
-          margin-bottom: 20px;
-        }
-        .el-input__inner {
-          width: 300px !important;
-        }
-        .el-textarea {
-          width: 300px !important;
-          border-radius: 3px;
-          height: 80px;
-        }
-        .el-form-item__content {
-          margin-left: 20px !important;
-        }
-        .el-form-item__error {
-          left: 123px;
-        }
-        .el-select,
-        .el-radio-group {
-          margin-left: -30px;
-        }
-        .el-radio.is-bordered {
-          height: 38px;
-          width: 145px;
-          border-radius: 2px;
-          line-height: 38px;
-          padding: 0;
-          margin-right: 0;
-          & + .el-radio.is-bordered {
-            margin-left: 10px;
-          }
-        }
-        .el-radio__input {
-          float: right;
-          margin-top: 12px;
-          margin-right: 10px;
-        }
-        .member-status {
-          margin-top: 12px;
-          padding-left: 14px;
-        }
-      }
-      &.member-add-col3 {
-        .el-select,
-        .el-radio-group {
-          margin-left: 0;
-        }
-        .el-form-item__content {
-          margin-left: 0 !important;
-        }
-        .el-input {
-          width: 300px;
-        }
-      }
-    }
-  }
-}
+<style lang="scss" scoped>
+@import '@/assets/css/dialog.scss';
 </style>
 <template>
   <el-dialog width="500px" :visible="dialogTableVisible" class="member-dialog" :show-close="false">
@@ -151,8 +52,8 @@
         </el-form>
       </section>
     </div>
-    <div slot="footer">
-      <el-button @click="handleClose">关闭</el-button>
+    <div slot="footer" class="member-footer">
+      <el-button @click="handleClose">取消</el-button>
       <el-button type="primary" @click="submitForm">确定</el-button>
     </div>
   </el-dialog>
