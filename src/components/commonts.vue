@@ -204,8 +204,12 @@ export default {
               this.isLoad = false
             }
             this.commentId = this.list[0].id
-            if (this.refurbishStatus != 3) {
-              this.getDetail(this.commentId)
+            if (!this.commentId) {
+              this.commentInfo = null
+            } else {
+              if (this.refurbishStatus != 3) {
+                this.getDetail(this.commentId)
+              }
             }
           } else {
             this.list = []

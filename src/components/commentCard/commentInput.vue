@@ -17,15 +17,15 @@
   </section>
 </template>
 <script>
-import VEmojiPicker from 'v-emoji-picker';
-import packData from 'v-emoji-picker/data/emojis.json';
+import VEmojiPicker from 'v-emoji-picker'
+import packData from 'v-emoji-picker/data/emojis.json'
 export default {
   props: ['createdName', 'isShow', 'reName'],
   name: 'reply',
   components: {
     VEmojiPicker
   },
-  data () {
+  data() {
     return {
       pack: packData,
       emoji: '',
@@ -39,23 +39,23 @@ export default {
       conmentEmoji: ''
     }
   },
-  created () {
+  created() {
     this.username = this.reName ? this.reName : localStorage.getItem('username')
   },
   watch: {
-    showEmoji (val) {
+    showEmoji(val) {
       if (val) {
-        document.getElementById('InputSearch').style.display = "none"
+        document.getElementById('InputSearch').style.display = 'none'
       }
     },
-    emoji (val) {
+    emoji(val) {
       if (!val) {
         this.content = ''
         this.conmentEmoji = ''
         this.comment = ''
       }
     },
-    comment (val) {
+    comment(val) {
       if (!val) {
         this.content = ''
         this.conmentEmoji = ''
@@ -64,38 +64,38 @@ export default {
     }
   },
   methods: {
-    onfocus () {
+    onfocus() {
       if (window.getSelection) {
-        let sel = window.getSelection();
+        let sel = window.getSelection()
         if (sel.getRangeAt && sel.rangeCount) {
-          return sel.getRangeAt(0);
+          return sel.getRangeAt(0)
         }
       } else if (document.selection && document.selection.createRange) {
-        return document.selection.createRange();
+        return document.selection.createRange()
       }
-      return null;
+      return null
     },
-    restoreSelection (range) {
+    restoreSelection(range) {
       if (range) {
         if (window.getSelection) {
-          let sel = window.getSelection();
-          sel.removeAllRanges();
-          sel.addRange(range);
+          let sel = window.getSelection()
+          sel.removeAllRanges()
+          sel.addRange(range)
         } else if (document.selection && range.select) {
-          range.select();
+          range.select()
         }
       }
     },
-    selectEmoji (info) {
+    selectEmoji(info) {
       this.emoji = info.emoji
       this.conmentEmoji += this.emoji
       this.content = this.comment + this.conmentEmoji
       this.showEmoji = false
     },
-    onDivInput (e) {
+    onDivInput(e) {
       this.comment = e.target.innerText
     },
-    submitComment () {
+    submitComment() {
       let content = !this.content ? this.comment : this.content
       this.$emit('submitComment', content)
       this.content = ''
@@ -103,7 +103,7 @@ export default {
       this.emoji = ''
       this.comment = ''
     },
-    cancleComment () {
+    cancleComment() {
       this.content = ''
       this.conmentEmoji = ''
       this.emoji = ''
@@ -114,38 +114,44 @@ export default {
 }
 </script>
 <style lang="scss">
- .edit-card-textarea {
-    background: #fff;
-    padding: 5px 10px 10px;
+.edit-card-textarea {
+  background: #fff;
+  padding: 5px 10px 10px;
+}
+.edit-card-emoji {
+  position: relative;
+}
+.edit-card-emoji .emoji-item {
+  position: absolute;
+  top: 30px;
+  left: 0;
+  z-index: 222;
+  height: 256px;
+}
+.edit-card-textarea .textarea {
+  margin: 10px 0;
+  /* width: 100%; */
+  min-height: 44px;
+  font-size: 14px;
+  border: 1px solid #eee;
+  padding: 10px 12px;
+}
+.contenteditable {
+  min-height: 44px;
+  outline: none;
+  flex: 1;
+  padding-left: 5px;
+  display: inline-block;
+  -webkit-user-select: text;
+  line-height: normal;
+  &:focus {
+    padding: 2px 10px;
   }
-  .edit-card-emoji {
-    position: relative;
-  }
-  .edit-card-emoji .emoji-item {
-    position: absolute;
-    top:30px;
-    left: 0;
-    z-index: 222;
-    height: 256px;
-  }
-  .edit-card-textarea .textarea {
-    margin: 10px 0;
-    /* width: 100%; */
-    min-height: 44px;
-    font-size: 14px;
-    border:1px solid #eee;
-    padding: 10px 12px;
-  }
-  .contenteditable {
-    min-height: 44px;
-    outline: none;
-    flex: 1;
-    padding-left: 5px;
-  }
-  .edit-card-textarea .textarea {
-    border:1px solid #1890FF;
-  }
-  textarea{
-    resize:none!important;
-  }
+}
+.edit-card-textarea .textarea {
+  border: 1px solid #1890ff;
+}
+textarea {
+  resize: none !important;
+}
 </style>

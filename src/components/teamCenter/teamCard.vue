@@ -1,61 +1,61 @@
 <style lang="scss">
-  .team-center-card{
-    background:rgba(255,255,255,1);
-    border:1px solid rgba(238,238,238,1);
-    box-shadow:2px 3px 10px 0px rgba(106,106,106,0.1);
-    border-radius:5px;
-    height: 80px;
-    padding: 20px;
-    &.active {
-      border:1px solid #1890FF;
+.team-center-card {
+  background: rgba(255, 255, 255, 1);
+  border: 1px solid rgba(238, 238, 238, 1);
+  box-shadow: 2px 3px 10px 0px rgba(106, 106, 106, 0.1);
+  border-radius: 5px;
+  height: 80px;
+  padding: 20px;
+  &.active {
+    border: 1px solid #1890ff;
+  }
+  .team-card-icon {
+    width: 42px;
+    height: 22px;
+    padding: 10px 0;
+    border-radius: 5px;
+    box-shadow: 2px 3px 10px 0px rgba(222, 31, 75, 0.3);
+    margin-right: 20px;
+    color: #333;
+    text-align: center;
+    &.activeImg1 {
+      background: linear-gradient(90deg, #db1445, #fba48b);
     }
-    .team-card-icon {
-      width:42px;
-      height:22px;
-      padding: 10px 0;
-      border-radius:5px;
-      box-shadow:2px 3px 10px 0px rgba(222,31,75,0.3);
-      margin-right: 20px;
-      color: #333;
-      text-align: center;
-      &.activeImg1 {
-        background:linear-gradient(90deg,#DB1445,#FBA48B);
-      }
-      &.activeImg2 {
-        background:linear-gradient(90deg,#037CDC,#24BAF7);
-        box-shadow:2px 3px 10px 0px rgba(76,110,194,0.3);
-      }
-      &.activeImg3 {
-        background:linear-gradient(90deg,#6F02FE,#C971D9);
-        box-shadow:2px 3px 10px 0px rgba(118,10,253,0.3);
-      }
-      &.activeImg4 {
-        background:linear-gradient(90deg,#F87220,#FAD761);
-        box-shadow:2px 3px 10px 0px rgba(245,119,35,0.3);
-      }
-      &.activeImg5 {
-        background:linear-gradient(90deg,#459522,#AFE84E);
-        box-shadow:2px 3px 10px 0px rgba(70,150,35,0.3);
-      }
+    &.activeImg2 {
+      background: linear-gradient(90deg, #037cdc, #24baf7);
+      box-shadow: 2px 3px 10px 0px rgba(76, 110, 194, 0.3);
     }
-    .team-count {
-      color: #000;
-      font-size: 26px;
-      margin-top: 5px;
+    &.activeImg3 {
+      background: linear-gradient(90deg, #6f02fe, #c971d9);
+      box-shadow: 2px 3px 10px 0px rgba(118, 10, 253, 0.3);
     }
-    .team-card-col2 {
-      font-size: 14px;
-      color: #6A6A6A;
-      line-height: 25px;
-      text-align: center;
-      .num-color {
-        color: #58B44E;
-      }
-      .num-color-red {
-       color: #FE2A00;
-      }
+    &.activeImg4 {
+      background: linear-gradient(90deg, #f87220, #fad761);
+      box-shadow: 2px 3px 10px 0px rgba(245, 119, 35, 0.3);
+    }
+    &.activeImg5 {
+      background: linear-gradient(90deg, #459522, #afe84e);
+      box-shadow: 2px 3px 10px 0px rgba(70, 150, 35, 0.3);
     }
   }
+  .team-count {
+    color: #000;
+    font-size: 26px;
+    margin-top: 5px;
+  }
+  .team-card-col2 {
+    font-size: 14px;
+    color: #6a6a6a;
+    line-height: 25px;
+    text-align: center;
+    .num-color {
+      color: #58b44e;
+    }
+    .num-color-red {
+      color: #fe2a00;
+    }
+  }
+}
 </style>
 <template>
   <el-row :gutter="20" type="flex" justify="space-between">
@@ -83,11 +83,9 @@
   </el-row>
 </template>
 <script>
-
-
 export default {
   props: ['teamCenterInfo'],
-  data () {
+  data() {
     return {
       cardInfo: {
         depNum: '部门数据',
@@ -115,7 +113,8 @@ export default {
           num: 0,
           label: 'nameNum',
           rate: 0
-        }, {
+        },
+        {
           id: 4,
           num: 0,
           label: 'aduitNum',
@@ -128,42 +127,60 @@ export default {
           rate: 0
         }
       ],
-      userPosition: sessionStorage.getItem('userPosition'), // 1 总经理，2经理，3 成员
+      userPosition: sessionStorage.getItem('userPosition') // 1 总经理，2经理，3 成员
     }
   },
-  created () {
+  created() {
     if (this.userPosition == 1) {
       this.cardInfo.depNum = '团队数据'
-    }
-    else if (this.userPosition == 2) {
+    } else if (this.userPosition == 2) {
       this.cardInfo.depNum = '部门数据'
-    }
-    else {
+    } else {
       this.cardInfo.depNum = '个人数据'
     }
   },
   watch: {
-    teamCenterInfo (val) {
+    teamCenterInfo(val) {
       if (val) {
-        this.teamCenterCount[1].rate = this.teamCenterInfo.total ? this.teamCenterInfo.total : 0
-        this.teamCenterCount[2].rate = this.teamCenterInfo.put ? this.teamCenterInfo.put : 0
-        this.teamCenterCount[3].rate = this.teamCenterInfo.view ? this.teamCenterInfo.view : 0
-        this.teamCenterCount[4].rate = this.teamCenterInfo.entry ? this.teamCenterInfo.entry : 0
-        this.teamCenterCount[1].num = this.teamCenterInfo.total_num ? this.teamCenterInfo.total_num : 0
-        this.teamCenterCount[2].num = this.teamCenterInfo.put_num ? this.teamCenterInfo.put_num : 0
-        this.teamCenterCount[3].num = this.teamCenterInfo.view_num ? this.teamCenterInfo.view_num : 0
-        this.teamCenterCount[4].num = this.teamCenterInfo.entry_num ? this.teamCenterInfo.entry_num : 0
+        this.teamCenterCount[1].rate = this.teamCenterInfo.total
+          ? this.teamCenterInfo.total
+          : 0
+        this.teamCenterCount[2].rate = this.teamCenterInfo.put
+          ? this.teamCenterInfo.put
+          : 0
+        this.teamCenterCount[3].rate = this.teamCenterInfo.view
+          ? this.teamCenterInfo.view
+          : 0
+        this.teamCenterCount[4].rate = this.teamCenterInfo.entry
+          ? this.teamCenterInfo.entry
+          : 0
+        this.teamCenterCount[1].num = this.teamCenterInfo.total_num
+          ? this.teamCenterInfo.total_num
+          : 0
+        this.teamCenterCount[2].num = this.teamCenterInfo.put_num
+          ? this.teamCenterInfo.put_num
+          : 0
+        this.teamCenterCount[3].num = this.teamCenterInfo.view_num
+          ? this.teamCenterInfo.view_num
+          : 0
+        this.teamCenterCount[4].num = this.teamCenterInfo.entry_num
+          ? this.teamCenterInfo.entry_num
+          : 0
 
-        this.teamCenterCount[0].num = Number(this.teamCenterInfo.put_num) + Number(this.teamCenterInfo.view_num) + Number(this.teamCenterInfo.entry_num) + Number(this.teamCenterInfo.total_num)
+        this.teamCenterCount[0].num =
+          Number(this.teamCenterInfo.put_num) +
+          Number(this.teamCenterInfo.view_num) +
+          Number(this.teamCenterInfo.entry_num) +
+          Number(this.teamCenterInfo.total_num)
         console.log(this.teamCenterCount[0].num)
       }
     }
   },
   methods: {
-    select (item, index) {
+    select(item, index) {
       this.activeIndex = index
       this.$emit('select', index)
     }
-  },
+  }
 }
 </script>

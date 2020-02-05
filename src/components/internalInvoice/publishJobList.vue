@@ -12,6 +12,11 @@
       padding: 10px;
     }
   }
+  .inter-button-box {
+    .el-button {
+      padding: 0;
+    }
+  }
   .select-status {
     margin-right: 2px;
   }
@@ -185,7 +190,7 @@
           </el-table-column>
           <el-table-column label="操作" align="center" width="260" fixed="right">
             <template slot-scope="scope">
-              <div v-if="viewType==1">
+              <div v-if="viewType==1" class="inter-button-box">
                 <el-button @click="$router.push('jobDetail?id='+scope.row.id)" type="text" size="small" v-if="scope.row.uid!=uid&&userPosition!=1">详情</el-button>
                 <el-button @click="$router.push('/postJob?id='+scope.row.id)" type="text" size="small" v-if="(scope.row&&scope.row.uid==uid)||userPosition==1">编辑</el-button>
                 <el-button @click="delJob(scope.row)" type="text" size="small" v-if="(scope.row&&scope.row.uid==uid)||userPosition==1">删除</el-button>
@@ -193,7 +198,7 @@
                 <el-button @click="changeJobstatus(0,scope.row)" type="text" size="small" v-if="((scope.row&&scope.row.uid==uid)||userPosition==1)&&scope.row.is_up==1">下架</el-button>
                 <el-button @click="changeJobstatus(1,scope.row)" type="text" size="small" v-if="((scope.row&&scope.row.uid==uid)||userPosition==1)&&!scope.row.is_up">上架</el-button>
               </div>
-              <div v-if="viewType!=1" class="x-flex-center">
+              <div v-if="viewType!=1" class="inter-button-box">
                 <el-button @click="$router.push('/jobDetail?id='+scope.row.id)" type="text" size="small">详情</el-button>
                 <el-button @click="$router.push('/recommendResume?jobId='+scope.row.id+'&index=1')" v-if="scope.row.is_up==1" type="text" size="small">推荐简历</el-button>
                 <span v-if="!scope.row.is_up" class="default-status">推荐简历</span>
@@ -346,7 +351,6 @@ export default {
   methods: {
     goRouter(id) {
       console.log(id)
-
       this.$router.push('/putList?id=' + id)
     },
     getList(params) {

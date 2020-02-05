@@ -28,6 +28,12 @@
       width: 320px;
       min-height: 20px;
       outline: none;
+      display: inline-block;
+      -webkit-user-select: text;
+      line-height: normal;
+      &:focus {
+        padding: 2px 10px;
+      }
     }
     .content-len {
       color: #6a6a6a;
