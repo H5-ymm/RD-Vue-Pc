@@ -298,7 +298,10 @@ export default {
           this.menus[index].submenu = [...this.receiptRoot]
         }
         if (item.title == '内部发单') {
-          this.menus[index].submenu = [...this.internalInvoiceRoot]
+          let obj = this.menus[index]
+          this.$set(obj, 'submenu', this.internalInvoiceRoot)
+          this.$set(this.menus, index, obj)
+          // this.menus[index].submenu = [...this.internalInvoiceRoot]
         }
       })
     }
@@ -324,7 +327,10 @@ export default {
           this.menus[index].submenu = [...this.receiptRoot2]
         }
         if (item.title == '内部发单') {
-          this.menus[index].submenu = [...this.job]
+          let obj = this.menus[index]
+          this.$set(obj, 'submenu', this.job)
+          this.$set(this.menus, index, obj)
+          // this.menus[index].submenu = [...this.job]
         }
       })
     }
@@ -393,7 +399,6 @@ export default {
         this.selectMenus(to.fullPath, this.menus)
       }
       if (to.path == '/putList' && from.path == '/publishJobList') {
-        console.log(to.fullPath)
         this.selectMenus(to.fullPath, this.menus)
       }
       if (to.path == '/accountSafe' && from.path == '/passwordManage') {
@@ -403,20 +408,21 @@ export default {
   },
   methods: {
     handleOpen(key, keyPath) {
-      console.log(key, keyPath)
+      console.log(keyPath)
+      this.$store.commit('setMenus', keyPath)
       // sessionStorage.setItem('menus', JSON.stringify(keyPath))
     },
     selectMenus(key, keyPath) {
       this.url = key
-
       let newUrl = ''
-      if (key.split('?')[0] == '/personalForm') {
+      if (key.split('?').length > 1) {
         newUrl = key
       } else {
         newUrl = key.split('?')[0]
       }
       let arr = this.getMenusTitle(newUrl, this.menus)
       sessionStorage.setItem('menusUrl', this.url)
+      this.$store.commit('setMenus', arr)
       sessionStorage.setItem('menus', JSON.stringify(arr))
     },
     getMenusTitle(url, arr) {

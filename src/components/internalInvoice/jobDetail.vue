@@ -287,7 +287,7 @@
         </div>
       </section>
       <div class="resume-footer-btn">
-        <el-button type="primary" @click="$router.go(-1)">关闭</el-button>
+        <el-button type="primary" @click="$router.go(-1),$store.commit('setMenus', ['已发布职位'])">关闭</el-button>
       </div>
     </div>
   </div>
@@ -312,6 +312,8 @@ export default {
     }
   },
   created() {
+    let arr = ['已发布职位', '职位详情']
+    this.$store.commit('setMenus', arr)
     this.id = this.$route.query.id
     this.getInfo(this.id)
   },

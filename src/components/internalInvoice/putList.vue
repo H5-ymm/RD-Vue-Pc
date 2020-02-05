@@ -226,6 +226,8 @@ export default {
   },
   mounted() {
     // 初始化查询标签数据
+    let arr = ['已发布职位', '已推荐简历']
+    this.$store.commit('setMenus', arr)
     this.formMember.job_id = this.$route.query.id
     this.getList(this.formMember)
   },

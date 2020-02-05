@@ -71,7 +71,7 @@
           <el-table-column label="发单状态" align="center" width="180">
             <template slot-scope="props">
               <el-select v-model="props.row.jobStatus" :disabled="userPosition==1&&props.row.isactor!=1" value-key="label" class="width150" placeholder="请选择" @change="changeStatus($event,props.$index)">
-                <el-option :label="item.label" :value="item.value" v-show="index" v-for="(item,index) in props.row.receiptStatusList" :key="item.label"></el-option>
+                <el-option :label="item.label" :value="item.value" v-for="(item,index) in props.row.receiptStatusList" :key="item.label"></el-option>
               </el-select>
             </template>
           </el-table-column>
@@ -222,10 +222,15 @@ export default {
         { label: '面试结果', value: 2 },
         { label: '入职结果', value: 3 }
       ],
+      receiptStatusList1: [
+        { label: '审核简历', value: 1 },
+        { label: '面试结果', value: 2 },
+        { label: '入职结果', value: 3 }
+      ],
       timeList: [],
       activeIndex: -1,
-      statusName: '',
-      statusList: []
+      statusList: [],
+      tableList: []
     }
   },
   created() {
@@ -236,30 +241,29 @@ export default {
     this.getList(this.formMember)
     console.log(this.tableList)
   },
-  computed: {
-    tableList() {
+  methods: {
+    getNewList(list) {
       let arr = []
       let obj = {}
-      this.tableData.forEach(item => {
-        obj = {
-          receiptStatusList: this.receiptStatusList,
-          jobStatus: 1
-        }
+      list.forEach(item => {
+        // obj = {
+        //   receiptStatusList: this.receiptStatusList1,
+        //   jobStatus: 1
+        // }
         let newObj = Object.assign(item, {
-          receiptStatusList: this.receiptStatusList,
+          receiptStatusList: this.receiptStatusList1,
           jobStatus: 1
         })
         arr.push(newObj)
       })
       return arr
-    }
-  },
-  methods: {
+    },
     getList(params) {
       getJoblist(params)
         .then(res => {
           const { data } = res
           this.tableData = data.data || []
+          this.tableList = this.getNewList(this.tableData)
           this.total = data.count
         })
         .catch(error => {
@@ -267,9 +271,10 @@ export default {
         })
     },
     changeStatus(val, index) {
-      this.$set(this.tableList, 'jobStatus', val)
+      let obj = this.tableList[index]
+      this.$set(obj, 'jobStatus', Number(val))
       this.activeIndex = index
-      this.statusName = this.receiptStatusList[index].label
+      this.$set(this.tableList, index, obj)
     },
     changeDate(val) {
       this.formMember.beginTime = val ? val[0] : ''

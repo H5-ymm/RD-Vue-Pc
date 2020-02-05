@@ -221,7 +221,11 @@ export default {
     this.formMember.jobId = this.$route.query.jobId
     if (this.$route.query.index) {
       this.activeIndex = this.$route.query.index
+      let arr = ['已发布职位', '推荐简历']
+      this.$store.commit('setMenus', arr)
     } else {
+      let arr = ['输送人才', '推荐简历']
+      this.$store.commit('setMenus', arr)
       this.activeIndex = 0
     }
     if (this.$route.query.jobId) {

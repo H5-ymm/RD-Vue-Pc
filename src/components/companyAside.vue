@@ -127,7 +127,7 @@ export default {
         }
       ],
       title: '发单招聘',
-      url: '',
+      url: '/createOrderTaking',
       uid: localStorage.getItem('uid'),
       baseInfo: {}
     }
@@ -155,11 +155,13 @@ export default {
     },
     handleOpen(key, keyPath) {
       this.title = key
+      this.$store.commit('setMenus', keyPath)
     },
     selectMenus(key, keyPath) {
       this.url = key
       let arr = this.getMenusTitle(key, this.menus)
       sessionStorage.setItem('menusUrl', this.url)
+      this.$store.commit('setMenus', arr)
       sessionStorage.setItem('menus', JSON.stringify(arr))
     },
     getMenusTitle(url, arr) {

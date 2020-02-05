@@ -155,6 +155,8 @@ export default {
     this.job_status = this.$route.query.jobStatus
     this.formMember.job_status = Number(this.$route.query.jobStatus)
     this.getList(this.formMember)
+    let arr = ['内部发单审核', '简历列表']
+    this.$store.commit('setMenus', arr)
   },
   methods: {
     getList(params) {

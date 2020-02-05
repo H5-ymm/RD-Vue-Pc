@@ -30,7 +30,27 @@ export default new Vuex.Store({
     routes: [],
     permissionList: null,
     teamInfo: {},
-    userPosition: ''
+    userPosition: '',
+    menus: []
+  },
+  getters: {
+    breadcrumb(state) {
+      let arr = []
+      if (state.menus.length) {
+        arr = state.menus.splice(0)
+      } else {
+        let type = localStorage.getItem('userType')
+        if (type == 1) {
+          arr = sessionStorage.getItem('menus') ?
+            JSON.parse(sessionStorage.getItem('menus')) : ['新建接单']
+        } else {
+          arr = sessionStorage.getItem('menus') ?
+            JSON.parse(sessionStorage.getItem('menus')) : ['团队中心']
+        }
+      }
+      console.log(arr)
+      return arr
+    }
   },
   mutations: {
     getBaseInfo(state, info) {
@@ -38,6 +58,9 @@ export default new Vuex.Store({
     },
     getUserInfo(state, info) {
       state.userInfo = info
+    },
+    setMenus(state, list) {
+      state.menus = list
     },
     getTeamInfo(state, info) {
       state.teamInfo = info
@@ -159,16 +182,15 @@ export default new Vuex.Store({
           commit('getUid', res.data.uid)
           commit('getUserPosition', res.data.gradeNum)
           commit('getTeamInfo', res.data)
+          commit('setMenus', [])
           let registerType = res.data.type
           if (registerType == 1) {
-            sessionStorage.setItem('menus', JSON.stringify(['新建接单']))
             router.push('/createOrderTaking?userType=' + res.data.type)
           } else {
             localStorage.setItem('teamType', res.data.team_type)
             // 登录人身份
             sessionStorage.setItem('userPosition', res.data.gradeNum)
             localStorage.setItem('userPosition', res.data.gradeNum)
-            sessionStorage.setItem('menus', JSON.stringify(['团队中心']))
             router.push('/teamData?userType=' + res.data.type)
           }
           resolve(res)
