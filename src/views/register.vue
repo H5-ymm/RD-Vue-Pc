@@ -59,7 +59,7 @@
             </el-form>
           </el-col>
           <el-col :span="12">
-            <div class="grid-content x-flex register-grid-content" ref="bg">
+            <div class="grid-content x-flex-center register-grid-content" ref="bg">
               <img src="../assets/img/rightBg.png" v-if="registerType==1" />
               <img src="../assets/img/timerBg.png" v-if="registerType==2" />
               <div class="text">
@@ -339,8 +339,11 @@ export default {
 }
 .login-btn {
   .button {
-    padding: 8px 30px;
+    padding: 9px 30px;
     margin-bottom: 30px;
+    span {
+      font-size: 18px;
+    }
   }
   .comRight {
     border: 1px solid #1890ff;

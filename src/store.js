@@ -48,8 +48,10 @@ export default new Vuex.Store({
             JSON.parse(sessionStorage.getItem('menus')) : ['团队中心']
         }
       }
-      console.log(arr)
       return arr
+    },
+    getTeam(state) {
+      return state.teamInfo
     }
   },
   mutations: {
@@ -60,7 +62,7 @@ export default new Vuex.Store({
       state.userInfo = info
     },
     setMenus(state, list) {
-      state.menus = list
+      state.menus = list || []
     },
     getTeamInfo(state, info) {
       state.teamInfo = info
@@ -195,7 +197,6 @@ export default new Vuex.Store({
           }
           resolve(res)
         }).catch(error => {
-          console.log(error)
           reject(error)
         })
       })

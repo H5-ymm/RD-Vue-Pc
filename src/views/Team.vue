@@ -73,7 +73,7 @@ import { getTeamInfo } from '@/api/team'
 import { getCompanyDetail } from '@/api/company'
 import { getImgUrl } from '@/util/util'
 import { logout } from '@/api/login'
-import { mapState, mapActions, mapMutations } from 'vuex'
+import { mapState, mapActions, mapMutations, mapGetters } from 'vuex'
 export default {
   name: 'team',
   inject: ['reload'],
@@ -97,7 +97,7 @@ export default {
     companyAside
   },
   computed: {
-    ...mapState({
+    ...mapGetters({
       teamInfo: state => state.teamInfo
     })
   },
