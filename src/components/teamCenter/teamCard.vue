@@ -172,7 +172,6 @@ export default {
           Number(this.teamCenterInfo.view_num) +
           Number(this.teamCenterInfo.entry_num) +
           Number(this.teamCenterInfo.total_num)
-        console.log(this.teamCenterCount[0].num)
       }
     }
   },

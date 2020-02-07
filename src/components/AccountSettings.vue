@@ -169,7 +169,6 @@ export default {
   },
   created() {
     this.getInfo(this.uid)
-    console.log(this.userInfo)
   },
   computed: {
     ...mapState({

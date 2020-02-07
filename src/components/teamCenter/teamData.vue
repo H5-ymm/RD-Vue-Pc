@@ -102,7 +102,7 @@ export default {
     allOrder,
     infoTip
   },
-  data() {
+  data () {
     return {
       formMember: {
         uid: localStorage.getItem('uid')
@@ -166,7 +166,7 @@ export default {
       allData: {}
     }
   },
-  created() {
+  created () {
     if (localStorage.getItem('teamType') == 0) {
       this.dialogVisible = true
       return false
@@ -184,7 +184,7 @@ export default {
     }
   },
   computed: {
-    titleLog() {
+    titleLog () {
       return this.userPosition == 1
         ? '团队'
         : this.userPosition == 2
@@ -193,35 +193,17 @@ export default {
     }
   },
   methods: {
-    querySearchAsync(queryString, cb) {
+    querySearchAsync (queryString, cb) {
+      if(!queryString) return
       let params = {
         uid: localStorage.getItem('uid'),
         depart_id: this.depId,
         name: queryString
       }
-      this.getPerson(params)
-      var restaurants = this.personList
-      var results = queryString
-        ? restaurants.filter(this.createStateFilter(queryString))
-        : restaurants
-      cb(results)
-    },
-    createStateFilter(queryString) {
-      return restaurant => {
-        return (
-          restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) ===
-          0
-        )
-      }
-    },
-    handleSelect(item) {},
-    changeDep(val) {
-      this.depId = val
-    },
-    getPerson(params) {
       getmemberList(params)
         .then(res => {
           this.personList = res.data || []
+           cb( this.personList)
         })
         .catch(error => {
           if (error) {
@@ -229,7 +211,15 @@ export default {
           }
         })
     },
-    getKey(index) {
+    handleSelect (item) { 
+      this.userName = item.user_name
+      this.paramsInfo.search_uid =  item.uid
+      this.paramsEchart.search_uid = item.uid
+    },
+    changeDep (val) {
+      this.depId = val
+    },
+    getKey (index) {
       let label = ''
       if (index) {
         if (index == 1) {
@@ -244,7 +234,7 @@ export default {
       }
       return label
     },
-    getData(params, last, index) {
+    getData (params, last, index) {
       let obj = {}
       if (last) {
         obj = Object.assign(params, { last: 1 })
@@ -269,14 +259,14 @@ export default {
           }
         })
     },
-    getArray(obj) {
+    getArray (obj) {
       let arr = []
       for (let i in obj) {
         arr.push(obj[i])
       }
       return arr
     },
-    getNewList(val) {
+    getNewList (val) {
       let arr = []
       let obj = {
         0: 'total',
@@ -289,7 +279,7 @@ export default {
       }
       return arr
     },
-    getDep() {
+    getDep () {
       let uid = localStorage.getItem('uid')
       departmentRoleList({ uid })
         .then(res => {
@@ -301,7 +291,7 @@ export default {
           }
         })
     },
-    getCompareInfo(params) {
+    getCompareInfo (params) {
       getCompare(params)
         .then(res => {
           this.teamCenterInfo = res.data
@@ -312,7 +302,7 @@ export default {
           }
         })
     },
-    getLogList(params) {
+    getLogList (params) {
       getapplyLog(params)
         .then(res => {
           this.tableData = res.data.data || []
@@ -323,7 +313,7 @@ export default {
           }
         })
     },
-    getTeamList(params) {
+    getTeamList (params) {
       getTeamLog(params)
         .then(res => {
           this.tableTeamData = res.data.data || []
@@ -334,11 +324,11 @@ export default {
           }
         })
     },
-    select(index) {
+    select (index) {
       this.getData(this.paramsEchart, 1, index)
       this.getData(this.paramsEchart)
     },
-    getList(params) {
+    getList (params) {
       getrank(params)
         .then(res => {
           this.orderData = res.data
@@ -349,18 +339,18 @@ export default {
           }
         })
     },
-    querySearch() {
+    querySearch () {
       this.paramsInfo.depart_id = this.formMember.depart_id
       this.getCompareInfo(this.paramsInfo)
       this.paramsEchart.depart_id = this.formMember.depart_id
       this.paramsEchart.search_uid = this.formMember.name
       this.getData(this.paramsEchart)
     },
-    selectQueryOrder(val) {
+    selectQueryOrder (val) {
       this.params = Object.assign(this.params, val)
       this.getList(this.params)
     },
-    selectQuery(val) {
+    selectQuery (val) {
       this.paramsEchart = Object.assign(this.paramsEchart, val)
       this.paramsEchart = Object.assign(this.paramsEchart, 0)
       this.getData(this.paramsEchart)

@@ -1,4 +1,7 @@
-import { post, $post } from '../axios'
+import {
+  post,
+  $post
+} from '../axios'
 
 export const getCompanyDetail = data => $post('/company/selectCompanyInfo', data)
 
@@ -8,4 +11,4 @@ export const createInvoice = data => $post('/enterpriseinvoice/createInvoice', d
 
 export const addCompanyInfo = data => $post('/company/authenticationCompanyInfo', data)
 
-export const seeTeamInfo = data => $post('/company/seeTeamInfo', data) 
+export const seeTeamInfo = data => $post('/company/seeTeamInfo', data)

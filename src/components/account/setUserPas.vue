@@ -48,7 +48,8 @@ export default {
       isShow: false,
       uid: localStorage.getItem('uid'),
       content: '发送验证码',
-      canClick: false,
+      totalTime: 60,
+      canClick: true,
       token: '',
       pasError: false,
       pasCheck: false
@@ -91,11 +92,11 @@ export default {
       if (!this.canClick) return //改动的是这两行代码
       this.canClick = false
       this.content = this.totalTime + 's后重发'
-      let clock = window.setInterval(() => {
+      let clock = setInterval(() => {
         this.totalTime--
         this.content = this.totalTime + 's后重发'
         if (this.totalTime < 0) {
-          window.clearInterval(clock)
+          clearInterval(clock)
           this.content = '重新发送验证码'
           this.totalTime = 60
           this.canClick = true //这里重新开启
@@ -166,8 +167,8 @@ export default {
   }
   .code-btn {
     padding: 11px 20px;
-    &.el-button--primary.is-plain {
-      &:hover {
+    &.el-button--primary.is-plain,.el-button--primary.disabled {
+      &:hover,&:focus {
         background-color: #1890ff;
         color: #fff;
       }

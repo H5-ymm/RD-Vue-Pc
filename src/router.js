@@ -1,8 +1,14 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import { Message } from 'element-ui';
-import { teamRouters } from './router/team'
-import { companyRouters } from './router/company'
+import {
+  Message
+} from 'element-ui';
+import {
+  teamRouters
+} from './router/team'
+import {
+  companyRouters
+} from './router/company'
 import About from './views/About.vue'
 import store from './store'
 const Home = resolve => (require(['./views/Home.vue'], resolve))
@@ -15,12 +21,11 @@ const Information = resolve => (require(['./views/Information.vue'], resolve)) /
 const InformationDetail = resolve => (require(['./views/InformationDetail.vue'], resolve)) //  资讯详情
 const routerPush = Router.prototype.push
 Router.prototype.push = function push(location) {
-  return routerPush.call(this, location).catch(error=> error)
+  return routerPush.call(this, location).catch(error => error)
 }
 Vue.use(Router)
 // 企业和团队路由
-let publiceRouters = [
-  {
+let publiceRouters = [{
     path: '/',
     redirect: 'login',
   },
@@ -98,18 +103,18 @@ router = [...router]
 routers.addRoutes(router)
 routers.beforeEach((to, from, next) => {
   let token = localStorage.getItem('token')
-  if (token) { 
+  if (token) {
     next()
   } else {
-    if (to.meta.requiresAuth) { 
+    if (to.meta.requiresAuth) {
       next({
         path: '/login'
       })
       Message.warning('请先登录')
-     } else {
+    } else {
       next()
-     }
-   }
+    }
+  }
 })
 routers.afterEach(route => {
   window.scroll(0, 0)

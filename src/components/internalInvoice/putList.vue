@@ -1,11 +1,17 @@
 
 <style lang="scss">
-@import '@/assets/css/resume';
+@import "@/assets/css/resume";
 </style>
 <template>
   <div class="tables-box billingManagement">
     <div class="table-list add-resum">
-      <el-form :inline="true" label-width="100px" label-position="right" :model="formMember" class="demo-form-inline">
+      <el-form
+        :inline="true"
+        label-width="100px"
+        label-position="right"
+        :model="formMember"
+        class="demo-form-inline"
+      >
         <el-form-item label="姓名：">
           <el-input v-model="formMember.name" class="width300" placeholder="请输入关键字"></el-input>
         </el-form-item>
@@ -25,13 +31,24 @@
           <el-input v-model="formMember.track_name" class="width300" placeholder="请输入跟进人关键字"></el-input>
         </el-form-item>
         <el-form-item :label="labelTime+'：'">
-          <el-date-picker class="width300" v-model="timeList" type="daterange" format="yyyy-MM-dd" value-format="timestamp" @change="changeDate" range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期"></el-date-picker>
+          <el-date-picker
+            class="width300"
+            v-model="timeList"
+            type="daterange"
+            format="yyyy-MM-dd"
+            value-format="timestamp"
+            @change="changeDate"
+            range-separator="-"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+          ></el-date-picker>
         </el-form-item>
         <!-- <el-form-item :label="label+':'" v-if="viewType!=3">
           <el-select v-model="formMember.status" class="width300" placeholder="请选择报名状态">
             <el-option :label="item.label" :value="item.value" v-for="(item,index) in followStatusList" :key="index"></el-option>
           </el-select>
-        </el-form-item> -->
+        </el-form-item>-->
+
         <el-form-item>
           <el-button type="primary" @click="onSubmit" class="select-btn">查询</el-button>
           <el-button type="primary" @click="onReset" class="select-btn">重置</el-button>
@@ -41,7 +58,13 @@
         <div class="table-query">
           <el-button @click="exportResume" type="primary">导出简历</el-button>
         </div>
-        <el-table border :data="tableData" ref="multipleTable" style="width: 100%" @sort-change="sortChange">
+        <el-table
+          border=""
+          :data="tableData"
+          ref="multipleTable"
+          style="width: 100%"
+          @sort-change="sortChange"
+        >
           <el-table-column label="序号" align="center" prop="id" width="50"></el-table-column>
           <el-table-column label="姓名" align="center" width="150">
             <template slot-scope="props">
@@ -49,8 +72,7 @@
             </template>
           </el-table-column>
           <el-table-column label="联系电话" prop="mobile" align="center" width="150"></el-table-column>
-          <el-table-column label="企业名称" align="center" prop="company_name" width="150">
-          </el-table-column>
+          <el-table-column label="企业名称" align="center" prop="company_name" width="150"></el-table-column>
           <el-table-column label="报名时间" sortable="custom" prop="msdesc" align="center" width="160">
             <template slot-scope="props">
               <span>{{props.row.addtime?$moment(props.row.addtime).format('YYYY-MM-DD HH:mm'):''}}</span>
@@ -59,25 +81,47 @@
           <el-table-column label="岗位名称" prop="job_name" align="center" width="150"></el-table-column>
           <el-table-column label="报名状态" align="center" width="170">
             <template slot-scope="props">
-              <span class="status" :class="`status${props.row.status}`" v-if="!props.row.interview_status">{{props.row.status|checkStatus}}</span>
-              <span v-if="props.row.interview_status==1" class="status" :class="`status${props.row.entry_status}`">{{props.row.entry_status|entryStatus}}</span>
-              <span v-if="props.row.status==1&&!props.row.entry_status" class="status" :class="`status${props.row.interview_status}`">{{props.row.interview_status|viewStatus}}</span>
+              <span
+                class="status"
+                :class="`status${props.row.status}`"
+                v-if="!props.row.interview_status"
+              >{{props.row.status|checkStatus}}</span>
+              <span
+                v-if="props.row.status==1&&props.row.interview_status"
+                class="status"
+                :class="`status${props.row.interview_status}`"
+              >{{props.row.interview_status|viewStatus}}</span>
+              <span
+                v-if="props.row.interview_status==1&&props.row.entry_status"
+                class="status"
+                :class="`status${props.row.entry_status}`"
+              >{{props.row.entry_status|entryStatus}}</span>
             </template>
           </el-table-column>
           <el-table-column label="跟进记录" align="center" width="100">
             <template slot-scope="props">
-              <el-button class="text-line" type="text" @click="viewRecord(props.row)">{{props.row.trackList&&props.row.trackList.title?props.row.trackList.title:'--'}}</el-button>
+              <el-button
+                class="text-line"
+                type="text"
+                @click="viewRecord(props.row)"
+              >{{props.row.trackList&&props.row.trackList.title?props.row.trackList.title:'--'}}</el-button>
             </template>
           </el-table-column>
           <el-table-column label="跟进时间" align="center" width="160">
             <template slot-scope="props">
-              <span type="text" v-if="props.row.trackList">{{props.row.trackList.addtime?$moment.unix(props.row.trackList.addtime).format('YYYY-MM-DD HH:mm'):'--'}}</span>
+              <span
+                type="text"
+                v-if="props.row.trackList"
+              >{{props.row.trackList.addtime?$moment.unix(props.row.trackList.addtime).format('YYYY-MM-DD HH:mm'):'--'}}</span>
             </template>
           </el-table-column>
           <el-table-column label="意向岗位" prop="desired_position" align="center" width="150"></el-table-column>
           <el-table-column label="意向工资" align="center" width="150">
             <template slot-scope="props">
-              <span type="text" v-if="props.row.min_expect_money&&props.row.max_expect_money">{{props.row.min_expect_money}}~{{props.row.max_expect_money}}</span>
+              <span
+                type="text"
+                v-if="props.row.min_expect_money&&props.row.max_expect_money"
+              >{{props.row.min_expect_money}}~{{props.row.max_expect_money}}</span>
               <span type="text" v-else>{{props.row.min_expect_money ||props.row.max_expect_money}}</span>
             </template>
           </el-table-column>
@@ -90,20 +134,61 @@
           <el-table-column label="跟进人" prop="track_name" align="center" width="100"></el-table-column>
           <el-table-column label="操作" align="center" min-width="200">
             <template slot-scope="scope">
-              <el-button @click="abandoned (4,scope.row)" type="text" size="small" v-if="scope.row.interview_status==1&&!scope.row.entry_status">放弃入职</el-button>
-              <el-button @click="abandoned (1,scope.row)" type="text" size="small" v-if="!scope.row.status">放弃报名</el-button>
-              <el-button @click="abandoned(2,scope.row)" type="text" size="small" v-if="!scope.row.interview_status&&scope.row.status==1">放弃面试</el-button>
-              <el-button @click="routerResume(scope.row)" type="text" size="small" v-if="scope.row.status>=2 || scope.row.interview_status==2 || scope.row.entry_status==2">推荐岗位</el-button>
+              <el-button
+                @click="abandoned (4,scope.row)"
+                type="text"
+                size="small"
+                v-if="scope.row.interview_status==1&&!scope.row.entry_status"
+              >放弃入职</el-button>
+              <el-button
+                @click="abandoned (1,scope.row)"
+                type="text"
+                size="small"
+                v-if="!scope.row.status"
+              >放弃报名</el-button>
+              <el-button
+                @click="abandoned(2,scope.row)"
+                type="text"
+                size="small"
+                v-if="!scope.row.interview_status&&scope.row.status==1"
+              >放弃面试</el-button>
+              <el-button
+                @click="routerResume(scope.row)"
+                type="text"
+                size="small"
+                v-if="scope.row.status>=2 || scope.row.interview_status==2 || scope.row.entry_status==2"
+              >推荐岗位</el-button>
               <el-button @click="abandoned(3,scope.row)" type="text" size="small">放弃用户</el-button>
             </template>
           </el-table-column>
         </el-table>
       </div>
-      <el-pagination class="team-pagination" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="formMember.page" :page-sizes="[10, 30, 50, 100]" :page-size="formMember.limit" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
+      <el-pagination
+        class="team-pagination"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="formMember.page"
+        :page-sizes="[10, 30, 50, 100]"
+        :page-size="formMember.limit"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total"
+      ></el-pagination>
     </div>
     <!-- <viewResume :dialogTableVisible="dialogTableVisible" :resumeId="resumeId" @handleClose="dialogTableVisible=false" @submitForm="submitForm" :resumeInfo="resumeInfo"></viewResume> -->
-    <confirmDialog :dialogTableVisible="visible" @submit="submit" @handleClose="handleClose" :dialogObj="dialogObj" :isShow="isShow"></confirmDialog>
-    <followUpRecord :dialogTableVisible="followUpRecordVisible" :id="resumeId" @submitRecord="submitRecord" @handleClose="followUpRecordVisible=false" :trackList="trackList"></followUpRecord>
+    <confirmDialog
+      :dialogTableVisible="visible"
+      @submit="submit"
+      @handleClose="handleClose"
+      :dialogObj="dialogObj"
+      :isShow="isShow"
+    ></confirmDialog>
+    <followUpRecord
+      :dialogTableVisible="followUpRecordVisible"
+      :id="resumeId"
+      @submitRecord="submitRecord"
+      @handleClose="followUpRecordVisible=false"
+      :trackList="trackList"
+    ></followUpRecord>
     <!-- <leadResumeModal :dialogTableVisible="leadResumeVisible" @handleClose="leadResumeVisible=false"></leadResumeModal> -->
   </div>
 </template>
@@ -224,8 +309,7 @@ export default {
       id: ''
     }
   },
-  mounted() {
-    // 初始化查询标签数据
+  created() {
     let arr = ['已发布职位', '已推荐简历']
     this.$store.commit('setMenus', arr)
     this.formMember.job_id = this.$route.query.id

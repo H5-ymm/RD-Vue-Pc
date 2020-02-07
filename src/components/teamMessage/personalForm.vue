@@ -1,17 +1,29 @@
 <style lang="scss">
-@import '@/assets/css/formMessage.scss';
+@import "@/assets/css/formMessage.scss";
 </style>
 <template>
   <div class="teamMessage">
     <div class="title">基本信息</div>
     <div class="teamMessage-form-row">
-      <el-form :model="personalForm" :rules="rules" ref="personalForm" label-width="110px" class="teamMessage-form">
+      <el-form
+        :model="personalForm"
+        :rules="rules"
+        ref="personalForm"
+        label-width="110px"
+        class="teamMessage-form"
+      >
         <el-form-item label="团队名称" prop="team_name">
           <el-input v-model="personalForm.team_name" class="width408" placeholder="请输入团队名称"></el-input>
         </el-form-item>
         <el-form-item label="团队logo" required>
-          <el-upload class="avatar-uploader" action="customize" ref="upload" :show-file-list="false" :http-request="upload">
-            <img v-if="imageUrl" :src="imageUrl" class="avatar" />
+          <el-upload
+            class="avatar-uploader"
+            action="customize"
+            ref="upload"
+            :show-file-list="false"
+            :http-request="upload"
+          >
+            <img v-if="imageUrl" :src="imageUrl" class="avatar">
             <i v-else class="el-icon-circle-plus avatar-uploader-icon"></i>
             <p>上传logo</p>
           </el-upload>
@@ -42,7 +54,13 @@
           </div>
         </el-form-item>
         <el-form-item label="团队简介" prop="introduction" placeholder="请输入团队简介">
-          <el-input type="textarea" class="width408" :autosize="{minRows: 5}" v-model="personalForm.introduction" placeholder="请输入团队介绍"></el-input>
+          <el-input
+            type="textarea"
+            class="width408"
+            :autosize="{minRows: 5}"
+            v-model="personalForm.introduction"
+            placeholder="请输入团队介绍"
+          ></el-input>
         </el-form-item>
         <el-form-item class="teamMessage-btn">
           <el-button type="primary" @click="submitForm('personalForm')">保存</el-button>
@@ -57,7 +75,7 @@
 import { getConstant } from '@/api/dictionary'
 import districtSelet from '../districtSelet'
 import { getImg, getImgUrl, validateIdCard } from '@/util/util'
-import { updateTeamInfo, getTeamInfo } from '@/api/team'
+import { getTeamInfo } from '@/api/team'
 import { uploadFile } from '@/api/upload'
 export default {
   components: {
@@ -151,7 +169,8 @@ export default {
     submitForm(personalForm) {
       this.$refs[personalForm].validate(valid => {
         if (valid) {
-          updateTeamInfo(this.personalForm)
+          this.$store
+            .dispatch('editTeamInfo', this.personalForm)
             .then(res => {
               if (res.data) {
                 localStorage.setItem('teamType', 2)

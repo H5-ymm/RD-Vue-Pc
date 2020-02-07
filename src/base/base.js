@@ -239,7 +239,7 @@ export const entryStatusList2 = [
 ]
 export const checkStatusList1 = [
   { label: '待反馈', value: 0 },
-  { label: '通过', value: 1 },
-  { label: '拒绝', value: 2 },
+  { label: '已通过', value: 1 },
+  { label: '已拒绝', value: 2 },
   { label: '放弃报名', value: 3 }
 ]

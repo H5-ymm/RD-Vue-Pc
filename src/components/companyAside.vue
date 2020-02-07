@@ -25,10 +25,8 @@
     </el-row>
   </div>
 </template>
-
 <script>
-import { getCompanyDetail } from '@/api/company'
-import { getImgUrl } from '@/util/util'
+import {  mapGetters } from "vuex";
 export default {
   name: 'companyAside',
   props: {},
@@ -127,32 +125,23 @@ export default {
         }
       ],
       title: '发单招聘',
-      url: '/createOrderTaking',
-      uid: localStorage.getItem('uid'),
-      baseInfo: {}
+      url: '/createOrderTaking'
     }
   },
-  created() {
-    let uid = localStorage.getItem('uid')
-    this.getCompanyInfo(uid)
+  created(){
+console.log(this.baseInfo)
+  },
+  computed: {
+    routerli() {
+      // 对应路由
+      // let pathStr = this.$route.path.split('/')
+      return this.$route.fullPath
+    },
+    ...mapGetters({
+      baseInfo: "getBase"
+    })
   },
   methods: {
-    getImgUrl,
-    getCompanyInfo(uid) {
-      getCompanyDetail({ uid }).then(res => {
-        this.baseInfo = res.data
-        if (res.data && res.data.logo_url) {
-          this.baseInfo.logo_url = res.data.logo_url
-        }
-        sessionStorage.setItem('baseInfo', JSON.stringify(this.baseInfo))
-        let userInfo = {
-          user_name: res.data.com_name,
-          mobile: res.data.link_phone,
-          head_img: res.data.logo_url
-        }
-        sessionStorage.setItem('userInfo', JSON.stringify(userInfo))
-      })
-    },
     handleOpen(key, keyPath) {
       this.title = key
       this.$store.commit('setMenus', keyPath)
@@ -189,13 +178,6 @@ export default {
       if (to.path == '/accountSafe' && from.path == '/passwordManage') {
         this.selectMenus(to.fullPath, this.menus)
       }
-    }
-  },
-  computed: {
-    routerli() {
-      // 对应路由
-      // let pathStr = this.$route.path.split('/')
-      return this.$route.fullPath
     }
   }
 }

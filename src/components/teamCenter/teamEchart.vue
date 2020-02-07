@@ -295,7 +295,6 @@ export default {
       }
       this.option.legend.data = this.legendData
       this.option = Object.assign(this.option, { series: this.series })
-      console.log(this.option)
       myChart.setOption(this.option, true)
     }
   }

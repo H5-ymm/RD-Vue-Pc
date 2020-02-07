@@ -60,8 +60,11 @@ export default {
       this.$emit('selectQuery', this.orderParams)
     },
     changeTime (val) {
-      this.orderParams.starttime = val[0]
-      this.orderParams.endtime = val[1]
+      let starttime = val[0]? val[0] + '' : ''
+      let endtime =  val[1]?  val[1] + '' : ''
+      console.log(starttime)
+      this.orderParams.starttime = starttime? starttime.substring(0, 10): ''
+      this.orderParams.endtime = endtime? endtime.substring(0, 10): ''
       this.$emit('selectQuery', this.orderParams)
     }
   },
