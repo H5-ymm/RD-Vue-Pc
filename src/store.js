@@ -39,7 +39,7 @@ export default new Vuex.Store({
     userType: '', // 登录账号性质
     baseInfo: {},
     teamInfo: {},
-    userPosition: '',// 登录身份
+    userPosition: '', // 登录身份
     menus: []
   },
   getters: {
@@ -60,21 +60,21 @@ export default new Vuex.Store({
       return arr
     },
     getTeam(state) {
-      return state.teamInfo&&state.teamInfo.type  ? state.teamInfo : JSON
-      .parse(localStorage.getItem('teamSys'))
+      return state.teamInfo && state.teamInfo.type ? state.teamInfo : JSON
+        .parse(localStorage.getItem('teamSys'))
     },
     getUser(state) {
-      return state.userInfo&&state.userInfo.uid ? state.userInfo : JSON.parse(sessionStorage.getItem('userInfo'))
+      return state.userInfo && state.userInfo.uid ? state.userInfo : JSON.parse(sessionStorage.getItem('userInfo'))
     },
     getBase(state) {
-      let info = state.baseInfo&&state.baseInfo.uid ? state.baseInfo : JSON.parse(sessionStorage.getItem('baseInfo'))
+      let info = state.baseInfo && state.baseInfo.uid ? state.baseInfo : JSON.parse(sessionStorage.getItem('baseInfo'))
       console.log(info)
       return info
     },
     getUserUid(state) {
       return state.uid ? state.uid : localStorage.getItem('uid')
     },
-    getUserType(state){
+    getUserType(state) {
       return state.userType ? state.userType : localStorage.getItem('userType')
     },
     getUserPosition(state) {
@@ -141,7 +141,7 @@ export default new Vuex.Store({
     // 获取个人信息
     getUserAllInfo({
       commit
-    },uid) {
+    }, uid) {
       let allInfo = new Promise((resolve, reject) => {
         getUserInfo({
           uid
@@ -161,7 +161,7 @@ export default new Vuex.Store({
     }, params) {
       let infoPromise = new Promise((resolve, reject) => {
         editUserInfo(params).then(res => {
-          dispatch('getUserAllInfo',params.uid)
+          dispatch('getUserAllInfo', params.uid)
           resolve(res)
         }).catch(error => {
           reject(error)
@@ -172,8 +172,8 @@ export default new Vuex.Store({
     // 获取团队信息
     getTeamData({
       commit
-    },uid) {
-      let allInfo = new Promise((resolve, reject) => {  
+    }, uid) {
+      let allInfo = new Promise((resolve, reject) => {
         getTeamInfo({
           uid
         }).then(res => {
@@ -183,7 +183,7 @@ export default new Vuex.Store({
           resolve(res)
         }).catch(error => {
           reject(error)
-        })     
+        })
       })
       return allInfo
     },
@@ -193,7 +193,7 @@ export default new Vuex.Store({
     }, params) {
       let infoPromise = new Promise((resolve, reject) => {
         updateTeamInfo(params).then(res => {
-          dispatch('getTeamData',params.uid)
+          dispatch('getTeamData', params.uid)
           resolve(res)
         }).catch(error => {
           reject(error)
@@ -204,23 +204,23 @@ export default new Vuex.Store({
     // 获取企业信息
     getCompanymData({
       commit
-    },uid) {
-      let allInfo = new Promise((resolve, reject) => {     
-          getCompanyDetail({
-            uid
-          }).then(res => {
-            let Info = res.data || null;
-            // let userInfo = {
-            //   user_name: res.data.com_name,
-            //   mobile: res.data.link_phone,
-            //   head_img: res.data.logo_url
-            // };
-            sessionStorage.setItem("baseInfo", JSON.stringify(res.data));
-            commit('getBaseInfo', Info)
-            resolve(res)
-          }).catch(error => {
-            reject(error)
-          })
+    }, uid) {
+      let allInfo = new Promise((resolve, reject) => {
+        getCompanyDetail({
+          uid
+        }).then(res => {
+          let Info = res.data || null;
+          // let userInfo = {
+          //   user_name: res.data.com_name,
+          //   mobile: res.data.link_phone,
+          //   head_img: res.data.logo_url
+          // };
+          sessionStorage.setItem("baseInfo", JSON.stringify(res.data));
+          commit('getBaseInfo', Info)
+          resolve(res)
+        }).catch(error => {
+          reject(error)
+        })
       })
       return allInfo
     },
@@ -230,7 +230,7 @@ export default new Vuex.Store({
     }, params) {
       let infoPromise = new Promise((resolve, reject) => {
         addCompanyInfo(params).then(res => {
-          dispatch('getCompanymData',params.uid)
+          dispatch('getCompanymData', params.uid)
           resolve(res)
         }).catch(error => {
           reject(error)
@@ -254,11 +254,11 @@ export default new Vuex.Store({
           let registerType = res.data.type
           if (registerType == 1) {
             commit('setMenus', ['发单招聘'])
-            dispatch("getCompanymData",res.data.uid)
+            dispatch("getCompanymData", res.data.uid)
             router.push('/createOrderTaking?userType=' + res.data.type)
           } else {
-            dispatch("getUserAllInfo",res.data.uid)
-            dispatch("getTeamData",res.data.uid)
+            dispatch("getUserAllInfo", res.data.uid)
+            dispatch("getTeamData", res.data.uid)
             localStorage.setItem('teamType', res.data.team_type)
             // 登录人身份
             localStorage.setItem('teamSys', JSON.stringify(res.data))
@@ -267,8 +267,8 @@ export default new Vuex.Store({
             localStorage.setItem('userPosition', res.data.gradeNum)
             router.push('/teamData?userType=' + res.data.type)
             commit('setMenus', ['团队中心'])
-            commit('setTeamSys',res.data)
-          }    
+            commit('setTeamSys', res.data)
+          }
           resolve(res)
         }).catch(error => {
           reject(error)

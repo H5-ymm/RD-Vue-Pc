@@ -214,8 +214,8 @@
                     <span>次月{{formMember.settlement_time}}号结算</span>
                     -
                     <span v-if="formMember.reward_money_type==1">长期返利</span>
-                    <span v-if="formMember.reward_money_type==2&&formMember.duration_time">持续返利{{jobInfo.duration_time}}个月</span>
-                    <span v-if="formMember.reward_money_type==2&&!formMember.duration_time">一{{jobInfo.reward_money_type==1?'天':jobInfo.reward_money_type==2?'周': '个月'}}</span>
+                    <span v-if="formMember.reward_money_type==2&&formMember.duration_time">持续返利{{formMember.duration_time}}个月</span>
+                    <span v-if="formMember.reward_money_type==2&&!formMember.duration_time">一{{formMember.reward_money_type==1?'天':formMember.reward_money_type==2?'周': '个月'}}</span>
                   </p>
                   <p v-if="formMember.reward_type!=1&&formMember.reward_type!=4">
                     <span>{{formMember.reward_money}}元/人/{{rewardType}}</span>
@@ -226,7 +226,7 @@
                     <span v-if="formMember.duration_time">{{formMember.duration_time}}{{rewaryMoneType}}</span>
                     <span v-else>一{{rewaryMoneType}}</span>
                     <span v-if="formMember.reward_needtime">需入职满 {{formMember.reward_needtime}}{{rewaryMoneType}}</span>
-                    <span v-else>需入职满 一天</span></span>
+                    <span v-else>需入职满 一天</span>
                   </p>
                   <p v-if="formMember.reward_type==4">
                     <span>{{formMember.reward_money}}元/人/一次性</span>
@@ -353,10 +353,10 @@ export default {
       if (this.formMember.reward_money_type == 1) {
         text = '天'
       }
-      if (this.formMember.reward_money_type == 1) {
+      if (this.formMember.reward_money_type == 2) {
         text = '周'
       }
-      if (this.formMember.reward_money_type == 1) {
+      if (this.formMember.reward_money_type == 3) {
         text = '个月'
       }
       return text

@@ -25,11 +25,11 @@
           <p>学历</p>
           <p>{{formMember.educationName}}</p>
         </div>
-        <div class="x-flex-center" v-if="userPosition!=1||isView">
+        <div class="x-flex-center" v-if="userPosition!=1||isView||uid==formMember.uid">
           <p>当前职称</p>
           <p>{{formMember.grade_name}}</p>
         </div>
-        <div class="x-flex-center" v-if="userPosition!=1||isView">
+        <div class="x-flex-center" v-if="userPosition!=1||isView||uid==formMember.uid">
           <p>部门</p>
           <p>{{formMember.depart_name}}</p>
         </div>
@@ -57,23 +57,25 @@
         </div>
       </section>
       <section class="member-col3" :class="{'member-col4':isView}" v-if="!isView">
-        <el-form :model="formMember" class="demo-form-inline" label-width="120px">
-          <el-form-item label="部门" v-if="userPosition==1">
-            <el-select placeholder="请选择" :disabled="isView&&user!=1" v-model="depId" @change="selectDep">
-              <el-option :label="item.depart_name" :value="item.id" v-for="(item,index) in depList" :key="index"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="当前职称" v-if="userPosition==1">
-            <el-select v-model="formMember.grade_id" :disabled="isView" value-key="grade_name" placeholder="请选择">
-              <el-option :label="item.grade_name" :value="item.id" v-for="item in jobList" :key="item.grade_name"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="当前状态">
-            <el-radio-group v-model="formMember.status" :disabled="isView">
-              <el-radio :label="1" border>正常</el-radio>
-              <el-radio :label="2" border>锁定</el-radio>
-            </el-radio-group>
-          </el-form-item>
+        <el-form :model="formMember" class="demo-form-inline" label-width="120px">    
+          <div v-if=" uid!=formMember.uid">
+            <el-form-item label="部门" v-if="userPosition==1">
+              <el-select placeholder="请选择" :disabled="isView&&user!=1" v-model="depId" @change="selectDep">
+                <el-option :label="item.depart_name" :value="item.id" v-for="(item,index) in depList" :key="index"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="当前职称" v-if="userPosition==1">
+              <el-select v-model="formMember.grade_id" :disabled="isView" value-key="grade_name" placeholder="请选择">
+                <el-option :label="item.grade_name" :value="item.id" v-for="item in jobList" :key="item.grade_name"></el-option>
+              </el-select>
+            </el-form-item>   
+          </div>
+           <el-form-item label="当前状态">
+              <el-radio-group v-model="formMember.status" :disabled="isView">
+                <el-radio :label="1" border>正常</el-radio>
+                <el-radio :label="2" border>锁定</el-radio>
+              </el-radio-group>
+            </el-form-item>
           <el-form-item label="活动形式" v-if="formMember.status==2">
             <el-input type="textarea" :autosize="{ minRows: 3}" :readonly="isView" v-model="formMember.remark" placeholder="请输入锁定说明（必填）"></el-input>
           </el-form-item>
@@ -109,7 +111,8 @@ export default {
       depList: [],
       depId: '',
       userPosition: sessionStorage.getItem('userPosition'),
-      user: ''
+      user: '',
+      uid: localStorage.getItem('uid')
     }
   },
   created() {
@@ -141,6 +144,9 @@ export default {
         }
         if (this.formMember.grade_id && this.depList.length) {
           this.depId = this.getJob(this.depList, this.formMember.grade_id)
+          if (!this.depId) {
+            this.formMember.grade_id = ''
+          }
           this.jobList = this.getArr(this.depList, this.depId)
         } else {
           this.formMember.grade_id = ''
@@ -179,7 +185,7 @@ export default {
     },
 
     getJobList() {
-      let uid = localStorage.getItem('uid')
+      let uid = this.uid
       departmentRoleList({ uid }).then(res => {
         this.depList = res.data
       })
