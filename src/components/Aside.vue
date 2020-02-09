@@ -5,14 +5,42 @@
     <el-row class="tac">
       <el-col :span="24">
         <div class="names">人事达</div>
-        <el-menu class="el-menu-vertical-demo" background-color="#000" active-text-color="#1890FF" text-color="#fff" @open="handleOpen" :unique-opened="true" @select="selectMenus" router :default-active="routerli">
+        <el-menu
+          class="el-menu-vertical-demo"
+          background-color="#000"
+          active-text-color="#1890FF"
+          text-color="#fff"
+          @open="handleOpen"
+          :unique-opened="true"
+          @select="selectMenus"
+          router
+          :default-active="routerli"
+        >
           <el-submenu :index="item.title" class="acts" v-for="(item,index) in menus" :key="index">
             <template slot="title">
-              <img :src="require(`../assets/img/teamIcon/icon${index+1}.png`)" alt="" class="aside-icon">
+              <img
+                :src="require(`../assets/img/teamIcon/icon${index}.png`)"
+                alt=""
+                class="aside-icon"
+                v-if="userPosition==1"
+              >
+              <img
+                :src="index<4?require(`../assets/img/teamIcon/icon${index}.png`):
+                require(`../assets/img/teamIcon/icon${index+1}.png`)"
+                alt=""
+                class="aside-icon"
+                v-else
+              >
               <!-- <i class="el-icon-collection"></i> -->
               <span>{{item.title}}</span>
             </template>
-            <el-menu-item :index="val.url" :class="{'is-active':url==val.url}" v-for="(val,ind) in item.submenu" :key="ind" :route="val.url">{{val.title}}</el-menu-item>
+            <el-menu-item
+              :index="val.url"
+              :class="{'is-active':url==val.url}"
+              v-for="(val,ind) in item.submenu"
+              :key="ind"
+              :route="val.url"
+            >{{val.title}}</el-menu-item>
           </el-submenu>
         </el-menu>
       </el-col>
@@ -21,7 +49,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapGetters } from "vuex";
 export default {
   name: 'Aside',
   props: ['userPosition'],
@@ -440,6 +468,10 @@ export default {
     }
   },
   computed: {
+    ...mapGetters({
+      uid: 'getUserUid',
+      teamSys: 'getTeam'
+    }),
     routerli() {
       // 对应路由
       console.log(this.$route)

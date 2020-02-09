@@ -245,10 +245,10 @@ export default {
             .then(res => {
               localStorage.setItem('userType', this.registerType)
               localStorage.setItem('token', res.data.token)
-              this.$store.commit('setUserType', res.data.type)
-              localStorage.setItem('teamType', 0)
-              this.$store.commit('getUid', res.data.uid)
               localStorage.setItem('uid', res.data.uid)
+              localStorage.setItem('teamType', 0)
+              this.$store.commit('setUserType', this.registerType)
+              this.$store.commit('getUid', res.data.uid)
               if (res.data.type == 1) {
                 this.$store.dispatch("getCompanymData",res.data.uid)
                 this.$router.push('/createOrderTaking')

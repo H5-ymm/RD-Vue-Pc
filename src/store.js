@@ -60,15 +60,16 @@ export default new Vuex.Store({
       return arr
     },
     getTeam(state) {
-      return state.teamInfo && state.teamInfo.type ? state.teamInfo : JSON
-        .parse(localStorage.getItem('teamSys'))
+      return state.teamInfo && state.teamInfo.uid ? state.teamInfo :
+        JSON.parse(localStorage.getItem('teamSys'))
     },
     getUser(state) {
-      return state.userInfo && state.userInfo.uid ? state.userInfo : JSON.parse(sessionStorage.getItem('userInfo'))
+      return state.userInfo && state.userInfo.uid ? state.userInfo :
+        JSON.parse(sessionStorage.getItem('userInfo'))
     },
     getBase(state) {
-      let info = state.baseInfo && state.baseInfo.uid ? state.baseInfo : JSON.parse(sessionStorage.getItem('baseInfo'))
-      console.log(info)
+      let info = state.baseInfo && state.baseInfo.uid ? state.baseInfo :
+        JSON.parse(sessionStorage.getItem('baseInfo'))
       return info
     },
     getUserUid(state) {
@@ -255,7 +256,7 @@ export default new Vuex.Store({
           if (registerType == 1) {
             commit('setMenus', ['发单招聘'])
             dispatch("getCompanymData", res.data.uid)
-            router.push('/createOrderTaking?userType=' + res.data.type)
+            router.push('/createOrderTaking')
           } else {
             dispatch("getUserAllInfo", res.data.uid)
             dispatch("getTeamData", res.data.uid)
@@ -265,7 +266,7 @@ export default new Vuex.Store({
             localStorage.setItem('departName', res.data.departName)
             sessionStorage.setItem('userPosition', res.data.gradeNum)
             localStorage.setItem('userPosition', res.data.gradeNum)
-            router.push('/teamData?userType=' + res.data.type)
+            router.push('/teamData')
             commit('setMenus', ['团队中心'])
             commit('setTeamSys', res.data)
           }

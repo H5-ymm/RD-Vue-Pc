@@ -9,12 +9,12 @@
   color: #fff;
 }
 .home {
-  .header-left{
+  .header-left {
     display: inline-block;
   }
   .bg-purple .welcome {
-    font-size:14px;
-    margin-left:8px;
+    font-size: 14px;
+    margin-left: 8px;
   }
 }
 .head-icon {
@@ -23,7 +23,7 @@
   margin: 0 5px;
   border-radius: 50%;
 }
-.home-aside{
+.home-aside {
   height: 100vh;
   overflow-y: scroll;
   overflow-x: hidden;
@@ -38,34 +38,56 @@
         <a class="welcome">全国站</a>
       </span>
       <ul class="nav">
-        <li v-for="(item, index) in menus" class="nav-item" :key="index" @click="switchNav(item, index)" :class="{'active': activeIndex==index}">
+        <li
+          v-for="(item, index) in menus"
+          class="nav-item"
+          :key="index"
+          @click="switchNav(item, index)"
+          :class="{'active': activeIndex==index}"
+        >
           {{item.title}}
           <span class="line" v-if="activeIndex==index"></span>
         </li>
       </ul>
     </div>
     <div class="bg-purple-light x-flex-between">
-      <!-- <span class="home-purple-left" v-if="!userInfo">
-        <i class="el-icon-user-solid"></i>
-        <a class="welcome" href="login">登录</a>
-        <a class="divider">|</a>
-        <a class="welcome" href="register">注册</a>
-      </span> -->
       <P class="home-purple-left">
         <el-dropdown @command="handleCommand">
           <div class="el-dropdown-link x-flex-center" style="margin-right:10px">
-            <div class="x-flex-between">
-              <p v-if="userInfo&&userInfo.user_name">{{userInfo.user_name?userInfo.user_name:userInfo.mobile}}</p>
+            <div class="x-flex-between" v-if="type==2">
+              <p
+                v-if="userInfo&&userInfo.user_name"
+              >{{userInfo.user_name?userInfo.user_name:userInfo.mobile}}</p>
               <p v-else>{{userName}}</p>
-              <img :src="userInfo.head_img" alt v-if="userInfo&&userInfo.head_img" class="head-icon" />
-              <img src="../assets/img/headIcon.png" v-else class="head-icon">&nbsp;
-              <!-- <el-divider direction="vertical" v-if="departName"></el-divider>
-                <span v-if="departName">{{departName}}</span>     -->
+              <img
+                :src="getImgUrl(userInfo.head_img)"
+                alt=""
+                v-if="userInfo&&userInfo.head_img"
+                class="head-icon"
+              >
+              <img src="../assets/img/headIcon.png" v-else class="head-icon">
+            </div>
+            <div class="x-flex-between" v-if="type==1">
+              <p
+                v-if="baseInfo&&baseInfo.com_name"
+              >{{baseInfo.com_name?baseInfo.com_name:baseInfo.mobile}}</p>
+              <p v-else>{{userName}}</p>
+              <img
+                :src="baseInfo.logo_url"
+                alt=""
+                v-if="baseInfo&&baseInfo.logo_url"
+                class="head-icon"
+              >
+              <img src="../assets/img/headIcon.png" v-else class="head-icon">
             </div>
             <i class="el-icon-caret-bottom"></i>
           </div>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item :command="item.url" v-for="(item,index) in ommandList" :key="index">{{item.name}}</el-dropdown-item>
+            <el-dropdown-item
+              :command="item.url"
+              v-for="(item,index) in ommandList"
+              :key="index"
+            >{{item.name}}</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
       </P>
@@ -76,13 +98,12 @@
 <script>
 import { getImgUrl } from '@/util/util'
 import { getConfigInfo } from '@/api/home'
-import { mapState, mapActions, mapMutations } from 'vuex'
+import { mapGetters } from 'vuex'
 export default {
   name: '',
   props: ['activeIndex'],
-  data () {
+  data() {
     return {
-      // activeIndex: 1,
       menus: [
         {
           title: '首页',
@@ -98,18 +119,19 @@ export default {
         }
       ],
       userName: localStorage.getItem('userName'),
-      info:{}
+      info: {}
     }
   },
-  created () {
+  created() {
     this.getInfo()
-    this.getUserAll()
   },
   computed: {
-    ...mapState({
-      userInfo: state => state.userInfo
+    ...mapGetters({
+      type: 'getUserType',
+      baseInfo: "getBase",
+      userInfo: 'getUser'
     }),
-    ommandList () {
+    ommandList() {
       let arr = []
       if (localStorage.getItem('userType') == 2) {
         arr = [
@@ -126,26 +148,24 @@ export default {
     }
   },
   methods: {
-    getInfo(){
-      getConfigInfo().then(res=>{
+    getInfo() {
+      getConfigInfo().then(res => {
         this.info = res.data
       })
     },
     getImgUrl,
-    ...mapMutations(['getUserInfo']),
-    handleCommand (val) {
-      this.$router.push(val)
+    handleCommand(val) {
       if (val == '/login') {
-        localStorage.clear('')
-        sessionStorage.clear('')
+        this.$store.dispatch("logoutUser").then(res => {
+          this.$message.success("退出登录成功");
+          this.$router.replace(val);
+        });
+      }
+      else {
+        this.$router.push(val)
       }
     },
-    getUserAll () {
-      this.$store.dispatch('getUserAllInfo').then((res) => {
-        this.$store.commit('getUserInfo', res.data)
-      })
-    },
-    switchNav (item, index) {
+    switchNav(item, index) {
       this.$router.push(item.url)
     }
   }

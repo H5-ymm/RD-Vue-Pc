@@ -82,7 +82,7 @@ import companyAside from "@/components/companyAside";
 import Breadcrumb from "@/components/breadcrumb/Breadcrumb";
 import { getImgUrl } from "@/util/util";
 import { logout } from "@/api/login";
-import { mapState, mapActions, mapMutations, mapGetters } from "vuex";
+import { mapGetters } from "vuex";
 export default {
   name: "team",
   inject: ["reload"],
@@ -106,32 +106,31 @@ export default {
       baseInfo: "getBase",
       userInfo: 'getUser',
       uid: 'getUserUid',
-      type:'getUserType',
+      type: 'getUserType',
       userPosition: 'getUserPosition',
       teamSys: 'getTeam'
     })
   },
   created() {
     // type 1 企业
-    // this.userPosition = this.teamSys.gradeNum;
-    this.departName = this.teamSys.departName
     if (this.type == 1) {
       this.aside = "companyAside";
       this.height = "88px";
     } else {
       this.aside = "homeAside";
-      this.height = "74px";  
+      this.height = "74px";
+      this.departName = this.teamSys.departName
     }
   },
-  watch:{
-    $route(to,form) {
-       this.departName = this.teamSys.departName
+  watch: {
+    $route(to, form) {
       if (this.type == 1) {
         this.aside = "companyAside";
         this.height = "88px";
       } else {
         this.aside = "homeAside";
         this.height = "74px";
+        this.departName = this.teamSys.departName
       }
     }
   },
@@ -153,7 +152,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import "@/assets/css/common.scss";
+@import '@/assets/css/common.scss';
 .el-container.is-vertical {
   height: 100vh;
 }
