@@ -136,7 +136,8 @@ export default {
       userPosition: sessionStorage.getItem('userPosition'),
       uid: localStorage.getItem('uid'),
       modalType: 1,
-      modalForm: {}
+      modalForm: {},
+      id: ''
     }
   },
   created() {
@@ -199,7 +200,7 @@ export default {
       }
       else if (this.modalType == 2) {
         // 退出
-        loginOutTeam({ uid: this.userId })
+        loginOutTeam({ uid: this.uid })
           .then(res => {
             if (res.data) {
               this.dialogModalVisible = false
@@ -221,7 +222,7 @@ export default {
       }
       else {
         // 删除
-        deleteTeamUser({ uid: this.uid, userid: this.userId })
+        deleteTeamUser({ uid: this.uid, userid: this.id })
           .then(res => {
             if (res.data) {
               this.dialogModalVisible = false
@@ -246,7 +247,7 @@ export default {
       }
       this.modalType = 2
       let text = this.userPosition == 1 ? '解散' : '退出'
-      this.modalObj.content = `你确定${text}团队吗?${text}后将无法登录账号!`
+      this.modalObj.content = `你确定${text}团队吗?</br>${text}后将无法登录账号!`
       this.dialogModalVisible = true
     },
     outLogin() {
@@ -260,9 +261,9 @@ export default {
         this.dialogVisible = true
         return false
       }
-      this.userId = uid
+      this.id = uid
       this.modalType = 3
-      this.modalObj.content = '你确定删除该组员吗?删除后该组员将无法登录!'
+      this.modalObj.content = '你确定删除该组员吗?</br>删除后该组员将无法登录!'
       this.dialogModalVisible = true
     },
     addMember() {
@@ -279,10 +280,10 @@ export default {
         this.modalType = 1
         if (val.status == 2) {
           if (val.id == this.uid) {
-            this.modalObj.content = '你确定锁定当前账号吗？锁定后将退出并无法登录!'
+            this.modalObj.content = '你确定锁定当前账号吗？</br>锁定后将退出并无法登录!'
           }
           else {
-            this.modalObj.content = '你确定锁定该组员账号吗？锁定后该组员将无法登录!'
+            this.modalObj.content = '你确定锁定该组员账号吗？</br>锁定后该组员将无法登录!'
           }
           this.userId = val.id
           this.modalForm = val

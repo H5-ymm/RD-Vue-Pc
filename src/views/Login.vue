@@ -222,18 +222,12 @@ export default {
                 this.dialogVisible = false
                 this.isCodeError = false
               } else if (error.status.code == 1008) {
-                this.modalInfo.title = '账号已锁定'
                 this.dialogVisible = true
                 this.isShowError = false
               } else if (error.status.code == 3008) {
                 this.isCodeError = true
                 this.isShowError = false
                 this.dialogVisible = false
-              } else if (error.status.code == 3302) {
-                this.modalInfo.title = '账号已退出团队'
-                this.dialogVisible = true
-                this.isShowError = false
-                this.isCodeError = false
               }
               else {
                 this.dialogVisible = false

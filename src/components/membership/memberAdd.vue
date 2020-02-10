@@ -219,6 +219,7 @@ export default {
     },
     selectDep(val) {
       this.jobList = this.getArr(this.currentDepList, val)
+      this.formMember.grade_id = ''
     },
     change(val) {
       this.formMember.provinceid = val[0]
@@ -226,6 +227,10 @@ export default {
       this.formMember.three_cityid = val[2]
     },
     handleClose() {
+      this.clearData()
+      this.$emit('handleClose')
+    },
+    clearData() {
       this.formMember = {
         region: '',
         status: 1,
@@ -240,13 +245,14 @@ export default {
         uid: localStorage.getItem('uid')
       }
       this.address = []
-      this.$emit('handleClose')
     },
     submitForm() {
       this.$refs['formMember'].validate(valid => {
         if (valid) {
           this.$emit('submitForm', this.formMember)
-          this.handleClose()
+          if (!this.dialogTableVisible) {
+            this.clearData()
+          }
         } else {
           return false
         }

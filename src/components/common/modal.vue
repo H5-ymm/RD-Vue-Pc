@@ -42,16 +42,22 @@
     justify-content: space-between;
     margin: 10px 15px;
     .el-button {
-      border-radius: 0;
       padding: 10px 20px;
     }
   }
 }
 </style>
 <template>
-  <el-dialog width="380px" top="30vh" :visible="dialogTableVisible" class="member-dialog dep-dialog" :show-close="false" center>
+  <el-dialog
+    width="380px"
+    top="30vh"
+    :visible="dialogTableVisible"
+    class="member-dialog dep-dialog"
+    :show-close="false"
+    center
+  >
     <div class="member-row">
-      <img src="../../assets/img/member/cancel.png" alt class="cancel-icon" @click="handleClose" />
+      <img src="../../assets/img/member/cancel.png" alt="" class="cancel-icon" @click="handleClose">
       <section class="member-col1 dep-col1"></section>
       <section class="member-col3 department-add-col3">
         <p v-html="modalObj.content"></p>

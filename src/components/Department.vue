@@ -6,7 +6,6 @@
     border-radius: 10px;
     padding: 15px;
     .add-member {
-      border-radius: 0;
       height: 38px;
       margin-bottom: 15px;
     }
@@ -22,12 +21,31 @@
     <div class="table-list">
       <el-button type="primary" class="add-member" @click="visible=true">添加部门</el-button>
       <tableList :tableData="tableData" @handleTurnover="handleEdit" @handleDel="handleDel"></tableList>
-      <el-pagination class="team-pagination" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="formMember.page" :page-sizes="[10, 30, 50, 100]" :page-size="formMember.limit" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
+      <el-pagination
+        class="team-pagination"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="formMember.page"
+        :page-sizes="[10, 30, 50, 100]"
+        :page-size="formMember.limit"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total"
+      ></el-pagination>
     </div>
-    <turnoverModal :dialogTableVisible="dialogTableVisible" :departId="departId" @handleClose="handle"></turnoverModal>
+    <turnoverModal
+      :dialogTableVisible="dialogTableVisible"
+      :departId="departId"
+      @handleClose="handleClose"
+    ></turnoverModal>
     <addDepModal :dialogTableVisible="visible" @submitForm="submitForm"></addDepModal>
     <successModal :dialogTableVisible="visible1" @handleTurnover="handleEdit"></successModal>
     <outDep :dialogTableVisible="delVisible" @submitForm="handleUser"></outDep>
+    <modal
+      :dialogTableVisible="dialogModalVisible"
+      @handleOk="handleOk"
+      :modalObj="modalObj"
+      @handleClose="dialogModalVisible=false"
+    ></modal>
   </div>
 </template>
 
@@ -37,18 +55,20 @@ import addDepModal from './department/addDepModal'
 import successModal from './department/successModal'
 import outDep from './department/outDep'
 import turnoverModal from './department/turnoverModal'
+import modal from './common/modal'
 import {
   getDepartmentList,
   addTeamDepartment,
   delDepartment
-} from '../api/department'
+} from '@/api/department'
 export default {
   components: {
     tableList,
     addDepModal,
     successModal,
     outDep,
-    turnoverModal
+    turnoverModal,
+    modal
   },
   data() {
     return {
@@ -57,6 +77,12 @@ export default {
       visible1: false,
       delVisible: false,
       turnoverVisible: false,
+      dialogModalVisible: false,
+      modalObj: {
+        content: '确定删除该部门吗？',
+        okText: '确定',
+        closeText: '取消'
+      },
       tableData: [],
       formMember: {
         uid: localStorage.getItem('uid'),
@@ -102,15 +128,27 @@ export default {
       this.dialogTableVisible = true
     },
     handleDel(val) {
+      this.departId = val
+
+      this.dialogModalVisible = true
+    },
+    handleOk() {
+      this.deleteDep()
+    },
+    deleteDep() {
       let params = {
-        departId: val,
+        departId: this.departId,
         uid: this.uid
       }
       delDepartment(params)
         .then(res => {
-          if (res.status.code == 200) {
+          if (res.data) {
+            this.dialogModalVisible = false
             this.getList(this.formMember)
-            this.$message.error('删除成功')
+            this.$message.success('删除成功')
+          }
+          else {
+            this.$message.error('删除失败')
           }
         })
         .catch(error => {
@@ -119,7 +157,7 @@ export default {
           }
         })
     },
-    handle(index) {
+    handleClose(index) {
       this.dialogTableVisible = false
       if (index) {
         this.getList(this.formMember)
