@@ -4,7 +4,13 @@
 <template>
   <div class="tables-box billingManagement">
     <div class="table-list">
-      <el-form :inline="true" label-width="100px" label-position="right" :model="formMember" class="demo-form-inline">
+      <el-form
+        :inline="true"
+        label-width="100px"
+        label-position="right"
+        :model="formMember"
+        class="demo-form-inline"
+      >
         <el-form-item label="职位名称：">
           <el-input v-model="formMember.job_name" class="width300" placeholder="请输入职位名称关键字"></el-input>
         </el-form-item>
@@ -18,21 +24,44 @@
         </el-form-item>
         <el-form-item label="薪资模式：">
           <el-select v-model="formMember.money_type" class="width300" placeholder="请选择薪资模式">
-            <el-option :label="item.label" :value="item.value" v-for="(item,index) in moneyTypeList" :key="index"></el-option>
+            <el-option
+              :label="item.label"
+              :value="item.value"
+              v-for="(item,index) in moneyTypeList"
+              :key="index"
+            ></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="返利模式：">
           <el-select v-model="formMember.reward_type" class="width300" placeholder="请选择返利模式">
-            <el-option :label="item.label" :value="item.value" v-for="(item,index) in rewardTypeList" :key="index"></el-option>
+            <el-option
+              :label="item.label"
+              :value="item.value"
+              v-for="(item,index) in rewardTypeList"
+              :key="index"
+            ></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="状态：">
           <el-select v-model="formMember.status" class="width300" placeholder="请选择">
-            <el-option :label="item.label" :value="item.value" v-for="(item,index) in entryStatusList" :key="index"></el-option>
+            <el-option
+              :label="item.label"
+              :value="item.value"
+              v-for="(item,index) in entryStatusList"
+              :key="index"
+            ></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="接单时间：">
-          <el-date-picker class="width300" v-model="timeList" @change="changeDate" type="daterange" range-separator="-" start-placeholder="开始日期区间" end-placeholder="结束日期"></el-date-picker>
+          <el-date-picker
+            class="width300"
+            v-model="timeList"
+            @change="changeDate"
+            type="daterange"
+            range-separator="-"
+            start-placeholder="开始日期区间"
+            end-placeholder="结束日期"
+          ></el-date-picker>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="onSubmit" class="select-btn">查询</el-button>
@@ -40,17 +69,15 @@
         </el-form-item>
       </el-form>
       <div class="member-table">
-        <el-table border :data="tableData" ref="multipleTable" style="width: 100%">
+        <el-table border="" :data="tableData" ref="multipleTable" style="width: 100%">
           <el-table-column label="职位名称" align="center" width="150">
             <template slot-scope="props">
               <el-button type="text" @click="handleViewJob(props.row)">{{props.row.job_name}}</el-button>
             </template>
           </el-table-column>
-          <el-table-column label="企业名称" prop="com_name" align="center" width="150">
-          </el-table-column>
+          <el-table-column label="企业名称" prop="com_name" align="center" width="150"></el-table-column>
           <el-table-column label="需求人数" prop="required_number" align="center" width="100"></el-table-column>
-          <el-table-column label="已入职" align="center" prop="entry_num" width="100">
-          </el-table-column>
+          <el-table-column label="已入职" align="center" prop="entry_num" width="100"></el-table-column>
           <el-table-column label="岗位薪资" align="center" width="150">
             <template slot-scope="props">
               <span>{{props.row.money ?props.row.money:0 }}</span>
@@ -63,8 +90,16 @@
           </el-table-column>
           <el-table-column label="状态" align="center" width="150">
             <template slot-scope="props">
-              <span class="status" v-if="!props.row.entry_status" :class="`status${props.row.entry_status}`">入职开始</span>
-              <span class="status" v-if="props.row.entry_status&&props.row.entry_status!=4" :class="`status${props.row.entry_status}`">{{props.row.entry_status==1?"入职开始":props.row.entry_status==2?'入职结束':'审核入职'}}</span>
+              <span
+                class="status"
+                v-if="!props.row.entry_status"
+                :class="`status${props.row.entry_status}`"
+              >入职开始</span>
+              <span
+                class="status"
+                v-if="props.row.entry_status&&props.row.entry_status!=4"
+                :class="`status${props.row.entry_status}`"
+              >{{props.row.entry_status==1?"入职开始":props.row.entry_status==2?'入职结束':'审核入职'}}</span>
               <span class="status status4" v-if="props.row.entry_status==4">审核结束</span>
             </template>
           </el-table-column>
@@ -85,27 +120,61 @@
           </el-table-column>
           <el-table-column label="入职时间" sortable align="center" width="160">
             <template slot-scope="props">
-              <el-button type="text" @click="viewTime(props.row)">{{props.row.entry_time?$moment.unix(props.row.entry_time).format('YYYY-MM-DD HH:mm'):'--'}}</el-button>
+              <el-button
+                type="text"
+                @click="viewTime(props.row)"
+              >{{props.row.entry_time?$moment.unix(props.row.entry_time).format('YYYY-MM-DD HH:mm'):'--'}}</el-button>
             </template>
           </el-table-column>
           <el-table-column label="操作" align="center" min-width="160">
             <template slot-scope="scope">
-              <el-button @click="$router.push('/commonTableList?view=6&job_id='+scope.row.job_id)" v-if="scope.row.entry_status>=2&&scope.row.entry_status!=4" type="text" size="small">入职审核</el-button>
-              <el-button @click="$router.push('/commonTableList?view=3&job_id='+scope.row.job_id)" type="text" size="small" v-if="scope.row.entry_status<=1">
-                面试名单
+              <el-button
+                @click="$router.push('/commonTableList?view=6&job_id='+scope.row.job_id)"
+                v-if="scope.row.entry_status>=2&&scope.row.entry_status!=4"
+                type="text"
+                size="small"
+              >入职审核</el-button>
+              <el-button
+                @click="$router.push('/commonTableList?view=3&job_id='+scope.row.job_id)"
+                type="text"
+                size="small"
+                v-if="scope.row.entry_status<=1"
+              >面试名单
                 <!-- <span class="resume-number">(+150)</span> -->
               </el-button>
-              <el-button @click="$router.push('/commonTableList?view=7&job_id='+scope.row.job_id)" type="text" size="small" v-if="scope.row.entry_status==4">在职名单</el-button>
+              <el-button
+                @click="$router.push('/commonTableList?view=7&job_id='+scope.row.job_id)"
+                type="text"
+                size="small"
+                v-if="scope.row.entry_status==4"
+              >在职名单</el-button>
               <el-button @click="dialogTableVisible=true" type="text" size="small">联系客服</el-button>
             </template>
           </el-table-column>
         </el-table>
       </div>
-      <el-pagination class="team-pagination" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="formMember.page" :page-sizes="[10, 30, 50, 100]" :page-size="formMember.limit" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
+      <el-pagination
+        class="team-pagination"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="formMember.page"
+        :page-sizes="[10, 30, 50, 100]"
+        :page-size="formMember.limit"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total"
+      ></el-pagination>
     </div>
     <customerService :dialogTableVisible="dialogTableVisible"></customerService>
-    <viewJob :dialogTableVisible="dialogJobVisible" :id="jobId" @handleClose="dialogJobVisible=false"></viewJob>
-    <receiptModal :dialogTableVisible="visible" @handleClose="visible=false" :viewTimeInfo="viewTimeInfo"></receiptModal>
+    <viewJob
+      :dialogTableVisible="dialogJobVisible"
+      :id="jobId"
+      @handleClose="dialogJobVisible=false"
+    ></viewJob>
+    <receiptModal
+      :dialogTableVisible="visible"
+      @handleClose="visible=false"
+      :viewTimeInfo="viewTimeInfo"
+    ></receiptModal>
   </div>
 </template>
 
@@ -168,6 +237,8 @@ export default {
     // 初始化查询标签数据
     this.getList(this.formMember)
     let params = 'job_array'
+    let arr = ['入职名单']
+    this.$store.commit("setMenus", arr);
     this.getData(params)
   },
   methods: {

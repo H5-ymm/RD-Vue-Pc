@@ -4,12 +4,19 @@
 <template>
   <el-dialog width="500px" :visible="dialogTableVisible" class="member-dialog" :show-close="false">
     <div class="member-row">
-      <img src="../../assets/img/member/cancel.png" alt class="cancel-icon" @click="handleClose" />
+      <img src="../../assets/img/member/cancel.png" alt="" class="cancel-icon" @click="handleClose">
       <section class="member-col1">
         <p>{{id?'修改组员':'添加组员'}}</p>
       </section>
       <section class="member-col3 member-add-col3">
-        <el-form :model="formMember" :rules="rules" ref="formMember" class="demo-form-inline" label-position="right" label-width="100px">
+        <el-form
+          :model="formMember"
+          :rules="rules"
+          ref="formMember"
+          class="demo-form-inline"
+          label-position="right"
+          label-width="100px"
+        >
           <el-form-item label="姓名" prop="user_name">
             <el-input v-model="formMember.user_name" :readonly="id!=''" placeholder="请输入组员姓名"></el-input>
           </el-form-item>
@@ -31,19 +38,40 @@
             </el-select>
           </el-form-item>
           <el-form-item label="部门">
-            <el-select placeholder="请选择" value-key="depart_name" :disabled="userPosition==2&&id!=''" v-model="depId" @change="selectDep">
-              <el-option :label="item.depart_name" :value="item.id" v-for="(item,index) in currentDepList" :key="item.depart_name"></el-option>
+            <el-select
+              placeholder="请选择"
+              value-key="depart_name"
+              :disabled="userPosition==2&&id!=''"
+              v-model="depId"
+              @change="selectDep"
+            >
+              <el-option
+                :label="item.depart_name"
+                :value="item.id"
+                v-for="item in currentDepList"
+                :key="item.depart_name"
+              ></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="当前职称">
-            <el-select v-model="formMember.grade_id" :disabled="userPosition==2&&id!=''" value-key="grade_name" placeholder="请选择">
-              <el-option :label="item.grade_name" :value="item.id" v-for="item in jobList" :key="item.grade_name"></el-option>
+            <el-select
+              v-model="formMember.grade_id"
+              :disabled="userPosition==2&&id!=''"
+              value-key="grade_name"
+              placeholder="请选择"
+            >
+              <el-option
+                :label="item.grade_name"
+                :value="item.id"
+                v-for="item in jobList"
+                :key="item.grade_name"
+              ></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="当前状态">
             <el-radio-group v-model="formMember.status">
-              <el-radio :label="1" border>正常</el-radio>
-              <el-radio :label="2" border>锁定</el-radio>
+              <el-radio :label="1" border="">正常</el-radio>
+              <el-radio :label="2" border="">锁定</el-radio>
             </el-radio-group>
           </el-form-item>
           <el-form-item label="活动形式" v-if="formMember.status==2">
@@ -123,11 +151,16 @@ export default {
   created() {
     let params = 'edu_type'
     if (this.userPosition == 2) {
-      this.depId = Number(localStorage.getItem('departId'))
+      let teamSys = localStorage.getItem('teamSys') ? JSON
+        .parse(localStorage.getItem('teamSys')) : {}
+      this.depId = Number(teamSys.departId)
+    }
+    else {
+      this.depId = ''
+      this.formMember.grade_id = ''
     }
     this.getList(params)
     this.getJobList()
-    this.handleClose()
   },
   methods: {
     getJob(arr, id) {
@@ -213,6 +246,7 @@ export default {
       this.$refs['formMember'].validate(valid => {
         if (valid) {
           this.$emit('submitForm', this.formMember)
+          this.handleClose()
         } else {
           return false
         }

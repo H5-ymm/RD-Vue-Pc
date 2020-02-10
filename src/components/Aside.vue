@@ -1,3 +1,47 @@
+<style>
+.hello {
+  height: 100%;
+  background: #000;
+}
+.el-submenu {
+  padding-right: 20px;
+  font-size: 16px;
+}
+.el-submenu .aside-icon {
+  width: 18px;
+  margin-right: 10px;
+}
+.el-menu-vertical-demo {
+  border: 0px solid #ffffff;
+  height: 100vh;
+  overflow: auto;
+}
+.el-submenu .el-menu-item {
+  min-width: 170px;
+  font-size: 16px;
+}
+.el-menu-item {
+  background-color: rgba(0, 0, 0, 0.1) !important;
+  padding-left: 50px !important;
+  box-sizing: border-box;
+  margin-right: 30px;
+}
+.el-menu-item.is-active {
+  background: #1890ff !important;
+  border-right: 4px solid #1890ff;
+  color: #fff !important;
+}
+.names {
+  width: 100%;
+  height: 60px;
+  text-align: center;
+  color: #fff;
+  background: #20222a;
+  height: 46px;
+  line-height: 46px;
+}
+</style>
+
 <template>
   <div class="hello">
     <!-- 侧边导航栏，需要给 具体 导航的 父级 加 class "acts" 则可以修改高亮状态 -->
@@ -31,7 +75,6 @@
                 class="aside-icon"
                 v-else
               >
-              <!-- <i class="el-icon-collection"></i> -->
               <span>{{item.title}}</span>
             </template>
             <el-menu-item
@@ -415,10 +458,10 @@ export default {
     },
     $route(to, from) {
       if (to.path == '/commonTableList' && from.path == '/teamEntryList') {
-        this.selectMenus(to.fullPath, this.menus)
+        this.selectMenus(from.path, this.menus)
       }
       if (to.path == '/teamEntryList' && from.path == '/resumeResult') {
-        this.selectMenus(to.fullPath, this.menus)
+        this.selectMenus(to.path, this.menus)
       }
       if (
         to.path == '/resumeResult' &&
@@ -436,22 +479,40 @@ export default {
   },
   methods: {
     handleOpen(key, keyPath) {
-      console.log(keyPath)
       this.$store.commit('setMenus', keyPath)
-      // sessionStorage.setItem('menus', JSON.stringify(keyPath))
+      sessionStorage.setItem('menus', JSON.stringify(keyPath))
     },
     selectMenus(key, keyPath) {
-      this.url = key
+      this.url = key || ''
       let newUrl = ''
-      if (key.split('?').length > 1) {
-        newUrl = key
+      let list = this.url.split('?')
+      if (list.length < 1) {
+        newUrl = this.url
       } else {
-        newUrl = key.split('?')[0]
+        if (list[1] && list[1].indexOf('view') > -1) {
+          newUrl = key
+        }
+        else {
+          newUrl = list[0]
+        }
       }
       let arr = this.getMenusTitle(newUrl, this.menus)
       sessionStorage.setItem('menusUrl', this.url)
       this.$store.commit('setMenus', arr)
       sessionStorage.setItem('menus', JSON.stringify(arr))
+    },
+    getMenusUrl(title, arr) {
+      let url = ''
+      let list = []
+      arr.forEach(item => {
+        item.submenu.forEach(val => {
+          if (val.title == title) {
+            url = val.url
+            list.push(url)
+          }
+        })
+      })
+      return url
     },
     getMenusTitle(url, arr) {
       let title = ''
@@ -473,56 +534,21 @@ export default {
       teamSys: 'getTeam'
     }),
     routerli() {
-      // 对应路由
-      console.log(this.$route)
-      // let pathStr = this.$route.path.split('/')
-      return this.$route.fullPath
+      let path
+      let falg = true
+      let key = this.$route.fullPath.split('?')
+      let list = this.$store.getters.breadcrumb
+      if (list.length == 2) {
+        path = this.getMenusUrl(list[0], this.menus)
+      }
+      else {
+        if (key[1]) {
+          falg = key[1].indexOf('view') > -1
+        }
+        path = !falg ? this.$route.path : this.$route.fullPath
+      }
+      return path
     }
   }
 }
 </script>
-
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style>
-.hello {
-  height: 100%;
-  background: #000;
-}
-.el-submenu {
-  padding-right: 20px;
-  font-size: 16px;
-}
-.el-submenu .aside-icon {
-  width: 18px;
-  margin-right: 10px;
-}
-.el-menu-vertical-demo {
-  border: 0px solid #ffffff;
-  height: 100vh;
-  overflow: auto;
-}
-.el-submenu .el-menu-item {
-  min-width: 170px;
-  font-size: 16px;
-}
-.el-menu-item {
-  background-color: rgba(0, 0, 0, 0.1) !important;
-  padding-left: 50px !important;
-  box-sizing: border-box;
-  margin-right: 30px;
-}
-.el-menu-item.is-active {
-  background: #1890ff !important;
-  border-right: 4px solid #1890ff;
-  color: #fff !important;
-}
-.names {
-  width: 100%;
-  height: 60px;
-  text-align: center;
-  color: #fff;
-  background: #20222a;
-  height: 46px;
-  line-height: 46px;
-}
-</style>

@@ -6,6 +6,7 @@
   padding: 15px;
   .team-pagination {
     margin-top: 20px;
+    margin-left: 0;
   }
   .member-table {
     .action-btn {
@@ -16,39 +17,66 @@
       }
       .select-text {
         font-size: 14px;
-        margin: 0 5px;
+        margin: 0 5px 0 15px;
         color: #6a6a6a;
       }
     }
   }
 }
 .tables-box {
-  overflow: hidden;
-  margin-bottom: 60px;
-}
-.team-info-row {
-  margin: 20px 0;
-}
-.box-card p {
-  font-size: 16px;
-}
-.box-card p:nth-of-type(2) {
-  font-size: 32px;
-  margin-top: 10px;
+  // overflow: hidden;
+  // margin-bottom: 60px;
 }
 </style>
 
 <template>
   <div class="tables-box">
-    <memberCard :userType="userType" @refurbish="refurbish" :teamInfo="teamInfo"></memberCard>
+    <memberCard :teamInfo="teamInfo"></memberCard>
     <div class="table-list">
       <memberQuery @onSubmit="onSubmit"></memberQuery>
-      <memberTable :total="total" :tableData="tableData" @handleEdit="handleEdit" @dismissTeam="dismissTeam" @handleView="handleView" @addMember="addMember" @handleDel="handleDel"></memberTable>
-      <el-pagination class="team-pagination" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="formMember.page" :page-sizes="[10, 30, 50, 100]" :page-size="formMember.limit" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
+      <memberTable
+        :total="total"
+        :tableData="tableData"
+        @handleEdit="handleEdit"
+        @dismissTeam="dismissTeam"
+        @handleView="handleView"
+        @addMember="addMember"
+        @handleDel="handleDel"
+      ></memberTable>
+      <el-pagination
+        class="team-pagination"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="formMember.page"
+        :page-sizes="[10, 30, 50, 100]"
+        :page-size="formMember.limit"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total"
+      ></el-pagination>
     </div>
-    <memberAdd :dialogTableVisible="visible" @handleClose="visible=false,userId='',teamInfo={}" :id="userId" @submitForm="submitForm"></memberAdd>
-    <memberInfo :dialogTableVisible="dialogTableVisible" :isView="isView" :userId="userId" @submitMember="submitMember"></memberInfo>
-    <infoTip :centerDialogVisible="dialogVisible" :modalInfo="modalInfo" @handleClose="dialogVisible=false"></infoTip>
+    <memberAdd
+      :dialogTableVisible="visible"
+      @handleClose="visible=false,userId='',teamInfo={}"
+      :id="userId"
+      @submitForm="submitForm"
+    ></memberAdd>
+    <memberInfo
+      :dialogTableVisible="dialogTableVisible"
+      :isView="isView"
+      :userId="userId"
+      @submitMember="submitMember"
+    ></memberInfo>
+    <infoTip
+      :centerDialogVisible="dialogVisible"
+      :modalInfo="modalInfo"
+      @handleClose="dialogVisible=false"
+    ></infoTip>
+    <modal
+      :dialogTableVisible="dialogModalVisible"
+      @handleOk="handleOk"
+      :modalObj="modalObj"
+      @handleClose="dialogModalVisible=false"
+    ></modal>
   </div>
 </template>
 
@@ -59,12 +87,14 @@ import memberTable from './membership/memberTable'
 import memberInfo from './membership/memberInfo'
 import memberAdd from './membership/memberAdd'
 import infoTip from './common/infoTip'
+import modal from './common/modal'
 import {
   getTeamList,
   loginOutTeam,
   addTeamUser,
-  updateTeamUser
-} from '../api/team'
+  updateTeamUser,
+  deleteTeamUser
+} from '@/api/team'
 import memberInfoVue from './membership/memberInfo.vue'
 export default {
   components: {
@@ -73,18 +103,26 @@ export default {
     memberTable,
     memberInfo,
     memberAdd,
-    infoTip
+    infoTip,
+    modal
   },
   data() {
     return {
       dialogTableVisible: false,
       visible: false,
       dialogVisible: false,
+      dialogModalVisible: false,
+      isView: false,
       modalInfo: {
         title: '您的信息未完善！',
         okText: '前去完善',
         closeText: '',
         imgBg: require('../assets/img/info.png')
+      },
+      modalObj: {
+        content: '',
+        okText: '确定',
+        closeText: '取消'
       },
       tableData: [],
       formMember: {
@@ -95,27 +133,17 @@ export default {
       total: 0,
       userId: '',
       teamInfo: {},
-      userType: localStorage.getItem('userType'),
-      isView: false
+      userPosition: sessionStorage.getItem('userPosition'),
+      uid: localStorage.getItem('uid'),
+      modalType: 1,
+      modalForm: {}
     }
   },
   created() {
     // 初始化查询标签数据
-    // this.reverseUser()
     this.getList(this.formMember)
   },
   methods: {
-    handleSizeChange(val) {
-      this.formMember.limit = val
-      this.getList(this.formMember)
-    },
-    handleCurrentChange(val) {
-      this.formMember.page = val
-      this.getList(this.formMember)
-    },
-    refurbish() {
-      this.getList(this.formMember)
-    },
     getList(params) {
       getTeamList(params)
         .then(res => {
@@ -143,39 +171,99 @@ export default {
       this.isView = false
       this.dialogTableVisible = true
     },
+    handleOk() {
+      // 修改
+      if (this.modalType == 1) {
+        // 修改
+        updateTeamUser(this.modalForm)
+          .then(res => {
+            if (res.data) {
+              this.dialogTableVisible = false
+              this.dialogModalVisible = false
+              this.$message.success('保存成功')
+              if (this.uid == this.modalForm.id) {
+                this.outLogin()
+              }
+              else {
+                this.getList(this.formMember)
+              }
+            } else {
+              this.$message.error('保存失败')
+            }
+          })
+          .catch(error => {
+            if (error) {
+              this.$message.error(error.status.remind)
+            }
+          })
+      }
+      else if (this.modalType == 2) {
+        // 退出
+        loginOutTeam({ uid: this.userId })
+          .then(res => {
+            if (res.data) {
+              this.dialogModalVisible = false
+              if (this.userPosition != 1) {
+                this.outLogin()
+              }
+              else {
+                this.getList(this.formMember)
+              }
+            } else {
+              this.$message.error('操作失败')
+            }
+          })
+          .catch(error => {
+            if (error) {
+              this.$message.error(error.status.remind)
+            }
+          })
+      }
+      else {
+        // 删除
+        deleteTeamUser({ uid: this.uid, userid: this.userId })
+          .then(res => {
+            if (res.data) {
+              this.dialogModalVisible = false
+              this.$message.success('删除成功')
+              this.getList(this.formMember)
+            } else {
+              this.$message.error('删除失败')
+            }
+          })
+          .catch(error => {
+            if (error) {
+              this.$message.error(error.status.remind)
+            }
+          })
+      }
+    },
     // 退出团队
     dismissTeam() {
-      let uid = localStorage.getItem('uid')
-      loginOutTeam({ uid })
-        .then(res => {
-          if (res.data) {
-            this.$message.success('退出成功')
-            this.getList(this.formMember)
-          } else {
-            this.$message.error('退出成功')
-          }
-        })
-        .catch(error => {
-          if (error) {
-            this.$message.error(error.status.remind)
-          }
-        })
+      if (localStorage.getItem('teamType') == 0) {
+        this.dialogVisible = true
+        return false
+      }
+      this.modalType = 2
+      let text = this.userPosition == 1 ? '解散' : '退出'
+      this.modalObj.content = `你确定${text}团队吗?${text}后将无法登录账号!`
+      this.dialogModalVisible = true
+    },
+    outLogin() {
+      this.$store.dispatch("logoutUser").then(res => {
+        this.$message.success('操作成功')
+        this.$router.replace('/login');
+      });
     },
     handleDel(uid) {
       if (localStorage.getItem('teamType') == 0) {
         this.dialogVisible = true
         return false
       }
-      loginOutTeam({ uid })
-        .then(res => {
-          this.$message.success('删除成功')
-          this.getList(this.formMember)
-        })
-        .catch(error => {
-          if (error) {
-            this.$message.error(error.status.remind)
-          }
-        })
+      this.userId = uid
+      this.modalType = 3
+      this.modalObj.content = '你确定删除该组员吗?删除后该组员将无法登录!'
+      this.dialogModalVisible = true
     },
     addMember() {
       // 如果没有认证 团队性质
@@ -186,28 +274,20 @@ export default {
         this.visible = true
       }
     },
-    onSubmit(value) {
-      let params = Object.assign(this.formMember, value)
-      this.getList(params)
-    },
     submitMember(val) {
       if (!this.isView) {
-        let params = Object.assign(val, { id: this.userId })
-        updateTeamUser(val)
-          .then(res => {
-            if (res.data) {
-              this.dialogTableVisible = false
-              this.$message.success('保存成功')
-              this.getList(this.formMember)
-            } else {
-              this.$message.error('保存失败')
-            }
-          })
-          .catch(error => {
-            if (error) {
-              this.$message.error(error.status.remind)
-            }
-          })
+        this.modalType = 1
+        if (val.status == 2) {
+          if (val.id == this.uid) {
+            this.modalObj.content = '你确定锁定当前账号吗？锁定后将退出并无法登录!'
+          }
+          else {
+            this.modalObj.content = '你确定锁定该组员账号吗？锁定后该组员将无法登录!'
+          }
+          this.userId = val.id
+          this.modalForm = val
+          this.dialogModalVisible = true
+        }
       }
     },
     submitForm(val) {
@@ -226,6 +306,18 @@ export default {
             this.$message.error(error.status.remind)
           }
         })
+    },
+    onSubmit(value) {
+      let params = Object.assign(this.formMember, value)
+      this.getList(params)
+    },
+    handleSizeChange(val) {
+      this.formMember.limit = val
+      this.getList(this.formMember)
+    },
+    handleCurrentChange(val) {
+      this.formMember.page = val
+      this.getList(this.formMember)
     }
   }
 }

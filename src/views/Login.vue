@@ -17,27 +17,53 @@
     <el-main class="login-main">
       <div class="register-content">
         <div class="register-box">
-          <el-form ref="TabForm" :model="formTab" label-width="20" :rules="formTabs" class="form-box">
+          <el-form
+            ref="TabForm"
+            :model="formTab"
+            label-width="20"
+            :rules="formTabs"
+            class="form-box"
+          >
             <div class="x-flex-around register-btn">
               <el-button type="text" :class="loginWay==1?'':'active'" @click="switchLogin(1)">账号登录</el-button>|
               <el-button type="text" :class="loginWay==2?'':'active'" @click="switchLogin(2)">短信登录</el-button>
             </div>
             <el-form-item prop="name" label="手机号">
-              <span class="error errorInfo el-icon-warning" v-if="isShowError">账号或者密码错误，如遇到问题联系客服，021-51991869</span>
+              <span
+                class="error errorInfo el-icon-warning"
+                v-if="isShowError"
+              >账号或者密码错误，如遇到问题联系客服，021-51991869</span>
               <el-input placeholder="请输入11位手机号" v-model="formTab.name">
                 <template slot="prepend">
                   <span>+86</span>
-                  <i class="el-icon-arrow-down"></i> |
+                  <i class="el-icon-arrow-down"></i>|
                 </template>
               </el-input>
             </el-form-item>
             <el-form-item prop="password" label="密码" v-if="loginWay==1">
-              <el-input v-model="formTab.password" placeholder="请输入密码" @keyup.enter.native="onSubmit('TabForm')" type="password"></el-input>
+              <el-input
+                v-model="formTab.password"
+                placeholder="请输入密码"
+                @keyup.enter.native="onSubmit('TabForm')"
+                type="password"
+              ></el-input>
             </el-form-item>
             <el-form-item label="发送验证码" v-if="loginWay==2">
               <span class="error el-icon-warning" v-if="isCodeError">验证码错误或者已过期</span>
-              <el-input v-model="formTab.code" placeholder="请输入验证码" @keyup.enter.native="onSubmit('TabForm')" type="text" class="inputCode"></el-input>
-              <el-button type="primary" class="code-btn password-code-btn" plain :class="{disabled: !this.canClick}" @click="sendCode">{{content}}</el-button>
+              <el-input
+                v-model="formTab.code"
+                placeholder="请输入验证码"
+                @keyup.enter.native="onSubmit('TabForm')"
+                type="text"
+                class="inputCode"
+              ></el-input>
+              <el-button
+                type="primary"
+                class="code-btn password-code-btn"
+                plain
+                :class="{disabled: !this.canClick}"
+                @click="sendCode"
+              >{{content}}</el-button>
             </el-form-item>
             <el-form-item v-if="loginWay==1">
               <div class="x-flex-between">
@@ -51,11 +77,15 @@
             <p class="text">
               还没有账户，
               <a href="/register">免费注册</a>
-              <img src="../assets/img/loginRight.png" alt class="loginRight" />
+              <img src="../assets/img/loginRight.png" alt="" class="loginRight">
             </p>
           </el-form>
         </div>
-        <Dialog :centerDialogVisible="dialogVisible" :modalInfo="modalInfo" @handleClose="dialogVisible=false"></Dialog>
+        <Dialog
+          :centerDialogVisible="dialogVisible"
+          :modalInfo="modalInfo"
+          @handleClose="dialogVisible=false"
+        ></Dialog>
       </div>
     </el-main>
   </el-container>
@@ -70,7 +100,7 @@ export default {
     Dialog
   },
   data() {
-    let validatereg = function(rule, value, callback) {
+    let validatereg = function (rule, value, callback) {
       //验证用户名是否合法
       let reg = /^1[3456789]\d{9}$/
       if (!reg.test(value)) {
@@ -79,7 +109,7 @@ export default {
         callback()
       }
     }
-    let validatePassReg = function(rule, value, callback) {
+    let validatePassReg = function (rule, value, callback) {
       //验证密码是否合法
       // let reg = /^[a-zA-Z0-9]{6,17}$/;
       // if (reg.test(value) == true) {
@@ -178,7 +208,6 @@ export default {
       if (this.loginWay == 2) {
         this.formTab.token = this.token
       }
-      // localStorage.clear('')
       sessionStorage.clear()
       this.$refs['TabForm'].validate(valid => {
         if (valid) {
@@ -186,21 +215,6 @@ export default {
             .dispatch('loginSaveInfo', this.formTab)
             .then(res => {
               console.log(res)
-              // localStorage.setItem('userType', res.data.type)
-              // localStorage.setItem('userName', res.data.username)
-              // localStorage.setItem('departName', res.data.departName)
-              // localStorage.setItem('uid', res.data.uid)
-              // let registerType = res.data.type
-              // if (res.data.type == 1) {
-              //   this.$router.push('/createOrderTaking')
-              // }
-              // else {
-              //   localStorage.setItem('teamType', res.data.team_type)
-              //   // 登录人身份
-              //   sessionStorage.setItem('userPosition', res.data.gradeNum)
-              //   localStorage.setItem('userPosition', res.data.gradeNum)
-              //   this.$router.push('/teamData')
-              // }
             })
             .catch(error => {
               if (error.status.code == 3010) {
@@ -208,17 +222,24 @@ export default {
                 this.dialogVisible = false
                 this.isCodeError = false
               } else if (error.status.code == 1008) {
+                this.modalInfo.title = '账号已锁定'
                 this.dialogVisible = true
                 this.isShowError = false
               } else if (error.status.code == 3008) {
                 this.isCodeError = true
                 this.isShowError = false
                 this.dialogVisible = false
-              } else {
+              } else if (error.status.code == 3302) {
+                this.modalInfo.title = '账号已退出团队'
+                this.dialogVisible = true
+                this.isShowError = false
+                this.isCodeError = false
+              }
+              else {
                 this.dialogVisible = false
                 this.isShowError = false
                 this.isCodeError = false
-                return this.$message.error(error.status.remind)
+                this.$message.error(error.status.remind)
               }
             })
         } else {

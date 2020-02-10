@@ -1,6 +1,6 @@
 .tables-box {
-  overflow: hidden;
 
+  // overflow: hidden;
   .table-list {
     background: #fff;
     border-radius: 10px;
@@ -20,6 +20,8 @@
 }
 
 .billingManagement {
+  margin-bottom: 20px;
+
   .table-list {
     padding-top: 70px;
     padding-left: 10px;

@@ -1,5 +1,6 @@
 <style lang="scss">
 .team-info-row {
+  margin: 20px 0;
   .cardBg {
     position: absolute;
     bottom: 0;
@@ -13,6 +14,13 @@
     padding-left: 20px;
     padding-top: 10px;
     position: relative;
+    p {
+      font-size: 16px;
+      &:nth-of-type(2) {
+        font-size: 32px;
+        margin-top: 10px;
+      }
+    }
     &.box-card1 {
       padding-right: 20px;
       border: none;
@@ -53,19 +61,39 @@
       <el-card class="box-card box-card1" :class="key">
         <p>{{item}}</p>
         <p>{{teamInfo[key]}}</p>
-        <img src="../../assets/img/cardBg1.png" alt class="cardBg" v-if="key=='name'" />
-        <img src="../../assets/img/cardBg2.png" alt class="cardBg" v-if="key=='num'" />
-        <img src="../../assets/img/cardBg3.png" alt class="cardBg" v-if="key=='resumeNum'&&userPosition==1" />
-        <img src="../../assets/img/cardBg4.png" alt class="cardBg" v-if="key=='entryNum'&&userPosition==1" />
-        <img src="../../assets/img/cardBg5.png" alt class="cardBg" v-if="key=='resumeNum'&&userPosition!=1" />
-        <img src="../../assets/img/cardBg6.png" alt class="cardBg" v-if="key=='entryNum'&&userPosition!=1" />
+        <img src="../../assets/img/cardBg1.png" alt="" class="cardBg" v-if="key=='name'">
+        <img src="../../assets/img/cardBg2.png" alt="" class="cardBg" v-if="key=='num'">
+        <img
+          src="../../assets/img/cardBg3.png"
+          alt=""
+          class="cardBg"
+          v-if="key=='resumeNum'&&userPosition==1"
+        >
+        <img
+          src="../../assets/img/cardBg4.png"
+          alt=""
+          class="cardBg"
+          v-if="key=='entryNum'&&userPosition==1"
+        >
+        <img
+          src="../../assets/img/cardBg5.png"
+          alt=""
+          class="cardBg"
+          v-if="key=='resumeNum'&&userPosition!=1"
+        >
+        <img
+          src="../../assets/img/cardBg6.png"
+          alt=""
+          class="cardBg"
+          v-if="key=='entryNum'&&userPosition!=1"
+        >
       </el-card>
     </el-col>
   </el-row>
 </template>
 <script>
 export default {
-  props: ['userType', 'teamInfo'],
+  props: ['teamInfo'],
   data() {
     return {
       userPosition: sessionStorage.getItem('userPosition')

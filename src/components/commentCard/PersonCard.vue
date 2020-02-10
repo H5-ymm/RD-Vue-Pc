@@ -106,8 +106,8 @@ export default {
   width: 20%;
 }
 .view-card-col1 img {
-  width: 88px;
-  height: 88px;
+  max-width: 88px;
+  /* height: 88px; */
   border-radius: 100%;
 }
 .view-card-col2 {

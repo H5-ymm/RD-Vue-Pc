@@ -5,11 +5,11 @@ import {
 } from 'element-ui';
 import router from './router'
 const $axios = axios.create({
-  baseURL: process.env.REACT_APP_BASE_URL,
+  baseURL: process.env.VUE_APP_URL,
   timeout: 4000
 });
-const baseURL = 'https://a.rsd123.com/index.php'
-// const baseURL = 'http://tiantianxsg.com:39888wxConfig.env'
+const baseURL = process.env.VUE_APP_URL + '/index.php'
+const baseExportURL = process.env.VUE_APP_URL + '/uploads/test/'
 //请求拦截
 $axios.interceptors.request.use(
   function (config) {
@@ -98,6 +98,7 @@ $axios.interceptors.response.use(
  */
 export function post(url, data) {
   return new Promise((resolve, reject) => {
+
     $axios.post(`${baseURL}${url}`, QS.stringify(data || {}))
       .then(res => {
         resolve(res.data)
@@ -119,7 +120,7 @@ export function $post(url, params) {
   });
 }
 export function $get(url) {
-  window.location.href = `https://a.rsd123.com/uploads/test/${url}`
+  window.location.href = `${baseExportURL}${url}`
 }
 export function postFormData(url, params) {
   window.location.href = `${baseURL}${url}?uid=${params}`

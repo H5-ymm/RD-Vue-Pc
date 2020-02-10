@@ -84,10 +84,10 @@
 .foots {
   margin-top: 30px;
 }
-.tables-box {
-  height: 100%;
-  margin-bottom: 50px;
-}
+// .tables-box {
+//   height: 100%;
+//   margin-bottom: 50px;
+// }
 </style>
 
 <template>
@@ -96,7 +96,12 @@
     <div class="team-box x-flex-start">
       <div class="team-box-left">
         <div class="x-flex-start-justify">
-          <el-input placeholder="搜索" class="team-input" v-model="params.title" @input="handleCommand(3)">
+          <el-input
+            placeholder="搜索"
+            class="team-input"
+            v-model="params.title"
+            @input="handleCommand(3)"
+          >
             <i slot="prefix" class="el-input__icon el-icon-search"></i>
           </el-input>
           <el-dropdown @command="handleCommand">
@@ -123,10 +128,20 @@
       </div>
       <div class="team-box-content team-box-right" ref="commontLeft">
         <!-- <edit-card></edit-card> -->
-        <detail-card :cardType="type" @refurbish="refurbish" @updateDiscuss="updDiscuss" @saveDiscuss="saveDiscuss" :commentInfo="commentInfo"></detail-card>
+        <detail-card
+          :cardType="type"
+          @refurbish="refurbish"
+          @updateDiscuss="updDiscuss"
+          @saveDiscuss="saveDiscuss"
+          :commentInfo="commentInfo"
+        ></detail-card>
       </div>
     </div>
-    <infoTip :centerDialogVisible="dialogVisible" :modalInfo="modalInfo" @handleClose="dialogVisible=false"></infoTip>
+    <infoTip
+      :centerDialogVisible="dialogVisible"
+      :modalInfo="modalInfo"
+      @handleClose="dialogVisible=false"
+    ></infoTip>
   </div>
 </template>
 
@@ -148,11 +163,6 @@ export default {
   },
   data() {
     return {
-      tableData: [], //初始化数据
-      Number: 10, //每页条数
-      num: 1, //页码
-      numA: 10, //页码
-      AllNum: 0, //全部条数
       type: 2,
       list: [],
       total: 0,
@@ -295,10 +305,6 @@ export default {
           this.commentInfo = {}
         }
       }
-    },
-    handleCurrentChange(val) {
-      this.num = val
-      this.reverseUser()
     }
   }
 }

@@ -120,7 +120,6 @@ export default new Vuex.Store({
           let remindUserInfo = localStorage.getItem('remindUserInfo')
           if (remindUserInfo) {
             localStorage.removeItem('teamInfo')
-            localStorage.removeItem('departId')
             localStorage.removeItem('userType')
             localStorage.removeItem('departName')
             localStorage.removeItem('uid')

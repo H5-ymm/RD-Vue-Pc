@@ -4,10 +4,10 @@
 <template>
   <el-dialog width="500px" :visible="dialogTableVisible" class="member-dialog" :show-close="false">
     <div class="member-row" v-if="formMember">
-      <img src="../../assets/img/member/cancel.png" alt class="cancel-icon" @click="handleClose" />
+      <img src="../../assets/img/member/cancel.png" alt="" class="cancel-icon" @click="handleClose">
       <section class="member-col1">
         <div class="head-box">
-          <img src="../../assets/img/headIcon3.png" class="head" alt v-if="!formMember.log" />
+          <img src="../../assets/img/headIcon3.png" class="head" alt="" v-if="!formMember.log">
           <img :src="getImgUrl(formMember.log)" alt="" v-else>
         </div>
         <p>{{formMember.user_name}}</p>
@@ -25,7 +25,11 @@
           <p>学历</p>
           <p>{{formMember.educationName}}</p>
         </div>
-        <div class="x-flex-center" v-if="userPosition!=1||isView||uid==formMember.uid">
+        <div
+          class="x-flex-center"
+          v-if="userPosition!=1||isView||
+        uid==formMember.uid||(!isView&&formMember.grade_num==2)"
+        >
           <p>当前职称</p>
           <p>{{formMember.grade_name}}</p>
         </div>
@@ -57,27 +61,53 @@
         </div>
       </section>
       <section class="member-col3" :class="{'member-col4':isView}" v-if="!isView">
-        <el-form :model="formMember" class="demo-form-inline" label-width="120px">    
-          <div v-if=" uid!=formMember.uid">
+        <el-form :model="formMember" class="demo-form-inline" label-width="120px">
+          <div v-if=" uid!=formMember.uid&&formMember.grade_num!=2">
             <el-form-item label="部门" v-if="userPosition==1">
-              <el-select placeholder="请选择" :disabled="isView&&user!=1" v-model="depId" @change="selectDep">
-                <el-option :label="item.depart_name" :value="item.id" v-for="(item,index) in depList" :key="index"></el-option>
+              <el-select
+                placeholder="请选择"
+                :disabled="isView&&user!=1"
+                v-model="depId"
+                @change="selectDep"
+              >
+                <el-option
+                  :label="item.depart_name"
+                  :value="item.id"
+                  v-for="(item,index) in depList"
+                  :key="index"
+                ></el-option>
               </el-select>
             </el-form-item>
             <el-form-item label="当前职称" v-if="userPosition==1">
-              <el-select v-model="formMember.grade_id" :disabled="isView" value-key="grade_name" placeholder="请选择">
-                <el-option :label="item.grade_name" :value="item.id" v-for="item in jobList" :key="item.grade_name"></el-option>
+              <el-select
+                v-model="formMember.grade_id"
+                :disabled="isView"
+                value-key="grade_name"
+                placeholder="请选择"
+              >
+                <el-option
+                  :label="item.grade_name"
+                  :value="item.id"
+                  v-for="item in jobList"
+                  :key="item.grade_name"
+                ></el-option>
               </el-select>
-            </el-form-item>   
-          </div>
-           <el-form-item label="当前状态">
-              <el-radio-group v-model="formMember.status" :disabled="isView">
-                <el-radio :label="1" border>正常</el-radio>
-                <el-radio :label="2" border>锁定</el-radio>
-              </el-radio-group>
             </el-form-item>
+          </div>
+          <el-form-item label="当前状态">
+            <el-radio-group v-model="formMember.status" :disabled="isView">
+              <el-radio :label="1" border="">正常</el-radio>
+              <el-radio :label="2" border="">锁定</el-radio>
+            </el-radio-group>
+          </el-form-item>
           <el-form-item label="活动形式" v-if="formMember.status==2">
-            <el-input type="textarea" :autosize="{ minRows: 3}" :readonly="isView" v-model="formMember.remark" placeholder="请输入锁定说明（必填）"></el-input>
+            <el-input
+              type="textarea"
+              :autosize="{ minRows: 3}"
+              :readonly="isView"
+              v-model="formMember.remark"
+              placeholder="请输入锁定说明（必填）"
+            ></el-input>
           </el-form-item>
           <el-form-item label="认证信息">
             <memberTooltip :formMember="formMember"></memberTooltip>
@@ -134,7 +164,7 @@ export default {
     getInfo(id) {
       let params = {
         userId: id,
-        uid: localStorage.getItem('uid')
+        uid: this.uid
       }
       seeTeamUserInfo(params).then(res => {
         this.formMember = res.data.data
@@ -149,6 +179,7 @@ export default {
           }
           this.jobList = this.getArr(this.depList, this.depId)
         } else {
+          this.depId = ''
           this.formMember.grade_id = ''
         }
         if (res.data.provinceid && res.data.cityid) {
@@ -197,8 +228,12 @@ export default {
       this.$parent.dialogTableVisible = false
     },
     submitMember() {
+      if (this.formMember.status == 2 && !this.formMember.remark) {
+        return this.$message.warning('请输入锁定说明')
+      }
       let params = {
-        uid: this.formMember.uid,
+        id: this.formMember.id, //组员的uid
+        uid: this.uid, // 操作用户的uid
         grade_id: this.formMember.grade_id,
         status: this.formMember.status,
         provinceid: this.formMember.provinceid,

@@ -27,7 +27,6 @@
     text-align: center;
     line-height: 130px;
     padding-top: 40px;
-    // margin: 0 20px;
     position: relative;
     &.grid-content-active {
       border: 2px solid rgba(54, 153, 255, 1);
@@ -51,10 +50,19 @@
     <p class="title">{{type?'团队性质':'请选择团队性质'}}</p>
     <el-row class="team-setting-box" type="flex" justify="center" :gutter="20">
       <el-col :span="6" class="x-flex-center" v-for="(item,index) in menus" :key="index">
-        <div @click="selectType(index,item)" class="grid-content-person grid-content-select" :class="{'grid-content-active':activIndex==index}">
-          <img :src="item.imgUrl" alt />
+        <div
+          @click="selectType(index,item)"
+          class="grid-content-person grid-content-select"
+          :class="{'grid-content-active':activIndex==index}"
+        >
+          <img :src="item.imgUrl" alt="">
           <p>{{item.title}}</p>
-          <img src="../assets/img/team/selected.png" alt class="select-tag" v-if="activIndex==index" />
+          <img
+            src="../assets/img/team/selected.png"
+            alt=""
+            class="select-tag"
+            v-if="activIndex==index"
+          >
         </div>
       </el-col>
     </el-row>
@@ -114,7 +122,6 @@ export default {
   },
   methods: {
     selectType(index, item) {
-      // if (!this.type) {
       this.activIndex = index
       this.url = item.url
       this.type = item.type

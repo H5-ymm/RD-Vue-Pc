@@ -1,6 +1,6 @@
 <style lang="scss">
 .tables-box {
-  overflow: hidden;
+  // overflow: hidden;
   .table-list {
     background: #fff;
     border-radius: 10px;

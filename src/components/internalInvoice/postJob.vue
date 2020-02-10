@@ -47,24 +47,31 @@
       <li :class="{'tab-active':tabIndex==0}" @click="switchTab(0)">
         <p class="x-flex-center">
           基本信息
-          <span v-if="tabIndex!=0" class="el-icon-circle-check " :class="!isCheck(baseInfo)?'no-info-icon':'has-info-icon'">{{isCheck(baseInfo)?'已完善':'未完善'}}</span>
+          <span
+            v-if="tabIndex!=0"
+            class="el-icon-circle-check"
+            :class="!isCheck(baseInfo)?'no-info-icon':'has-info-icon'"
+          >{{isCheck(baseInfo)?'已完善':'未完善'}}</span>
           <!-- <span v-if="tabIndex!=0&&!isBaseInfo" class="el-icon-warning no-info-icon">未填写</span> -->
         </p>
-        <img src="../../assets/img/icon6.png" v-if="tabIndex==0" alt />
+        <img src="../../assets/img/icon6.png" v-if="tabIndex==0" alt="">
       </li>
       <li :class="{'tab-active':tabIndex==1}" @click="switchTab(1)">
         <p class="x-flex-center">
           返利规则
-          <span v-if="tabIndex!=1" :class="!isCheckReward(rewardInfo)?'no-info-icon':'has-info-icon'">{{!isCheckReward(rewardInfo)?'未填写':'已完善'}}</span>
+          <span
+            v-if="tabIndex!=1"
+            :class="!isCheckReward(rewardInfo)?'no-info-icon':'has-info-icon'"
+          >{{!isCheckReward(rewardInfo)?'未填写':'已完善'}}</span>
         </p>
-        <img src="../../assets/img/icon6.png" v-if="tabIndex==1" alt />
+        <img src="../../assets/img/icon6.png" v-if="tabIndex==1" alt="">
       </li>
       <li :class="{'tab-active':tabIndex==2}" @click="switchTab(2)">
         <p class="x-flex-center">
           运营信息
           <span v-if="tabIndex!=2" class="el-icon-warning no-info-icon">未填写</span>
         </p>
-        <img src="../../assets/img/icon6.png" v-if="tabIndex==2" alt />
+        <img src="../../assets/img/icon6.png" v-if="tabIndex==2" alt="">
       </li>
     </ul>
     <div>
@@ -72,7 +79,6 @@
         <component :is="comName" @submitForm="submitForm" :formJob="formMember"></component>
       </keep-alive>
     </div>
-
   </div>
 </template>
 <script>

@@ -4,14 +4,20 @@
 <template>
   <div class="tables-box billingManagement">
     <div class="table-list">
-      <el-form :inline="true" label-width="100px" label-position="right" :model="formMember" class="demo-form-inline">
+      <el-form
+        :inline="true"
+        label-width="100px"
+        label-position="right"
+        :model="formMember"
+        class="demo-form-inline"
+      >
         <el-form-item label="姓名：">
           <el-input v-model="formMember.name" class="width300" placeholder="请输入职位名称关键字"></el-input>
           <el-button type="primary" @click="onSubmit" class="select-btn">查询</el-button>
         </el-form-item>
       </el-form>
       <div class="member-table">
-        <el-table border :data="tableData" ref="multipleTable" style="width: 100%">
+        <el-table border="" :data="tableData" ref="multipleTable" style="width: 100%">
           <el-table-column label="姓名" align="center" width="150">
             <template slot-scope="props">
               <el-button type="text" @click="handleEdit(props.row)">{{props.row.name}}</el-button>
@@ -32,7 +38,16 @@
           <el-table-column label="推荐时间" prop="entry_num" sortable align="center" width="150"></el-table-column>
         </el-table>
       </div>
-      <el-pagination class="team-pagination" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="formMember.page" :page-sizes="[10, 30, 50, 100]" :page-size="formMember.limit" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
+      <el-pagination
+        class="team-pagination"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="formMember.page"
+        :page-sizes="[10, 30, 50, 100]"
+        :page-size="formMember.limit"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total"
+      ></el-pagination>
     </div>
   </div>
 </template>
@@ -43,14 +58,14 @@ import {
   loginOutTeam,
   addTeamUser,
   updateTeamUser
-} from '../../api/team'
-import { getReceiptList } from '../../api/receipt'
+} from '@/api/team'
+import { getReceiptList } from '@/api/receipt'
 import {
   moneyTypeList,
   rewardTypeList,
   payTypeList,
   weekList
-} from '../../base/base'
+} from '@/base/base'
 export default {
   filters: {
     moneyType(val) {
