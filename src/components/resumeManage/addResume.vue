@@ -5,7 +5,13 @@
 <template>
   <div class="tables-box billingManagement">
     <div class="table-list add-resum">
-      <el-form :inline="true" label-width="100px" label-position="right" :model="formMember" class="demo-form-inline">
+      <el-form
+        :inline="true"
+        label-width="100px"
+        label-position="right"
+        :model="formMember"
+        class="demo-form-inline"
+      >
         <el-form-item label="姓名：">
           <el-input v-model="formMember.username" class="width300" placeholder="请输入关键字"></el-input>
         </el-form-item>
@@ -32,7 +38,17 @@
           </el-select>
         </el-form-item>
         <el-form-item label="跟进时间：">
-          <el-date-picker class="width300" v-model="timeList" type="daterange" format="yyyy-MM-dd" value-format="yyyy-MM-dd" @change="changeDate" range-separator="-" start-placeholder="开始日期区间" end-placeholder="结束日期"></el-date-picker>
+          <el-date-picker
+            class="width300"
+            v-model="timeList"
+            type="daterange"
+            format="yyyy-MM-dd"
+            value-format="yyyy-MM-dd"
+            @change="changeDate"
+            range-separator="-"
+            start-placeholder="开始日期区间"
+            end-placeholder="结束日期"
+          ></el-date-picker>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="onSubmit" class="select-btn">查询</el-button>
@@ -44,13 +60,19 @@
           <el-button @click="addResume" type="primary">添加简历</el-button>
           <el-button @click="leadResumeVisible=true">导入简历</el-button>
           <el-button @click="exportResume">导出简历</el-button>
-          <span class="select-text">
-            已选择
+          <span class="select-text">已选择
             <el-button type="text">{{multipleSelection.length}}&nbsp;</el-button>项
           </span>
           <el-button type="text" @click="multipleSelection=[]">清空</el-button>
         </div>
-        <el-table border :data="tableData" ref="multipleTable" style="width: 100%" @sort-change="sortChange" @selection-change="handleSelectionChange">
+        <el-table
+          border=""
+          :data="tableData"
+          ref="multipleTable"
+          style="width: 100%"
+          @sort-change="sortChange"
+          @selection-change="handleSelectionChange"
+        >
           <el-table-column type="selection" align="center" width="50"></el-table-column>
           <el-table-column label="姓名" align="center" width="150">
             <template slot-scope="props">
@@ -72,12 +94,18 @@
           </el-table-column>
           <el-table-column label="跟进记录" align="center" width="100">
             <template slot-scope="props">
-              <el-button class="text-line" type="text" @click="viewRecord(props.row)">{{props.row.trackList?props.row.trackList.title:'-'}}</el-button>
+              <el-button
+                class="text-line"
+                type="text"
+                @click="viewRecord(props.row)"
+              >{{props.row.trackList?props.row.trackList.title:'-'}}</el-button>
             </template>
           </el-table-column>
           <el-table-column label="跟进时间" sortable="custom" align="center" width="160">
             <template slot-scope="props">
-              <span type="text">{{props.row.trackList?$moment.unix(props.row.trackList.addtime).format('YYYY-MM-DD HH:mm'):'-'}}</span>
+              <span
+                type="text"
+              >{{props.row.trackList?$moment.unix(props.row.trackList.addtime).format('YYYY-MM-DD HH:mm'):'-'}}</span>
             </template>
           </el-table-column>
           <el-table-column label="录入人" prop="input_username" align="center" width="100"></el-table-column>
@@ -85,19 +113,54 @@
           <el-table-column label="操作" align="center" min-width="200">
             <template slot-scope="scope">
               <el-button @click="handleEdit(scope.row)" type="text" size="small">编辑简历</el-button>
-              <el-button @click="routerResume(scope.row)" v-if="!scope.row.push_status" type="text" size="small">推荐岗位</el-button>
+              <el-button
+                @click="routerResume(scope.row)"
+                v-if="!scope.row.push_status"
+                type="text"
+                size="small"
+              >推荐岗位</el-button>
               <span style="margin:0 8px;fontSize:12px;" v-if="scope.row.push_status">已推荐</span>
               <el-button @click="abandoned(scope.row)" type="text" size="small">放弃用户</el-button>
             </template>
           </el-table-column>
         </el-table>
       </div>
-      <el-pagination class="team-pagination" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="formMember.page" :page-sizes="[10, 30, 50, 100]" :page-size="formMember.limit" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
+      <el-pagination
+        class="team-pagination"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="formMember.page"
+        :page-sizes="[10, 30, 50, 100]"
+        :page-size="formMember.limit"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total"
+      ></el-pagination>
     </div>
-    <resumeModal :dialogTableVisible="dialogTableVisible" @handleClose="dialogTableVisible=false,remind=''" :resumeId="resumeId" @submitForm="submitForm" :resumeInfo="resumeInfo"></resumeModal>
-    <confirmDialog :dialogTableVisible="visible" @submit="submit" @handleClose="visible=false" :dialogObj="dialogObj"></confirmDialog>
-    <followUpRecord :dialogTableVisible="followUpRecordVisible" @submitRecord="submitRecord" @handleClose="followUpRecordVisible=false,resumeId= ''" :id="resumeId"></followUpRecord>
-    <leadResumeModal @exportResume="exportResumeData" @download="download" :dialogTableVisible="leadResumeVisible" @handleClose="leadResumeVisible=false"></leadResumeModal>
+    <resumeModal
+      :dialogTableVisible="dialogTableVisible"
+      @handleClose="dialogTableVisible=false,remind=''"
+      :resumeId="resumeId"
+      @submitForm="submitForm"
+      :resumeInfo="resumeInfo"
+    ></resumeModal>
+    <confirmDialog
+      :dialogTableVisible="visible"
+      @submit="submit"
+      @handleClose="visible=false"
+      :dialogObj="dialogObj"
+    ></confirmDialog>
+    <followUpRecord
+      :dialogTableVisible="followUpRecordVisible"
+      @submitRecord="submitRecord"
+      @handleClose="followUpRecordVisible=false,resumeId= ''"
+      :id="resumeId"
+    ></followUpRecord>
+    <leadResumeModal
+      @exportResume="exportResumeData"
+      @download="download"
+      :dialogTableVisible="leadResumeVisible"
+      @handleClose="leadResumeVisible=false"
+    ></leadResumeModal>
   </div>
 </template>
 <script>
@@ -111,8 +174,6 @@ import {
   downloadTestTable,
   updateUserResume
 } from '@/api/resume'
-
-import { addPut } from '@/api/internalInvoice'
 import { moneyTypeList, rewardTypeList } from '../../base/base'
 import resumeModal from './resumeModal'
 import followUpRecord from './followUpRecord'

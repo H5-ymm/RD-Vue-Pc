@@ -1,34 +1,3 @@
-<style lang="scss">
-.orderTaking-header {
-  width: 1200px;
-  margin: 0 auto;
-  display: flex;
-  justify-content: space-between;
-}
-.home-purple-left {
-  color: #fff;
-}
-.home {
-  .header-left {
-    display: inline-block;
-  }
-  .bg-purple .welcome {
-    font-size: 14px;
-    margin-left: 8px;
-  }
-}
-.head-icon {
-  width: 30px;
-  height: 30px;
-  margin: 0 5px;
-  border-radius: 50%;
-}
-.home-aside {
-  height: 100vh;
-  overflow-y: scroll;
-  overflow-x: hidden;
-}
-</style>
 <template>
   <div class="orderTaking-header">
     <div class="x-flex-between">
@@ -171,3 +140,34 @@ export default {
   }
 }
 </script>
+<style lang="scss" scoped>
+.orderTaking-header {
+  width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+}
+.home-purple-left {
+  color: #fff;
+}
+.home {
+  .header-left {
+    display: inline-block;
+  }
+  .bg-purple .welcome {
+    font-size: 14px;
+    margin-left: 8px;
+  }
+}
+.head-icon {
+  width: 30px;
+  height: 30px;
+  margin: 0 5px;
+  border-radius: 50%;
+}
+.home-aside {
+  height: 100vh;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+</style>

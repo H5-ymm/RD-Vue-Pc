@@ -2,39 +2,50 @@
 @import '@/assets/css/resume';
 </style>
 <template>
-  <div class="tables-box billingManagement ">
+  <div class="tables-box billingManagement">
     <div>
       <ul class="x-flex-start tab-box">
         <li :class="{'tab-active':tabIndex==0}" @click="tabIndex=0">
           <p>团队接单</p>
-          <img src="../../assets/img/icon6.png" v-if="tabIndex==0" alt />
+          <img src="../../assets/img/icon6.png" v-if="tabIndex==0" alt="">
         </li>
         <li :class="{'tab-active':tabIndex==1}" @click="tabIndex=1">
           <p>内部发单</p>
-          <img src="../../assets/img/icon6.png" v-if="tabIndex==1" alt />
+          <img src="../../assets/img/icon6.png" v-if="tabIndex==1" alt="">
         </li>
       </ul>
     </div>
     <div class="table-list">
-      <el-form :inline="true" label-width="120px" label-position="right" :model="formMember" class="demo-form-inline form-item-wrap">
+      <el-form
+        :inline="true"
+        label-width="120px"
+        label-position="right"
+        :model="formMember"
+        class="demo-form-inline form-item-wrap"
+      >
         <el-form-item label="企业/岗位名称：">
           <el-input v-model="formMember.name" class="width300" placeholder="请输入职位名称关键字"></el-input>
           <el-button type="primary" @click="onSubmit" class="select-btn">查询</el-button>
         </el-form-item>
         <!-- <el-form-item label="状态筛选：">
           <el-button :type="activeIndex==index ?'primary':''" v-for="(item,index) in statusList" :key="index" plain @click="selectStatus(item,index)" class="select-status">{{item.label}}</el-button>
-        </el-form-item> -->
+        </el-form-item>-->
       </el-form>
       <div class="member-table resume-table resume-table1">
         <div class="table-query">
           <el-button @click="handleApply()">批量推荐</el-button>
-          <span class="select-text">
-            已选择
+          <span class="select-text">已选择
             <el-button type="text">{{multipleSelection.length}}&nbsp;</el-button>项
           </span>
           <el-button type="text" @click="multipleSelection=[]">清空</el-button>
         </div>
-        <el-table border :data="tableData" ref="multipleTable" style="width: 100%" @selection-change="handleSelectionChange">
+        <el-table
+          border=""
+          :data="tableData"
+          ref="multipleTable"
+          style="width: 100%"
+          @selection-change="handleSelectionChange"
+        >
           <el-table-column type="selection" align="center" width="60"></el-table-column>
           <el-table-column label="企业名称" align="center" width="150">
             <template slot-scope="props">
@@ -60,11 +71,15 @@
           <el-table-column label="工资" align="center" width="150">
             <template slot-scope="props">
               <div v-if="!tabIndex">
-                <span v-if="props.row.money_type==1">{{props.row.money_min}} ~ {{props.row.money_max}}/{{props.row.money_type | moneyType}}</span>
+                <span
+                  v-if="props.row.money_type==1"
+                >{{props.row.money_min}} ~ {{props.row.money_max}}/{{props.row.money_type | moneyType}}</span>
                 <span v-else>{{props.row.money}}</span>
               </div>
               <div v-if="tabIndex">
-                <span v-if="props.row.offermoney_type==1">{{props.row.money_min}} ~ {{props.row.money_max}}/{{props.row.offermoney_type | moneyType}}</span>
+                <span
+                  v-if="props.row.offermoney_type==1"
+                >{{props.row.money_min}} ~ {{props.row.money_max}}/{{props.row.offermoney_type | moneyType}}</span>
                 <span v-else>{{props.row.offermoney}}</span>
               </div>
             </template>
@@ -92,7 +107,16 @@
           </el-table-column>
         </el-table>
       </div>
-      <el-pagination class="team-pagination" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="formMember.page" :page-sizes="[10, 30, 50, 100]" :page-size="formMember.limit" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
+      <el-pagination
+        class="team-pagination"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="formMember.page"
+        :page-sizes="[10, 30, 50, 100]"
+        :page-size="formMember.limit"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total"
+      ></el-pagination>
     </div>
   </div>
 </template>
@@ -102,10 +126,10 @@ import {
   getMatchingResume,
   getInternalInvoiceList,
   getMatchingJobList,
-  getInternalMatchingList,
-  addPut
+  getInternalMatchingList
 } from '@/api/resume'
-
+teamReceipt
+import { addPut } from '@/api/teamReceipt'
 import { addPutSelf } from '@/api/internalInvoice'
 import { moneyTypeList1, rewardTypeList1 } from '@/base/base'
 import jobMate from './jobMate'

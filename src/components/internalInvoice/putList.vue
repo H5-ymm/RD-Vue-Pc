@@ -1,6 +1,6 @@
 
 <style lang="scss">
-@import "@/assets/css/resume";
+@import '@/assets/css/resume';
 </style>
 <template>
   <div class="tables-box billingManagement">
@@ -194,17 +194,7 @@
 </template>
 <script>
 import {
-  getJoblist,
-  addPut,
   getPutresume,
-  getobedistributedList,
-  cancelrecvList,
-  cancelrecv,
-  setjobtouser,
-  getTomember,
-  deleteJob,
-  changestatus,
-  getTeamManage,
   giveupPut,
   giveupView,
   giveEntry

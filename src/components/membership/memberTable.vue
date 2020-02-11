@@ -3,7 +3,7 @@
     <div class="action-btn x-flex-between">
       <div v-if="userPosition!=3">
         <el-button type="primary" icon="el-icon-plus" @click="addMember">添加</el-button>
-        <el-button @click="handleDel(uid,1)">删除</el-button>
+        <el-button @click="handleDel(userUid,1)">删除</el-button>
         <!-- <el-button>锁定</el-button> -->
         <span class="select-text">已选择
           <el-button type="text">{{multipleSelection.length}}&nbsp;</el-button>项
@@ -95,7 +95,8 @@ export default {
       teamId: '',
       multipleSelection: [],
       userPosition: sessionStorage.getItem('userPosition'),
-      uid: localStorage.getItem('uid')
+      uid: localStorage.getItem('uid'),
+      userUid: ''
     }
   },
   methods: {
@@ -119,7 +120,7 @@ export default {
       let arr = val.map(item => {
         return item.uid
       })
-      this.uid = arr.join(',')
+      this.userUid = arr.join(',')
     },
     // 删除成员
     handleDel(val) {
