@@ -1,6 +1,6 @@
 
 <style lang="scss">
-@import '@/assets/css/resume';
+@import "@/assets/css/resume";
 </style>
 <template>
   <div class="tables-box billingManagement receipt-manage">
@@ -147,7 +147,7 @@ export default {
           this.total = res.data.count
         })
         .catch(error => {
-          if (error) {
+          if (error && error.status) {
             this.$message.warning(error.status.remind)
           }
         })
