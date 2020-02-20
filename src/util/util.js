@@ -49,10 +49,11 @@ export const getImg = file => {
 export const getImgUrl = url => {
   let location = window.location.href
   let checkDev = location.indexOf('http://www.ttxsg.wang') > -1
+  let baseURL
   if (checkDev) {
-    const baseURL = 'http://tiantianxsg.com:39888'
+    baseURL = 'http://tiantianxsg.com:39888'
   } else {
-    const baseURL = process.env.VUE_APP_URL
+    baseURL = process.env.VUE_APP_URL
   }
   return baseURL + '/' + url
 }
