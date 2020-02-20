@@ -76,8 +76,7 @@
 </template>
 
 <script>
-// @ is an alias to /src
-import homeAside from "@/components/Aside"; //侧边栏
+import homeAside from "@/components/Aside"; // 侧边栏
 import companyAside from "@/components/companyAside";
 import Breadcrumb from "@/components/breadcrumb/Breadcrumb";
 import { getImgUrl } from "@/util/util";
@@ -152,7 +151,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import '@/assets/css/common.scss';
+@import "@/assets/css/common.scss";
 .el-container.is-vertical {
   height: 100vh;
 }

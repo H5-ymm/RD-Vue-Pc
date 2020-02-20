@@ -8,8 +8,15 @@ const $axios = axios.create({
   baseURL: process.env.VUE_APP_URL,
   timeout: 4000
 });
-const baseURL = process.env.VUE_APP_URL + '/index.php'
-const baseExportURL = process.env.VUE_APP_URL + '/uploads/test/'
+let location = window.location.href
+let checkDev = location.indexOf('http://www.ttxsg.wang') > -1
+if (checkDev) {
+  const baseURL = process.env.VUE_APP_URL + '/index.php'
+  const baseExportURL = process.env.VUE_APP_URL + '/uploads/test/'
+} else {
+  const baseURL = 'http://tiantianxsg.com:39888/index.php'
+  const baseExportURL = 'http://tiantianxsg.com:39888/uploads/test/'
+}
 //请求拦截
 $axios.interceptors.request.use(
   function (config) {

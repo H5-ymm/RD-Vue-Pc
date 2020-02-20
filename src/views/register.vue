@@ -14,10 +14,24 @@
       <div class="content register-form" :class="{'timerContent':registerType==2}">
         <el-row class="loads-box">
           <el-col :span="12">
-            <el-form :model="formTab" label-width="20" ref="TabForm" :rules="formTabs" class="register-form-box">
+            <el-form
+              :model="formTab"
+              label-width="20"
+              ref="TabForm"
+              :rules="formTabs"
+              class="register-form-box"
+            >
               <div class="x-flex-between login-btn">
-                <el-button class="button" :class="registerType==1?'comRight':'timm-right'" @click="goRegister(1)">注册企业</el-button>
-                <el-button class="button" :class="registerType==2?'comRight':'timm-right'" @click="goRegister(2)">注册团队</el-button>
+                <el-button
+                  class="button"
+                  :class="registerType==1?'comRight':'timm-right'"
+                  @click="goRegister(1)"
+                >注册企业</el-button>
+                <el-button
+                  class="button"
+                  :class="registerType==2?'comRight':'timm-right'"
+                  @click="goRegister(2)"
+                >注册团队</el-button>
               </div>
               <el-form-item prop="mobile" label="手机号">
                 <el-input v-model="formTab.mobile" placeholder="请输入手机号"></el-input>
@@ -25,64 +39,113 @@
               </el-form-item>
               <el-form-item prop="password" label="密码">
                 <span class="error el-icon-warning passwordSave" v-if="isShowPasword">请输入密码</span>
-                <el-progress :percentage="40" :format="format" class="error progress" color="#FE2A00" v-if="formTab.password.length&&formTab.password.length<=6"></el-progress>
-                <el-progress :percentage="70" :format="format" class="error progress" color="#FF9938" v-if="formTab.password.length>6&&formTab.password.length<=10"></el-progress>
-                <el-progress :percentage="100" :format="format" class="error progress" color="#58B44E" v-if="formTab.password.length>10"></el-progress>
-                <el-input v-model="formTab.password" type="password" placeholder="请输入密码" show-word-limit></el-input>
+                <el-progress
+                  :percentage="40"
+                  :format="format"
+                  class="error progress"
+                  color="#FE2A00"
+                  v-if="formTab.password.length&&formTab.password.length<=6"
+                ></el-progress>
+                <el-progress
+                  :percentage="70"
+                  :format="format"
+                  class="error progress"
+                  color="#FF9938"
+                  v-if="formTab.password.length>6&&formTab.password.length<=10"
+                ></el-progress>
+                <el-progress
+                  :percentage="100"
+                  :format="format"
+                  class="error progress"
+                  color="#58B44E"
+                  v-if="formTab.password.length>10"
+                ></el-progress>
+                <el-input
+                  v-model="formTab.password"
+                  type="password"
+                  placeholder="请输入密码"
+                  show-word-limit
+                ></el-input>
               </el-form-item>
               <el-form-item prop="passworded" label="确认密码">
                 <span class="error el-icon-warning" v-if="isShowPas">两次输入的密码不一致</span>
-                <el-input v-model="formTab.passworded" placeholder="请再次输入密码" type="password" show-word-limit></el-input>
+                <el-input
+                  v-model="formTab.passworded"
+                  placeholder="请再次输入密码"
+                  type="password"
+                  show-word-limit
+                ></el-input>
               </el-form-item>
               <el-form-item label="发送验证码">
-                <el-input v-model="formTab.code" placeholder="请输入验证码" class="inputCode" show-word-limit></el-input>
+                <el-input
+                  v-model="formTab.code"
+                  placeholder="请输入验证码"
+                  class="inputCode"
+                  show-word-limit
+                ></el-input>
                 <el-button type="primary" class="code-btn" @click="sendCode" plain>{{content}}</el-button>
               </el-form-item>
               <el-form-item prop="name" :label="registerType==1?'公司名称':'团队名称'">
-                <span class="error el-icon-warning" v-if="isShowName">请输入{{registerType==1?'公司名称':'团队名称'}}</span>
-                <span class="error error1 el-icon-warning" v-if="isShowRe">该{{registerType==1?'公司名称':'团队名称'}}已被注册，请使用其他{{registerType==1?'公司名称':'团队名称'}}注册</span>
+                <span
+                  class="error el-icon-warning"
+                  v-if="isShowName"
+                >请输入{{registerType==1?'公司名称':'团队名称'}}</span>
+                <span
+                  class="error error1 el-icon-warning"
+                  v-if="isShowRe"
+                >该{{registerType==1?'公司名称':'团队名称'}}已被注册，请使用其他{{registerType==1?'公司名称':'团队名称'}}注册</span>
                 <el-input v-model="formTab.name" placeholder="请输入您要创建的团队名称" show-word-limit></el-input>
               </el-form-item>
               <el-form-item :label="registerType==1?'公司地址':'团队地址'">
                 <districtSelet @change="districtChange"></districtSelet>
-                <span class="error el-icon-warning" v-if="isShowCom">请选择{{registerType==1?'公司地址':'团队地址'}}</span>
+                <span
+                  class="error el-icon-warning"
+                  v-if="isShowCom"
+                >请选择{{registerType==1?'公司地址':'团队地址'}}</span>
               </el-form-item>
               <el-form-item>
                 <el-button type="primary" @click="onSubmit" class="register">注册</el-button>
               </el-form-item>
               <p class="text">
-                <el-checkbox v-model="checked" @change="dialogTableVisible=true"></el-checkbox>
-                点击注册即表示同意
-                <a href="#" class="login-primary" @click="dialogTableVisible=true">用户协议及隐私保护规则</a>及
+                <el-checkbox v-model="checked" @change="dialogTableVisible=true"></el-checkbox>点击注册即表示同意
+                <a
+                  href="#"
+                  class="login-primary"
+                  @click="dialogTableVisible=true"
+                >用户协议及隐私保护规则</a>及
                 <a href="#" class="login-primary" @click="dialogPersonVisible=true">《个人信息保护政策》</a>
               </p>
             </el-form>
           </el-col>
           <el-col :span="12">
             <div class="grid-content x-flex-center register-grid-content" ref="bg">
-              <img src="../assets/img/rightBg.png" v-if="registerType==1" />
-              <img src="../assets/img/timerBg.png" v-if="registerType==2" />
+              <img src="../assets/img/rightBg.png" v-if="registerType==1">
+              <img src="../assets/img/timerBg.png" v-if="registerType==2">
               <div class="text">
                 已有账户，
                 <a href="login" class="login-primary">直接登录</a>
-                <img src="../assets/img/loginRight.png" alt class="loginRight" />
+                <img src="../assets/img/loginRight.png" alt="" class="loginRight">
               </div>
             </div>
           </el-col>
         </el-row>
-        <registerRule :dialogTableVisible="dialogTableVisible" @handleClose="dialogTableVisible=false"></registerRule>
-        <personalRule :dialogTableVisible="dialogPersonVisible" @handleClose="dialogPersonVisible=false"></personalRule>
+        <registerRule
+          :dialogTableVisible="dialogTableVisible"
+          @handleClose="dialogTableVisible=false"
+        ></registerRule>
+        <personalRule
+          :dialogTableVisible="dialogPersonVisible"
+          @handleClose="dialogPersonVisible=false"
+        ></personalRule>
       </div>
     </el-main>
   </el-container>
 </template>
-
 <script>
-import { userRegister, getCode } from '@/api/login'
 import districtSelet from '@/components/districtSelet'
 import registerRule from '@/components/common/registerRule'
 import personalRule from '@/components/common/personalRule'
-
+import { userRegister, getCode } from '@/api/login'
 export default {
   components: {
     districtSelet,
@@ -250,11 +313,11 @@ export default {
               this.$store.commit('setUserType', this.registerType)
               this.$store.commit('getUid', res.data.uid)
               if (res.data.type == 1) {
-                this.$store.dispatch("getCompanymData",res.data.uid)
+                this.$store.dispatch("getCompanymData", res.data.uid)
                 this.$router.push('/createOrderTaking')
               } else {
-                this.$store.dispatch("getUserAllInfo",res.data.uid)
-                this.$store.dispatch("getTeamData",res.data.uid)
+                this.$store.dispatch("getUserAllInfo", res.data.uid)
+                this.$store.dispatch("getTeamData", res.data.uid)
                 localStorage.setItem('userPosition', 1)
                 this.$store.commit('getUserPosition', 1)
                 sessionStorage.setItem('userPosition', 1)
@@ -365,14 +428,14 @@ export default {
   align-items: center;
   height: 100%;
   width: 110%;
-  background: url('../assets/img/bg.png') no-repeat left center;
+  background: url("../assets/img/bg.png") no-repeat left center;
   background-size: cover;
   &.register-form {
     height: auto;
   }
 }
 .timerContent {
-  background: url('../assets/img/comBg.jpg') no-repeat left center;
+  background: url("../assets/img/comBg.jpg") no-repeat left center;
   background-size: cover;
 }
 .register-form-box {
