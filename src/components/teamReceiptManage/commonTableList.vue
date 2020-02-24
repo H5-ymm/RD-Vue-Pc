@@ -1,5 +1,5 @@
 <style lang="scss">
-@import '@/assets/css/resume.scss';
+@import "@/assets/css/resume.scss";
 </style>
 <template>
   <div class="tables-box billingManagement">
@@ -141,9 +141,8 @@
                 >未参加</span>
               </div>
               <div v-if="viewType==1">
-                <span v-if="scope.row.status!=2">{{scope.row.status==1?'已通过':'已拒绝'}}</span>
+                <span v-if="scope.row.status&&scope.row.status!=2">{{scope.row.status==1?'已通过':'已拒绝'}}</span>
               </div>
-              <!-- <el-button @click="handleResume(4,scope.row)" v-if="scope.row.interview_status==1&&scope.row.entry_status==1&&viewType==7" type="text" size="small">离职</el-button> -->
             </template>
           </el-table-column>
         </el-table>

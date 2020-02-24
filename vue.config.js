@@ -13,18 +13,11 @@ module.exports = {
   lintOnSave: true,
   assetsDir: 'assets',
   devServer: {
-    open: false, //是否自动在浏览器打开
+    open: true, //是否自动在浏览器打开
     host: '0.0.0.0', //真机测试 0.0.0.0
     port: 8081, //配置端口号
     https: false, //是否配置https
-    hotOnly: false, //是否热更新
-    // proxy: {
-    //   '/api': {
-    //     target: 'https://a.rsd123.com/', // target host
-    //     ws: true, // proxy websockets 
-    //     changeOrigin: true, // needed for virtual hosted sites
-    //   }
-    // }
+    hotOnly: false //是否热更新
   },
   chainWebpack: () => {},
   productionSourceMap: false,

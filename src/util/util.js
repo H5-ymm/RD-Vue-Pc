@@ -47,15 +47,7 @@ export const getImg = file => {
 }
 
 export const getImgUrl = url => {
-  let location = window.location.href
-  let checkDev = location.indexOf('http://www.ttxsg.wang') > -1
-  let baseURL
-  if (checkDev) {
-    baseURL = 'http://tiantianxsg.com:39888'
-  } else {
-    baseURL = process.env.VUE_APP_URL
-  }
-  return baseURL + '/' + url
+  return 'http://tiantianxsg.com:39888/' + url
 }
 export const checkEmail = email => {
   let reg = /^[a-zA-Z0-9]+([-_.][a-zA-Z0-9]+)*@[a-zA-Z0-9]+([-_.][a-zA-Z0-9]+)*\.[a-z]{2,}$/

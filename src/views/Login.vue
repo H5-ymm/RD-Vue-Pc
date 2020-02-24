@@ -233,7 +233,7 @@ export default {
                 this.dialogVisible = false
                 this.isShowError = false
                 this.isCodeError = false
-                this.$message.error(error.status.remind)
+                this.$message.error(error.status.remind || '登录失败')
               }
             })
         } else {
