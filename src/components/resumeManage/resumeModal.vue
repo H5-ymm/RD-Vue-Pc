@@ -31,6 +31,9 @@
                 </el-form-item>
               </div>
               <div class="resume-card-item">
+                <el-form-item label="身份证号码" prop="id_card">
+                  <el-input v-model="formMember.id_card" placeholder="请输入身份证号码"></el-input>
+                </el-form-item>
                 <el-form-item label="年龄" required>
                   <el-select v-model="formMember.age" placeholder="请选择年龄">
                     <el-option :label="item" :value="item" v-for="(item,index) in ageList" :key="index"></el-option>
@@ -127,6 +130,16 @@ export default {
         callback();
       }
     };
+    var validateCard = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请输入身份证号码'));
+      } else {
+        if (!validateIdCard(value)) {
+          callback(new Error('请输入正确的身份证号码'));
+        }
+        callback()
+      }
+    };
     return {
       formMember: {
         is_five_risks: 1,
@@ -145,6 +158,10 @@ export default {
       rules: {
         name: [
           { required: true, message: '请输入姓名', trigger: 'blur' },
+        ],
+        id_card: [
+          { require: true, message: '请输入身份证号码', trigger: 'blur' },
+          { validator: validateCard, trigger: 'blur' }
         ],
         mobile: [
           { required: true, message: '请输入手机号', trigger: 'blur' },
