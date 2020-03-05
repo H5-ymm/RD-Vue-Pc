@@ -1,5 +1,5 @@
 <style lang="scss">
-  @import '@/assets/css/resume.scss';
+@import '@/assets/css/resume.scss';
 </style>
 <template>
   <div class="tables-box billingManagement">
@@ -107,26 +107,26 @@ export default {
     modal
   },
   filters: {
-    moneyType (val) {
+    moneyType(val) {
       let obj = moneyTypeList.find(item => {
         return val == item.value
       })
       return obj ? obj.label : '--'
     },
-    rewardType (val) {
+    rewardType(val) {
       let obj = rewardTypeList.find(item => {
         return val == item.value
       })
       return obj ? obj.label : '--'
     },
-    status (val) {
+    status(val) {
       let obj = entryStatusList.find(item => {
         return val == item.value
       })
       return obj ? obj.label : '--'
     }
   },
-  data () {
+  data() {
     return {
       moneyTypeList,
       rewardTypeList,
@@ -158,7 +158,7 @@ export default {
       timeList: []
     }
   },
-  created () {
+  created() {
     // 初始化查询标签数据
     if (this.$route.query.id) {
       this.jobId = this.$route.query.id
@@ -169,48 +169,56 @@ export default {
     this.getData(params)
   },
   methods: {
-    getData (filed) {
-      getConstant({ filed }).then(res => {
-        const { job_array } = res.data
-        this.jobList = job_array
-      })
+    getData(filed) {
+      getConstant({ filed })
+        .then(res => {
+          this.jobList = res.data.job_array
+        })
+        .catch(error => {
+          if (error) {
+            this.$message.warning(error.status.remind)
+          }
+        })
     },
-    getList (params) {
-      entryInvoiceList(params).then(res => {
-        this.tableData = res.data.data
-        this.total = res.data.count
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+    getList(params) {
+      entryInvoiceList(params)
+        .then(res => {
+          this.tableData = res.data.data
+          this.total = res.data.count
+        })
+        .catch(error => {
+          if (error) {
+            this.$message.warning(error.status.remind)
+          }
+        })
     },
-    selectStatus (item, index) {
+    selectStatus(item, index) {
       this.activeIndex = index
       this.formMember.status = item.value
     },
-    changeDate (val) {
+    changeDate(val) {
       this.formMember.begintime = val[0]
       this.formMember.endTime = val ? val[1] : ''
     },
-    handleSizeChange (val) {
+    handleSizeChange(val) {
       this.formMember.limit = val
       this.getList(this.formMember)
     },
-    handleCurrentChange (val) {
+    handleCurrentChange(val) {
       this.formMember.page = val
       this.getList(this.formMember)
     },
-    handleUser (index, val) {
+    handleUser(index, val) {
       this.dialogTableVisible = true
       this.overType = index
       if (index == 1) {
         this.modalObj.content = '你确定要提前结束入职吗？'
-      }
-      else {
+      } else {
         this.modalObj.content = '你确定要提前结束面试吗？'
       }
       this.jobId = val.id
     },
-    handleOk () {
+    handleOk() {
       this.dialogTableVisible = false
       let params = {
         uid: localStorage.getItem('uid'),
@@ -218,32 +226,39 @@ export default {
       }
       if (this.overType == 1) {
         this.handleOverEntry(params)
-      }
-      else {
+      } else {
         this.handelOverAudition(params)
       }
     },
     // 结束入职
-    handleOverEntry (params) {
-      endEntry(params).then(res => {
-        this.getList(this.formMember)
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+    handleOverEntry(params) {
+      endEntry(params)
+        .then(res => {
+          this.getList(this.formMember)
+        })
+        .catch(error => {
+          if (error) {
+            this.$message.warning(error.status.remind)
+          }
+        })
     },
     // 结束面试
-    handelOverAudition (params) {
-      endInterview(params).then(res => {
-        this.$message.success('操作成功')
-        this.getList(this.formMember)
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+    handelOverAudition(params) {
+      endInterview(params)
+        .then(res => {
+          this.$message.success('操作成功')
+          this.getList(this.formMember)
+        })
+        .catch(error => {
+          if (error) {
+            this.$message.warning(error.status.remind)
+          }
+        })
     },
-    onSubmit () {
+    onSubmit() {
       this.getList(this.formMember)
     },
-    reset () {
+    reset() {
       this.formMember = {
         uid: localStorage.getItem('uid'),
         limit: 10,

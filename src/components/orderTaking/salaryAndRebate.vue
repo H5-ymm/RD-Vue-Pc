@@ -1,5 +1,5 @@
 <style lang="scss">
-@import '@/assets/css/salaryRebate.scss';
+@import "@/assets/css/salaryRebate.scss";
 </style>
 <template>
   <div class="salary-rebate">
@@ -108,7 +108,7 @@
             <span class="moneyType">{{rewardType}}</span>
           </template>
         </el-input>
-        <el-input placeholder="请输入" class="width160 text-input" @input="changeNeedtime" v-model="orderTakingForm.reward_needtime">
+        <el-input placeholder="请输入" class="width160 text-input" v-model="orderTakingForm.reward_needtime">
           <template slot="prepend">
             <span class="moneyType">需入职满</span>
           </template>
@@ -135,7 +135,7 @@
 import { moneyTypeList, rewardTypeList, payTypeList, weekList } from '../../base/base'
 export default {
   props: ['moneyList', 'from'],
-  data () {
+  data() {
     return {
       orderTakingForm: {
         money: '',  // 薪资
@@ -158,19 +158,19 @@ export default {
     }
   },
   computed: {
-    payType () {
+    payType() {
       return this.orderTakingForm.reward_pay_type == 1 ? '次' : '本'
     },
-    rewardType () {
+    rewardType() {
       return this.orderTakingForm.reward_money_type == 1 ? '日' : this.orderTakingForm.reward_money_type == 2 ? '周' : '月'
     },
-    moneyType () {
+    moneyType() {
       return this.orderTakingForm.reward_money_type == 1 ? '日' : this.orderTakingForm.reward_money_type == 2 ? '周' : '月'
     }
   },
   watch: {
     orderTakingForm: {
-      handler (val, oldName) {
+      handler(val, oldName) {
         for (let key in val) {
           if (val.reward_type == 1) {
             if (val[key] != '' && key != 'reward_needtime' && key != 'duration_time') {
@@ -203,7 +203,7 @@ export default {
       },
       deep: true
     },
-    from (val) {
+    from(val) {
       if (val) {
         for (let key in val) {
           this.orderTakingForm[key] = val[key]
@@ -212,9 +212,10 @@ export default {
     }
   },
   methods: {
-    changeReward (val) {
+    changeReward(val) {
       if (val == 1) {
         this.orderTakingForm.settlement_type = 1
+        this.orderTakingForm.reward_money_type = 1
       }
       for (let key in this.orderTakingForm) {
         if (key != 'reward_type' && key != 'money_type' && key != 'money') {
@@ -222,32 +223,29 @@ export default {
         }
       }
     },
-    changeRewardType (val) {
+    changeRewardType(val) {
       for (let key in this.orderTakingForm) {
         if (key != 'money_type' && key != 'money' && key != 'reward_type' && key != 'reward_money_type') {
           this.orderTakingForm[key] = ''
         }
       }
     },
-    changeSettlementTime (val) {
+    changeSettlementTime(val) {
       console.log(val)
     },
-    changeNeedtime (val) {
-      console.log(val)
-    },
-    focusInput (e) {
+    focusInput(e) {
       console.log(e)
       this.rewardTipShow = true
     },
-    changePayType (val) {
+    changePayType(val) {
       if (val == 1) {
         this.orderTakingForm.reward_money_type = val
       }
     },
-    blurInput ($event) {
+    blurInput($event) {
       return false
     },
-    changeInput (val) {
+    changeInput(val) {
       if (val) {
         this.reward_money_type = `持续返利` + val + `月`
         this.orderTakingForm.reward_money_type = 2

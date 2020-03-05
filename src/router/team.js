@@ -1,4 +1,3 @@
-
 import TeamSetting from '../components/TeamSetting.vue'
 import AccountSettings from '../components/AccountSettings.vue'
 
@@ -42,190 +41,191 @@ const Department = resolve => (require(['../components/Department.vue'], resolve
 const Userlist = resolve => (require(['../components/Userlist.vue'], resolve)) //全部用户
 const commonts = resolve => (require(['../components/commonts.vue'], resolve)) //评论
 const Team = resolve => (require(['../views/Team.vue'], resolve))
-import { commonRouters } from './index'
+import {
+  commonRouters
+} from './index'
 // 团队路由
-let children = [{  // 团队论坛
-  path: '/commonts',
-  name: 'commonts',
-  component: commonts,
-  meta: {
-    requiresAuth: 2
+let children = [{ // 团队论坛
+    path: '/commonts',
+    name: 'commonts',
+    component: commonts,
+    meta: {
+      requiresAuth: 2
+    }
+  },
+  { //成员管理
+    path: '/userlist',
+    name: 'Userlist',
+    component: Userlist,
+    meta: {
+      requiresAuth: 2
+    }
+  },
+  // 团队申请
+  {
+    path: '/teamApplication',
+    name: 'teamApplication',
+    component: teamApplication,
+    meta: {
+      requiresAuth: 1
+    }
+  },
+  {
+    path: '/teamInterviewPersonnel',
+    name: 'teamInterviewPersonnel',
+    component: teamInterviewPersonnel,
+    meta: {
+      requiresAuth: 2
+    }
+  },
+  {
+    path: '/recommendResume',
+    name: 'recommendResume',
+    component: recommendResume,
+    meta: {
+      requiresAuth: 2
+    }
+  },
+  {
+    path: '/resumeResult',
+    name: 'resumeResult',
+    component: resumeResult,
+    meta: {
+      requiresAuth: 2
+    }
+  },
+  {
+    path: '/teamEntryList',
+    name: 'teamEntryList',
+    component: teamEntryList,
+    meta: {
+      requiresAuth: 2
+    }
+  },
+  {
+    path: '/commonTableList',
+    name: 'commonTableList',
+    component: commonTableList,
+    meta: {
+      requiresAuth: 2
+    }
+  },
+  { //
+    path: '/accountSettings',
+    name: 'AccountSettings',
+    component: AccountSettings,
+    meta: {
+      requiresAuth: 2
+    }
+  },
+  {
+    path: '/addResume', // 新建简历
+    name: addResume,
+    component: addResume,
+    meta: {
+      requiresAuth: 2
+    }
+  },
+  {
+    path: '/recommendJob', // 推荐岗位
+    name: recommendJob,
+    component: recommendJob,
+    meta: {
+      requiresAuth: 2
+    }
+  },
+  {
+    path: '/applyResume', // 报名简历
+    name: applyResume,
+    component: applyResume,
+    meta: {
+      requiresAuth: 2
+    }
+  },
+  {
+    path: '/onTheJobResumes', // 在职简历
+    name: onTheJobResumes,
+    component: onTheJobResumes,
+    meta: {
+      requiresAuth: 2
+    }
+  },
+  {
+    path: '/dimissionResume', // 离职简历
+    name: dimissionResume,
+    component: dimissionResume,
+    meta: {
+      requiresAuth: 2
+    }
+  },
+  {
+    path: '/waiverOfResume', // 放弃简历
+    name: waiverOfResume,
+    component: waiverOfResume,
+    meta: {
+      requiresAuth: 2
+    }
+  },
+  {
+    path: '/collectJob', // 收藏职位
+    name: CollectJob,
+    component: CollectJob,
+    meta: {
+      requiresAuth: 2
+    }
+  },
+  {
+    path: '/userRecommend', // 成员推荐 只有团长看到菜单
+    name: userRecommend,
+    component: userRecommend,
+    meta: {
+      requiresAuth: 1
+    }
+  },
+  {
+    path: '/transfer', // 转账
+    component: transfer,
+    meta: {
+      requiresAuth: 2
+    }
+  },
+  {
+    path: '/teamData', // 团队排名
+    component: teamData,
+    meta: {
+      requiresAuth: 2
+    }
+  },
+  {
+    path: '/teamOrder', // 团队排名
+    component: teamOrder,
+    meta: {
+      requiresAuth: 2
+    }
+  },
+  {
+    path: '/logList', // 日志
+    component: logList,
+    meta: {
+      requiresAuth: 2
+    }
+  },
+  {
+    path: '/receiptTable', // 日志
+    component: receiptTable,
+    meta: {
+      requiresAuth: 2
+    }
+  },
+  {
+    path: '/putList', // 
+    component: putList,
+    meta: {
+      requiresAuth: 2
+    }
   }
-},
-{ //成员管理
-  path: '/userlist',
-  name: 'Userlist',
-  component: Userlist,
-  meta: {
-    requiresAuth: 2
-  }
-},
-// 团队申请
-{
-  path: '/teamApplication',
-  name: 'teamApplication',
-  component: teamApplication,
-  meta: {
-    requiresAuth: 1
-  }
-},
-{
-  path: '/teamInterviewPersonnel',
-  name: 'teamInterviewPersonnel',
-  component: teamInterviewPersonnel,
-  meta: {
-    requiresAuth: 2
-  }
-},
-{
-  path: '/recommendResume',
-  name: 'recommendResume',
-  component: recommendResume,
-  meta: {
-    requiresAuth: 2
-  }
-},
-{
-  path: '/resumeResult',
-  name: 'resumeResult',
-  component: resumeResult,
-  meta: {
-    requiresAuth: 2
-  }
-},
-{
-  path: '/teamEntryList',
-  name: 'teamEntryList',
-  component: teamEntryList,
-  meta: {
-    requiresAuth: 2
-  }
-},
-{
-  path: '/commonTableList',
-  name: 'commonTableList',
-  component: commonTableList,
-  meta: {
-    requiresAuth: 2
-  }
-},
-{ //
-  path: '/accountSettings',
-  name: 'AccountSettings',
-  component: AccountSettings,
-  meta: {
-    requiresAuth: 2
-  }
-},
-{
-  path: '/addResume',  // 新建简历
-  name: addResume,
-  component: addResume,
-  meta: {
-    requiresAuth: 2
-  }
-},
-{
-  path: '/recommendJob',  // 推荐岗位
-  name: recommendJob,
-  component: recommendJob,
-  meta: {
-    requiresAuth: 2
-  }
-},
-{
-  path: '/applyResume',  // 报名简历
-  name: applyResume,
-  component: applyResume,
-  meta: {
-    requiresAuth: 2
-  }
-},
-{
-  path: '/onTheJobResumes',  // 在职简历
-  name: onTheJobResumes,
-  component: onTheJobResumes,
-  meta: {
-    requiresAuth: 2
-  }
-},
-{
-  path: '/dimissionResume',  // 离职简历
-  name: dimissionResume,
-  component: dimissionResume,
-  meta: {
-    requiresAuth: 2
-  }
-},
-{
-  path: '/waiverOfResume',  // 放弃简历
-  name: waiverOfResume,
-  component: waiverOfResume,
-  meta: {
-    requiresAuth: 2
-  }
-},
-{
-  path: '/collectJob',  // 收藏职位
-  name: CollectJob,
-  component: CollectJob,
-  meta: {
-    requiresAuth: 2
-  }
-},
-{
-  path: '/userRecommend',  // 成员推荐 只有团长看到菜单
-  name: userRecommend,
-  component: userRecommend,
-  meta: {
-    requiresAuth: 1
-  }
-},
-{
-  path: '/transfer',  // 转账
-  component: transfer,
-  meta: {
-    requiresAuth: 2
-  }
-},
-{
-  path: '/teamData',  // 团队排名
-  component: teamData,
-  meta: {
-    requiresAuth: 2
-  }
-},
-{
-  path: '/teamOrder',  // 团队排名
-  component: teamOrder,
-  meta: {
-    requiresAuth: 2
-  }
-},
-{
-  path: '/logList',  // 日志
-  component: logList,
-  meta: {
-    requiresAuth: 2
-  }
-},
-{
-  path: '/receiptTable',  // 日志
-  component: receiptTable,
-  meta: {
-    requiresAuth: 2
-  }
-},
-{
-  path: '/putList',  // 日志
-  component: putList,
-  meta: {
-    requiresAuth: 2
-  }
- }
 ]
-let rootList = [
-  { // 团队设置
+let rootList = [{ // 团队设置
     path: '/teamSetting',
     name: 'TeamSetting',
     component: TeamSetting,
@@ -258,9 +258,8 @@ let rootList = [
     }
   },
 ]
-let receiptList = [
-  {
-    path: '/publishJobList',  // 内部发单
+let receiptList = [{
+    path: '/publishJobList', // 内部发单
     name: publishJobList,
     component: publishJobList,
     meta: {
@@ -268,7 +267,7 @@ let receiptList = [
     }
   },
   {
-    path: '/jobDetail',  // 内部发单详情
+    path: '/jobDetail', // 内部发单详情
     name: jobDetail,
     component: jobDetail,
     meta: {
@@ -276,7 +275,7 @@ let receiptList = [
     }
   },
   {
-    path: '/postJob',  // 发布岗位
+    path: '/postJob', // 发布岗位
     name: postJob,
     component: postJob,
     meta: {
@@ -284,7 +283,7 @@ let receiptList = [
     }
   },
   {
-    path: '/collectingInvoice',  // 领取发单
+    path: '/collectingInvoice', // 领取发单
     name: collectingInvoice,
     component: collectingInvoice,
     meta: {
@@ -292,7 +291,7 @@ let receiptList = [
     }
   },
   {
-    path: '/checkResumeInvoice',  // 内部审核简历
+    path: '/checkResumeInvoice', // 内部审核简历
     name: checkResumeInvoice,
     component: checkResumeInvoice,
     meta: {

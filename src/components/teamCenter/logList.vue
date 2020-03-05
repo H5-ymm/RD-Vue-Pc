@@ -1,12 +1,12 @@
 
 <style lang="scss">
-  .team-center-section {
-    background: #fff;
-    padding: 20px 15px 0;
-    .team-center-table {
-      margin: 20px 0;
-    }
+.team-center-section {
+  background: #fff;
+  padding: 20px 15px;
+  .team-center-table {
+    margin: 20px 0;
   }
+}
 </style>
 <template>
   <div class="team-center-section">
@@ -26,7 +26,7 @@ export default {
     logTable,
     receiptLogTable
   },
-  data () {
+  data() {
     return {
       date: [],
       componentId: 'logTable',
@@ -39,42 +39,49 @@ export default {
       tableData: []
     }
   },
-  created () {
+  created() {
     this.componentId = this.$route.query.view
     this.getList(this.params)
   },
   methods: {
-    getList (params) {
+    getList(params) {
       if (this.componentId == 'logTable') {
-        getTeamLog(params).then(res => {
-          this.tableData = res.data.data || []
-          this.total = res.data.count
-        }).catch(error => {
-          this.$message.error(error.status.remind)
-        })
-      }
-      else {
-        getapplyLog(params).then(res => {
-          this.tableData = res.data.data || []
-          this.total = res.data.count
-        }).catch(error => {
-          this.$message.error(error.status.remind)
-        })
+        getTeamLog(params)
+          .then(res => {
+            this.tableData = res.data.data || []
+            this.total = res.data.count
+          })
+          .catch(error => {
+            if (error) {
+              this.$message.warning(error.status.remind)
+            }
+          })
+      } else {
+        getapplyLog(params)
+          .then(res => {
+            this.tableData = res.data.data || []
+            this.total = res.data.count
+          })
+          .catch(error => {
+            if (error) {
+              this.$message.warning(error.status.remind)
+            }
+          })
       }
     },
-    changeDate (val) {
+    changeDate(val) {
       this.params.starttime = val ? val[0] : ''
       this.params.endtime = val ? val[1] : ''
       this.getList(this.params)
     },
-    handleSizeChange (val) {
+    handleSizeChange(val) {
       this.params.limit = val
       this.getList(this.params)
     },
-    handleCurrentChange (val) {
+    handleCurrentChange(val) {
       this.params.page = val
       this.getList(this.params)
-    },
+    }
   }
 }
 </script>

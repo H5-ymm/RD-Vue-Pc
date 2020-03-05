@@ -28,7 +28,7 @@ export default {
     }
   },
   created: function () {
-
+   
   },
   methods: {
     reload () {
@@ -36,7 +36,7 @@ export default {
       // 该方法会在dom更新后执行
       this.$nextTick(function () {
         this.isRouterAlive = true
-        console.log('d')
+        console.log('刷新成功')
       })
     }
   },

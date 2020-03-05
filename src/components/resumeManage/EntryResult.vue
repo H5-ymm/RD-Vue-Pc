@@ -106,8 +106,18 @@
   </div>
 </template>
 <script>
-import { teamRecommendResumeList, addUserResume, selectUserResumeInfo, giveUpResume, exportUserResume } from '@/api/resume'
-import { moneyTypeList, rewardTypeList, followStatusList } from '../../base/base'
+import {
+  teamRecommendResumeList,
+  addUserResume,
+  selectUserResumeInfo,
+  giveUpResume,
+  exportUserResume
+} from '@/api/resume'
+import {
+  moneyTypeList,
+  rewardTypeList,
+  followStatusList
+} from '../../base/base'
 import viewResume from './viewResume'
 import followUpRecord from './followUpRecord'
 import leadResumeModal from './leadResumeModal'
@@ -123,20 +133,20 @@ export default {
     leadResumeModal
   },
   filters: {
-    moneyType (val) {
+    moneyType(val) {
       let obj = moneyTypeList.find(item => {
         return val == item.value
       })
       return obj ? obj.label : '--'
     },
-    rewardType (val) {
+    rewardType(val) {
       let obj = rewardTypeList.find(item => {
         return val == item.value
       })
       return obj ? obj.label : '--'
-    },
+    }
   },
-  data () {
+  data() {
     return {
       moneyTypeList,
       rewardTypeList,
@@ -181,84 +191,90 @@ export default {
       isShow: true
     }
   },
-  created () {
+  created() {
     // 初始化查询标签数据
     this.getList(this.formMember)
     let params = 'job_array'
     this.getData(params)
   },
   methods: {
-    onSubmit () {
+    onSubmit() {
       this.getList(this.formMember)
     },
-    getData (filed) {
-      getConstant({ filed }).then(res => {
-        const { job_array } = res.data
-        this.jobList = job_array
-      })
+    getData(filed) {
+      getConstant({ filed })
+        .then(res => {
+          this.jobList = res.data.job_array
+        })
+        .catch(error => {
+          if (error) {
+            this.$message.warning(error.status.remind)
+          }
+        })
     },
-    getList (params) {
-      teamRecommendResumeList(params).then(res => {
-        const { data } = res
-        this.tableData = data.data
-        this.total = data.count
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+    getList(params) {
+      teamRecommendResumeList(params)
+        .then(res => {
+          const { data } = res
+          this.tableData = data.data
+          this.total = data.count
+        })
+        .catch(error => {
+          if (error) {
+            this.$message.warning(error.status.remind)
+          }
+        })
     },
-    changeDate (val) {
+    changeDate(val) {
       this.formMember.beginTime = val ? val[0] : ''
       this.formMember.endTime = val ? val[1] : ''
     },
-    exportResume () {
+    exportResume() {
       let uid = localStorage.getItem('uid')
       exportEntryResume(uid)
     },
-    sortChange (column) {
+    sortChange(column) {
       if (column.order == 'ascending') {
         this.formMember.timeDesc = 'asc'
-      }
-      else {
+      } else {
         this.formMember.timeDesc = 'desc'
       }
       this.getList(this.formMember)
     },
-    change (val) {
+    change(val) {
       this.formMember.provinceid = val[0]
       this.formMember.cityid = val[1]
     },
-    viewRecord (val) {
+    viewRecord(val) {
       this.followUpRecordVisible = true
       this.resumeId = val.resume_id
     },
-    viewResume (val) {
+    viewResume(val) {
       this.dialogTableVisible = true
       this.resumeInfo = val
     },
-    submitRecord (val) {
+    submitRecord(val) {
       this.followUpRecordVisible = false
     },
-    abandoned (index, val) {
+    abandoned(index, val) {
       if (index == 1) {
         this.dialogObj.title = '放弃报名'
         this.isShow = true
-      }
-      else if (index == 1) {
+      } else if (index == 1) {
         this.dialogObj.title = '放弃面试'
         this.isShow = true
-      }
-      else {
+      } else {
         this.dialogObj.title = '放弃用户'
         this.isShow = false
       }
       this.visible = true
       this.resumeId = val.id
     },
-    handleClose () {
+    handleClose() {
       this.visible = false
       this.resumeId = ''
     },
-    submit (val) {
+    submit(val) {
       let params = {
         uid: localStorage.getItem('uid'),
         id: this.resumeId,
@@ -266,42 +282,52 @@ export default {
       }
       this.visible = false
       giveUpResume(params).then(res => {
-        this.resumeId = ''
-        this.getList(this.formMember)
+        if (res.data) {
+          this.resumeId = ''
+          this.$message.success('操作成供')
+          this.getList(this.formMember)
+        } else {
+          this.$message.error('操作失败')
+        }
       })
     },
-    handleSelectionChange (val) {
+    handleSelectionChange(val) {
       this.len = val
     },
-    updateResume (val) {
+    updateResume(val) {
       updateTeamUser(val).then(res => {
         this.getList(this.formMember)
       })
     },
     // 分页
-    handleSizeChange (val) {
+    handleSizeChange(val) {
       this.formMember.limit = val
       this.getList(this.formMember)
     },
-    handleCurrentChange (val) {
+    handleCurrentChange(val) {
       this.formMember.page = val
       this.getList(this.formMember)
     },
-    submitForm (val) {
+    submitForm(val) {
       this.dialogTableVisible = false
       if (this.resumeId) {
         this.updateResume(val)
-      }
-      else {
-        addUserResume(val).then(res => {
-          this.getList(this.formMember)
-          this.$message.success('保存成功')
-        }).catch(error => {
-          this.$message.error(error.status.remind)
-        })
+      } else {
+        addUserResume(val)
+          .then(res => {
+            if (res.data) {
+              this.getList(this.formMember)
+              this.$message.success('保存成功')
+            }
+          })
+          .catch(error => {
+            if (error) {
+              this.$message.warning(error.status.remind)
+            }
+          })
       }
     },
-    onReset () {
+    onReset() {
       this.formMember = {
         uid: localStorage.getItem('uid'),
         limit: 10,

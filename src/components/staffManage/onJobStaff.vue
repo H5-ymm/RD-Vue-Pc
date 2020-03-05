@@ -18,7 +18,7 @@
         </el-form-item>
         <el-form-item label="性别：">
           <el-select v-model="formMember.sex" value-key="label" class="width300" placeholder="请选择性别">
-            <el-option :label="item.label" :value="item.value" v-for="(item,index) in sexList" :key="item.label"></el-option>
+            <el-option :label="item.label" :value="item.value" v-for="(item) in sexList" :key="item.label"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="入职时间：">
@@ -36,12 +36,12 @@
         <div class="table-query x-flex-start">
           <div v-if="viewType==1">
             <el-button @click="staffVisible=true,staffId=''" type="primary">添加员工</el-button>
-            <el-button @click="handleUser(1,this.staffId)">离职</el-button>
+            <el-button @click="handleUser(1,staffId)">离职</el-button>
             <el-button @click="leadResumeVisible=true">导入简历</el-button>
             <el-button @click="exportResume">导出简历</el-button>
           </div>
           <div v-if="viewType==2">
-            <el-button @click="handleUser(2,this.staffId)">删除</el-button>
+            <el-button @click="handleUser(2,staffId)">删除</el-button>
           </div>
           <span class="select-text">
             已选择
@@ -78,11 +78,11 @@
           <el-table-column label="操作" align="center" min-width="190">
             <template slot-scope="scope">
               <div v-if="viewType==1">
-                <el-button @click="handleUser(0,scope.row)" type="text" size="small">编辑</el-button>
-                <el-button @click="handleUser(1,scope.row)" type="text" size="small">离职</el-button>
+                <el-button @click="handleUser(0,scope.row.id)" type="text" size="small">编辑</el-button>
+                <el-button @click="handleUser(1,scope.row.id)" type="text" size="small">离职</el-button>
               </div>
               <div v-if="viewType==2">
-                <el-button @click="handleUser(2,scope.row)" type="text" size="small">删除</el-button>
+                <el-button @click="handleUser(2,scope.row.id)" type="text" size="small">删除</el-button>
               </div>
             </template>
           </el-table-column>
@@ -90,17 +90,25 @@
       </div>
       <el-pagination class="team-pagination" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="formMember.page" :page-sizes="[10, 30, 50, 100]" :page-size="formMember.limit" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
     </div>
-    <modal :dialogTableVisible="dialogTableVisible" @handleOk="handleOk" :modalObj="modalObj" :isShow="isShow" @handleClose="dialogTableVisible=false"></modal>
-    <leadResumeModal :dialogTableVisible="leadResumeVisible" @download="download" @exportResume="exportResumeData" @handleClose="leadResumeVisible=false"></leadResumeModal>
-    <staffModal :dialogTableVisible="staffVisible" @handleClose="staffVisible=false" @submitForm="submitForm" :staffId="staffId"></staffModal>
+    <modal :dialogTableVisible="dialogTableVisible" @handleOk="handleOk" :modalObj="modalObj" :isShow="isShow" @handleClose="dialogTableVisible=false,staffId=''"></modal>
+    <leadResumeModal :dialogTableVisible="leadResumeVisible" @download="download" @exportResume="exportResumeData" @handleClose="leadResumeVisible=false,staffId=''"></leadResumeModal>
+    <staffModal :dialogTableVisible="staffVisible" @handleClose="staffVisible=false,staffId=''" @submitForm="submitForm" :staffId="staffId"></staffModal>
     <viewStaff :staffId="staffId" :dialogTableVisible="viewStaffVisible" @handleClose="viewStaffVisible=false,staffId=''"></viewStaff>
   </div>
 </template>
 
 <script>
-import {  getStaffResumeList, quitCompanyResumeList,
-  addCompanyResume, delCompanyResumeInfo, editCompanyResumeInfo,
-  exportCompanyResume, doQuitCompanyResume, importCompanyResume, uploadsCompanyList} from '@/api/staff'
+import {
+  getStaffResumeList,
+  quitCompanyResumeList,
+  addCompanyResume,
+  delCompanyResumeInfo,
+  editCompanyResumeInfo,
+  exportCompanyResume,
+  doQuitCompanyResume,
+  importCompanyResume,
+  uploadsCompanyList
+} from '@/api/staff'
 import { getConstant } from '@/api/dictionary'
 import modal from '../common/modal'
 import leadResumeModal from '../resumeManage/leadResumeModal'
@@ -113,7 +121,7 @@ export default {
     staffModal,
     viewStaff
   },
-  data () {
+  data() {
     return {
       dialogTableVisible: false,
       leadResumeVisible: false,
@@ -139,148 +147,178 @@ export default {
       sexList: [
         { label: '全部', value: 0 },
         { label: '男', value: 1 },
-        { label: '女', value: 2 },
+        { label: '女', value: 2 }
       ],
       staffId: '',
       timeList: []
     }
   },
-  created () {
+  created() {
     // 初始化查询标签数据
     this.viewType = this.$route.query.view
     this.getList(this.formMember)
-    console.log(this.viewType)
     let params = 'edu_type'
     this.getData(params)
   },
   watch: {
-    $route (to, from) {
-      console.log(to)
-      this.viewType = to.query.view
-      this.getList(this.formMember)
+    $route(to, from) {
+      if (to.query.view) {
+        this.viewType = to.query.view
+        this.getList(this.formMember)
+        this.staffId = ''
+      }
     }
   },
-  mounted () {
-
-  },
   methods: {
-    getData (filed) {
-      getConstant({ filed }).then(res => {
-        const { edu_type } = res.data
-        this.edu_type = edu_type
-      })
+    getData(filed) {
+      getConstant({ filed })
+        .then(res => {
+          this.edu_type = res.data.edu_type
+        })
+        .catch(error => {
+          if (error) {
+            this.$message.warning(error.status.remind)
+          }
+        })
     },
-    getList (params) {
+    getList(params) {
       if (this.viewType == 1) {
-        getStaffResumeList(params).then(res => {
-          const { data } = res
-          this.tableData = data.data
-          console.log(this.tableData)
-          this.total = data.count
-        })
+        getStaffResumeList(params)
+          .then(res => {
+            this.tableData = res.data.data
+            this.total = res.data.count
+          })
+          .catch(error => {
+            if (error) {
+              this.$message.warning(error.status.remind)
+            }
+          })
       } else {
-        quitCompanyResumeList(params).then(res => {
-          const { data } = res
-          this.tableData = data.data
-          this.total = data.count
-        })
+        quitCompanyResumeList(params)
+          .then(res => {
+            this.tableData = res.data.data
+            this.total = res.data.count
+          })
+          .catch(error => {
+            if (error) {
+              this.$message.warning(error.status.remind)
+            }
+          })
       }
     },
-    changeDate (val) {
+    changeDate(val) {
       this.formMember.beginTime = val ? val[0] : ''
       this.formMember.endTime = val ? val[1] : ''
     },
-    handleSelectionChange (val) {
+    handleSelectionChange(val) {
+      this.multipleSelection = val
       let arr = val.map(item => {
         return item.id
       })
       this.staffId = arr.join(',')
-      console.log(this.staffId)
     },
-    download () {
+    download() {
       uploadsCompanyList()
     },
-    exportResumeData (file) {
-      console.log(file)
-
-      importCompanyResume(file).then(res => {
-        this.leadResumeVisible = false
-        this.getList(this.formMember)
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+    exportResumeData(file) {
+      importCompanyResume(file)
+        .then(res => {
+          this.leadResumeVisible = false
+          this.getList(this.formMember)
+        })
+        .catch(error => {
+          if (error) {
+            this.$message.warning(error.status.remind)
+          }
+        })
     },
-    exportResume () {
+    exportResume() {
       if (!this.staffId) {
-        return this.$message.warning('请选择简历')
-      }
-      else {
+        return this.$message.warning('请选择员工')
+      } else {
         let params = {
           uid: localStorage.getItem('uid'),
           listId: this.staffId
         }
-        console.log(params)
         exportCompanyResume(params)
       }
     },
-    sortChange (column) {
+    sortChange(column) {
       if (column.order == 'ascending') {
         this.formMember.desc = 'asc'
-      }
-      else {
+      } else {
         this.formMember.desc = 'desc'
       }
       this.getList(this.formMember)
     },
-    handleSizeChange (val) {
+    handleSizeChange(val) {
       this.formMember.limit = val
       this.getList(this.formMember)
     },
-    handleCurrentChange (val) {
+    handleCurrentChange(val) {
       this.formMember.page = val
       this.getList(this.formMember)
     },
-    handleUser (index, val) {
+    handleUser(index, id) {
+      if (!id) {
+        return this.$message.warning('请先选择员工')
+      }
+      this.staffId = id
       this.overType = index
       if (index == 1) {
         this.dialogTableVisible = true
         this.modalObj.content = '你确定该操作员工离职吗？'
-      }
-      else if (index == 2) {
+      } else if (index == 2) {
         this.dialogTableVisible = true
-        this.modalObj.content = '您确定要删除选中的员工吗？</br>一经操作不可恢复！'
-      }
-      else {
+        this.modalObj.content =
+          '您确定要删除选中的员工吗？</br>一经操作不可恢复！'
+      } else {
         this.staffVisible = true
       }
-      this.staffId = val.id
     },
-    submitForm (params) {
+    submitForm(params) {
       this.staffVisible = false
       if (this.staffId) {
         this.updateStaff(params)
-      }
-      else {
+      } else {
         this.addStaff(params)
       }
     },
-    addStaff (params) {
-      addCompanyResume(params).then(res => {
-        this.getList(this.formMember)
-        this.$message.success('保存成功')
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+    addStaff(params) {
+      addCompanyResume(params)
+        .then(res => {
+          if (res.data) {
+            this.$message.success('保存成功')
+            this.staffId = ''
+            this.getList(this.formMember)
+          } else {
+            this.$message.error('保存失败')
+          }
+        })
+        .catch(error => {
+          if (error) {
+            this.$message.warning(error.status.remind)
+          }
+        })
     },
-    updateStaff (params) {
-      editCompanyResumeInfo(params).then(res => {
-        this.getList(this.formMember)
-        this.$message.success('保存成功')
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+    updateStaff(params) {
+      editCompanyResumeInfo(params)
+        .then(res => {
+          if (res.data) {
+            this.$message.success('保存成功')
+            this.staffId = ''
+            this.getList(this.formMember)
+          } else {
+            this.$message.error('保存失败')
+          }
+        })
+        .catch(error => {
+          if (error) {
+            this.$message.warning(error.status.remind)
+          }
+        })
     },
-    handleOk () {
+    handleOk() {
       this.dialogTableVisible = false
       let params = {
         uid: localStorage.getItem('uid'),
@@ -288,32 +326,49 @@ export default {
       }
       if (this.overType == 1) {
         this.handleQuit(params)
-      }
-      else {
+      } else {
         this.handelDel(params)
       }
     },
     // 离职
-    handleQuit (params) {
-      doQuitCompanyResume(params).then(res => {
-        this.getList(this.formMember)
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+    handleQuit(params) {
+      doQuitCompanyResume(params)
+        .then(res => {
+          if (res.data) {
+            this.$message.success('操作成功')
+            this.staffId = ''
+            this.getList(this.formMember)
+          } else {
+            this.$message.error('操作失败')
+          }
+        })
+        .catch(error => {
+          if (error) {
+            this.$message.warning(error.status.remind)
+          }
+        })
     },
-    // 结束面试
-    handelDel (params) {
-      delCompanyResumeInfo(params).then(res => {
-        this.$message.success('操作成功')
-        this.getList(this.formMember)
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+    handelDel(params) {
+      delCompanyResumeInfo(params)
+        .then(res => {
+          if (res.data) {
+            this.$message.success('操作成功')
+            this.staffId = ''
+            this.getList(this.formMember)
+          } else {
+            this.$message.error('操作失败')
+          }
+        })
+        .catch(error => {
+          if (error) {
+            this.$message.warning(error.status.remind)
+          }
+        })
     },
-    onSubmit () {
+    onSubmit() {
       this.getList(this.formMember)
     },
-    reset () {
+    reset() {
       this.formMember = {
         uid: localStorage.getItem('uid'),
         limit: 10,
@@ -327,5 +382,5 @@ export default {
 </script>
 
 <style lang="scss">
- @import '@/assets/css/resume';
+@import '@/assets/css/resume';
 </style>

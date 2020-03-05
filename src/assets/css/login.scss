@@ -1,0 +1,199 @@
+.header {
+  width: 100%;
+  height: 49px;
+  background: rgba(50, 55, 62, 1);
+  color: #fff;
+  font-size: 14px;
+
+  span {
+    font-weight: bold;
+    color: #1890FF;
+    margin-right: 30px;
+  }
+
+  .head-left {
+    line-height: 30px;
+    color: #fff;
+    font-size: 26px;
+  }
+
+  .welcome {
+    font-size: 18px;
+  }
+}
+
+.register-view {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.loads .el-main {
+  padding: 0;
+  overflow: hidden;
+}
+
+.loads .login-main {
+  height: 100vh;
+}
+
+.loads .el-form-item {
+  margin-bottom: 6px;
+}
+
+.register-btn {
+  margin: 20px 70px;
+  color: rgba(153, 153, 153, 1);
+
+  >.el-button {
+    font-size: 18px;
+  }
+}
+
+.register-btn .button {
+  margin-right: 10px;
+}
+
+.register-btn .active {
+  color: #6A6A6A;
+}
+
+.x-flex .com-right {
+  border: 1px solid #1890FF;
+  color: #1890FF;
+  border-radius: 0;
+}
+
+.register-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 110%;
+  background: url('../assets/img/re-bg.png') no-repeat left center;
+  background-size: cover;
+}
+
+.form-box {
+  width: 80%;
+  margin: 0 auto;
+  overflow: hidden;
+}
+
+.register-box {
+  width: 536px;
+  /* height:420px; */
+  padding-bottom: 30px;
+  background: rgba(255, 255, 255, 1);
+  box-shadow: 0px 5px 18px 0px rgba(0, 0, 0, 0.15);
+  border-radius: 5px;
+  margin-left: -8%;
+}
+
+.register-box .el-input__inner {
+  border-radius: 3px;
+  background: #eee;
+  border: none;
+}
+
+.register-box .el-input-group__prepend {
+  border: none;
+  background: #eee;
+  padding: 0 0 0 20px;
+}
+
+.register-box .error {
+  position: absolute;
+  top: 16%;
+  right: 0;
+  color: #FE2A00;
+  font-size: 12px;
+}
+
+.register-box .errorInfo {
+  right: 0;
+  width: 100%;
+  height: 20px;
+  top: -16px;
+  text-align: center;
+  line-height: 20px;
+  background: rgba(254, 42, 0, 0.1);
+  border-radius: 3px;
+}
+
+.register-box .el-input-group__prepend span {
+  opacity: 1;
+  display: inline-block;
+}
+
+.register-box .inputCode {
+  width: 70% !important;
+  margin-right: 10px;
+  display: block;
+}
+
+.register-box .code-btn {
+  width: 120px !important;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  border-radius: 3px;
+  padding: 10px 20px;
+  border: none;
+
+  &.password-code-btn {
+    bottom: 1px;
+    padding: 12px 20px;
+  }
+}
+
+.register-box .disabled {
+  background: rgba(204, 204, 204, 1);
+  border: none;
+}
+
+.register-box .password {
+  text-align: right;
+  color: #6A6A6A;
+  font-size: 14px;
+  margin-right: 30px;
+}
+
+.register-box .el-button--primary {
+  width: 100%;
+}
+
+.texts {
+  text-align: center;
+}
+
+.passwords {
+  text-align: right;
+}
+
+.submit-btn {
+  margin-top: 10px;
+}
+
+.login {
+  background: linear-gradient(180deg, rgba(24, 144, 255, 1), rgba(89, 175, 255, 1));
+  border-radius: 20px;
+  border: none;
+}
+
+.register-box .text {
+  text-align: right;
+  font-size: 16px;
+  margin-right: 30px;
+  color: #333333;
+  margin-top: 20px;
+}
+
+.text a {
+  color: #1890FF;
+}
+
+.register-box .loginRight {
+  margin-top: 4px;
+  margin-left: 4px;
+}

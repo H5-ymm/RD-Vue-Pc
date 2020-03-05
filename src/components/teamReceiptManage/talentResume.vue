@@ -1,5 +1,5 @@
 <style lang="scss">
-  @import '@/assets/css/resume.scss';
+@import '@/assets/css/resume.scss';
 </style>
 <template>
   <div class="tables-box billingManagement">
@@ -40,7 +40,7 @@
         </el-form-item>
       </el-form>
       <div class="member-table">
-        <el-table border :data="tableData" ref="multipleTable" style="width: 100%" @selection-change="handleSelectionChange">
+        <el-table border :data="tableData" ref="multipleTable" style="width: 100%">
           <el-table-column label="职位名称" align="center" width="150">
             <template slot-scope="props">
               <el-button type="text" @click="handleViewJob(props.row)">{{props.row.job_name}}</el-button>
@@ -98,11 +98,17 @@
 </template>
 
 <script>
-import { applyList, getViewtime } from '../../api/teamReceipt'
-import { moneyTypeList, rewardTypeList, payTypeList, weekList, entryStatusList2 } from '../../base/base'
+import { applyList, getViewtime } from '@/api/teamReceipt'
+import {
+  moneyTypeList,
+  rewardTypeList,
+  payTypeList,
+  weekList,
+  entryStatusList2
+} from '@/base/base'
 import noticeModal from './noticeModal'
 import customerService from '../common/customerService'
-import { getConstant } from '../../api/dictionary'
+import { getConstant } from '@/api/dictionary'
 import viewJob from '../common/viewJob'
 export default {
   components: {
@@ -111,20 +117,20 @@ export default {
     viewJob
   },
   filters: {
-    moneyType (val) {
+    moneyType(val) {
       let obj = moneyTypeList.find(item => {
         return val == item.value
       })
       return obj.label
     },
-    rewardType (val) {
+    rewardType(val) {
       let obj = rewardTypeList.find(item => {
         return val == item.value
       })
       return obj.label
-    },
+    }
   },
-  data () {
+  data() {
     return {
       moneyTypeList,
       rewardTypeList,
@@ -163,98 +169,88 @@ export default {
       dialogJobVisible: false
     }
   },
-  created () {
+  created() {
     // 初始化查询标签数据
     this.getList(this.formMember)
     let params = 'job_array'
     this.getData(params)
   },
-  mounted () {
-    this.getList(this.formMember)
-    let params = 'job_array'
-    this.getData(params)
-  },
   methods: {
-    getData (filed) {
-      getConstant({ filed }).then(res => {
-        const { job_array } = res.data
-        this.jobList = job_array
-      })
+    getData(filed) {
+      getConstant({ filed })
+        .then(res => {
+          this.jobList = res.data.job_array
+        })
+        .catch(error => {
+          if (error) {
+            this.$message.warning(error.status.remind)
+          }
+        })
     },
-    getList (params) {
-      applyList(params).then(res => {
-        this.tableData = res.data.data
-        this.total = res.data.count
-      })
+    getList(params) {
+      applyList(params)
+        .then(res => {
+          this.tableData = res.data.data
+          this.total = res.data.count
+        })
+        .catch(error => {
+          if (error) {
+            this.$message.warning(error.status.remind)
+          }
+        })
     },
-    changeDate (val) {
+    changeDate(val) {
       this.formMember.beginTime = val ? val[0] : ''
       this.formMember.endTime = val ? val[1] : ''
     },
-    selectStatus (item, index) {
+    selectStatus(item, index) {
       this.activeIndex = index
       this.formMember.status = item.value
     },
-    routerEntry () {
-      // let arr = JSON.parse(sessionStorage.getItem('menus'))
-      // arr[1] = '入职名单'
-      // sessionStorage.setItem('menus', JSON.stringify(arr))
+    routerEntry() {
       this.$router.push('/teamEntryList')
     },
-    viewTime (val) {
+    viewTime(val) {
       this.visible = true
       this.apply_id = val.id
-      getViewtime({ apply_id: val.id }).then(res => {
-        this.viewTimeInfo = res.data
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+      getViewtime({ apply_id: val.id })
+        .then(res => {
+          this.viewTimeInfo = res.data
+        })
+        .catch(error => {
+          if (error) {
+            this.$message.warning(error.status.remind)
+          }
+        })
     },
-    handleSizeChange (val) {
+    handleSizeChange(val) {
       this.formMember.limit = val
       this.getList(this.formMember)
     },
-    handleCurrentChange (val) {
+    handleCurrentChange(val) {
       this.formMember.page = val
       this.getList(this.formMember)
     },
-    handleViewJob (val) {
+    handleViewJob(val) {
       this.dialogJobVisible = true
       this.jobId = val.job_id
     },
-    handleDel (uid) {
-      loginOutTeam({ uid }).then(res => {
-        this.$message.success('退出成功')
-        this.getList(this.formMember)
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+    handleDel(uid) {
+      loginOutTeam({ uid })
+        .then(res => {
+          this.$message.success('退出成功')
+          this.getList(this.formMember)
+        })
+        .catch(error => {
+          if (error) {
+            this.$message.warning(error.status.remind)
+          }
+        })
     },
-    submitMember (val) {
-      updateTeamUser(val).then(res => {
-        this.dialogTableVisible = false
-        this.getList(this.params)
-      })
+    onSubmit() {
+      this.getList(this.formMember)
     },
-    handleSelectionChange (val) {
-      this.len = val
-    },
-    addMember () {
-      this.visible = true
-    },
-    onSubmit (value) {
-      let params = Object.assign(this.formMember, value)
-      this.getList(params)
-    },
-    submitForm (val) {
-      this.visible = false
-      addTeamUser(val).then(res => {
-        this.getList(this.formMember)
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
-    },
-    reset () {
+    reset() {
       this.formMember = {
         uid: localStorage.getItem('uid'),
         limit: 10,

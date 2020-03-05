@@ -1,5 +1,5 @@
 <style lang="scss">
-.team-center-row{
+.team-center-row {
   padding-bottom: 20px;
   .el-col {
     &:nth-last-of-type(1) {
@@ -8,7 +8,7 @@
       }
     }
   }
-} 
+}
 </style>
 <template>
   <el-row :gutter="40" class="team-center-row">
@@ -33,12 +33,8 @@ export default {
     orderTemplate
   },
   props: ['orderData'],
-  data () {
-    return {
-    }
-  },
-  created () {
-    console.log(this.orderData)
+  data() {
+    return {}
   }
 }
 </script>

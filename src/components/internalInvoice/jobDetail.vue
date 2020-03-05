@@ -1,8 +1,8 @@
 <style lang="scss">
-.job-detail-view{
-  border-radius:10px;
+.job-detail-view {
+  border-radius: 10px;
   background: #fff;
- .member-row {
+  .member-row {
     width: 100%;
     margin: 0 auto 75px;
     text-align: center;
@@ -24,7 +24,7 @@
     .resume-card {
       margin-bottom: 20px;
       .resume-col1 {
-        color: #6A6A6A;
+        color: #6a6a6a;
         width: 100px;
         text-align: right;
         margin-right: 20px;
@@ -44,14 +44,14 @@
     .resume-main-title {
       border-bottom: 1px solid #eee;
       padding-bottom: 10px;
-      >img {
+      > img {
         width: 20px;
         margin-right: 12px;
       }
     }
     .resume-card-row {
       margin: 20px 0 0 -15px;
-       .resume-card-item {
+      .resume-card-item {
         width: 50%;
         text-align: left;
         font-size: 14px;
@@ -62,7 +62,7 @@
     }
     .company-info-box {
       text-align: center;
-      >img {
+      > img {
         width: 80px;
         height: 80px;
         border-radius: 100%;
@@ -214,8 +214,8 @@
                     <span>次月{{formMember.settlement_time}}号结算</span>
                     -
                     <span v-if="formMember.reward_money_type==1">长期返利</span>
-                    <span v-if="formMember.reward_money_type==2&&formMember.duration_time">持续返利{{jobInfo.duration_time}}个月</span>
-                    <span v-if="formMember.reward_money_type==2&&!formMember.duration_time">一{{jobInfo.reward_money_type==1?'天':jobInfo.reward_money_type==2?'周': '个月'}}</span>
+                    <span v-if="formMember.reward_money_type==2&&formMember.duration_time">持续返利{{formMember.duration_time}}个月</span>
+                    <span v-if="formMember.reward_money_type==2&&!formMember.duration_time">一{{formMember.reward_money_type==1?'天':formMember.reward_money_type==2?'周': '个月'}}</span>
                   </p>
                   <p v-if="formMember.reward_type!=1&&formMember.reward_type!=4">
                     <span>{{formMember.reward_money}}元/人/{{rewardType}}</span>
@@ -226,7 +226,7 @@
                     <span v-if="formMember.duration_time">{{formMember.duration_time}}{{rewaryMoneType}}</span>
                     <span v-else>一{{rewaryMoneType}}</span>
                     <span v-if="formMember.reward_needtime">需入职满 {{formMember.reward_needtime}}{{rewaryMoneType}}</span>
-                    <span v-else>需入职满 一天</span></span>
+                    <span v-else>需入职满 一天</span>
                   </p>
                   <p v-if="formMember.reward_type==4">
                     <span>{{formMember.reward_money}}元/人/一次性</span>
@@ -287,7 +287,7 @@
         </div>
       </section>
       <div class="resume-footer-btn">
-        <el-button type="primary" @click="$router.go(-1)">关闭</el-button>
+        <el-button type="primary" @click="$router.go(-1),$store.commit('setMenus', ['已发布职位'])">关闭</el-button>
       </div>
     </div>
   </div>
@@ -297,32 +297,45 @@ import { getJobinfo } from '@/api/internalInvoice'
 import { positionStatusList } from '@/base/base'
 export default {
   filters: {
-    positionStatus (val) {
+    positionStatus(val) {
       let obj = positionStatusList.find(item => {
         return val == item.value
       })
       return obj ? obj.label : '--'
-    },
+    }
   },
-  data () {
+  data() {
     return {
       formMember: {},
       id: '',
       positionStatusList
     }
   },
-  created () {
+  created() {
+    let arr = ['已发布职位', '职位详情']
+    this.$store.commit('setMenus', arr)
     this.id = this.$route.query.id
     this.getInfo(this.id)
   },
   computed: {
-    jobStatus () {
-      return !this.formMember.address && !this.formMember.working_hours && !this.formMember.entry_requirements && !this.formMember.job_description
+    jobStatus() {
+      return (
+        !this.formMember.address &&
+        !this.formMember.working_hours &&
+        !this.formMember.entry_requirements &&
+        !this.formMember.job_description
+      )
     },
-    otherInfoStatus () {
-      return !this.formMember.sex && !this.formMember.age_min && !this.formMember.five_risks && !this.formMember.reserve_fund && !this.formMember.com_introduction
+    otherInfoStatus() {
+      return (
+        !this.formMember.sex &&
+        !this.formMember.age_min &&
+        !this.formMember.five_risks &&
+        !this.formMember.reserve_fund &&
+        !this.formMember.com_introduction
+      )
     },
-    rewardType () {
+    rewardType() {
       let text
       if (this.formMember.reward_type == 1) {
         text = '月'
@@ -335,29 +348,31 @@ export default {
       }
       return text
     },
-    rewaryMoneType () {
+    rewaryMoneType() {
       let text
       if (this.formMember.reward_money_type == 1) {
         text = '天'
       }
-      if (this.formMember.reward_money_type == 1) {
+      if (this.formMember.reward_money_type == 2) {
         text = '周'
       }
-      if (this.formMember.reward_money_type == 1) {
+      if (this.formMember.reward_money_type == 3) {
         text = '个月'
       }
       return text
     }
   },
   methods: {
-    getInfo (id) {
-      getJobinfo({ id }).then(res => {
-        this.formMember = res.data
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+    getInfo(id) {
+      getJobinfo({ id })
+        .then(res => {
+          this.formMember = res.data
+        })
+        .catch(error => {
+          this.$message.error(error.status.remind)
+        })
     }
-  },
+  }
 }
 </script>
 

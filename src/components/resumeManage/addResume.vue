@@ -5,7 +5,13 @@
 <template>
   <div class="tables-box billingManagement">
     <div class="table-list add-resum">
-      <el-form :inline="true" label-width="100px" label-position="right" :model="formMember" class="demo-form-inline">
+      <el-form
+        :inline="true"
+        label-width="100px"
+        label-position="right"
+        :model="formMember"
+        class="demo-form-inline"
+      >
         <el-form-item label="姓名：">
           <el-input v-model="formMember.username" class="width300" placeholder="请输入关键字"></el-input>
         </el-form-item>
@@ -28,11 +34,21 @@
         </el-form-item>
         <el-form-item label="意向工资：">
           <el-select v-model="formMember.money" class="width300" placeholder="请选择意向工资">
-            <el-option :label="item.label" :value="item.value" v-for="(item,index) in moneyTypeList" :key="index"></el-option>
+            <el-option :label="item" :value="key" v-for="(item,key) in moneyArray" :key="key"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="跟进时间：">
-          <el-date-picker class="width300" v-model="timeList" type="daterange" format="yyyy-MM-dd" value-format="yyyy-MM-dd" @change="changeDate" range-separator="-" start-placeholder="开始日期区间" end-placeholder="结束日期"></el-date-picker>
+          <el-date-picker
+            class="width300"
+            v-model="timeList"
+            type="daterange"
+            format="yyyy-MM-dd"
+            value-format="yyyy-MM-dd"
+            @change="changeDate"
+            range-separator="-"
+            start-placeholder="开始日期区间"
+            end-placeholder="结束日期"
+          ></el-date-picker>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="onSubmit" class="select-btn">查询</el-button>
@@ -44,13 +60,19 @@
           <el-button @click="addResume" type="primary">添加简历</el-button>
           <el-button @click="leadResumeVisible=true">导入简历</el-button>
           <el-button @click="exportResume">导出简历</el-button>
-          <span class="select-text">
-            已选择
+          <span class="select-text">已选择
             <el-button type="text">{{multipleSelection.length}}&nbsp;</el-button>项
           </span>
           <el-button type="text" @click="multipleSelection=[]">清空</el-button>
         </div>
-        <el-table border :data="tableData" ref="multipleTable" style="width: 100%" @sort-change="sortChange" @selection-change="handleSelectionChange">
+        <el-table
+          border=""
+          :data="tableData"
+          ref="multipleTable"
+          style="width: 100%"
+          @sort-change="sortChange"
+          @selection-change="handleSelectionChange"
+        >
           <el-table-column type="selection" align="center" width="50"></el-table-column>
           <el-table-column label="姓名" align="center" width="150">
             <template slot-scope="props">
@@ -72,12 +94,18 @@
           </el-table-column>
           <el-table-column label="跟进记录" align="center" width="100">
             <template slot-scope="props">
-              <el-button class="text-line" type="text" @click="viewRecord(props.row)">{{props.row.trackList?props.row.trackList.title:'-'}}</el-button>
+              <el-button
+                class="text-line"
+                type="text"
+                @click="viewRecord(props.row)"
+              >{{props.row.trackList?props.row.trackList.title:'-'}}</el-button>
             </template>
           </el-table-column>
           <el-table-column label="跟进时间" sortable="custom" align="center" width="160">
             <template slot-scope="props">
-              <span type="text">{{props.row.trackList?$moment.unix(props.row.trackList.addtime).format('YYYY-MM-DD HH:mm'):'-'}}</span>
+              <span
+                type="text"
+              >{{props.row.trackList?$moment.unix(props.row.trackList.addtime).format('YYYY-MM-DD HH:mm'):'-'}}</span>
             </template>
           </el-table-column>
           <el-table-column label="录入人" prop="input_username" align="center" width="100"></el-table-column>
@@ -85,26 +113,67 @@
           <el-table-column label="操作" align="center" min-width="200">
             <template slot-scope="scope">
               <el-button @click="handleEdit(scope.row)" type="text" size="small">编辑简历</el-button>
-              <el-button @click="routerResume(scope.row)" v-if="!scope.row.push_status" type="text" size="small">推荐岗位</el-button>
+              <el-button
+                @click="routerResume(scope.row)"
+                v-if="!scope.row.push_status"
+                type="text"
+                size="small"
+              >推荐岗位</el-button>
               <span style="margin:0 8px;fontSize:12px;" v-if="scope.row.push_status">已推荐</span>
               <el-button @click="abandoned(scope.row)" type="text" size="small">放弃用户</el-button>
             </template>
           </el-table-column>
         </el-table>
       </div>
-      <el-pagination class="team-pagination" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="formMember.page" :page-sizes="[10, 30, 50, 100]" :page-size="formMember.limit" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
+      <el-pagination
+        class="team-pagination"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="formMember.page"
+        :page-sizes="[10, 30, 50, 100]"
+        :page-size="formMember.limit"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total"
+      ></el-pagination>
     </div>
-    <resumeModal :dialogTableVisible="dialogTableVisible" @handleClose="dialogTableVisible=false,remind=''" :resumeId="resumeId" @submitForm="submitForm" :resumeInfo="resumeInfo"></resumeModal>
-    <confirmDialog :dialogTableVisible="visible" @submit="submit" @handleClose="visible=false" :dialogObj="dialogObj"></confirmDialog>
-    <followUpRecord :dialogTableVisible="followUpRecordVisible" @submitRecord="submitRecord" @handleClose="followUpRecordVisible=false,resumeId= ''" :id="resumeId"></followUpRecord>
-    <leadResumeModal @exportResume="exportResumeData" @download="download" :dialogTableVisible="leadResumeVisible" @handleClose="leadResumeVisible=false"></leadResumeModal>
+    <resumeModal
+      :dialogTableVisible="dialogTableVisible"
+      @handleClose="dialogTableVisible=false,remind=''"
+      :resumeId="resumeId"
+      @submitForm="submitForm"
+      :resumeInfo="resumeInfo"
+    ></resumeModal>
+    <confirmDialog
+      :dialogTableVisible="visible"
+      @submit="submit"
+      @handleClose="visible=false"
+      :dialogObj="dialogObj"
+    ></confirmDialog>
+    <followUpRecord
+      :dialogTableVisible="followUpRecordVisible"
+      @submitRecord="submitRecord"
+      @handleClose="followUpRecordVisible=false,resumeId= ''"
+      :id="resumeId"
+    ></followUpRecord>
+    <leadResumeModal
+      @exportResume="exportResumeData"
+      @download="download"
+      :dialogTableVisible="leadResumeVisible"
+      @handleClose="leadResumeVisible=false"
+    ></leadResumeModal>
   </div>
 </template>
 <script>
-import {  getResumeList2, addUserResume, selectUserResumeInfo, giveUpResume, exportUserResume,
-  importUserResume, downloadTestTable, updateUserResume} from '@/api/resume'
-
-import { addPut } from '@/api/internalInvoice'
+import {
+  getResumeList2,
+  addUserResume,
+  selectUserResumeInfo,
+  giveUpResume,
+  exportUserResume,
+  importUserResume,
+  downloadTestTable,
+  updateUserResume
+} from '@/api/resume'
 import { moneyTypeList, rewardTypeList } from '../../base/base'
 import resumeModal from './resumeModal'
 import followUpRecord from './followUpRecord'
@@ -121,20 +190,20 @@ export default {
     leadResumeModal
   },
   filters: {
-    moneyType (val) {
+    moneyType(val) {
       let obj = moneyTypeList.find(item => {
         return val == item.value
       })
       return obj ? obj.label : '--'
     },
-    rewardType (val) {
+    rewardType(val) {
       let obj = rewardTypeList.find(item => {
         return val == item.value
       })
       return obj ? obj.label : '--'
-    },
+    }
   },
-  data () {
+  data() {
     return {
       moneyTypeList,
       rewardTypeList,
@@ -172,153 +241,183 @@ export default {
       resumeId: '',
       resumeInfo: {},
       trackList: [],
-      timeList: []
+      timeList: [],
+      moneyArray: {}
     }
   },
-  created () {
+  created() {
     // 初始化查询标签数据
     this.getList(this.formMember)
+    let params = 'resume_intention_salary'
+    this.getData(params)
   },
   methods: {
-    getList (params) {
-      getResumeList2(params).then(res => {
-        const { data } = res
-        this.tableData = data.data
-        this.total = data.count
-      })
+    getList(params) {
+      getResumeList2(params)
+        .then(res => {
+          this.tableData = res.data.data
+          this.total = res.data.count
+        })
+        .catch(error => {
+          if (error) {
+            this.$message.error(error.status.remind)
+          }
+        })
+    },
+    getData(filed) {
+      getConstant({ filed })
+        .then(res => {
+          this.moneyArray = res.data.resume_intention_salary
+        })
+        .catch(error => {
+          if (error) {
+            this.$message.error(error.status.remind)
+          }
+        })
+        .catch(error => {
+          if (error) {
+            this.$message.error(error.status.remind)
+          }
+        })
     },
     // 下载模板
-    download () {
+    download() {
       downloadTestTable()
     },
     // 导入
-    exportResumeData (file) {
+    exportResumeData(file) {
       this.leadResumeVisible = false
       importUserResume(file).then(res => {
         this.getList(this.formMember)
       })
     },
     // 导出
-    exportResume () {
+    exportResume() {
       let uid = localStorage.getItem('uid')
       exportUserResume(uid)
     },
-    sortChange (column) {
+    sortChange(column) {
       if (column.order == 'ascending') {
         this.formMember.timeDesc = 'asc'
-      }
-      else {
+      } else {
         this.formMember.timeDesc = 'desc'
       }
       this.getList(this.formMember)
     },
-    changeDate (val) {
+    changeDate(val) {
       this.formMember.beginTime = val ? val[0] : ''
       this.formMember.endTime = val ? val[1] : ''
     },
-    routerResume (val) {
+    routerResume(val) {
       let arr = JSON.parse(sessionStorage.getItem('menus'))
       arr[1] = '推荐岗位'
       sessionStorage.setItem('menus', JSON.stringify(arr))
       this.$router.push('/recommendJob?id=' + val.id)
     },
-    change (val) {
+    change(val) {
       this.formMember.provinceid = val ? val[0] : ''
       this.formMember.cityid = val ? val[1] : ''
     },
-    handleSizeChange (val) {
+    handleSizeChange(val) {
       this.formMember.limit = val
       this.getList(this.formMember)
     },
-    handleCurrentChange (val) {
+    handleCurrentChange(val) {
       this.formMember.page = val
       this.getList(this.formMember)
     },
-    viewRecord (val) {
+    viewRecord(val) {
       this.followUpRecordVisible = true
-      // this.trackList = val.trackList
       this.resumeId = val.id
     },
-    submitRecord (val) {
+    submitRecord(val) {
       this.followUpRecordVisible = false
       this.getList(this.formMember)
     },
-    handleEdit (val) {
+    handleEdit(val) {
       this.dialogTableVisible = true
       this.resumeId = val.id
     },
-    abandoned (val) {
+    abandoned(val) {
       this.visible = true
       this.resumeId = val.id
     },
-    handleClose () {
+    handleClose() {
       this.visible = false
       this.resumeId = ''
     },
-    submit (val) {
+    submit(val) {
       let params = {
         uid: localStorage.getItem('uid'),
         id: this.resumeId,
         reason: val.reason
       }
-      giveUpResume(params).then(res => {
-        this.resumeId = ''
-        this.visible = false
-        this.$message.success('操作成功')
-        this.getList(this.formMember)
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+      giveUpResume(params)
+        .then(res => {
+          this.resumeId = ''
+          this.visible = false
+          this.$message.success('操作成功')
+          this.getList(this.formMember)
+        })
+        .catch(error => {
+          if (error) {
+            this.$message.error(error.status.remind)
+          }
+        })
     },
-    handleSelectionChange (val) {
+    handleSelectionChange(val) {
       this.multipleSelection = val
     },
-    addResume () {
+    addResume() {
       this.resumeId = ''
       this.resumeInfo = {}
       this.dialogTableVisible = true
     },
-    onSubmit (value) {
-      let params = Object.assign(this.formMember, value)
-      this.getList(params)
+    onSubmit(value) {
+      this.getList(this.formMember)
     },
-    updateResume (val) {
+    updateResume(val) {
       val.uid = localStorage.getItem('uid')
       delete val.eduName
-      updateUserResume(val).then(res => {
-        if (res.data) {
-          this.dialogTableVisible = false
-          this.$message.success('保存成功')
-          this.getList(this.formMember)
-        }
-        else {
-          this.$message.error('保存失败')
-        }
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
-    },
-    submitForm (val) {
-      if (this.resumeId) {
-        this.updateResume(val)
-      }
-      else {
-        addUserResume(val).then(res => {
+      updateUserResume(val)
+        .then(res => {
           if (res.data) {
             this.dialogTableVisible = false
-            this.resumeId = ''
-            this.getList(this.formMember)
             this.$message.success('保存成功')
-          }
-          else {
+            this.getList(this.formMember)
+          } else {
             this.$message.error('保存失败')
           }
-        }).catch(error => {
-          this.$message.error(error.status.remind)
         })
+        .catch(error => {
+          if (error) {
+            this.$message.error(error.status.remind)
+          }
+        })
+    },
+    submitForm(val) {
+      if (this.resumeId) {
+        this.updateResume(val)
+      } else {
+        addUserResume(val)
+          .then(res => {
+            if (res.data) {
+              this.dialogTableVisible = false
+              this.resumeId = ''
+              this.getList(this.formMember)
+              this.$message.success('保存成功')
+            } else {
+              this.$message.error('保存失败')
+            }
+          })
+          .catch(error => {
+            if (error) {
+              this.$message.error(error.status.remind)
+            }
+          })
       }
     },
-    resetForm () {
+    resetForm() {
       this.formMember = {
         uid: localStorage.getItem('uid'),
         limit: 10,

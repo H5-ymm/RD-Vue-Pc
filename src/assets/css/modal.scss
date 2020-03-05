@@ -4,69 +4,78 @@
   text-align: center;
   color: #333333;
   padding: 0 0 10px;
+
   .width300 {
     width: 300px;
   }
+
   .select-city {
     margin-bottom: 10px;
   }
+
   .resume-col3 {
     width: 100%;
     padding-top: 10px;
     margin: 0 auto;
+
     .demo-form-inline {
       width: 100%;
       margin: 10px auto;
+
       .el-form-item {
-        margin-bottom: 10px;
-      }
-      .el-input__inner{
-        height:38px;
-        line-height:38px;
-        border-radius:3px;
+        margin-bottom: 20px;
       }
     }
   }
 }
-.resume-card {  
+
+.resume-card {
   .resume-main-title {
     border-bottom: 1px solid #eee;
     padding-bottom: 10px;
-    font-weight:bold;
+    font-weight: bold;
     color: #333;
     font-size: 16px;
+
     >img {
       width: 20px;
       margin-right: 10px;
     }
   }
+
   .resume-card-row {
     margin: 20px 0;
-     .resume-card-item {
-      text-align: left; 
+
+    .resume-card-item {
+      text-align: left;
+
       p {
-         text-align: right;
-         width: 120px;
-         margin-bottom: 15px;
-         color: #6A6A6A;
+        text-align: right;
+        width: 120px;
+        margin-bottom: 15px;
+        color: #6A6A6A;
+
         &:nth-of-type(2) {
           width: 60%;
-          text-align: left; 
+          text-align: left;
           color: #333;
         }
       }
     }
-  }  
+  }
 }
+
 .resume-footer-btn {
   padding-bottom: 32px;
   text-align: right;
   margin-right: 50px;
 }
+
 .card-uploader-icon {
   width: 162px;
   height: 128px;
 }
+
 .idcard-tip {
   position: absolute;
   right: -100px;

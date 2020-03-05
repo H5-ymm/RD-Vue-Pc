@@ -1,12 +1,22 @@
+<style lang="scss" scoped>
+@import '@/assets/css/dialog.scss';
+</style>
 <template>
   <el-dialog width="500px" :visible="dialogTableVisible" class="member-dialog" :show-close="false">
     <div class="member-row">
-      <img src="../../assets/img/member/cancel.png" alt class="cancel-icon" @click="handleClose" />
+      <img src="../../assets/img/member/cancel.png" alt="" class="cancel-icon" @click="handleClose">
       <section class="member-col1">
         <p>{{id?'修改组员':'添加组员'}}</p>
       </section>
       <section class="member-col3 member-add-col3">
-        <el-form :model="formMember" :rules="rules" ref="formMember" class="demo-form-inline" label-position="right" label-width="100px">
+        <el-form
+          :model="formMember"
+          :rules="rules"
+          ref="formMember"
+          class="demo-form-inline"
+          label-position="right"
+          label-width="100px"
+        >
           <el-form-item label="姓名" prop="user_name">
             <el-input v-model="formMember.user_name" :readonly="id!=''" placeholder="请输入组员姓名"></el-input>
           </el-form-item>
@@ -28,19 +38,40 @@
             </el-select>
           </el-form-item>
           <el-form-item label="部门">
-            <el-select placeholder="请选择" value-key="depart_name" :disabled="userPosition==2&&id!=''" v-model="depId" @change="selectDep">
-              <el-option :label="item.depart_name" :value="item.id" v-for="(item,index) in currentDepList" :key="item.depart_name"></el-option>
+            <el-select
+              placeholder="请选择"
+              value-key="depart_name"
+              :disabled="userPosition==2&&id!=''"
+              v-model="depId"
+              @change="selectDep"
+            >
+              <el-option
+                :label="item.depart_name"
+                :value="item.id"
+                v-for="item in currentDepList"
+                :key="item.depart_name"
+              ></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="当前职称">
-            <el-select v-model="formMember.grade_id" :disabled="userPosition==2&&id!=''" value-key="grade_name" placeholder="请选择">
-              <el-option :label="item.grade_name" :value="item.id" v-for="item in jobList" :key="item.grade_name"></el-option>
+            <el-select
+              v-model="formMember.grade_id"
+              :disabled="userPosition==2&&id!=''"
+              value-key="grade_name"
+              placeholder="请选择"
+            >
+              <el-option
+                :label="item.grade_name"
+                :value="item.id"
+                v-for="item in jobList"
+                :key="item.grade_name"
+              ></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="当前状态">
             <el-radio-group v-model="formMember.status">
-              <el-radio :label="1" border>正常</el-radio>
-              <el-radio :label="2" border>锁定</el-radio>
+              <el-radio :label="1" border="">正常</el-radio>
+              <el-radio :label="2" border="">锁定</el-radio>
             </el-radio-group>
           </el-form-item>
           <el-form-item label="活动形式" v-if="formMember.status==2">
@@ -49,8 +80,8 @@
         </el-form>
       </section>
     </div>
-    <div slot="footer">
-      <el-button @click="handleClose">关闭</el-button>
+    <div slot="footer" class="member-footer">
+      <el-button @click="handleClose">取消</el-button>
       <el-button type="primary" @click="submitForm">确定</el-button>
     </div>
   </el-dialog>
@@ -68,17 +99,17 @@ export default {
     districtSelet
   },
   props: ['dialogTableVisible', 'id'],
-  data () {
+  data() {
     var validate = (rule, value, callback) => {
       if (value === '') {
-        callback(new Error('请输入身份证号码'));
+        callback(new Error('请输入身份证号码'))
       } else {
         if (!validateIdCard(value)) {
-          callback(new Error('请输入正确的身份证号码'));
+          callback(new Error('请输入正确的身份证号码'))
         }
         callback()
       }
-    };
+    }
     return {
       formMember: {
         region: '',
@@ -91,20 +122,20 @@ export default {
         provinceid: '',
         cityid: '',
         three_cityid: '',
-        uid: localStorage.getItem('uid'),
+        uid: localStorage.getItem('uid')
       },
       depId: '',
       depList: [],
       rules: {
         user_name: [
-          { required: true, message: '请输入组员姓名', trigger: 'blur' },
+          { required: true, message: '请输入组员姓名', trigger: 'blur' }
         ],
         id_card: [
           { required: true, message: '请输入组员身份证', trigger: 'blur' },
           { validator: validate, trigger: 'blur' }
         ],
         mobile: [
-          { required: true, message: '请输入组员手机号', trigger: 'blur' },
+          { required: true, message: '请输入组员手机号', trigger: 'blur' }
         ],
         grade_id: [
           { required: true, message: '请选择组员所在部门', trigger: 'blur' }
@@ -117,18 +148,22 @@ export default {
       currentDepList: []
     }
   },
-  created () {
+  created() {
     let params = 'edu_type'
     if (this.userPosition == 2) {
-      this.depId = Number(localStorage.getItem('departId'))
+      let teamSys = localStorage.getItem('teamSys') ? JSON
+        .parse(localStorage.getItem('teamSys')) : {}
+      this.depId = Number(teamSys.departId)
     }
-    console.log(this.depId)
+    else {
+      this.depId = ''
+      this.formMember.grade_id = ''
+    }
     this.getList(params)
     this.getJobList()
-    this.handleClose()
   },
   methods: {
-    getJob (arr, id) {
+    getJob(arr, id) {
       let depId
       arr.forEach(item => {
         if (item.child) {
@@ -141,26 +176,30 @@ export default {
       })
       return depId
     },
-    getList (filed) {
+    getList(filed) {
       getConstant({ filed }).then(res => {
         this.edu_type = res.data.edu_type
       })
     },
-    getJobList () {
+    getJobList() {
       let uid = this.formMember.uid
-      departmentRoleList({ uid }).then(res => {
-        // this.depList = res.data
-        if (this.userPosition == 1) {
-          this.currentDepList = res.data.splice(0)
-          console.log(this.currentDepList)
-        }
-        else {
-          this.currentDepList = this.getCurrentDepList(res.data)
-          this.jobList = this.getArr(this.currentDepList, this.depId)
-        }
-      })
+      departmentRoleList({ uid })
+        .then(res => {
+          // this.depList = res.data
+          if (this.userPosition == 1) {
+            this.currentDepList = res.data.splice(0)
+          } else {
+            this.currentDepList = this.getCurrentDepList(res.data)
+            this.jobList = this.getArr(this.currentDepList, this.depId)
+          }
+        })
+        .catch(error => {
+          if (error) {
+            this.$message.error(error.status.remind)
+          }
+        })
     },
-    getCurrentDepList (array) {
+    getCurrentDepList(array) {
       let arr = []
       array.filter(item => {
         if (item.id == this.depId) {
@@ -169,7 +208,7 @@ export default {
       })
       return arr
     },
-    getArr (arr, id) {
+    getArr(arr, id) {
       let newArr = []
       arr.forEach(item => {
         if (item.id == id) {
@@ -178,16 +217,20 @@ export default {
       })
       return newArr
     },
-    selectDep (val) {
-      console.log(val)
+    selectDep(val) {
       this.jobList = this.getArr(this.currentDepList, val)
+      this.formMember.grade_id = ''
     },
-    change (val) {
+    change(val) {
       this.formMember.provinceid = val[0]
       this.formMember.cityid = val[1]
       this.formMember.three_cityid = val[2]
     },
-    handleClose () {
+    handleClose() {
+      this.clearData()
+      this.$emit('handleClose')
+    },
+    clearData() {
       this.formMember = {
         region: '',
         status: 1,
@@ -199,15 +242,17 @@ export default {
         provinceid: '',
         cityid: '',
         three_cityid: '',
-        uid: localStorage.getItem('uid'),
+        uid: localStorage.getItem('uid')
       }
       this.address = []
-      this.$emit('handleClose')
     },
-    submitForm () {
-      this.$refs['formMember'].validate((valid) => {
+    submitForm() {
+      this.$refs['formMember'].validate(valid => {
         if (valid) {
           this.$emit('submitForm', this.formMember)
+          if (!this.dialogTableVisible) {
+            this.clearData()
+          }
         } else {
           return false
         }
@@ -216,104 +261,3 @@ export default {
   }
 }
 </script>
-<style lang="scss">
-.member-dialog {
-  box-shadow:0px 1px 43px 0px rgba(51,51,51,0.3);
-  border-radius:5px;
-  .el-dialog__body,.el-dialog__header {
-    padding: 0;
-  }
- .member-row {
-    width: 100%;
-    margin: 0 auto;
-    text-align: center;
-    color: #333333;
-    padding: 0 0 10px;
-    position: relative;
-    .cancel-icon {
-      position: absolute;
-      top: 5px;
-      right: 0;
-    }
-    .member-col2 {
-      line-height: 30px;
-      margin: 10px auto;
-      width: 65%;
-      p {
-        &:nth-of-type(1) {
-          width: 100px;
-          text-align: right;
-          color: #6A6A6A;
-        }
-        &:nth-of-type(2) {
-          flex: 1;
-          text-align: left;
-          margin-left: 30px;
-        }
-      }
-      
-    }
-    .member-col3 {
-      width: 100%;
-      border-top: 1px solid #eee;
-      padding-top: 10px;
-      .demo-form-inline {
-        width: 90%;
-        margin: 10px auto;
-        .el-form-item {
-          margin-bottom: 10px;
-        }
-        .el-input__inner{
-          width:300px!important;
-          height:38px;
-          line-height:38px;
-          border-radius: 0;
-        }
-        .el-textarea {
-          width:300px!important;
-          border-radius: 0;
-          height: 80px;
-          // margin-left: 0;
-        }
-        .el-form-item__content {
-          margin-left: 20px!important;
-        }
-        .el-select,.el-radio-group{
-          margin-left: -30px;
-        }
-        .el-radio.is-bordered {
-          height: 38px;
-          width: 145px;
-          border-radius: 0;
-          line-height: 38px;
-          padding:0;
-          margin-right: 0;
-          &+.el-radio.is-bordered {
-            margin-left: 10px;
-          }
-        }
-        .el-radio__input {
-          float: right;
-          margin-top: 12px;
-          margin-right: 10px;
-        }
-        .member-status {
-          margin-top: 12px;
-          padding-left:14px;
-        }
-      }
-       &.member-add-col3{
-        .el-select,.el-radio-group{
-          margin-left: 0;
-        }
-        .el-form-item__content {
-          margin-left: 0!important;
-        }
-        .el-input {
-          width: 300px;
-        }
-      }
-    }
-  }
-}
-</style>

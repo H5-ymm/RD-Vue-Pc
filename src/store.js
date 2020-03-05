@@ -1,11 +1,33 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import { teamRouters } from './router/team'
-import { companyRouters } from './router/company'
-import { goLogin } from './api/login'
+// import {
+//   getImgUrl
+// } from "@/util/util";
+// import {
+//   teamRouters
+// } from './router/team'
+// import {
+//   companyRouters
+// } from './router/company'
+import {
+  goLogin
+} from './api/login'
 import router from './router'
-import { getUserInfo, editUserInfo } from '@/api/user'
-import { logout } from '@/api/login'
+import {
+  getUserInfo,
+  editUserInfo
+} from '@/api/user'
+import {
+  getTeamInfo,
+  updateTeamInfo
+} from "@/api/team";
+import {
+  addCompanyInfo,
+  getCompanyDetail
+} from "@/api/company";
+import {
+  logout
+} from '@/api/login'
 Vue.use(Vuex)
 
 export default new Vuex.Store({
@@ -13,67 +35,100 @@ export default new Vuex.Store({
     userInfo: sessionStorage.getItem('userInfo') ? JSON.parse(sessionStorage.getItem('userInfo')) : {}, //用户信息
     token: localStorage.getItem('token'), //token
     uid: '',
-    baseUrl: 'http://tiantianxsg.com:39888/index.php/',
-    teamType: '',  // 团队性质
-    userType: '', // 登录身份
+    teamType: '', // 团队性质
+    userType: '', // 登录账号性质
     baseInfo: {},
-    routes: [],
-    permissionList: null,
     teamInfo: {},
-    userPosition: ''
+    userPosition: '', // 登录身份
+    menus: []
+  },
+  getters: {
+    breadcrumb(state) {
+      let arr = []
+      if (state.menus.length) {
+        arr = state.menus.splice(0)
+      } else {
+        let type = localStorage.getItem('userType')
+        if (type == 1) {
+          arr = sessionStorage.getItem('menus') ?
+            JSON.parse(sessionStorage.getItem('menus')) : ['新建接单']
+        } else {
+          arr = sessionStorage.getItem('menus') ?
+            JSON.parse(sessionStorage.getItem('menus')) : ['团队中心']
+        }
+      }
+      return arr
+    },
+    getTeam(state) {
+      return state.teamInfo && state.teamInfo.uid ? state.teamInfo :
+        JSON.parse(localStorage.getItem('teamSys'))
+    },
+    getUser(state) {
+      return state.userInfo && state.userInfo.uid ? state.userInfo :
+        JSON.parse(sessionStorage.getItem('userInfo'))
+    },
+    getBase(state) {
+      let info = state.baseInfo && state.baseInfo.uid ? state.baseInfo :
+        JSON.parse(sessionStorage.getItem('baseInfo'))
+      return info
+    },
+    getUserUid(state) {
+      return state.uid ? state.uid : localStorage.getItem('uid')
+    },
+    getUserType(state) {
+      return state.userType ? state.userType : localStorage.getItem('userType')
+    },
+    getUserPosition(state) {
+      return state.userPosition ? state.userPosition : localStorage.getItem('userPosition')
+    }
   },
   mutations: {
-    getBaseInfo (state, info) {
+    getBaseInfo(state, info) {
       state.baseInfo = info
     },
-    getUserInfo (state, info) {
+    getUserInfo(state, info) {
       state.userInfo = info
     },
-    getTeamInfo (state, info) {
-      state.teamInfo = info
-      localStorage.setItem('teamInfo', JSON.stringify(info))
-      localStorage.setItem('departId', info.departId)
-      localStorage.setItem('userType', info.type)
-      localStorage.setItem('uid', info.uid)
-      localStorage.setItem('token', info.token)
+    setMenus(state, list) {
+      state.menus = list || []
     },
-    userType (state, info) {
+    setTeamSys(state, info) {
+      state.teamInfo = info
+    },
+    setUserType(state, info) {
       state.userType = info
     },
-    SET_PERMISSION (state, routes) {
-      state.permissionList = routes
-    },
-    CLEAR_PERMISSION (state) {
-      state.permissionList = null
-    },
-    getUid (state, uid) {
+    getUid(state, uid) {
       state.uid = uid
     },
-    getUserPosition (state, position) {
+    setUserPosition(state, position) {
       state.userPosition = position
     },
-    setType (state, type) {
+    setType(state, type) {
       state.userType = type
     }
   },
   actions: {
-    FETCH_PERMISSION ({ commit, state }) {
-      /*  获取后台给的权限数组 */
-      let children = []
-      if (state.userType == 1) {
-        children.push(...companyRouters)
-      }
-      else {
-        children.push(...teamRouters)
-      }
-      /* 完整的路由表 */
-      commit('SET_PERMISSION', [...children])
-    },
-    logoutUser ({ commit, state }) {
-      return new Promise((resolve, reject) => {
+    logoutUser({
+      commit
+    }) {
+      let outUser = new Promise((resolve, reject) => {
         let uid = localStorage.getItem('uid')
-        logout({ uid }).then(res => {
-          localStorage.clear('')
+        logout({
+          uid
+        }).then(res => {
+          let remindUserInfo = localStorage.getItem('remindUserInfo')
+          if (remindUserInfo) {
+            localStorage.removeItem('teamInfo')
+            localStorage.removeItem('userType')
+            localStorage.removeItem('departName')
+            localStorage.removeItem('uid')
+            localStorage.removeItem('token')
+            localStorage.removeItem('userPosition')
+            localStorage.removeItem('teamType')
+          } else {
+            localStorage.clear('')
+          }
           sessionStorage.clear()
           commit('getUserInfo', {})
           resolve(res)
@@ -81,59 +136,145 @@ export default new Vuex.Store({
           reject(error)
         })
       })
+      return outUser
     },
-    getUserAllInfo ({ commit, state }) {
-      return new Promise((resolve, reject) => {
-        let uid = localStorage.getItem('uid')
-        if (uid) {
-          getUserInfo({ uid }).then(res => {
-            sessionStorage.setItem('baseInfo', JSON.stringify(res.data.data))
-            console.log(res.data)
-            commit('getUserInfo', res.data.data)
-            resolve(res)
-          }).catch(error => {
-            reject(error)
-          })
-        }
-      })
-    },
-    updateUserInfo ({ dispatch }, params) {
-      return new Promise((resolve, reject) => {
-        editUserInfo(params).then(res => {
-          dispatch('getUserAllInfo')
+    // 获取个人信息
+    getUserAllInfo({
+      commit
+    }, uid) {
+      let allInfo = new Promise((resolve, reject) => {
+        getUserInfo({
+          uid
+        }).then(res => {
+          sessionStorage.setItem('userInfo', JSON.stringify(res.data))
+          commit('getUserInfo', res.data)
           resolve(res)
         }).catch(error => {
           reject(error)
         })
       })
+      return allInfo
     },
-    loginSaveInfo ({ commit, dispatch }, params) {
-      return new Promise((resolve, reject) => {
+    // 修改个人信息
+    updateUserInfo({
+      dispatch
+    }, params) {
+      let infoPromise = new Promise((resolve, reject) => {
+        editUserInfo(params).then(res => {
+          dispatch('getUserAllInfo', params.uid)
+          resolve(res)
+        }).catch(error => {
+          reject(error)
+        })
+      })
+      return infoPromise
+    },
+    // 获取团队信息
+    getTeamData({
+      commit
+    }, uid) {
+      let allInfo = new Promise((resolve, reject) => {
+        getTeamInfo({
+          uid
+        }).then(res => {
+          let Info = res.data || null;
+          sessionStorage.setItem("baseInfo", JSON.stringify(Info));
+          commit('getBaseInfo', Info)
+          resolve(res)
+        }).catch(error => {
+          reject(error)
+        })
+      })
+      return allInfo
+    },
+    // 编辑团队信息
+    editTeamInfo({
+      dispatch
+    }, params) {
+      let infoPromise = new Promise((resolve, reject) => {
+        updateTeamInfo(params).then(res => {
+          dispatch('getTeamData', params.uid)
+          resolve(res)
+        }).catch(error => {
+          reject(error)
+        })
+      })
+      return infoPromise
+    },
+    // 获取企业信息
+    getCompanymData({
+      commit
+    }, uid) {
+      let allInfo = new Promise((resolve, reject) => {
+        getCompanyDetail({
+          uid
+        }).then(res => {
+          let Info = res.data || null;
+          // let userInfo = {
+          //   user_name: res.data.com_name,
+          //   mobile: res.data.link_phone,
+          //   head_img: res.data.logo_url
+          // };
+          sessionStorage.setItem("baseInfo", JSON.stringify(res.data));
+          commit('getBaseInfo', Info)
+          resolve(res)
+        }).catch(error => {
+          reject(error)
+        })
+      })
+      return allInfo
+    },
+    // 编辑企业信息
+    updateCompanyInfo({
+      dispatch
+    }, params) {
+      let infoPromise = new Promise((resolve, reject) => {
+        addCompanyInfo(params).then(res => {
+          dispatch('getCompanymData', params.uid)
+          resolve(res)
+        }).catch(error => {
+          reject(error)
+        })
+      })
+      return infoPromise
+    },
+    loginSaveInfo({
+      commit,
+      dispatch
+    }, params) {
+      let LoginPromise = new Promise((resolve, reject) => {
         goLogin(params).then(res => {
-          dispatch('getUserAllInfo')
           localStorage.setItem('userType', res.data.type)
           localStorage.setItem('userName', res.data.username)
-          localStorage.setItem('departName', res.data.departName)
           localStorage.setItem('uid', res.data.uid)
+          localStorage.setItem('token', res.data.token)
           commit('getUid', res.data.uid)
-          commit('getUserPosition', res.data.gradeNum)
-          commit('getTeamInfo', res.data)
+          commit('setUserPosition', res.data.gradeNum)
+          commit('setUserType', res.data.type)
           let registerType = res.data.type
-          if (res.data.type == 1) {
-            router.push('/createOrderTaking?userType=' + res.data.type)
-          }
-          else {
+          if (registerType == 1) {
+            commit('setMenus', ['发单招聘'])
+            dispatch("getCompanymData", res.data.uid)
+            router.push('/createOrderTaking')
+          } else {
+            dispatch("getUserAllInfo", res.data.uid)
+            dispatch("getTeamData", res.data.uid)
             localStorage.setItem('teamType', res.data.team_type)
             // 登录人身份
+            localStorage.setItem('teamSys', JSON.stringify(res.data))
+            localStorage.setItem('departName', res.data.departName)
             sessionStorage.setItem('userPosition', res.data.gradeNum)
             localStorage.setItem('userPosition', res.data.gradeNum)
-            router.push('/teamData?userType=' + res.data.type)
+            router.push('/teamData')
+            commit('setMenus', ['团队中心'])
+            commit('setTeamSys', res.data)
           }
           resolve(res)
         }).catch(error => {
           reject(error)
         })
       })
+      return LoginPromise
     }
   }
 })

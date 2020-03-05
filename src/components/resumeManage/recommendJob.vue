@@ -2,54 +2,65 @@
 @import '@/assets/css/resume';
 </style>
 <template>
-  <div class="tables-box billingManagement ">
+  <div class="tables-box billingManagement">
     <div>
       <ul class="x-flex-start tab-box">
         <li :class="{'tab-active':tabIndex==0}" @click="tabIndex=0">
           <p>团队接单</p>
-          <img src="../../assets/img/icon6.png" v-if="tabIndex==0" alt />
+          <img src="../../assets/img/icon6.png" v-if="tabIndex==0" alt="">
         </li>
         <li :class="{'tab-active':tabIndex==1}" @click="tabIndex=1">
           <p>内部发单</p>
-          <img src="../../assets/img/icon6.png" v-if="tabIndex==1" alt />
+          <img src="../../assets/img/icon6.png" v-if="tabIndex==1" alt="">
         </li>
       </ul>
     </div>
     <div class="table-list">
-      <el-form :inline="true" label-width="120px" label-position="right" :model="formMember" class="demo-form-inline form-item-wrap">
+      <el-form
+        :inline="true"
+        label-width="120px"
+        label-position="right"
+        :model="formMember"
+        class="demo-form-inline form-item-wrap"
+      >
         <el-form-item label="企业/岗位名称：">
           <el-input v-model="formMember.name" class="width300" placeholder="请输入职位名称关键字"></el-input>
           <el-button type="primary" @click="onSubmit" class="select-btn">查询</el-button>
         </el-form-item>
         <!-- <el-form-item label="状态筛选：">
           <el-button :type="activeIndex==index ?'primary':''" v-for="(item,index) in statusList" :key="index" plain @click="selectStatus(item,index)" class="select-status">{{item.label}}</el-button>
-        </el-form-item> -->
+        </el-form-item>-->
       </el-form>
       <div class="member-table resume-table resume-table1">
         <div class="table-query">
           <el-button @click="handleApply()">批量推荐</el-button>
-          <span class="select-text">
-            已选择
+          <span class="select-text">已选择
             <el-button type="text">{{multipleSelection.length}}&nbsp;</el-button>项
           </span>
           <el-button type="text" @click="multipleSelection=[]">清空</el-button>
         </div>
-        <el-table border :data="tableData" ref="multipleTable" style="width: 100%" @selection-change="handleSelectionChange">
+        <el-table
+          border=""
+          :data="tableData"
+          ref="multipleTable"
+          style="width: 100%"
+          @selection-change="handleSelectionChange"
+        >
           <el-table-column type="selection" align="center" width="60"></el-table-column>
           <el-table-column label="企业名称" align="center" width="150">
             <template slot-scope="props">
-              <span class="text-line width140">{{props.row.com_name}}</span>
+              <span class="text-line width140">{{props.row.com_name||props.row.company_name}}</span>
             </template>
           </el-table-column>
           <el-table-column label="岗位名称" align="center" width="150">
             <template slot-scope="props">
-              <span class="text-line width140">{{props.row.name}}</span>
+              <span class="text-line width140">{{props.row.name||props.row.job_name}}</span>
             </template>
           </el-table-column>
           <!-- <el-table-column label="返利模式" prop="offermoney_type" align="center" width="120"></el-table-column> -->
           <el-table-column label="返利模式" align="center" width="150">
             <template slot-scope="props">
-              <span>{{props.row.reward_type | moneyType}}</span>
+              <span>{{props.row.reward_type | rewardType}}</span>
             </template>
           </el-table-column>
           <el-table-column label="岗位城市" align="center" width="150">
@@ -59,13 +70,24 @@
           </el-table-column>
           <el-table-column label="工资" align="center" width="150">
             <template slot-scope="props">
-              <span v-if="props.row.reward_type==1">{{props.row.money_min}} ~ {{props.row.money_max}}</span>
-              <span v-else>{{props.row.money}}</span>
+              <div v-if="!tabIndex">
+                <span
+                  v-if="props.row.money_type==1"
+                >{{props.row.money_min}} ~ {{props.row.money_max}}/{{props.row.money_type | moneyType}}</span>
+                <span v-else>{{props.row.money}}</span>
+              </div>
+              <div v-if="tabIndex">
+                <span
+                  v-if="props.row.offermoney_type==1"
+                >{{props.row.money_min}} ~ {{props.row.money_max}}/{{props.row.offermoney_type | moneyType}}</span>
+                <span v-else>{{props.row.offermoney}}</span>
+              </div>
             </template>
           </el-table-column>
           <el-table-column label="接单状态" align="center" width="150">
             <template slot-scope="props">
-              <span class="status">{{props.row.job_status ==1 ? '进行中': '已下架'}}</span>
+              <!-- <span class="status">{{props.row.job_status ==1 ? '进行中': '已下架'}}</span> -->
+              <span class="status">进行中</span>
             </template>
           </el-table-column>
           <el-table-column label="岗位匹配度" align="center" width="150">
@@ -85,39 +107,55 @@
           </el-table-column>
         </el-table>
       </div>
-      <el-pagination class="team-pagination" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="formMember.page" :page-sizes="[10, 30, 50, 100]" :page-size="formMember.limit" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
+      <el-pagination
+        class="team-pagination"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="formMember.page"
+        :page-sizes="[10, 30, 50, 100]"
+        :page-size="formMember.limit"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total"
+      ></el-pagination>
     </div>
   </div>
 </template>
 
 <script>
-import { getMatchingResume, getInternalInvoiceList, getMatchingJobList, getInternalMatchingList } from '@/api/resume'
+import {
+  getMatchingResume,
+  getInternalInvoiceList,
+  getMatchingJobList,
+  getInternalMatchingList
+} from '@/api/resume'
+teamReceipt
 import { addPut } from '@/api/teamReceipt'
-import { moneyTypeList, rewardTypeList } from '@/base/base'
+import { addPutSelf } from '@/api/internalInvoice'
+import { moneyTypeList1, rewardTypeList1 } from '@/base/base'
 import jobMate from './jobMate'
 export default {
   components: {
     jobMate
   },
   filters: {
-    moneyType (val) {
-      let obj = moneyTypeList.find(item => {
-        return val == item.value
-      })
-      console.log(obj)
-      return obj ? obj.label : '--'
-    },
-    rewardType (val) {
-      let obj = rewardTypeList.find(item => {
+    moneyType(val) {
+      let obj = moneyTypeList1.find(item => {
         return val == item.value
       })
       return obj ? obj.label : '--'
     },
+    rewardType(val) {
+      console.log(val)
+      let obj = rewardTypeList1.find(item => {
+        return val == item.value
+      })
+      return obj ? obj.label : '--'
+    }
   },
-  data () {
+  data() {
     return {
-      moneyTypeList,
-      rewardTypeList,
+      moneyTypeList1,
+      rewardTypeList1,
       dialogTableVisible: false,
       visible: false,
       tableData: [],
@@ -141,110 +179,145 @@ export default {
       apply_id: ''
     }
   },
-  created () {
+  created() {
     this.resumeId = this.$route.query.id
+    this.formMember.resumeId = this.$route.query.id
     if (this.$route.query.index) {
       this.tabIndex = this.$route.query.index
-    }
-    else {
+    } else {
       this.tabIndex = 0
     }
+    let arr = ['新增简历', '推荐岗位']
+    this.$store.commit('setMenus', arr)
     // 职位匹配简历
-    this.formMember.resumeId = this.$route.query.id
     this.getList(this.formMember)
-
   },
   watch: {
-    tabIndex (val) {
+    tabIndex(val) {
       if (this.viewType) {
         this.byJobMatchingList(this.formMember)
-      }
-      else {
+      } else {
         this.getList(this.formMember)
       }
     }
   },
   methods: {
-    getList (params) {
+    getList(params) {
       if (this.tabIndex == 0) {
-        getMatchingJobList(params).then(res => {
-          this.tableData = res.data.data
-          this.total = res.data.count
-        }).catch(error => {
-          this.$message.error(error.status.remind)
-        })
-      }
-      else {
-        getInternalMatchingList(params).then(res => {
-          this.tableData = res.data.data
-          this.total = res.data.count
-        }).catch(error => {
-          this.$message.error(error.status.remind)
-        })
+        getMatchingJobList(params)
+          .then(res => {
+            this.tableData = res.data.data
+            this.total = res.data.count
+          })
+          .catch(error => {
+            if (error) {
+              this.$message.warning(error.status.remind)
+            }
+          })
+      } else {
+        getInternalMatchingList(params)
+          .then(res => {
+            this.tableData = res.data.data
+            this.total = res.data.count
+          })
+          .catch(error => {
+            if (error) {
+              this.$message.warning(error.status.remind)
+            }
+          })
       }
     },
-    byJobMatchingList () {
+    byJobMatchingList() {
       if (this.tabIndex == 0) {
-        getMatchingResume(params).then(res => {
-          this.tableData = res.data.data
-          this.total = res.data.count
-        }).catch(error => {
-          this.$message.error(error.status.remind)
-        })
-      }
-      else {
-        getInternalInvoiceList(params).then(res => {
-          const { data } = res
-          this.tableData = data.data
-          this.total = res.data.count
-        }).catch(error => {
-          this.$message.error(error.status.remind)
-        })
+        getMatchingResume(params)
+          .then(res => {
+            this.tableData = res.data.data
+            this.total = res.data.count
+          })
+          .catch(error => {
+            if (error) {
+              this.$message.warning(error.status.remind)
+            }
+          })
+      } else {
+        getInternalInvoiceList(params)
+          .then(res => {
+            const { data } = res
+            this.tableData = data.data
+            this.total = res.data.count
+          })
+          .catch(error => {
+            if (error) {
+              this.$message.warning(error.status.remind)
+            }
+          })
       }
     },
-    selectStatus (item, index) {
+    selectStatus(item, index) {
       this.activeIndex = index
       this.formMember.status = item.value
       this.getList(this.formMember)
     },
-    handleSizeChange (val) {
+    handleSizeChange(val) {
       this.formMember.limit = val
       this.getList(this.formMember)
     },
-    handleCurrentChange (val) {
+    handleCurrentChange(val) {
       this.formMember.page = val
       this.getList(this.formMember)
     },
-    handleApply (apply_id) {
+    handleApply(apply_id) {
       if (!this.multipleSelection.length && !apply_id) {
         return this.$message.warning('请选择职位')
       }
-      let params = {
-        apply_id: apply_id,
-        uid: localStorage.getItem('uid'),
-        resume_id: this.resumeId
+      if (!this.tabIndex) {
+        let params = {
+          apply_id: apply_id,
+          uid: localStorage.getItem('uid'),
+          resume_id: this.resumeId
+        }
+        addPut(params)
+          .then(res => {
+            if (res.data) {
+              this.dialogTableVisible = true
+              this.$message.success('推荐成功')
+              this.getList(this.formMember)
+            } else {
+              this.$message.error('推荐失败')
+            }
+          })
+          .catch(error => {
+            this.$message.error(error.status.remind)
+          })
+      } else {
+        let params = {
+          job_id: apply_id,
+          uid: localStorage.getItem('uid'),
+          resume_id: this.resumeId
+        }
+        addPutSelf(params)
+          .then(res => {
+            if (res.data) {
+              this.dialogTableVisible = true
+              this.$message.success('推荐成功')
+              this.getList(this.formMember)
+            } else {
+              this.$message.error('推荐失败')
+            }
+          })
+          .catch(error => {
+            this.$message.error(error.status.remind)
+          })
       }
-      addPut(params).then(res => {
-        if (res.data) {
-          this.dialogTableVisible = true
-          this.$message.success('推荐成功')
-          this.getList(this.formMember)
-        }
-        else {
-          this.$message.error('推荐失败')
-        }
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
     },
-    handleSelectionChange (val) {
+    handleSelectionChange(val) {
       this.multipleSelection = val
       let arr = val.map(item => {
         return item.uid
       })
       this.resumeId = arr.join(',')
     },
-    onSubmit () {
+    onSubmit() {
       this.getList(this.formMember)
     }
   }
@@ -255,12 +328,12 @@ export default {
 .billingManagement {
   .tab-box {
     margin: 10px 0 25px;
-    >li {
-      width:200px;
-      height:40px;
-      background:#fff;
-      box-shadow:2px 5px 17px 0px rgba(51,51,51,0.2);
-      border-radius:5px;
+    > li {
+      width: 200px;
+      height: 40px;
+      background: #fff;
+      box-shadow: 2px 5px 17px 0px rgba(51, 51, 51, 0.2);
+      border-radius: 5px;
       color: #333333;
       margin-right: 40px;
       text-align: center;
@@ -270,11 +343,10 @@ export default {
         height: 14px;
       }
       &.tab-active {
-        background:#1890FF;
+        background: #1890ff;
         color: #fff;
       }
     }
   }
 }
-
 </style>

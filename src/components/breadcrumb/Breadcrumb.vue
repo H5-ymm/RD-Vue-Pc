@@ -1,11 +1,18 @@
 <template>
-  <div class="breadcrumb" :class="{'ComBreadcrumb':type==1}">
+  <div
+    class="breadcrumb"
+    :class="{'ComBreadcrumb':type==1,'ComBreadcrumb1':$store.getters.breadcrumb.length==2}"
+  >
     <el-row>
       <el-col :span="24" class="breadcrumb-bre">
         <div class="bg-purple-dark">
           <el-breadcrumb class="breadcrumb-bre-li">
-            <el-breadcrumb-item v-for="(item,index) in breadcrumbs" :key="index">
-              <el-tag closable @close="closeView(item,index)">{{item}}</el-tag>
+            <el-breadcrumb-item v-for="(item,index) in $store.getters.breadcrumb" :key="index">
+              <el-tag
+                closable
+                @close="closeView(item,index)"
+                :class="type==1?'com-tag':'team-tag'"
+              >{{item}}</el-tag>
             </el-breadcrumb-item>
           </el-breadcrumb>
         </div>
@@ -16,91 +23,112 @@
 
 <script>
 export default {
-  data () {
+  data() {
     return {
       breadcrumbs: [],
-      type: localStorage.getItem('userType')
-    }
+      type: ""
+    };
   },
-  created () {
+  created() {
+    this.type = localStorage.getItem("userType");
     if (this.type == 1) {
-      this.breadcrumbs = sessionStorage.getItem('menus') ? JSON.parse(sessionStorage.getItem('menus')) : ['新建接单']
+      this.breadcrumbs = sessionStorage.getItem("menus")
+        ? JSON.parse(sessionStorage.getItem("menus"))
+        : ["新建接单"];
     } else {
-      this.breadcrumbs = sessionStorage.getItem('menus') ? JSON.parse(sessionStorage.getItem('menus')) : ['论坛列表']
+      this.breadcrumbs = sessionStorage.getItem("menus")
+        ? JSON.parse(sessionStorage.getItem("menus"))
+        : ["团队中心"];
     }
+    this.$store.commit("setMenus", this.breadcrumbs);
   },
   methods: {
-    closeView (item, index) {
-      if (index) {
-        let url = sessionStorage.getItem('menusUrl')
-        this.breadcrumbs.splice(index, 1)
-      }
-    }
-  },
-  watch: {
-    $route (to, from) {
-      if (to.path == '/resumeResult' && from.path == '/teamInterviewPersonnel') {
-        this.breadcrumbs = ["接单管理", "面试结果"]
-       }
-      else if (to.path == '/teamEntryList' && from.path == '/resumeResult') {
-        this.breadcrumbs = ["接单管理", "入职结果"]
-      }
-      else {
-        let  arr = JSON.parse(sessionStorage.getItem('menus'))
-        this.breadcrumbs = arr ? arr.splice(0) : []
+    closeView(item, index) {
+      if (this.$store.getters.breadcrumb.length == 2 && index) {
+        let arr = this.$store.getters.breadcrumb;
+        this.$store.commit("setMenus", [arr[0]]);
+        this.$router.go(-1);
       }
     }
   }
-}
+};
 </script>
 <style lang="scss">
-.breadcrumb{
+.breadcrumb {
   overflow: hidden;
-  background:#F0F2F5;
+  background: #f0f2f5;
   width: 100%;
   height: 36px;
-  border:1px solid #eee;
+  border: 1px solid #eee;
   .el-breadcrumb__separator {
     position: absolute;
     z-index: -22;
   }
-  .breadcrumb-bre{
+  .breadcrumb-bre {
     height: 36px;
     box-sizing: border-box;
     overflow: hidden;
   }
   .breadcrumb-bre-li {
-     line-height: 36px;
-      .el-tag {
-        height: 36px;
-        border:none;
-        border-top: 1px solid #1890FF;
-        line-height: 36px;
-        border-radius: 0;
-        margin-right: 5px;
-        background: #DCEEFE;
-        color: #333333;
-      }
+    line-height: 36px;
+    .el-breadcrumb__item {
+      height: 36px;
+      overflow: hidden;
+    }
+    .el-tag {
+      height: 36px;
+      border: none;
+      border-top: 1px solid #1890ff;
+      line-height: 36px;
+      border-radius: 0;
+      margin-right: 5px;
+      background: #dceefe;
+      color: #333333;
+    }
   }
   &.ComBreadcrumb {
     .breadcrumb-bre-li {
-       line-height: 36px;
-      .el-tag {
-        height: 36px;
-        border:none;
+      .com-tag {
         border-top: none;
-        border-bottom: 2px solid #1890FF;
-        line-height: 36px;
-        border-radius: 0;
-        padding:0;
+        border-bottom: 2px solid #1890ff;
+        padding: 0;
         margin-left: 20px;
-        background: #F0F2F5;
-        color: #1890FF;
-        .el-icon-close {
-          display: none;
+        background: #f0f2f5;
+        color: #1890ff;
+      }
+      .el-icon-close {
+        z-index: -1;
+        width: 0;
+      }
+    }
+  }
+  &.ComBreadcrumb1 {
+    .breadcrumb-bre-li {
+      .el-breadcrumb__item {
+        &:nth-of-type(1) {
+          .team-tag {
+            color: #999999;
+            background: #fff;
+            border: none;
+            .el-icon-close {
+              color: #999999;
+            }
+          }
+          .com-tag {
+            color: #999999;
+            border-bottom: none;
+          }
+        }
+        &:nth-of-type(2) {
+          .com-tag {
+            .el-icon-close {
+              z-index: 1;
+              width: 16px;
+            }
+          }
         }
       }
-  }
+    }
   }
 }
 </style>

@@ -1,9 +1,9 @@
 <style lang="scss">
-  .team-center-section {
-    background: #fff;
-    padding: 20px 15px 0;
-    // height:90%;
-  }
+.team-center-section {
+  background: #fff;
+  padding: 20px 15px 0;
+  // height:90%;
+}
 </style>
 <template>
   <div class="team-center-section">
@@ -23,7 +23,7 @@ export default {
     allOrder,
     infoTip
   },
-  data () {
+  data() {
     return {
       timeList: [
         { label: '本周', value: 1 },
@@ -45,28 +45,30 @@ export default {
       }
     }
   },
-  created () {
+  created() {
     if (localStorage.getItem('teamType') == 0) {
-      console.log(localStorage.getItem('teamType'))
       this.dialogVisible = true
       return false
-    }
-    else {
+    } else {
       this.getList(this.parasm)
     }
   },
   methods: {
-    getList (parasm) {
-      getrank(parasm).then(res => {
-        this.orderData = res.data
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+    getList(parasm) {
+      getrank(parasm)
+        .then(res => {
+          this.orderData = res.data
+        })
+        .catch(error => {
+          if (error) {
+            this.$message.warning(error.status.remind)
+          }
+        })
     },
-    selectQuery (val) {
+    selectQuery(val) {
       this.parasm = Object.assign(this.parasm, val)
       this.getList(this.parasm)
     }
-  },
+  }
 }
 </script>

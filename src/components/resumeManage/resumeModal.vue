@@ -1,3 +1,101 @@
+<style lang="scss">
+.member-dialog {
+  box-shadow: 0px 1px 43px 0px rgba(51, 51, 51, 0.3);
+  border-radius: 5px;
+  .el-dialog__body,
+  .el-dialog__header {
+    padding: 0;
+  }
+  .member-row {
+    width: 100%;
+    margin: 0 auto;
+    text-align: center;
+    color: #333333;
+    padding: 0 0 10px;
+    position: relative;
+    .cancel-icon {
+      position: absolute;
+      top: 5px;
+      right: 0;
+    }
+    .member-col2 {
+      line-height: 30px;
+      margin: 10px auto;
+      width: 65%;
+      p {
+        &:nth-of-type(1) {
+          width: 100px;
+          text-align: right;
+          color: #6a6a6a;
+        }
+        &:nth-of-type(2) {
+          flex: 1;
+          text-align: left;
+          margin-left: 30px;
+        }
+      }
+    }
+    .resume-col3 {
+      width: 100%;
+      border-top: 1px solid #eee;
+      padding-top: 10px;
+      margin: 0 auto;
+      .demo-form-inline {
+        width: 90%;
+        margin: 10px auto;
+        .el-input__inner {
+          width: 300px !important;
+        }
+        .el-textarea {
+          width: 300px !important;
+          border-radius: 3px;
+          textarea {
+            height: 100px !important;
+          }
+        }
+      }
+    }
+  }
+  .resume-card {
+    .resume-main-title {
+      border-bottom: 1px solid #eee;
+      padding-bottom: 10px;
+      > img {
+        width: 20px;
+        margin-right: 10px;
+      }
+    }
+    .resume-card-row {
+      margin: 20px 0 0 -15px;
+      .el-form-item {
+        margin-bottom: 20px;
+      }
+      .resume-card-item {
+        width: 50%;
+        text-align: left;
+        &:nth-child(2) {
+          box-sizing: border-box;
+          .el-form-item {
+            padding-left: 55px;
+            margin-right: 0;
+          }
+        }
+      }
+      .resume-address {
+        position: absolute;
+        top: 0;
+        right: -310px;
+      }
+    }
+  }
+  .resume-footer-btn {
+    margin-right: 20px;
+    .el-buton {
+      border-radius: 5px;
+    }
+  }
+}
+</style>
 <template>
   <el-dialog width="1000px" top="8vh" :visible="dialogTableVisible" class="member-dialog" :show-close="false">
     <div class="member-row">
@@ -123,11 +221,10 @@ export default {
   data () {
     var validate = (rule, value, callback) => {
       let reg = /^1[3456789]\d{9}$/
-      if ((!reg.test(value))) {
-        callback(new Error('手机号格式不正确'));
+      if (!reg.test(value)) {
+        callback(new Error('手机号格式不正确'))
       } else {
-        console.log(value)
-        callback();
+        callback()
       }
     };
     var validateCard = (rule, value, callback) => {
@@ -203,8 +300,7 @@ export default {
     resumeId (val) {
       if (val) {
         this.getInfo()
-      }
-      else {
+      } else {
         this.formMember = {
           is_five_risks: 1,
           is_fund: 1,
@@ -238,7 +334,7 @@ export default {
           uid: localStorage.getItem('uid')
         }
       }
-    },
+    }
   },
   methods: {
     getInfo () {
@@ -246,30 +342,54 @@ export default {
         uid: localStorage.getItem('uid'),
         resumeId: this.resumeId
       }
-      selectUserResumeInfo(params).then(res => {
-        this.formMember = res.data
-        if (res.data.entry_begintime) {
-          this.entryTime[0] = this.$moment.unix(res.data.entry_begintime).format('YYYY-MM-DD')
-          this.entryTime[1] = this.$moment.unix(res.data.entry_endtime).format('YYYY-MM-DD')
-        } else {
-          this.entryTime = []
-        }
-        if (res.data.expect_provindeid != 0 && res.data.expect_cityid != 0) {
-          this.addressExpect = [res.data.expect_provindeid, res.data.expect_cityid]
-        }
-        if (res.data.provinceid != 0 && res.data.cityid != 0) {
-          this.address = [res.data.provinceid, res.data.cityid]
-        }
-        else {
-          this.address = []
-        }
-      })
+      selectUserResumeInfo(params)
+        .then(res => {
+          this.formMember = res.data
+          this.formMember.salary_type = res.data.salary_type
+            ? res.data.salary_type
+            : ''
+          console.log(res.data.salary_type)
+          console.log(res.data.money)
+          this.formMember.money = res.data.money ? res.data.money : ''
+          if (res.data.entry_begintime) {
+            this.entryTime[0] = this.$moment
+              .unix(res.data.entry_begintime)
+              .format('YYYY-MM-DD')
+            this.entryTime[1] = this.$moment
+              .unix(res.data.entry_endtime)
+              .format('YYYY-MM-DD')
+          } else {
+            this.entryTime = []
+          }
+          if (res.data.expect_provindeid != 0 && res.data.expect_cityid != 0) {
+            this.addressExpect = [
+              res.data.expect_provindeid,
+              res.data.expect_cityid
+            ]
+          }
+          if (res.data.provinceid != 0 && res.data.cityid != 0) {
+            this.address = [res.data.provinceid, res.data.cityid]
+          } else {
+            this.address = []
+          }
+        })
+        .catch(error => {
+          if (error) {
+            this.$message.error(error.status.remind)
+          }
+        })
     },
     getList (filed) {
-      getConstant({ filed }).then(res => {
-        this.edu_type = res.data.edu_type
-        this.moneyArray = this.getArry(res.data.resume_intention_salary)
-      })
+      getConstant({ filed })
+        .then(res => {
+          this.edu_type = res.data.edu_type
+          this.moneyArray = this.getArry(res.data.resume_intention_salary)
+        })
+        .catch(error => {
+          if (error) {
+            this.$message.error(error.status.remind)
+          }
+        })
     },
     getArry (obj) {
       var arr = []
@@ -277,7 +397,7 @@ export default {
         arr.push({
           label: obj[i],
           value: Number(i)
-        }); //属性
+        }) //属性
       }
       return arr
     },
@@ -313,7 +433,7 @@ export default {
       }
     },
     submitForm () {
-      this.$refs['formMember'].validate((valid) => {
+      this.$refs['formMember'].validate(valid => {
         if (valid) {
           if (!this.formMember.provinceid) {
             this.formMember.provinceid = 0
@@ -332,107 +452,3 @@ export default {
   }
 }
 </script>
-<style lang="scss">
-.member-dialog {
-  box-shadow:0px 1px 43px 0px rgba(51,51,51,0.3);
-  border-radius:5px;
-  .el-dialog__body,.el-dialog__header {
-    padding: 0;
-  }
- .member-row {
-    width: 100%;
-    margin: 0 auto;
-    text-align: center;
-    color: #333333;
-    padding: 0 0 10px;
-    position: relative;
-    .cancel-icon {
-      position: absolute;
-      top: 5px;
-      right: 0;
-    }
-    .member-col2 {
-      line-height: 30px;
-      margin: 10px auto;
-      width: 65%;
-      p {
-        &:nth-of-type(1) {
-          width: 100px;
-          text-align: right;
-          color: #6A6A6A;
-        }
-        &:nth-of-type(2) {
-          flex: 1;
-          text-align: left;
-          margin-left: 30px;
-        }
-      }
-      
-    }
-    .resume-col3 {
-      width: 100%;
-      border-top: 1px solid #eee;
-      padding-top: 10px;
-      margin: 0 auto;
-      .demo-form-inline {
-        width: 90%;
-        margin: 10px auto;
-        .el-form-item {
-          margin-bottom: 10px;
-        }
-        .el-input__inner{
-          width:300px!important;
-          height:38px;
-          line-height:38px;
-          border-radius:3px;
-        }
-        .el-textarea {
-          width:300px!important;
-          border-radius:3px;      
-          textarea {
-            height: 100px!important;
-          }
-        }
-      }
-    }
-  }
-  .resume-card {   
-    .resume-main-title {
-      border-bottom: 1px solid #eee;
-      padding-bottom: 10px;
-      >img {
-        width: 20px;
-        margin-right: 10px;
-      }
-    }
-    .resume-card-row {
-      margin: 20px 0 0 -15px;
-       .resume-card-item {
-        width: 50%;
-
-        text-align: left;
-        &:nth-child(2) {
-          .el-form-item {
-            padding-left: 55px;
-            margin-right:0;
-          }
-        } 
-      }
-      .resume-address {
-        position: absolute;
-        top: 0;
-        right: -310px;
-      }
-      .el-form-item__error{
-        top:-50%;
-      }
-    }  
-  }
-  .resume-footer-btn {
-    margin-right: 20px;
-    .el-buton {
-      border-radius: 5px;
-    }
-  }
-}
-</style>

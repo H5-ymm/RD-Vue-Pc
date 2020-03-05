@@ -75,7 +75,6 @@ export default {
   .outDep-footer{
     margin: 10px 15px;
     .el-button {
-      border-radius: 0;
       padding:10px 40px;
     }
   }

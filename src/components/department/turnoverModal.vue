@@ -1,7 +1,86 @@
+<style lang="scss">
+.member-dialog {
+  &.table-dialog {
+    .el-dialog {
+      height: 700px;
+      overflow: hidden;
+      .el-table--scrollable-x .el-table__body-wrapper {
+        height: 100%;
+      }
+    }
+  }
+  .member-row {
+    &.turnover-row {
+      text-align: left;
+      .member-col1 {
+        text-align: center;
+      }
+      .team-pagination {
+        margin-top: 15px;
+      }
+      .memberForm {
+        .action-btn {
+          margin-bottom: 0;
+        }
+        .el-form-item {
+          margin-bottom: 12px;
+        }
+      }
+    }
+  }
+  .table-edit {
+    .el-input__inner {
+      border: none;
+      outline: none;
+    }
+    .el-input__inner:hover {
+      border: none;
+      outline: none;
+    }
+  }
+}
+.member-table {
+  &.turnover-box {
+    font-size: 14px;
+    padding: 20px 15px;
+    .width300 {
+      width: 300px;
+    }
+  }
+  .action-btn {
+    color: #333333;
+    margin-bottom: 15px;
+    .el-button {
+      height: 38px;
+    }
+    .select-text {
+      font-size: 14px;
+      margin: 0 5px;
+      color: #6a6a6a;
+    }
+    .width100 {
+      width: 100px;
+    }
+  }
+  .table {
+    border-top: 1px solid #eee;
+    border-bottom: 1px solid #eee;
+    padding: 10px 0;
+    height: 430px;
+    overflow: auto;
+  }
+}
+</style>
 <template>
-  <el-dialog width="75%" :visible="dialogTableVisible" class="member-dialog table-dialog" :show-close="false">
+  <el-dialog
+    width="75%"
+    :visible="dialogTableVisible"
+    top="10vh"
+    class="member-dialog table-dialog"
+    :show-close="false"
+  >
     <div class="member-row turnover-row">
-      <img src="../../assets/img/member/cancel.png" alt class="cancel-icon" @click="handleClose" />
+      <img src="../../assets/img/member/cancel.png" alt="" class="cancel-icon" @click="handleClose">
       <section class="member-col1">
         <p>人员调整</p>
       </section>
@@ -17,17 +96,37 @@
             <div class="action-btn x-flex-between">
               <div>
                 <el-form-item>
-                  <el-select v-model="formMember.departId" placeholder="所属部门" @change="selectDep" value-key="depart_name" class="width100">
-                    <el-option :label="item.depart_name" :value="item.id" v-for="(item,index) in depList" :key="index"></el-option>
+                  <el-select
+                    v-model="formMember.departId"
+                    placeholder="所属部门"
+                    @change="selectDep"
+                    value-key="depart_name"
+                    class="width100"
+                  >
+                    <el-option
+                      :label="item.depart_name"
+                      :value="item.id"
+                      v-for="(item,index) in depList"
+                      :key="index"
+                    ></el-option>
                   </el-select>
                 </el-form-item>
                 <el-form-item>
-                  <el-select v-model="formMember.gradeId" value-key="grade_name" placeholder="等级" class="width100">
-                    <el-option :label="item.grade_name" :value="item.id" v-for="(item,index) in jobListAll" :key="item.grade_name"></el-option>
+                  <el-select
+                    v-model="formMember.gradeId"
+                    value-key="grade_name"
+                    placeholder="等级"
+                    class="width100"
+                  >
+                    <el-option
+                      :label="item.grade_name"
+                      :value="item.id"
+                      v-for="(item,index) in jobListAll"
+                      :key="item.grade_name"
+                    ></el-option>
                   </el-select>
                 </el-form-item>
-                <span class="select-text">
-                  已选择
+                <span class="select-text">已选择
                   <el-button type="text">{{multipleSelection.length}}&nbsp;</el-button>项
                 </span>
                 <el-button type="text">清空</el-button>
@@ -36,7 +135,13 @@
           </el-form>
         </div>
         <div class="table">
-          <el-table border :data="tableData" ref="multipleTable" style="width: 100%" @selection-change="handleSelectionChange">
+          <el-table
+            border=""
+            :data="tableData"
+            ref="multipleTable"
+            style="width: 100%"
+            @selection-change="handleSelectionChange"
+          >
             <el-table-column label="序号" type="selection" align="center" width="60"></el-table-column>
             <el-table-column label="姓名" align="center" prop="user_name" width="150"></el-table-column>
             <el-table-column label="联系电话" prop="mobile" align="center" width="150"></el-table-column>
@@ -48,23 +153,51 @@
             <el-table-column label="直属上级" prop="superiorName" align="center" width="150"></el-table-column>
             <el-table-column label="所属部门" align="center" width="150">
               <template slot-scope="props">
-                <el-select v-model="depart_id" :placeholder="props.row.depart_name" v-if="activeIndex==props.$index&&isEdit" @change="selectDepName" class="width100 table-edit">
-                  <el-option :label="item.depart_name" :value="item.id" v-for="(item,index) in depList" :key="index"></el-option>
+                <el-select
+                  v-model="depart_id"
+                  :placeholder="props.row.depart_name"
+                  v-if="activeIndex==props.$index&&isEdit"
+                  @change="selectDepName"
+                  class="width100 table-edit"
+                >
+                  <el-option
+                    :label="item.depart_name"
+                    :value="item.id"
+                    v-for="(item,index) in depList"
+                    :key="index"
+                  ></el-option>
                 </el-select>
                 <span v-else>{{ props.row.depart_name}}</span>
               </template>
             </el-table-column>
             <el-table-column label="等级" align="center" width="150">
               <template slot-scope="props">
-                <el-select v-model="grade_id" value-key="grade_name" v-if="activeIndex==props.$index&&isEdit" :placeholder="props.row.grade_name" @change="selectDepName" class="width100 table-edit">
-                  <el-option :label="item.grade_name" :value="item.id" v-for="(item,index) in jobList" :key="item.grade_name"></el-option>
+                <el-select
+                  v-model="grade_id"
+                  value-key="grade_name"
+                  v-if="activeIndex==props.$index&&isEdit"
+                  :placeholder="props.row.grade_name"
+                  @change="selectDepName"
+                  class="width100 table-edit"
+                >
+                  <el-option
+                    :label="item.grade_name"
+                    :value="item.id"
+                    v-for="(item,index) in jobList"
+                    :key="item.grade_name"
+                  ></el-option>
                 </el-select>
                 <span v-else>{{ props.row.grade_name}}</span>
               </template>
             </el-table-column>
             <el-table-column label="操作" align="center" min-width="160">
               <template slot-scope="scope">
-                <el-button @click="handleEdit(scope.row,scope.$index)" v-if="!isEdit&&uid!=scope.row.uid&&activeIndex!=scope.$index" type="text" size="small">调整人员</el-button>
+                <el-button
+                  @click="handleEdit(scope.row,scope.$index)"
+                  v-if="!isEdit&&uid!=scope.row.uid&&activeIndex!=scope.$index"
+                  type="text"
+                  size="small"
+                >调整人员</el-button>
                 <span v-if="uid==scope.row.uid">团长</span>
                 <div v-if="isEdit&&activeIndex==scope.$index">
                   <el-button @click="handleSubmit" type="text" size="small">确认</el-button>
@@ -74,7 +207,16 @@
             </el-table-column>
           </el-table>
         </div>
-        <el-pagination class="team-pagination" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="formMember.page" :page-sizes="[10, 30, 50, 100]" :page-size="formMember.limit" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
+        <el-pagination
+          class="team-pagination"
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="formMember.page"
+          :page-sizes="[10, 30, 50, 100]"
+          :page-size="formMember.limit"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="total"
+        ></el-pagination>
       </div>
     </div>
   </el-dialog>
@@ -84,7 +226,7 @@ import { adjustmentList, getDepartmentRoleList } from '@/api/department'
 import { editTeamUserRole } from '@/api/team'
 export default {
   props: ['dialogTableVisible', 'departId'],
-  data () {
+  data() {
     return {
       teamId: '',
       formMember: {
@@ -108,24 +250,24 @@ export default {
       id: ''
     }
   },
-  created () {
+  created() {
     this.getJobList()
     this.getList(this.formMember)
   },
   computed: {
-    jobListAll () {
+    jobListAll() {
       return this.getArr(this.depList, this.depart_id)
     }
   },
   watch: {
-    departId (val) {
+    departId(val) {
       if (val) {
         this.getList(this.formMember)
       }
     }
   },
   methods: {
-    getJobList () {
+    getJobList() {
       let uid = localStorage.getItem('uid')
       getDepartmentRoleList({ uid }).then(res => {
         this.depList = res.data
@@ -133,18 +275,18 @@ export default {
         this.$message.error(error.status.remind)
       })
     },
-    selectDep (val) {
+    selectDep(val) {
       // this.jobListAll = this.getArr(this.depList, val)
       this.getList(this.formMember)
     },
-    selectDepName (val) {
+    selectDepName(val) {
       this.jobList = this.getArr(this.depList, val)
       console.log(this.jobList)
     },
-    selectDepGrade (index) {
+    selectDepGrade(index) {
       // this.activeIndex = index
     },
-    getArr (arr, id) {
+    getArr(arr, id) {
       let newArr = []
       arr.forEach(item => {
         if (item.id == id) {
@@ -153,7 +295,7 @@ export default {
       })
       return newArr
     },
-    getList (params) {
+    getList(params) {
       adjustmentList(params).then(res => {
         this.tableData = res.data.data
         this.total = res.data.count
@@ -161,26 +303,26 @@ export default {
         this.$message.error(error.status.remind)
       })
     },
-    handleSizeChange (val) {
+    handleSizeChange(val) {
       this.formMember.limit = val
       this.getList(this.formMember)
     },
-    handleCurrentChange (val) {
+    handleCurrentChange(val) {
       this.formMember.page = val
       this.getList(this.formMember)
     },
-    handleEdit (row, index) {
+    handleEdit(row, index) {
       this.activeIndex = index
       this.isEdit = true
       this.depInfo = row
     },
-    handleCloseEdit () {
+    handleCloseEdit() {
       this.activeIndex = -1
       this.isEdit = false
       this.departId = ''
       this.gradeId = ''
     },
-    handleSubmit () {
+    handleSubmit() {
       console.log(this.grade_id)
       let params = {
         userId: this.depInfo.uid,
@@ -204,113 +346,19 @@ export default {
         this.$message.error(error.status.remind)
       })
     },
-    handleClose () {
+    handleClose() {
       this.$emit('handleClose')
     },
-    handleSelectionChange (val) {
+    handleSelectionChange(val) {
       this.multipleSelection = val;
       this.$emit('handleSelectionChange', this.multipleSelection.length)
     },
-    dismissTeam () {
+    dismissTeam() {
       this.$emit('dismissTeam')
     },
-    querySearch () {
+    querySearch() {
       this.getList(this.formMember)
     }
   }
 }
 </script>
-<style lang="scss">
-.member-dialog {
-  &.table-dialog {
-    .el-dialog {
-      height: 600px;
-      overflow: auto;
-      .el-table {
-        height: 300px;
-        overflow: auto;
-      }
-      .el-table--scrollable-x .el-table__body-wrapper {
-        height:100%;
-      }
-    }
-  }
-  .member-row  {
-    &.turnover-row {
-      text-align: left;
-      .member-col1 {
-        text-align: center;
-      }
-      .team-pagination {
-        margin-top: 15px;
-      }
-      .memberForm {
-        .el-input__inner {
-          height: 38px;
-          line-height: 38px;
-        }
-        .action-btn {
-          margin-bottom:  0;
-        }
-        .el-form-item {
-          margin-bottom: 12px;
-        }
-      }  
-    }
-  }
-  .table-edit {
-    .el-input__inner {
-      border: none;
-      outline: none;
-    }
-    .el-input__inner:hover {
-      border: none;
-      outline: none;
-    }
-  }
-}
-.member-table {
-  &.turnover-box {
-    font-size:14px;
-    padding: 20px 15px;
-    .width300 {
-      width: 300px;
-    }
-  }
-  .action-btn {
-      color: #333333;
-      margin-bottom: 15px;
-      .el-button {
-        border-radius: 0;
-        height: 38px;
-      }
-      .select-text {
-        font-size: 14px;
-        margin: 0 5px;
-        color: #6A6A6A;
-      }
-      .width100 {
-        width: 100px;
-      }
-    }
-    .table {
-      border-top: 1px solid #eee;
-      border-bottom: 1px solid #eee;
-      padding: 10px 0;
-    }
-    .status {
-      position: relative;
-      margin-left: 10px;
-      &::before{
-        position: absolute;
-        content: "";
-        width:6px;
-        height: 6px;
-        border-radius: 50%;
-        top: 7px;
-        left: -20px;
-        background: #FF0000;
-      }
-    }
-}
-</style>

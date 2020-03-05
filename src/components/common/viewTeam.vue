@@ -1,3 +1,94 @@
+
+<style lang="scss">
+.member-dialog {
+  box-shadow: 0px 1px 43px 0px rgba(51, 51, 51, 0.3);
+  border-radius: 5px;
+  .el-dialog__body,
+  .el-dialog__header {
+    padding: 0;
+  }
+  .member-row {
+    width: 100%;
+    margin: 0 auto;
+    text-align: center;
+    color: #333333;
+    padding: 0 0 10px;
+    position: relative;
+    &.team-info-box {
+      .member-col1-comName {
+        color: #333;
+        font-size: 18px;
+        margin: 5px 0;
+      }
+      .member-col1-comLogo {
+        width: 68px;
+        height: 68px;
+        border-radius: 50%;
+      }
+      .member-col1-time {
+        color: #6a6a6a;
+        font-size: 12px;
+      }
+    }
+    .cancel-icon {
+      position: absolute;
+      top: 5px;
+      right: 0;
+    }
+    .member-col3 {
+      width: 82%;
+      border-top: 1px solid #eee;
+      padding-top: 10px;
+      margin: 0 auto;
+      .team-info-card-row {
+        width: 50%;
+        text-align: left;
+        &.team-info-card-row1 {
+          width: 100%;
+          .team-info-card-item {
+            span {
+              margin-left: 0;
+              &:nth-of-type(2) {
+                margin-left: 0;
+              }
+            }
+          }
+        }
+        .team-info-card-item {
+          line-height: 36px;
+          span {
+            display: inline-block;
+            width: 100px;
+            text-align: right;
+            margin-right: 30px;
+            font-size: 14px;
+            color: #6a6a6a;
+            &:nth-of-type(2) {
+              text-align: left;
+              color: #333;
+              width: auto;
+              margin-right: 0;
+            }
+          }
+        }
+      }
+    }
+  }
+  .dialog-footer {
+    margin-right: 0;
+    width: 92%;
+    margin: 0 auto;
+    .select-text {
+      font-size: 14px;
+      color: #6a6a6a;
+      .select-num {
+        color: #1890ff;
+      }
+    }
+  }
+}
+</style>
+
 <template>
   <el-dialog width="830px" title :visible.sync="dialogTableVisible" class="member-dialog" :show-close="false">
     <div class="member-row team-info-box" v-if="teamId">
@@ -75,126 +166,41 @@
 import { seeTeamInfo } from '@/api/company'
 export default {
   props: ['dialogTableVisible', 'addTime', 'teamId'],
-  data () {
+  data() {
     return {
       teamInfo: {},
       time: ''
     }
   },
   watch: {
-    teamId (val) {
+    teamId(val) {
       if (val) {
         let params = {
           teamId: this.teamId,
           uid: localStorage.getItem('uid')
         }
-        seeTeamInfo(params).then(res => {
-          this.teamInfo = res.data
-        }).catch(error => {
-          this.$message.error(error.status.remind)
-        })
+        seeTeamInfo(params)
+          .then(res => {
+            this.teamInfo = res.data
+          })
+          .catch(error => {
+            if (error) {
+              this.$message.warning(error.status.remind)
+            }
+          })
       }
     },
-    addTime (val) {
+    addTime(val) {
       if (val) {
         this.time = val
       }
     }
   },
   methods: {
-    handleClose () {
+    handleClose() {
       this.$emit('handleClose')
     }
   }
 }
 </script>
-
-<style lang="scss">
-.member-dialog {
-  box-shadow:0px 1px 43px 0px rgba(51,51,51,0.3);
-  border-radius:5px;
-  .el-dialog__body,.el-dialog__header {
-    padding: 0;
-  }
-  .member-row {
-    width: 100%;
-    margin: 0 auto;
-    text-align: center;
-    color: #333333;
-    padding: 0 0 10px;
-    position: relative;
-    &.team-info-box {
-      .member-col1-comName {
-        color: #333;
-        font-size:18px;
-        margin: 5px 0;
-      }
-      .member-col1-comLogo {
-        width: 68px;
-        height: 68px;
-        border-radius: 50%;
-      }
-      .member-col1-time{
-        color: #6A6A6A;
-        font-size: 12px;
-      }
-    }
-    .cancel-icon {
-      position: absolute;
-      top: 5px;
-      right: 0;
-    }
-    .member-col3 {
-      width: 82%;
-      border-top: 1px solid #eee;
-      padding-top: 10px;
-      margin: 0 auto;
-      .team-info-card-row {
-        width: 50%;
-        text-align: left;
-        &.team-info-card-row1 {
-          width: 100%;
-          .team-info-card-item {
-            span {
-              margin-left:0;
-              &:nth-of-type(2) {
-                margin-left:0;
-              }
-            }
-          }
-        }
-        .team-info-card-item {
-          line-height: 36px;
-          span {
-            display: inline-block;
-            width: 100px;
-            text-align: right;
-            margin-right: 30px;
-            font-size: 14px;
-            color: #6A6A6A;
-            &:nth-of-type(2) {
-              text-align: left;
-              color: #333;
-              width: auto;
-              margin-right: 0;
-            }
-          }
-        }
-      }
-    }
-  }
-  .dialog-footer {
-    margin-right: 0;
-    width: 92%;
-    margin: 0 auto;
-    .select-text {
-      font-size:14px;
-      color: #6A6A6A;
-      .select-num {
-        color: #1890FF;
-      }
-    }
-  }
-}
-</style>
 

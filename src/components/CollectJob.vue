@@ -1,9 +1,9 @@
 <style lang="scss">
-  @import '../assets/css/resume.scss';
-  .width120 {
-    width: 120px;
-    margin-right: 20px;
-  }
+@import '../assets/css/resume.scss';
+.width120 {
+  width: 120px;
+  margin-right: 20px;
+}
 </style>
 <template>
   <div class="tables-box billingManagement receipt-manage">
@@ -62,7 +62,7 @@
           </el-table-column>
           <el-table-column label="推荐状态" align="center" width="110" v-if="userPosition!=1">
             <template slot-scope="props">
-              <span class="status" :class="`status${props.row.t_status}`">{{props.row.t_status|recommendStatus}}</span>
+              <span class="status" :class="`active-status${props.row.t_status}`">{{props.row.t_status|recommendStatus}}</span>
             </template>
           </el-table-column>
           <el-table-column label="操作" align="center" min-width="150">
@@ -89,8 +89,19 @@
 </template>
 
 <script>
-import { getCollectList, teamcollection, recommendList, recommendTeamUserJob, teamCollectionJob } from '@/api/collect'
-import { moneyTypeList, rewardTypeList, recommendStatusList, rewardTypeList1 } from '@/base/base'
+import {
+  getCollectList,
+  teamcollection,
+  recommendList,
+  recommendTeamUserJob,
+  teamCollectionJob
+} from '@/api/collect'
+import {
+  moneyTypeList,
+  rewardTypeList,
+  recommendStatusList,
+  rewardTypeList1
+} from '@/base/base'
 import modal from './common/modal'
 import viewJob from './common/viewJob'
 export default {
@@ -99,26 +110,26 @@ export default {
     viewJob
   },
   filters: {
-    moneyType (val) {
+    moneyType(val) {
       let obj = moneyTypeList.find(item => {
         return val == item.value
       })
       return obj ? obj.label : '--'
     },
-    rewardType (val) {
+    rewardType(val) {
       let obj = rewardTypeList1.find(item => {
         return val == item.value
       })
       return obj ? obj.label : '--'
     },
-    recommendStatus (val) {
+    recommendStatus(val) {
       let obj = recommendStatusList.find(item => {
         return val == item.value
       })
       return obj ? obj.label : '--'
     }
   },
-  data () {
+  data() {
     return {
       moneyTypeList,
       rewardTypeList1,
@@ -133,7 +144,7 @@ export default {
         page: 1,
         jobStatus: 0,
         moneyType: 0,
-        reward_type: 0,
+        reward_type: 0
       },
       status: -1,
       total: 0,
@@ -148,96 +159,108 @@ export default {
         closeText: '继续浏览'
       },
       id: '',
-      userPosition: localStorage.getItem('userPosition')// 1 总经理，2经理，3 成员
+      userPosition: localStorage.getItem('userPosition') // 1 总经理，2经理，3 成员
     }
   },
-  created () {
+  created() {
     // 初始化查询标签数据
     this.getList(this.formMember)
   },
   methods: {
-    getList (params) {
-      getCollectList(params).then(res => {
-        this.tableData = res.data.data
-        this.total = res.data.count
-      }).catch(error => {
-        if (error) {
-          this.$message.error(error.status.remind)
-        }
-      })
+    getList(params) {
+      getCollectList(params)
+        .then(res => {
+          this.tableData = res.data.data
+          this.total = res.data.count
+        })
+        .catch(error => {
+          if (error) {
+            this.$message.error(error.status.remind)
+          }
+        })
     },
-    viewJob (val) {
+    viewJob(val) {
       this.id = val.job_id
       this.dialogJobVisible = true
     },
-    selectStatus (key, item) {
+    selectStatus(key, item) {
       if (key == 'status') {
         this.status = item.value
       }
       this.formMember[key] = item.value
       this.getList(this.formMember)
     },
-    handleSizeChange (val) {
+    handleSizeChange(val) {
       this.formMember.limit = val
       this.getList(this.formMember)
     },
-    handleCurrentChange (val) {
+    handleCurrentChange(val) {
       this.formMember.page = val
       this.getList(this.formMember)
     },
-    handleRecommend (val) {
+    handleRecommend(val) {
       let params = {
         jobId: val.job_id,
         id: val.id,
         uid: localStorage.getItem('uid')
       }
-      recommendTeamUserJob(params).then(res => {
-        if (res.data) {
-          this.$message.success('推荐成功')
-          this.getList(this.formMember)
-        }
-        else {
-          this.$message.error('推荐失败')
-        }
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+      recommendTeamUserJob(params)
+        .then(res => {
+          if (res.data) {
+            this.$message.success('推荐成功')
+            this.getList(this.formMember)
+          } else {
+            this.$message.error('推荐失败')
+          }
+        })
+        .catch(error => {
+          if (error) {
+            this.$message.warning(error.status.remind)
+          }
+        })
     },
-    handleCancle (val) {
+    handleCancle(val) {
       let params = {
         uid: localStorage.getItem('uid'),
         jobId: val.job_id
       }
-      teamCollectionJob(params).then(res => {
-        if (res.data) {
-          this.$message.success('取消成功')
-          this.getList(this.formMember)
-        } else {
-          this.$message.error('取消失败')
-        }
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+      teamCollectionJob(params)
+        .then(res => {
+          if (res.data) {
+            this.$message.success('取消成功')
+            this.getList(this.formMember)
+          } else {
+            this.$message.error('取消失败')
+          }
+        })
+        .catch(error => {
+          if (error) {
+            this.$message.warning(error.status.remind)
+          }
+        })
     },
-    handleApply (val) {
+    handleApply(val) {
       let params = {
         jobId: val.job_id,
         id: val.id,
         uid: localStorage.getItem('uid'),
         collectId: val.id
       }
-      teamcollection(params).then(res => {
-        this.$message.success('取消成功')
-        // this.dialogTableVisible = true
-        this.getList(this.formMember)
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+      teamcollection(params)
+        .then(res => {
+          this.$message.success('取消成功')
+          this.getList(this.formMember)
+        })
+        .catch(error => {
+          if (error) {
+            this.$message.warning(error.status.remind)
+          }
+        })
     },
-    handleOk () {
+    handleOk() {
       this.$router.push('/teamApplication')
     },
-    handleSearch () {
+    handleSearch() {
       this.getList(this.formMember)
     }
   }

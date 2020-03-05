@@ -18,10 +18,10 @@
               </p>
               <div class="resume-card-row">
                 <div class="resume-card-item">
-                  <el-form-item label="姓名" required prop="name">
+                  <el-form-item label="姓名" prop="name">
                     <el-input v-model="formMember.name" placeholder="请输入姓名" class="width300"></el-input>
                   </el-form-item>
-                  <el-form-item label="手机号码" required prop="mobile">
+                  <el-form-item label="手机号码" prop="mobile">
                     <el-input v-model="formMember.mobile" placeholder="请输入手机号码" class="width300"></el-input>
                   </el-form-item>
                   <el-form-item label="年龄">
@@ -39,8 +39,8 @@
                     </el-radio-group>
                   </el-form-item>
                   <el-form-item label="学历">
-                    <el-select v-model="formMember.education" value-key="key" placeholder="请选择学历" class="width300">
-                      <el-option :label="item" :value="key" v-for="(item,key) in edu_type" :key="key"></el-option>
+                    <el-select v-model="formMember.education" placeholder="请选择学历" class="width300">
+                      <el-option :label="item" :value="index" v-for="(item,index) in edu_type" :key="index"></el-option>
                     </el-select>
                   </el-form-item>
                   <el-form-item label="详细地址">
@@ -76,16 +76,15 @@
   </el-dialog>
 </template>
 <script>
-
 import { getConstant } from '@/api/dictionary'
 import districtSelet from '../districtSelet'
 import { selectCompanyResumeInfo } from '@/api/staff'
 export default {
   props: ['dialogTableVisible', 'staffId'],
   components: {
-    districtSelet,
+    districtSelet
   },
-  data () {
+  data() {
     return {
       formMember: {
         sex: 0,
@@ -95,22 +94,18 @@ export default {
         address: '',
         provinceid: '',
         cityid: '',
-        uid: localStorage.getItem('uid'),
+        uid: localStorage.getItem('uid')
       },
       rules: {
-        name: [
-          { required: true, message: '请输入名字', trigger: 'blur' },
-        ],
-        mobile: [
-          { required: true, message: '请输入手机号', trigger: 'blur' }
-        ]
+        name: [{ required: true, message: '请输入名字', trigger: 'blur' }],
+        mobile: [{ required: true, message: '请输入手机号', trigger: 'blur' }]
       },
       edu_type: [],
       ageList: [],
       address: []
     }
   },
-  created () {
+  created() {
     let params = 'edu_type'
     for (let i = 16; i < 46; i++) {
       this.ageList.push(i)
@@ -118,40 +113,63 @@ export default {
     this.getList(params)
   },
   watch: {
-    staffId (val) {
+    staffId(val) {
       if (val) {
         this.getInfo()
+      } else {
+        this.formMember = {
+          sex: 0,
+          education: '',
+          uid: localStorage.getItem('uid')
+        }
+        this.address = []
+      }
+    },
+    dialogTableVisible(val) {
+      if (!val) {
+        this.formMember = {
+          sex: 0,
+          education: '',
+          uid: localStorage.getItem('uid')
+        }
+        this.address = []
       }
     }
   },
   methods: {
-    getInfo () {
+    getInfo() {
       let params = {
         uid: localStorage.getItem('uid'),
         id: this.staffId
       }
-      selectCompanyResumeInfo(params).then(res => {
-        this.formMember = res.data
-        if (res.data.provinceid && res.data.cityid) {
-          this.address = [res.data.provinceid, res.data.cityid]
-        }
-
-      })
+      selectCompanyResumeInfo(params)
+        .then(res => {
+          this.formMember = res.data
+          this.formMember.education = Number(this.formMember.education)
+          if (res.data.provinceid && res.data.cityid) {
+            this.address = [res.data.provinceid, res.data.cityid]
+          }
+        })
+        .catch(error => {
+          if (error) {
+            this.$message.warning(error.status.remind)
+          }
+        })
     },
-    getList (filed) {
+    getList(filed) {
       getConstant({ filed }).then(res => {
         this.edu_type = res.data.edu_type
       })
     },
-    change (val) {
+    change(val) {
       this.formMember.provinceid = val[0]
       this.formMember.cityid = val[1]
     },
-    handleClose () {
+    handleClose() {
       this.$emit('handleClose')
     },
-    submitForm () {
-      this.$refs['formMember'].validate((valid) => {
+    submitForm() {
+      this.$refs['formMember'].validate(valid => {
         if (valid) {
           this.formMember.uid = localStorage.getItem('uid')
           this.$emit('submitForm', this.formMember)

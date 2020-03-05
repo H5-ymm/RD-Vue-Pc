@@ -40,24 +40,26 @@
 <script>
 import { goLogin, getCode } from '../api/login'
 export default {
-  data () {
-    let validatereg = function (rule, value, callback) {   //验证用户名是否合法
-      let reg = /^1[3456789]\d{9}$/;
+  data() {
+    let validatereg = function(rule, value, callback) {
+      //验证用户名是否合法
+      let reg = /^1[3456789]\d{9}$/
       console.log(value)
-      if (!(reg.test(value))) {
-        callback(new Error('手机号格式不正确'));
+      if (!reg.test(value)) {
+        callback(new Error('手机号格式不正确'))
       } else {
-        callback();
+        callback()
       }
-    };
-    let validatePassReg = function (rule, value, callback) {   //验证密码是否合法
-      let reg = /^[a-zA-Z][a-zA-Z0-9]{6,30}$/;
+    }
+    let validatePassReg = function(rule, value, callback) {
+      //验证密码是否合法
+      let reg = /^[a-zA-Z][a-zA-Z0-9]{6,30}$/
       if (reg.test(value) == true) {
-        callback();
+        callback()
       } else {
-        callback(new Error('密码不合法(请输入数字或字母)'));
+        callback(new Error('密码不合法(请输入数字或字母)'))
       }
-    };
+    }
     return {
       formTab: {
         name: '',
@@ -70,26 +72,32 @@ export default {
         passwords: 'test1234',
         checked: false
       },
-      formTabs: {  //验证规则
+      formTabs: {
+        //验证规则
         name: [
           { message: '请输入手机号', trigger: 'blur' },
           { validator: validatereg, trigger: 'blur' }
         ],
         passwords: [
           { message: '请输入密码', trigger: 'blur' },
-          { min: 6, max: 30, message: '长度在 6 到 30 个字符', trigger: 'blur' },
+          {
+            min: 6,
+            max: 30,
+            message: '长度在 6 到 30 个字符',
+            trigger: 'blur'
+          },
           { validator: validatePassReg, trigger: 'blur' }
         ]
       },
       loginWay: 1,
-      content: '发送验证码',  // 按钮里显示的内容
+      content: '发送验证码', // 按钮里显示的内容
       totalTime: 60,
       timer: null,
       canClick: true
     }
   },
   methods: {
-    sendCode () {
+    sendCode() {
       if (!this.formTab.name) {
         return this.$message.warning('手机号不能为空')
       }
@@ -98,8 +106,8 @@ export default {
         console.log(res)
       })
     },
-    countDown () {
-      if (!this.canClick) return  //改动的是这两行代码
+    countDown() {
+      if (!this.canClick) return //改动的是这两行代码
       this.canClick = false
       this.content = this.totalTime + 's后重发'
       let clock = window.setInterval(() => {
@@ -109,166 +117,168 @@ export default {
           window.clearInterval(clock)
           this.content = '重新发送验证码'
           this.totalTime = 60
-          this.canClick = true  //这里重新开启
+          this.canClick = true //这里重新开启
         }
       }, 1000)
     },
-    switchLogin (index) {
+    switchLogin(index) {
       this.loginWay = index
       this.formTab.type = index
       this.formTab.name = ''
     },
-    onSubmit (formName) {
-      this.$refs[formName].validate((valid) => {
+    onSubmit(formName) {
+      this.$refs[formName].validate(valid => {
         if (valid) {
           console.log(this.formTab)
-          goLogin(this.formTab).then(res => {
-            localStorage.setItem('userType', res.data.type)
-            let registerType = res.data.type
-            localStorage.setItem('token', res.data.token)
-            localStorage.setItem('uid', res.data.uid)
-            localStorage.setItem('userName', res.data.username)
-            // 登录人身份
-            sessionStorage.setItem('userPosition', res.data.gradeNum)
-            this.$emit('goLogin', res.data.token)
-          }).catch(error => {
-            console.log(error)
-            return this.$message.error(error.status.remind)
-          })
+          goLogin(this.formTab)
+            .then(res => {
+              localStorage.setItem('userType', res.data.type)
+              let registerType = res.data.type
+              localStorage.setItem('token', res.data.token)
+              localStorage.setItem('uid', res.data.uid)
+              localStorage.setItem('userName', res.data.username)
+              // 登录人身份
+              sessionStorage.setItem('userPosition', res.data.gradeNum)
+              this.$emit('goLogin', res.data.token)
+            })
+            .catch(error => {
+              console.log(error)
+              return this.$message.error(error.status.remind)
+            })
         } else {
           return false
         }
       })
     },
 
-    onForget () {
+    onForget() {
       this.$router.push('/load')
     }
-
   },
-  components: {
-
-  },
-  created () {  //验证Token   
-
+  components: {},
+  created() {
+    //验证Token
   }
 }
 </script>
 
 <style >
 .form-box {
-  width:90%;
-  margin:0 auto;
+  width: 90%;
+  margin: 0 auto;
   overflow: hidden;
 }
 .login-view {
-  width:100%;
+  width: 100%;
   height: 100%;
-  background:rgba(255,255,255,1);
+  background: rgba(255, 255, 255, 1);
 }
 .x-flex-between {
   display: flex;
-  justify-content:space-between;
+  justify-content: space-between;
   align-items: center;
 }
 .login-view-btn {
-  margin:20px 0;
-  color:rgba(153,153,153,1);
+  margin: 20px 0;
+  color: rgba(153, 153, 153, 1);
 }
-.login-view-btn  .button{
-   margin-right:10px;
+.login-view-btn .button {
+  margin-right: 10px;
 }
 .login-view-btn .active {
-  color:#6A6A6A;
+  color: #6a6a6a;
 }
 .login-view .el-form-item {
   margin-bottom: 0;
 }
 .login-view .el-input__inner {
-  border-radius:3px;
-  background:#eee;
-  border:none;
+  background: #eee;
+  border: none;
 }
 .login-view .el-input-group__prepend {
-  border:none;
-  background:#eee;
-  padding: 0 0 0 20px ;
+  border: none;
+  background: #eee;
+  padding: 0 0 0 20px;
 }
 .login-view .error {
-  position:absolute;
-  top:16%;
-  right:0;
-  color:#FE2A00;
-  font-size:12px;
+  position: absolute;
+  top: 16%;
+  right: 0;
+  color: #fe2a00;
+  font-size: 12px;
 }
 .login-view .errorInfo {
-  right:0;
-  width:100%;
-  height:20px;
-  top:-16px;
-  text-align:center;
-  line-height:20px;
-  background:rgba(254,42,0,0.1);
-  border-radius:3px;
- }
+  right: 0;
+  width: 100%;
+  height: 20px;
+  top: -16px;
+  text-align: center;
+  line-height: 20px;
+  background: rgba(254, 42, 0, 0.1);
+  border-radius: 3px;
+}
 .login-view .el-input-group__prepend span {
-  opacity:1;
-  display:inline-block;
+  opacity: 1;
+  display: inline-block;
 }
 .login-view .inputCode {
-  width: 70%!important;
-  margin-right:10px;
-  display:block;
+  width: 70% !important;
+  margin-right: 10px;
+  display: block;
 }
 .login-view .code-btn {
-  width: 130px!important;
-  position:absolute;
-  bottom:0;
-  right:0;
-  border-radius:0;
+  width: 130px !important;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  border-radius: 3px;
 }
 .login-view .code-btn.small-code-btn {
-   width: 70px!important;
-   font-size: 12px;
-   padding: 12px 4px 11px;
-   bottom:1px;
+  width: 70px !important;
+  font-size: 12px;
+  padding: 12px 4px 11px;
+  bottom: 1px;
 }
 
 .login-view .disabled {
-  background:rgba(204,204,204,1);
-  border:none;
+  background: rgba(204, 204, 204, 1);
+  border: none;
 }
 .login-view .password {
-  text-align:right;
-  color:#6A6A6A;
-  font-size:14px;
+  text-align: right;
+  color: #6a6a6a;
+  font-size: 14px;
 }
-.login-view .el-button--primary{
+.login-view .el-button--primary {
   width: 100%;
 }
-.texts{
+.texts {
   text-align: center;
 }
-.passwords{
+.passwords {
   text-align: right;
 }
 /* .submit-btn{
   margin-top: -10px;
 } */
-.login{
-  background:linear-gradient(180deg,rgba(24,144,255,1),rgba(89,175,255,1));
-  border-radius:20px;
-  border:none;
+.login {
+  background: linear-gradient(
+    180deg,
+    rgba(24, 144, 255, 1),
+    rgba(89, 175, 255, 1)
+  );
+  border-radius: 20px;
+  border: none;
 }
 .login-view .text {
-  text-align:right;
-  font-size:14px;
-  margin-right:30px;
-  color:#333333;
+  text-align: right;
+  font-size: 14px;
+  margin-right: 30px;
+  color: #333333;
   margin-top: 20px;
 }
-.text  a {
-  color:#1890FF;
+.text a {
+  color: #1890ff;
 }
 .loginRight {
   margin-top: 8px;

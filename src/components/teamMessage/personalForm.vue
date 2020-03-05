@@ -1,17 +1,29 @@
 <style lang="scss">
-@import '@/assets/css/formMessage.scss';
+@import "@/assets/css/formMessage.scss";
 </style>
 <template>
   <div class="teamMessage">
     <div class="title">基本信息</div>
     <div class="teamMessage-form-row">
-      <el-form :model="personalForm" :rules="rules" ref="personalForm" label-width="110px" class="teamMessage-form">
+      <el-form
+        :model="personalForm"
+        :rules="rules"
+        ref="personalForm"
+        label-width="110px"
+        class="teamMessage-form"
+      >
         <el-form-item label="团队名称" prop="team_name">
           <el-input v-model="personalForm.team_name" class="width408" placeholder="请输入团队名称"></el-input>
         </el-form-item>
         <el-form-item label="团队logo" required>
-          <el-upload class="avatar-uploader" action="customize" ref="upload" :show-file-list="false" :http-request="upload">
-            <img v-if="imageUrl" :src="imageUrl" class="avatar" />
+          <el-upload
+            class="avatar-uploader"
+            action="customize"
+            ref="upload"
+            :show-file-list="false"
+            :http-request="upload"
+          >
+            <img v-if="imageUrl" :src="imageUrl" class="avatar">
             <i v-else class="el-icon-circle-plus avatar-uploader-icon"></i>
             <p>上传logo</p>
           </el-upload>
@@ -42,7 +54,13 @@
           </div>
         </el-form-item>
         <el-form-item label="团队简介" prop="introduction" placeholder="请输入团队简介">
-          <el-input type="textarea" class="width408" :autosize="{minRows: 5}" v-model="personalForm.introduction" placeholder="请输入团队介绍"></el-input>
+          <el-input
+            type="textarea"
+            class="width408"
+            :autosize="{minRows: 5}"
+            v-model="personalForm.introduction"
+            placeholder="请输入团队介绍"
+          ></el-input>
         </el-form-item>
         <el-form-item class="teamMessage-btn">
           <el-button type="primary" @click="submitForm('personalForm')">保存</el-button>
@@ -57,23 +75,23 @@
 import { getConstant } from '@/api/dictionary'
 import districtSelet from '../districtSelet'
 import { getImg, getImgUrl, validateIdCard } from '@/util/util'
-import { updateTeamInfo, getTeamInfo } from '@/api/team'
+import { getTeamInfo } from '@/api/team'
 import { uploadFile } from '@/api/upload'
 export default {
   components: {
     districtSelet
   },
-  data () {
+  data() {
     var validate = (rule, value, callback) => {
       if (value === '') {
-        callback(new Error('请输入身份证号码'));
+        callback(new Error('请输入身份证号码'))
       } else {
         if (!validateIdCard(value)) {
-          callback(new Error('请输入正确的身份证号码'));
+          callback(new Error('请输入正确的身份证号码'))
         }
         callback()
       }
-    };
+    }
     return {
       personalForm: {
         type: 2,
@@ -90,18 +108,18 @@ export default {
           { validator: validate, trigger: 'blur' }
         ],
         user_name: [
-          { require: true, message: '请输入申请人姓名', trigger: 'blur' },
+          { require: true, message: '请输入申请人姓名', trigger: 'blur' }
         ],
         introduction: [
-          { require: true, message: '请输入团队简介', trigger: 'blur' },
-        ],
+          { require: true, message: '请输入团队简介', trigger: 'blur' }
+        ]
       },
       edu_type: [],
       uid: localStorage.getItem('uid'),
       address: []
-    };
+    }
   },
-  created () {
+  created() {
     this.personalForm.id = this.$route.query.teamId
     let params = 'edu_type'
     this.getList(params)
@@ -110,7 +128,7 @@ export default {
     }
   },
   methods: {
-    getInfo (uid) {
+    getInfo(uid) {
       getTeamInfo({ uid }).then(res => {
         if (res.data) {
           this.personalForm = res.data || {}
@@ -118,54 +136,60 @@ export default {
             this.imageUrl = getImgUrl(this.personalForm.log)
           }
           this.personalForm.type = this.$route.query.type
-          this.address.push(this.personalForm.provinceid, this.personalForm.cityid, this.personalForm.three_cityid)
+          this.address.push(
+            this.personalForm.provinceid,
+            this.personalForm.cityid,
+            this.personalForm.three_cityid
+          )
         }
       })
     },
-    getList (filed) {
+    getList(filed) {
       getConstant({ filed }).then(res => {
         this.edu_type = res.data.edu_type
       })
     },
-    upload (params) {
-      const _file = params.file;
-      const isLt2M = _file.size / 1024 / 1024 < 2;
+    upload(params) {
+      const _file = params.file
+      const isLt2M = _file.size / 1024 / 1024 < 2
       if (!isLt2M) {
-        this.$message.error("请上传2M以下的.xlsx文件");
-        return false;
+        this.$message.error('请上传2M以下的.xlsx文件')
+        return false
       }
       uploadFile(_file).then(res => {
         this.imageUrl = getImg(_file)
         this.personalForm.log = res.data.url
       })
     },
-    change (val) {
+    change(val) {
       this.personalForm.provinceid = val[0]
       this.personalForm.cityid = val[1]
       this.personalForm.three_cityid = val[2]
     },
-    submitForm (personalForm) {
-      this.$refs[personalForm].validate((valid) => {
+    submitForm(personalForm) {
+      this.$refs[personalForm].validate(valid => {
         if (valid) {
-          updateTeamInfo(this.personalForm).then(res => {
-            if (res.status.code == 200) {
-              localStorage.setItem('teamType', 2)
-              this.$message.success('保存成功')
-              this.$router.push('userlist')
-            }
-            else {
-              this.$message.error('保存失败')
-            }
-          }).catch(error => {
-            this.$message.error(error.status.remind)
-          })
+          this.$store
+            .dispatch('editTeamInfo', this.personalForm)
+            .then(res => {
+              if (res.data) {
+                localStorage.setItem('teamType', 2)
+                this.$message.success('保存成功')
+                this.$router.push('/userlist')
+              } else {
+                this.$message.error('保存失败')
+              }
+            })
+            .catch(error => {
+              this.$message.error(error.status.remind)
+            })
         } else {
           return false
         }
-      });
+      })
     },
-    resetForm () {
-      this.getInfo(this.personalForm.id)
+    resetForm() {
+      this.$router.push('/userlist')
     }
   }
 }

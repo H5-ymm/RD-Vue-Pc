@@ -1,6 +1,6 @@
 <template>
   <div class="table dep-table">
-    <el-table border :data="tableData" ref="multipleTable" style="width: 100%">
+    <el-table border="" :data="tableData" ref="multipleTable" style="width: 100%">
       <el-table-column label="部门名称" prop="depart_name" align="center" width="150"></el-table-column>
       <el-table-column label="部门经理" prop="user_name" align="center" width="150"></el-table-column>
       <el-table-column label="联系电话" prop="mobile" align="center" width="150"></el-table-column>
@@ -23,13 +23,8 @@
 </template>
 <script>
 export default {
-  props: {
-    tableData: {
-      type: []
-    }
-  },
   props: ['tableData'],
-  data () {
+  data() {
     return {
       memberInfo: {},
       teamId: '',
@@ -37,38 +32,38 @@ export default {
     }
   },
   methods: {
-    handleTurnover (row) {
+    handleTurnover(row) {
       this.memberInfo = row
       this.teamId = row.uid
       sessionStorage.setItem('depId', row.id)
       this.$emit('handleTurnover', row.id)
     },
-    handleSelectionChange (val) {
+    handleSelectionChange(val) {
       this.multipleSelection = val;
       this.$emit('handleSelectionChange', this.multipleSelection.length)
     },
-    handleDel (row) {
+    handleDel(row) {
       this.$emit('handleDel', row.id)
     }
   }
 }
 </script>
 <style lang="scss">
-  .table {
-    border-top: 1px solid #eee;
-    border-bottom: 1px solid #eee;
-    padding: 10px 0;
-    &.dep-table {
-      height:60%;
-      .table-list {
-         height: 100%;
-      }
-      .el-table  {
-         height: 100%;
-        .el-table__body-wrapper {
-          height: 100%;
-        }
+.table {
+  border-top: 1px solid #eee;
+  border-bottom: 1px solid #eee;
+  padding: 10px 0;
+  &.dep-table {
+    height: 60%;
+    .table-list {
+      height: 100%;
+    }
+    .el-table {
+      height: 100%;
+      .el-table__body-wrapper {
+        height: 100%;
       }
     }
   }
+}
 </style>

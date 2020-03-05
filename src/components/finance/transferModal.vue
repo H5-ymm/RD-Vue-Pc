@@ -60,21 +60,19 @@ export default {
     dialogTableVisible: false,
     payType: { type: Number, default: 1 }
   },
-  data () {
+  data() {
     return {
-      list: [
-        'yyy', 'kkkk'
-      ],
+      list: ['yyy', 'kkkk'],
       checkList: [],
       name: '',
       input: ''
     }
   },
   methods: {
-    handleClose () {
+    handleClose() {
       this.$emit('handleClose')
     },
-    submit () {
+    submit() {
       this.$emit('handleOk', this.checkList)
     }
   }
@@ -83,9 +81,10 @@ export default {
 
 <style lang="scss">
 .member-dialog {
-  box-shadow:0px 1px 43px 0px rgba(51,51,51,0.3);
-  border-radius:5px;
-  .el-dialog__body,.el-dialog__header {
+  box-shadow: 0px 1px 43px 0px rgba(51, 51, 51, 0.3);
+  border-radius: 5px;
+  .el-dialog__body,
+  .el-dialog__header {
     padding: 0;
   }
   .member-row {
@@ -101,14 +100,14 @@ export default {
       padding-bottom: 20px;
       text-align: center;
       font-size: 14px;
-       .el-alert {
-         padding: 2px 20px;
-       }
+      .el-alert {
+        padding: 2px 20px;
+      }
       .el-alert--error.is-light {
-        color: #FE2A00;
+        color: #fe2a00;
       }
       .money {
-        color: #FE2A00;
+        color: #fe2a00;
         font-size: 20px;
         font-weight: bold;
         .big-money {
@@ -127,7 +126,7 @@ export default {
         .resume-info-card {
           line-height: 32px;
           .resume-col1 {
-            color: #6A6A6A;
+            color: #6a6a6a;
             width: 100px;
             text-align: right;
             margin-right: 20px;
@@ -147,24 +146,22 @@ export default {
             height: 30px;
             color: #333;
             margin-right: 15px;
-            border-radius:4px;
+            border-radius: 4px;
             font-size: 16px;
             .el-input__inner {
-              padding: 0;
               width: 30px;
-              height: 30px;
-              line-height: 30px;
+              padding: 15px 0;
               text-align: center;
             }
           }
-          .pay-password{
+          .pay-password {
             padding-top: 20px;
             position: relative;
             .error {
               position: absolute;
               top: 0;
               right: 30%;
-              color: #FE2A00;
+              color: #fe2a00;
               font-size: 12px;
             }
           }

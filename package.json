@@ -8,11 +8,11 @@
   },
   "dependencies": {
     "axios": "^0.18.0",
+    "babel-polyfill": "^6.26.0",
     "core-js": "^2.6.5",
+    "default-passive-events": "^1.0.10",
     "echarts": "^4.6.0",
     "element-ui": "^2.8.2",
-    "emoji-vue": "^0.2.4",
-    "mavon-editor": "^2.7.4",
     "moment": "^2.24.0",
     "quill-image-drop-module": "^1.0.3",
     "quill-image-resize-module": "^3.0.0",

@@ -28,7 +28,7 @@
         </el-form-item>
         <el-form-item label="意向工资：">
           <el-select v-model="formMember.money" class="width300" placeholder="请选择意向工资">
-            <el-option :label="item.label" :value="item.value" v-for="(item,index) in moneyTypeList" :key="index"></el-option>
+            <el-option :label="item" :value="key" v-for="(item,key) in moneyArray" :key="key"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="跟进时间：">
@@ -96,12 +96,12 @@
 </template>
 <script>
 import { quitResumeList, quitUser, exportDelResumeList } from '@/api/resume'
-import { moneyTypeList, rewardTypeList, followStatusList } from '../../base/base'
+import { moneyTypeList, rewardTypeList, followStatusList } from '@/base/base'
 import followUpRecord from './followUpRecord'
 import confirmDialog from '../common/confirmDialog'
 import districtSelet from '../districtSelet'
 import viewResume from './viewResume'
-import { getConstant } from '../../api/dictionary'
+import { getConstant } from '@/api/dictionary'
 export default {
   components: {
     viewResume,
@@ -110,20 +110,20 @@ export default {
     followUpRecord
   },
   filters: {
-    moneyType (val) {
+    moneyType(val) {
       let obj = moneyTypeList.find(item => {
         return val == item.value
       })
       return obj ? obj.label : '--'
     },
-    rewardType (val) {
+    rewardType(val) {
       let obj = rewardTypeList.find(item => {
         return val == item.value
       })
       return obj ? obj.label : '--'
-    },
+    }
   },
-  data () {
+  data() {
     return {
       moneyTypeList,
       rewardTypeList,
@@ -138,90 +138,90 @@ export default {
         placeholder: '请输入放弃详情'
       },
       tableData: [],
-      currentPage: 1,
-      userType: 1,
       formMember: {
         uid: localStorage.getItem('uid'),
         limit: 10,
         page: 1
       },
       total: 0,
-      len: 0,
-      userId: '',
-      form: {},
-      activeIndex: 0,
       resumeId: '',
-      trackList: [],
-      timeList: []
+      timeList: [],
+      moneyArray: {}
     }
   },
-  created () {
+  created() {
     // 初始化查询标签数据
     this.getList(this.formMember)
+    let params = 'resume_intention_salary'
+    this.getData(params)
   },
   methods: {
-    getList (params) {
+    getList(params) {
       quitResumeList(params).then(res => {
-        const { data } = res
-        this.tableData = data.data
-        this.total = data.count
+        this.tableData = res.data.data
+        this.total = res.data.count
       })
     },
-    changeDate (val) {
+    getData(filed) {
+      getConstant({ filed })
+        .then(res => {
+          this.moneyArray = res.data.resume_intention_salary
+        })
+        .catch(error => {
+          if (error) {
+            this.$message.error(error.status.remind)
+          }
+        })
+    },
+    changeDate(val) {
       this.formMember.beginTime = val ? val[0] : ''
       this.formMember.endTime = val ? val[1] : ''
     },
-    exportResume () {
+    exportResume() {
       let uid = localStorage.getItem('uid')
       exportDelResumeList(uid)
     },
-    sortChange (column) {
+    sortChange(column) {
       if (column.order == 'ascending') {
         this.formMember.timeDesc = 'asc'
-      }
-      else {
+      } else {
         this.formMember.timeDesc = 'desc'
       }
       this.getList(this.formMember)
     },
-    viewResume (val) {
+    viewResume(val) {
       this.dialogTableVisible = true
       this.resumeId = val.resume_id
     },
-    change (val) {
+    change(val) {
       this.formMember.provinceid = val ? val[0] : ''
       this.formMember.cityid = val ? val[1] : ''
     },
-    selectStatus (item, index) {
-      this.activeIndex = index
-      this.formMember.status = item.value
-    },
-    handleSizeChange (val) {
+    handleSizeChange(val) {
       this.formMember.limit = val
       this.getList(this.formMember)
     },
-    handleCurrentChange (val) {
+    handleCurrentChange(val) {
       this.formMember.page = val
       this.getList(this.formMember)
     },
-    viewRecord (val) {
+    viewRecord(val) {
       this.followUpRecordVisible = true
       this.resumeId = val.id
-      // this.trackList = val.trackList
     },
-    submitRecord (val) {
+    submitRecord(val) {
       this.followUpRecordVisible = false
       this.getList(this.formMember)
     },
-    abandoned (val) {
+    abandoned(val) {
       this.visible = true
       this.resumeId = val.resume_id
     },
-    handleClose () {
+    handleClose() {
       this.visible = false
       this.resumeId = ''
     },
-    submit (val) {
+    submit(val) {
       let params = {
         uid: localStorage.getItem('uid'),
         id: this.resumeId,
@@ -233,11 +233,10 @@ export default {
         this.getList(this.formMember)
       })
     },
-    onSubmit (value) {
-      let params = Object.assign(this.formMember, value)
-      this.getList(params)
+    onSubmit(value) {
+      this.getList(this.formMember)
     },
-    onReset () {
+    onReset() {
       this.formMember = {
         uid: localStorage.getItem('uid'),
         limit: 10,

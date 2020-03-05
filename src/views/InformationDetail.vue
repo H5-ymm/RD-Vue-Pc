@@ -1,5 +1,5 @@
 <style lang="scss">
- @import '@/assets/css/information.scss';
+@import '@/assets/css/information.scss';
 </style>
 <template>
   <el-container class="orderTaking">
@@ -72,7 +72,7 @@ export default {
     HeaderView,
     AsideBox
   },
-  data () {
+  data() {
     return {
       params: {
         type: '',
@@ -91,7 +91,7 @@ export default {
       isShow: false
     }
   },
-  created () {
+  created() {
     if (sessionStorage.getItem('id')) {
       this.id = sessionStorage.getItem('id')
     } else {
@@ -103,77 +103,97 @@ export default {
     this.switchNextPage(1)
     this.getHortInquiryList()
   },
-  mounted () {
+  mounted() {
     document.scrollingElement.scrollTop = 0
     window.addEventListener('scroll', this.windowScroll)
   },
   methods: {
-    getInfo (id, page) {
+    getInfo(id, page) {
       if (page) {
         this.id = this.getId(page)
         this.switchPage(page)
       }
-      inquiryInfo({ id }).then(res => {
-        this.info = res.data
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+      inquiryInfo({ id })
+        .then(res => {
+          this.info = res.data
+        })
+        .catch(error => {
+          if (error) {
+            this.$message.warning(error.status.remind)
+          }
+        })
     },
-    getHortInquiryList () {
-      hortInquiryList().then(res => {
-        console.log(res.data)
-        this.hortInquiryList = res.data
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+    getHortInquiryList() {
+      hortInquiryList()
+        .then(res => {
+          console.log(res.data)
+          this.hortInquiryList = res.data
+        })
+        .catch(error => {
+          if (error) {
+            this.$message.warning(error.status.remind)
+          }
+        })
     },
-    windowScroll () {
-      let scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
+    windowScroll() {
+      let scrollTop =
+        window.pageYOffset ||
+        document.documentElement.scrollTop ||
+        document.body.scrollTop
       if (scrollTop > 100) {
         this.isShow = true
-      }
-      else {
+      } else {
         this.isShow = false
       }
     },
-    getId (page) {
+    getId(page) {
       let id
       this.ids.forEach((item, index) => {
         if (item == this.id) {
-          if ((index == 0 && page == -1) || (index == this.ids.length && page == 1)) {
+          if (
+            (index == 0 && page == -1) ||
+            (index == this.ids.length && page == 1)
+          ) {
             id = ''
-          }
-          else {
+          } else {
             id = this.ids[index + page]
           }
         }
       })
       return id
     },
-    switchPage (page) {
+    switchPage(page) {
       let id = this.getId(page)
       if (id) {
-        inquiryInfo({ id }).then(res => {
-          this.lastTitle = res.data.title
-        }).catch(error => {
-          this.$message.error(error.status.remind)
-        })
+        inquiryInfo({ id })
+          .then(res => {
+            this.lastTitle = res.data.title
+          })
+          .catch(error => {
+            if (error) {
+              this.$message.warning(error.status.remind)
+            }
+          })
       }
       // sessionStorage.setItem('id', this.id)
     },
-    switchNextPage (page) {
+    switchNextPage(page) {
       let id = this.getId(page)
       if (id) {
-        inquiryInfo({ id }).then(res => {
-          this.nextTitle = res.data.title
-        }).catch(error => {
-          this.$message.error(error.status.remind)
-        })
+        inquiryInfo({ id })
+          .then(res => {
+            this.nextTitle = res.data.title
+          })
+          .catch(error => {
+            if (error) {
+              this.$message.warning(error.status.remind)
+            }
+          })
       }
       // sessionStorage.setItem('id', this.id)
     }
   },
-  destroyed () {
+  destroyed() {
     window.removeEventListener('scroll', this.windowScroll)
   }
 }

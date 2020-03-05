@@ -2,12 +2,13 @@
 <style lang="scss">
 .table-list {
   background: #fff;
-  border-radius:10px;
+  border-radius: 10px;
   padding: 15px;
   .team-pagination {
     margin-top: 20px;
+    margin-left: 0;
   }
- .member-table {
+  .member-table {
     .action-btn {
       color: #333333;
       margin-bottom: 15px;
@@ -16,39 +17,66 @@
       }
       .select-text {
         font-size: 14px;
-        margin: 0 5px;
-        color: #6A6A6A;
+        margin: 0 5px 0 15px;
+        color: #6a6a6a;
       }
     }
   }
 }
-.tables-box{
-  overflow: hidden;
-  margin-bottom: 60px;
-}
-.team-info-row {
-  margin: 20px 0;
-}
-.box-card p {
-  font-size:16px;
-}
-.box-card p:nth-of-type(2) {
-  font-size:32px;
-  margin-top: 10px;
+.tables-box {
+  // overflow: hidden;
+  // margin-bottom: 60px;
 }
 </style>
 
 <template>
   <div class="tables-box">
-    <memberCard :userType="userType" @refurbish="refurbish" :teamInfo="teamInfo"></memberCard>
+    <memberCard :teamInfo="teamInfo"></memberCard>
     <div class="table-list">
       <memberQuery @onSubmit="onSubmit"></memberQuery>
-      <memberTable :total="total" :tableData="tableData" @handleEdit="handleEdit" @dismissTeam="dismissTeam" @handleView="handleView" @addMember="addMember" @handleDel="handleDel" @handleSelectionChange="handleSelectionChange"></memberTable>
-      <el-pagination class="team-pagination" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="formMember.page" :page-sizes="[10, 30, 50, 100]" :page-size="formMember.limit" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
+      <memberTable
+        :total="total"
+        :tableData="tableData"
+        @handleEdit="handleEdit"
+        @dismissTeam="dismissTeam"
+        @handleView="handleView"
+        @addMember="addMember"
+        @handleDel="handleDel"
+      ></memberTable>
+      <el-pagination
+        class="team-pagination"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="formMember.page"
+        :page-sizes="[10, 30, 50, 100]"
+        :page-size="formMember.limit"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total"
+      ></el-pagination>
     </div>
-    <memberAdd :dialogTableVisible="visible" @handleClose="visible=false,userId='',teamInfo={}" :id="userId" @submitForm="submitForm"></memberAdd>
-    <memberInfo :dialogTableVisible="dialogTableVisible" :isView="isView" :userId="userId" @submitMember="submitMember"></memberInfo>
-    <infoTip :centerDialogVisible="dialogVisible" :modalInfo="modalInfo" @handleClose="dialogVisible=false"></infoTip>
+    <memberAdd
+      :dialogTableVisible="visible"
+      @handleClose="visible=false,userId='',teamInfo={}"
+      :id="userId"
+      @submitForm="submitForm"
+    ></memberAdd>
+    <memberInfo
+      :dialogTableVisible="dialogTableVisible"
+      :isView="isView"
+      :userId="userId"
+      @submitMember="submitMember"
+    ></memberInfo>
+    <infoTip
+      :centerDialogVisible="dialogVisible"
+      :modalInfo="modalInfo"
+      @handleClose="dialogVisible=false"
+    ></infoTip>
+    <modal
+      :dialogTableVisible="dialogModalVisible"
+      @handleOk="handleOk"
+      :modalObj="modalObj"
+      @handleClose="dialogModalVisible=false"
+    ></modal>
   </div>
 </template>
 
@@ -59,8 +87,15 @@ import memberTable from './membership/memberTable'
 import memberInfo from './membership/memberInfo'
 import memberAdd from './membership/memberAdd'
 import infoTip from './common/infoTip'
-import { getTeamList, loginOutTeam, addTeamUser, updateTeamUser } from '../api/team'
-import memberInfoVue from './membership/memberInfo.vue';
+import modal from './common/modal'
+import {
+  getTeamList,
+  loginOutTeam,
+  addTeamUser,
+  updateTeamUser,
+  deleteTeamUser
+} from '@/api/team'
+import memberInfoVue from './membership/memberInfo.vue'
 export default {
   components: {
     memberCard,
@@ -68,18 +103,26 @@ export default {
     memberTable,
     memberInfo,
     memberAdd,
-    infoTip
+    infoTip,
+    modal
   },
-  data () {
+  data() {
     return {
       dialogTableVisible: false,
       visible: false,
       dialogVisible: false,
+      dialogModalVisible: false,
+      isView: false,
       modalInfo: {
         title: '您的信息未完善！',
         okText: '前去完善',
         closeText: '',
         imgBg: require('../assets/img/info.png')
+      },
+      modalObj: {
+        content: '',
+        okText: '确定',
+        closeText: '取消'
       },
       tableData: [],
       formMember: {
@@ -88,43 +131,39 @@ export default {
         page: 1
       },
       total: 0,
-      len: 0,
       userId: '',
       teamInfo: {},
-      userType: localStorage.getItem('userType'),
-      isView: false
+      userPosition: sessionStorage.getItem('userPosition'),
+      uid: localStorage.getItem('uid'),
+      modalType: 1,
+      modalForm: {},
+      id: ''
     }
   },
-  created () {
+  created() {
     // 初始化查询标签数据
-    // this.reverseUser()
     this.getList(this.formMember)
   },
   methods: {
-    handleSizeChange (val) {
-      this.formMember.limit = val
-      this.getList(this.formMember)
+    getList(params) {
+      getTeamList(params)
+        .then(res => {
+          this.tableData = res.data.data
+          this.total = res.data.count
+          this.teamInfo = res.data.teamInfo
+        })
+        .catch(error => {
+          if (error) {
+            this.$message.error(error.status.remind)
+          }
+        })
     },
-    handleCurrentChange (val) {
-      this.formMember.page = val
-      this.getList(this.formMember)
-    },
-    refurbish () {
-      this.getList(this.formMember)
-    },
-    getList (params) {
-      getTeamList(params).then(res => {
-        this.tableData = res.data.data
-        this.total = res.data.count
-        this.teamInfo = res.data.teamInfo
-      })
-    },
-    handleView (val) {
+    handleView(val) {
       this.userId = val
       this.dialogTableVisible = true
       this.isView = true
     },
-    handleEdit (val) {
+    handleEdit(val) {
       if (localStorage.getItem('teamType') == 0) {
         this.dialogVisible = true
         return false
@@ -133,82 +172,153 @@ export default {
       this.isView = false
       this.dialogTableVisible = true
     },
-    // 退出团队
-    dismissTeam () {
-      let uid = localStorage.getItem('uid')
-      loginOutTeam({ uid }).then(res => {
-        if (res.data) {
-          this.$message.success('退出成功')
-          this.getList(this.formMember)
-        }
-        else {
-          this.$message.error('退出成功')
-        }
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+    handleOk() {
+      // 修改
+      if (this.modalType == 1) {
+        // 修改
+        updateTeamUser(this.modalForm)
+          .then(res => {
+            if (res.data) {
+              this.dialogTableVisible = false
+              this.dialogModalVisible = false
+              this.$message.success('保存成功')
+              if (this.uid == this.modalForm.id) {
+                this.outLogin()
+              }
+              else {
+                this.getList(this.formMember)
+              }
+            } else {
+              this.$message.error('保存失败')
+            }
+          })
+          .catch(error => {
+            if (error) {
+              this.$message.error(error.status.remind)
+            }
+          })
+      }
+      else if (this.modalType == 2) {
+        // 退出
+        loginOutTeam({ uid: this.uid })
+          .then(res => {
+            if (res.data) {
+              this.dialogModalVisible = false
+              if (this.userPosition != 1) {
+                this.outLogin()
+              }
+              else {
+                this.getList(this.formMember)
+              }
+            } else {
+              this.$message.error('操作失败')
+            }
+          })
+          .catch(error => {
+            if (error) {
+              this.$message.error(error.status.remind)
+            }
+          })
+      }
+      else {
+        // 删除
+        deleteTeamUser({ uid: this.uid, userid: this.id })
+          .then(res => {
+            if (res.data) {
+              this.dialogModalVisible = false
+              this.$message.success('删除成功')
+              this.getList(this.formMember)
+            } else {
+              this.$message.error('删除失败')
+            }
+          })
+          .catch(error => {
+            if (error) {
+              this.$message.error(error.status.remind)
+            }
+          })
+      }
     },
-    handleDel (uid) {
+    // 退出团队
+    dismissTeam() {
       if (localStorage.getItem('teamType') == 0) {
         this.dialogVisible = true
         return false
       }
-      loginOutTeam({ uid }).then(res => {
-        this.$message.success('删除成功')
-        this.getList(this.formMember)
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+      this.modalType = 2
+      let text = this.userPosition == 1 ? '解散' : '退出'
+      this.modalObj.content = `你确定${text}团队吗?</br>${text}后将无法登录账号!`
+      this.dialogModalVisible = true
     },
-    handleSelectionChange (val) {
-      this.len = val
+    outLogin() {
+      this.$store.dispatch("logoutUser").then(res => {
+        this.$message.success('操作成功')
+        this.$router.replace('/login');
+      });
     },
-    addMember () {
+    handleDel(uid) {
+      if (localStorage.getItem('teamType') == 0) {
+        this.dialogVisible = true
+        return false
+      }
+      this.id = uid
+      this.modalType = 3
+      this.modalObj.content = '你确定删除该组员吗?</br>删除后该组员将无法登录!'
+      this.dialogModalVisible = true
+    },
+    addMember() {
       // 如果没有认证 团队性质
       if (localStorage.getItem('teamType') == 0) {
         this.dialogVisible = true
-      }
-      else {
+      } else {
         this.userId = ''
-        // this.teamInfo = {}
         this.visible = true
       }
     },
-    onSubmit (value) {
+    submitMember(val) {
+      if (!this.isView) {
+        this.modalType = 1
+        if (val.status == 2) {
+          if (val.id == this.uid) {
+            this.modalObj.content = '你确定锁定当前账号吗？</br>锁定后将退出并无法登录!'
+          }
+          else {
+            this.modalObj.content = '你确定锁定该组员账号吗？</br>锁定后该组员将无法登录!'
+          }
+          this.userId = val.id
+          this.modalForm = val
+          this.dialogModalVisible = true
+        }
+      }
+    },
+    submitForm(val) {
+      addTeamUser(val)
+        .then(res => {
+          if (res.data) {
+            this.$message.success('保存成功')
+            this.visible = false
+            this.getList(this.formMember)
+          } else {
+            this.$message.success('保存失败')
+          }
+        })
+        .catch(error => {
+          if (error) {
+            this.$message.error(error.status.remind)
+          }
+        })
+    },
+    onSubmit(value) {
       let params = Object.assign(this.formMember, value)
       this.getList(params)
     },
-    submitMember (val) {
-      if (!this.isView) {
-        // val.id = this.userId
-        let params = Object.assign(val, { id: this.userId })
-        updateTeamUser(val).then(res => {
-          if (res.data) {
-            this.dialogTableVisible = false
-            this.$message.success('保存成功')
-            this.getList(this.formMember)
-          }
-          else {
-            this.$message.error('保存失败')
-          }
-        }).catch(error => {
-          this.$message.error(error.status.remind)
-        })
-      }
+    handleSizeChange(val) {
+      this.formMember.limit = val
+      this.getList(this.formMember)
     },
-    submitForm (val) {
-      addTeamUser(val).then(res => {
-        if (res.data) {
-          this.$message.success('保存成功')
-          this.visible = false
-          this.getList(this.formMember)
-        }
-        else {
-          this.$message.success('保存失败')
-        }
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+    handleCurrentChange(val) {
+      this.formMember.page = val
+      this.getList(this.formMember)
     }
   }
 }

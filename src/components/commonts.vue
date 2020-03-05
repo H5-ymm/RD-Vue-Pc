@@ -6,7 +6,7 @@
   }
   .team-box {
     height: 100%;
-     overflow: hidden;
+    overflow: hidden;
     .no-data {
       width: 100%;
       margin: 0 auto;
@@ -26,37 +26,40 @@
       margin-bottom: 20px;
     }
   }
-  .view-card-row-more  {
+  .view-card-row-more {
     width: 100%;
     background: #fff;
     height: 40px;
     line-height: 40px;
     color: #999;
+    font-size: 14px;
   }
 }
 
 .team-box .team-box-left {
-  width:540px;
+  width: 540px;
   .team-box-left-box {
     // height: 500px;
     webkit-overflow-scrolling: touch;
     overflow-y: scroll;
     overflow-x: hidden;
   }
-}
-.team-box-left .el-input__inner {
-  height: 44px;
-  line-height: 44px;
-}
-.team-box-left .el-input__icon {
-  line-height: 44px;
-}
-.team-box-left .team-input .el-input__inner{
-  height:44px;
-  background:rgba(255,255,255,1);
-  border:1px solid rgba(238,238,238,1);
-  box-shadow:0px 4px 4px 0px rgba(106,106,106,0.1);
-  border-radius:5px 0px 0px 5px
+  .el-input__inner {
+    padding: 22px 10px;
+  }
+  .el-input__icon {
+    height: auto;
+    line-height: 44px;
+  }
+  .team-input {
+    .el-input__inner {
+      padding: 21px 10px 21px 30px;
+      background: rgba(255, 255, 255, 1);
+      border: 1px solid rgba(238, 238, 238, 1);
+      box-shadow: 0px 4px 4px 0px rgba(106, 106, 106, 0.1);
+      border-radius: 5px 0px 0px 5px;
+    }
+  }
 }
 .team-box-content {
   width: 80%;
@@ -68,27 +71,23 @@
   webkit-overflow-scrolling: touch;
 }
 .dropdown-menu {
-  width: 100px!important;
+  width: 100px !important;
   color: #999;
-  margin-right: 0!important;
+  margin-right: 0 !important;
 }
 .el-dropdown-menu {
   overflow: hidden;
 }
 .el-dropdown-menu__item {
-  width: 80px!important;
-  
+  width: 80px !important;
 }
-.foots{
+.foots {
   margin-top: 30px;
 }
-.tables-box{
-  height: 100%;
-  margin-bottom: 50px;
-}
-.foots{
-  margin-top: 30px;
-}
+// .tables-box {
+//   height: 100%;
+//   margin-bottom: 50px;
+// }
 </style>
 
 <template>
@@ -97,7 +96,12 @@
     <div class="team-box x-flex-start">
       <div class="team-box-left">
         <div class="x-flex-start-justify">
-          <el-input placeholder="搜索" class="team-input" v-model="params.title" @input="handleCommand(3)">
+          <el-input
+            placeholder="搜索"
+            class="team-input"
+            v-model="params.title"
+            @input="handleCommand(3)"
+          >
             <i slot="prefix" class="el-input__icon el-icon-search"></i>
           </el-input>
           <el-dropdown @command="handleCommand">
@@ -113,7 +117,7 @@
         <!-- 列表 -->
         <div v-show="list.length!=0" class="team-box-left-box" ref="commont">
           <person-card :list="list" :total="total" @selectComment="selectComment"></person-card>
-          <section class="view-card-row-more x-flex-center" v-if="isLoad" @click="loadMore">加载更多</section>
+          <section class="view-card-row-more x-flex-center" v-show="isLoad" @click="loadMore">加载更多</section>
         </div>
         <div class="no-data" v-if="list.length==0">
           <img src="../assets/img/nodata.png" class="nodata-bg" alt="">
@@ -124,10 +128,20 @@
       </div>
       <div class="team-box-content team-box-right" ref="commontLeft">
         <!-- <edit-card></edit-card> -->
-        <detail-card :cardType="type" @refurbish="refurbish" @updateDiscuss="updDiscuss" @saveDiscuss="saveDiscuss" :commentInfo="commentInfo"></detail-card>
+        <detail-card
+          :cardType="type"
+          @refurbish="refurbish"
+          @updateDiscuss="updDiscuss"
+          @saveDiscuss="saveDiscuss"
+          :commentInfo="commentInfo"
+        ></detail-card>
       </div>
     </div>
-    <infoTip :centerDialogVisible="dialogVisible" :modalInfo="modalInfo" @handleClose="dialogVisible=false"></infoTip>
+    <infoTip
+      :centerDialogVisible="dialogVisible"
+      :modalInfo="modalInfo"
+      @handleClose="dialogVisible=false"
+    ></infoTip>
   </div>
 </template>
 
@@ -135,20 +149,20 @@
 import PersonCard from './commentCard/PersonCard'
 import DetailCard from './commentCard/DetailCard'
 import infoTip from './common/infoTip'
-import { getDiscussList, getDiscussInfo, addDiscuss, updateDiscuss } from '../api/comment'
+import {
+  getDiscussList,
+  getDiscussInfo,
+  addDiscuss,
+  updateDiscuss
+} from '../api/comment'
 export default {
   components: {
     PersonCard,
     DetailCard,
     infoTip
   },
-  data () {
+  data() {
     return {
-      tableData: [],  //初始化数据
-      Number: 10,  //每页条数
-      num: 1,  //页码
-      numA: 10,  //页码
-      AllNum: 0,  //全部条数
       type: 2,
       list: [],
       total: 0,
@@ -173,13 +187,13 @@ export default {
       userPosition: localStorage.getItem('userPosition')
     }
   },
-  created () {
+  created() {
     let userType = localStorage.getItem('userType')
     if (userType == 2) {
       this.getList()
     }
   },
-  mounted () {
+  mounted() {
     let heigth = document.body.clientHeight - 140
     let heigth1 = document.body.clientHeight - 100
     let dom = this.$refs.commont
@@ -188,83 +202,96 @@ export default {
     dom1.style.height = heigth1 + 'px'
   },
   methods: {
-    getList () {
-      getDiscussList(this.params).then(res => {
-        if (res.data.data) {
-          this.list = res.data.data || []
-          this.total = res.data.count
-          if (this.total - this.list.length > 0) {
-            this.isLoad = true
+    getList() {
+      getDiscussList(this.params)
+        .then(res => {
+          if (res.data.data) {
+            this.list = res.data.data || []
+            this.total = res.data.count
+            if (this.total - this.list.length > 0) {
+              this.isLoad = true
+            } else {
+              this.isLoad = false
+            }
+            this.commentId = this.list[0].id
+            if (!this.commentId) {
+              this.commentInfo = null
+            } else {
+              if (this.refurbishStatus != 3) {
+                this.getDetail(this.commentId)
+              }
+            }
+          } else {
+            this.list = []
+            this.commentInfo = null
           }
-          else {
-            this.isLoad = false
-          }
-          this.commentId = this.list[0].id
-          if (this.refurbishStatus != 3) {
-            this.getDetail(this.commentId)
-          }
-        }
-        else {
-          this.list = []
-          this.commentInfo = null
-        }
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+        })
+        .catch(error => {
+          this.$message.error(error.status.remind)
+        })
     },
-    loadMore () {
+    loadMore() {
       this.params.limit = this.params.limit + 6
       this.refurbishStatus = 3
       this.getList()
     },
-    getDetail (id) {
-      getDiscussInfo({ id }).then(res => {
-        this.commentInfo = res.data || {}
-      }).catch(error => {
-        if (error) {
-          this.$message.error(error.status.remind)
-        }
-      })
+    getDetail(id) {
+      getDiscussInfo({ id })
+        .then(res => {
+          this.commentInfo = res.data || {}
+        })
+        .catch(error => {
+          if (error) {
+            this.$message.error(error.status.remind)
+          }
+        })
     },
-    updDiscuss (val) {
-      updateDiscuss(val).then(res => {
-        if (res.data) {
-          this.type = 2
-          this.refurbishStatus = 3
-          this.getList()
-          this.$message.success('修改成功')
-        }
-        else {
-          this.$message.error('修改失败')
-        }
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+    updDiscuss(val) {
+      updateDiscuss(val)
+        .then(res => {
+          if (res.data) {
+            this.type = 2
+            this.refurbishStatus = 3
+            this.getList()
+            this.$message.success('修改成功')
+          } else {
+            this.$message.error('修改失败')
+          }
+        })
+        .catch(error => {
+          if (error) {
+            this.$message.warning(error.status.remind)
+          }
+        })
     },
-    selectComment (id) {
+    selectComment(id) {
       this.type = 2
       this.getDetail(id)
     },
-    saveDiscuss (val) {
+    saveDiscuss(val) {
       this.commentInfo = val
-      addDiscuss(val).then(res => {
-        if (res.data) {
-          this.type = 2
-          this.refurbishStatus = 0
-          this.getList()
-          this.$message.success('添加成功')
-        }
-        else {
-          this.$message.error('添加失败')
-        }
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+      addDiscuss(val)
+        .then(res => {
+          if (res.data) {
+            this.type = 2
+            this.refurbishStatus = 0
+            this.getList()
+            this.$message.success('添加成功')
+          } else {
+            this.$message.error('添加失败')
+          }
+        })
+        .catch(error => {
+          if (error) {
+            this.$message.warning(error.status.remind)
+          }
+        })
     },
-    refurbish () {
+    refurbish() {
+      this.refurbishStatus = 3
       this.getList()
     },
-    handleCommand (command) {
+    handleCommand(command) {
       this.refurbishStatus = command
       if (command == 3) {
         this.getList()
@@ -272,17 +299,12 @@ export default {
         if (localStorage.getItem('teamType') == 0) {
           this.dialogVisible = true
           return false
-        }
-        else {
+        } else {
           this.commentId = ''
           this.type = command
           this.commentInfo = {}
         }
       }
-    },
-    handleCurrentChange (val) {
-      this.num = val
-      this.reverseUser()
     }
   }
 }

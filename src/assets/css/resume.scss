@@ -1,126 +1,181 @@
-.tables-box{
-  overflow: hidden;
+.tables-box {
+
+  // overflow: hidden;
   .table-list {
     background: #fff;
-    border-radius:10px;
+    border-radius: 10px;
     padding: 15px;
+
     .add-member {
-      border-radius: 0;
       height: 38px;
       margin-bottom: 15px;
     }
+
     .team-pagination {
       margin-top: 20px;
       margin-left: 20px;
     }
   }
 }
+
 .billingManagement {
+  margin-bottom: 20px;
+
   .table-list {
     padding-top: 70px;
     padding-left: 10px;
   }
+
   .default-status {
     color: #333333;
     font-size: 12px;
     margin: 0 10px;
   }
+
   .form-item-wrap {
     .el-form-item {
       display: block;
     }
   }
+
   .table-list {
     padding-top: 58px;
     padding-left: 10px;
+
     &.add-resum {
       .demo-form-inline {
         width: 100%;
       }
     }
+
     &.recommend-table {
       padding-top: 30px;
     }
+
     .select-btn {
       margin-left: 20px;
     }
+
     .member-table {
       margin-top: 40px;
       padding-left: 20px;
+
       &.resume-table {
         margin-top: 10px;
+
         &.resume-table1 {
           padding-left: 0;
         }
+
         .select-text {
           margin-left: 10px;
         }
       }
+
       .table-query {
-        margin-bottom:20px;
+        margin-bottom: 20px;
+
         .el-button {
           margin-right: 10px;
         }
       }
     }
   }
+
   .width300 {
     width: 300px;
   }
+
   .select-status {
     margin-right: 10px;
+    font-size: 14px;
   }
+
   .resume-number {
-    font-size:14px;
-    color:#FF1818;
+    font-size: 14px;
+    color: #FF1818;
   }
+
   .no-status {
     font-size: 12px;
     margin-right: 15px;
     color: #333333;
   }
+
   .status {
     position: relative;
     margin-left: 10px;
-    &::before{
+    font-size: 14px;
+
+    &::before {
       position: absolute;
       content: "";
-      width:6px;
+      width: 6px;
       height: 6px;
       border-radius: 50%;
       top: 7px;
       left: -20px;
       background: #71D875;
     }
-    &.status0{
-      &::before{
-        background: #999999;
-      }   
+
+    &.active-status0 {
+      &::before {
+        background: #999;
+      }
     }
-    &.status1{
-      &::before{
+
+    &.active-status1 {
+      &::before {
         background: #71D875;
-      }   
+      }
     }
-    &.status2{
-      &::before{
-        background:  #FF0000;
-      }   
-    }
-    &.status3{
-      &::before{
+
+    &.active-status2 {
+      &::before {
         background: #F19D3A;
-      }   
+      }
     }
-    &.status6{
-      &::before{
-        background:  #333333;
-      }   
+
+    &.active-status3 {
+      &::before {
+        background: #FF0000;
+      }
     }
-    &.status4{
-      &::before{
+
+    &.status0 {
+      &::before {
+        background: #999999;
+      }
+    }
+
+    &.status1 {
+      &::before {
+        background: #71D875;
+      }
+    }
+
+    &.status2 {
+      &::before {
+        background: #FF0000;
+      }
+    }
+
+    &.status3 {
+      &::before {
+        background: #F19D3A;
+      }
+    }
+
+    &.status6 {
+      &::before {
+        background: #333333;
+      }
+    }
+
+    &.status4 {
+      &::before {
         background: #01A46F;
-      }   
+      }
     }
   }
 }

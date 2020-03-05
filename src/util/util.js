@@ -11,8 +11,8 @@ export const validateIdCard = idCard => {
       for (var i = 0; i < 17; i++) {
         idCardWiSum += idCard.substring(i, i + 1) * idCardWi[i];
       }
-      var idCardMod = idCardWiSum % 11;//计算出校验码所在数组的位置
-      var idCardLast = idCard.substring(17);//得到最后一位身份证号码
+      var idCardMod = idCardWiSum % 11; //计算出校验码所在数组的位置
+      var idCardLast = idCard.substring(17); //得到最后一位身份证号码
       //如果等于2，则说明校验码是10，身份证号码最后一位应该是X
       if (idCardMod == 2) {
         if (idCardLast == "X" || idCardLast == "x") {
@@ -36,8 +36,7 @@ export const validateIdCard = idCard => {
 }
 export const getImg = file => {
   let url = null;
-  if
-    (window.createObjectURL != undefined) {
+  if (window.createObjectURL != undefined) {
     url = window.createObjectURL(_file)
   } else if (window.URL != undefined) {
     url = window.URL.createObjectURL(file)
@@ -50,13 +49,11 @@ export const getImg = file => {
 export const getImgUrl = url => {
   return 'http://tiantianxsg.com:39888/' + url
 }
-
 export const checkEmail = email => {
   let reg = /^[a-zA-Z0-9]+([-_.][a-zA-Z0-9]+)*@[a-zA-Z0-9]+([-_.][a-zA-Z0-9]+)*\.[a-z]{2,}$/
   if (reg.test(email)) {
     return true
-  }
-  else {
+  } else {
     return false
   }
 }

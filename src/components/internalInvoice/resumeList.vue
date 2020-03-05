@@ -1,11 +1,11 @@
 <style lang="scss">
 @import '@/assets/css/resume';
- .error {
-    color: #FE2A00;
-    font-size: 12px;
-    margin: 20px 0 -15px;
-    display: block;
-  }
+.error {
+  color: #fe2a00;
+  font-size: 12px;
+  margin: 20px 0 -15px;
+  display: block;
+}
 </style>
 <template>
   <div class="tables-box billingManagement receipt-manage">
@@ -92,14 +92,20 @@
 </template>
 
 <script>
-import { getPutresume, auditRemuse, entrantResult, checkPutresume, viewResult } from '@/api/internalInvoice'
+import {
+  getPutresume,
+  auditRemuse,
+  entrantResult,
+  checkPutresume,
+  viewResult
+} from '@/api/internalInvoice'
 import { entryStatusList1 } from '@/base/base'
 import modal from '../common/modal'
 export default {
   components: {
     modal
   },
-  data () {
+  data() {
     return {
       entryStatusList1,
       dialogTableVisible: false,
@@ -132,11 +138,15 @@ export default {
     }
   },
   computed: {
-    lable () {
-      return this.formMember.job_status == 1 ? '审核状态' : this.formMember.job_status == 2 ? '面试状态' : '入职状态'
+    lable() {
+      return this.formMember.job_status == 1
+        ? '审核状态'
+        : this.formMember.job_status == 2
+          ? '面试状态'
+          : '入职状态'
     }
   },
-  created () {
+  created() {
     // 初始化查询标签数据
     if (this.$route.query.jobId) {
       this.jobId = this.$route.query.jobId
@@ -145,30 +155,34 @@ export default {
     this.job_status = this.$route.query.jobStatus
     this.formMember.job_status = Number(this.$route.query.jobStatus)
     this.getList(this.formMember)
+    let arr = ['内部发单审核', '简历列表']
+    this.$store.commit('setMenus', arr)
   },
   methods: {
-    getList (params) {
-      getPutresume(params).then(res => {
-        const { data } = res
-        this.tableData = data.data
-        this.total = data.count
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+    getList(params) {
+      getPutresume(params)
+        .then(res => {
+          const { data } = res
+          this.tableData = data.data
+          this.total = data.count
+        })
+        .catch(error => {
+          this.$message.error(error.status.remind)
+        })
     },
-    selectStatus (val) {
+    selectStatus(val) {
       this.formMember.job_status = val
       this.getList(this.formMember)
     },
-    handleSizeChange (val) {
+    handleSizeChange(val) {
       this.formMember.limit = val
       this.getList(this.formMember)
     },
-    handleCurrentChange (val) {
+    handleCurrentChange(val) {
       this.formMember.page = val
       this.getList(this.formMember)
     },
-    handlResume (status, val) {
+    handlResume(status, val) {
       if (!val) {
         return this.$message.warning('请选择简历')
       }
@@ -181,7 +195,7 @@ export default {
       }
       this.handleOk()
     },
-    handleOk () {
+    handleOk() {
       this.dialogTableVisible = false
       let params = {
         uid: localStorage.getItem('uid'),
@@ -191,62 +205,65 @@ export default {
       }
       if (this.formMember.job_status == 1) {
         this.resumeResult(params)
-      }
-      else if (this.formMember.job_status == 2) {
+      } else if (this.formMember.job_status == 2) {
         this.checkResume(params)
-      }
-      else {
+      } else {
         this.handleEntrant(params)
       }
     },
     // 审核简历
-    checkResume (params) {
-      viewResult(params).then(res => {
-        if (res.data) {
-          this.$message.success('操作成功')
-          this.getList(this.formMember)
-        } else {
-          this.$message.error('操作失败')
-        }
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+    checkResume(params) {
+      viewResult(params)
+        .then(res => {
+          if (res.data) {
+            this.$message.success('操作成功')
+            this.getList(this.formMember)
+          } else {
+            this.$message.error('操作失败')
+          }
+        })
+        .catch(error => {
+          this.$message.error(error.status.remind)
+        })
     },
     // 入职结果
-    handleEntrant (params) {
-      entrantResult(params).then(res => {
-        if (res.data) {
-          this.$message.success('操作成功')
-          this.getList(this.formMember)
-        }
-        else {
-          this.$message.error('操作失败')
-        }
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+    handleEntrant(params) {
+      entrantResult(params)
+        .then(res => {
+          if (res.data) {
+            this.$message.success('操作成功')
+            this.getList(this.formMember)
+          } else {
+            this.$message.error('操作失败')
+          }
+        })
+        .catch(error => {
+          this.$message.error(error.status.remind)
+        })
     },
     // 面试结果
-    resumeResult (params) {
-      auditRemuse(params).then(res => {
-        if (res.data) {
-          this.$message.success('操作成功')
-          this.getList(this.formMember)
-        } else {
-          this.$message.error('操作失败')
-        }
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+    resumeResult(params) {
+      auditRemuse(params)
+        .then(res => {
+          if (res.data) {
+            this.$message.success('操作成功')
+            this.getList(this.formMember)
+          } else {
+            this.$message.error('操作失败')
+          }
+        })
+        .catch(error => {
+          this.$message.error(error.status.remind)
+        })
     },
-    handleSelectionChange (val) {
+    handleSelectionChange(val) {
       this.multipleSelection = val
       let arr = val.map(item => {
         return item.id
       })
       this.id = arr.join(',')
     },
-    onSubmit () {
+    onSubmit() {
       this.getList(this.formMember)
     }
   }

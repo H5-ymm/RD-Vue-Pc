@@ -1,10 +1,13 @@
+<style lang="scss">
+@import '@/assets/css/dialog.scss';
+</style>
 <template>
   <el-dialog width="500px" :visible="dialogTableVisible" class="member-dialog" :show-close="false">
     <div class="member-row" v-if="formMember">
-      <img src="../../assets/img/member/cancel.png" alt class="cancel-icon" @click="handleClose" />
+      <img src="../../assets/img/member/cancel.png" alt="" class="cancel-icon" @click="handleClose">
       <section class="member-col1">
         <div class="head-box">
-          <img src="../../assets/img/headIcon3.png" class="head" alt v-if="!formMember.log" />
+          <img src="../../assets/img/headIcon3.png" class="head" alt="" v-if="!formMember.log">
           <img :src="getImgUrl(formMember.log)" alt="" v-else>
         </div>
         <p>{{formMember.user_name}}</p>
@@ -22,11 +25,15 @@
           <p>学历</p>
           <p>{{formMember.educationName}}</p>
         </div>
-        <div class="x-flex-center">
+        <div
+          class="x-flex-center"
+          v-if="userPosition!=1||isView||
+        uid==formMember.uid||(!isView&&formMember.grade_num==2)"
+        >
           <p>当前职称</p>
           <p>{{formMember.grade_name}}</p>
         </div>
-        <div class="x-flex-center">
+        <div class="x-flex-center" v-if="userPosition!=1||isView||uid==formMember.uid">
           <p>部门</p>
           <p>{{formMember.depart_name}}</p>
         </div>
@@ -42,39 +49,65 @@
           <p>最后登录时间</p>
           <p>{{formMember.logout_time?$moment.unix(formMember.logout_time).format('YYYY-MM-DD HH:mm'):'-'}}</p>
         </div>
-        <div class="x-flex-center">
+        <div class="x-flex-center" v-if="userPosition==3||isView">
           <p>当前状态</p>
           <p>{{formMember.status == 1 ? '正常': '锁定'}}</p>
         </div>
-        <div class="x-flex-center" v-if="userPosition!=1">
-          <p>部门</p>
-          <p>{{formMember.depart_name}}</p>
-        </div>
-        <div class="x-flex-center" v-if="userPosition!=1">
-          <p>当前职称</p>
-          <p>{{formMember.grade_name}}</p>
+        <div class="x-flex-center" v-if="userPosition!=3&&isView">
+          <p>认证信息</p>
+          <p>
+            <memberTooltip :formMember="formMember"></memberTooltip>
+          </p>
         </div>
       </section>
-      <section class="member-col3">
+      <section class="member-col3" :class="{'member-col4':isView}" v-if="!isView">
         <el-form :model="formMember" class="demo-form-inline" label-width="120px">
-          <el-form-item label="部门" v-if="userPosition==1">
-            <el-select placeholder="请选择" :disabled="isView&&user!=1" v-model="depId" @change="selectDep">
-              <el-option :label="item.depart_name" :value="item.id" v-for="(item,index) in depList" :key="index"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="当前职称" v-if="userPosition==1">
-            <el-select v-model="formMember.grade_id" :disabled="isView" value-key="grade_name" placeholder="请选择">
-              <el-option :label="item.grade_name" :value="item.id" v-for="item in jobList" :key="item.grade_name"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="当前状态" v-if="userPosition!=3">
+          <div v-if=" uid!=formMember.uid&&formMember.grade_num!=2">
+            <el-form-item label="部门" v-if="userPosition==1">
+              <el-select
+                placeholder="请选择"
+                :disabled="isView&&user!=1"
+                v-model="depId"
+                @change="selectDep"
+              >
+                <el-option
+                  :label="item.depart_name"
+                  :value="item.id"
+                  v-for="(item,index) in depList"
+                  :key="index"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="当前职称" v-if="userPosition==1">
+              <el-select
+                v-model="formMember.grade_id"
+                :disabled="isView"
+                value-key="grade_name"
+                placeholder="请选择"
+              >
+                <el-option
+                  :label="item.grade_name"
+                  :value="item.id"
+                  v-for="item in jobList"
+                  :key="item.grade_name"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </div>
+          <el-form-item label="当前状态">
             <el-radio-group v-model="formMember.status" :disabled="isView">
-              <el-radio :label="1" border>正常</el-radio>
-              <el-radio :label="2" border>锁定</el-radio>
+              <el-radio :label="1" border="">正常</el-radio>
+              <el-radio :label="2" border="">锁定</el-radio>
             </el-radio-group>
           </el-form-item>
           <el-form-item label="活动形式" v-if="formMember.status==2">
-            <el-input type="textarea" :readonly="isView" v-model="formMember.remark" placeholder="请输入锁定说明（必填）"></el-input>
+            <el-input
+              type="textarea"
+              :autosize="{ minRows: 3}"
+              :readonly="isView"
+              v-model="formMember.remark"
+              placeholder="请输入锁定说明（必填）"
+            ></el-input>
           </el-form-item>
           <el-form-item label="认证信息">
             <memberTooltip :formMember="formMember"></memberTooltip>
@@ -82,7 +115,7 @@
         </el-form>
       </section>
     </div>
-    <div slot="footer">
+    <div slot="footer" class="member-footer">
       <el-button @click="handleClose">关闭</el-button>
       <el-button type="primary" v-if="!isView" @click="submitMember">确定</el-button>
     </div>
@@ -92,8 +125,8 @@
 // 部门经理只能编辑状态
 // 成员只能查看
 // 总经理可以编辑部门 职称 状态
-import { seeTeamUserInfo, departmentRoleList } from '../../api/team'
-import { getConstant } from '../../api/dictionary'
+import { seeTeamUserInfo, departmentRoleList } from '@/api/team'
+import { getConstant } from '@/api/dictionary'
 import memberTooltip from './memberTooltip'
 import { getImgUrl } from '@/util/util'
 export default {
@@ -101,25 +134,25 @@ export default {
   components: {
     memberTooltip
   },
-  data () {
+  data() {
     return {
       formMember: {},
       jobList: [],
       depList: [],
       depId: '',
       userPosition: sessionStorage.getItem('userPosition'),
-      user: ''
+      user: '',
+      uid: localStorage.getItem('uid')
     }
   },
-  created () {
+  created() {
     this.getJobList()
   },
   watch: {
-    userId (val) {
+    userId(val) {
       if (val) {
         this.getInfo(val)
-      }
-      else {
+      } else {
         this.formMember = {
           user_name: ''
         }
@@ -128,10 +161,10 @@ export default {
   },
   methods: {
     getImgUrl,
-    getInfo (id) {
+    getInfo(id) {
       let params = {
         userId: id,
-        uid: localStorage.getItem('uid')
+        uid: this.uid
       }
       seeTeamUserInfo(params).then(res => {
         this.formMember = res.data.data
@@ -141,19 +174,25 @@ export default {
         }
         if (this.formMember.grade_id && this.depList.length) {
           this.depId = this.getJob(this.depList, this.formMember.grade_id)
+          if (!this.depId) {
+            this.formMember.grade_id = ''
+          }
           this.jobList = this.getArr(this.depList, this.depId)
-        }
-        else {
+        } else {
+          this.depId = ''
           this.formMember.grade_id = ''
         }
         if (res.data.provinceid && res.data.cityid) {
-          this.address = [res.data.provinceid, res.data.cityid, res.data.three_cityid]
+          this.address = [
+            res.data.provinceid,
+            res.data.cityid,
+            res.data.three_cityid
+          ]
         }
-        // console.log(this.jobList)
       })
     },
     // 获取职位
-    getJob (arr, id) {
+    getJob(arr, id) {
       let depId
       arr.forEach(item => {
         if (item.child) {
@@ -166,7 +205,7 @@ export default {
       })
       return depId
     },
-    getArr (arr, id) {
+    getArr(arr, id) {
       let newArr = []
       arr.forEach(item => {
         if (item.id == id) {
@@ -176,21 +215,25 @@ export default {
       return newArr
     },
 
-    getJobList () {
-      let uid = localStorage.getItem('uid')
+    getJobList() {
+      let uid = this.uid
       departmentRoleList({ uid }).then(res => {
         this.depList = res.data
       })
     },
-    selectDep (val) {
+    selectDep(val) {
       this.jobList = this.getArr(this.depList, val)
     },
-    handleClose () {
+    handleClose() {
       this.$parent.dialogTableVisible = false
     },
-    submitMember () {
+    submitMember() {
+      if (this.formMember.status == 2 && !this.formMember.remark) {
+        return this.$message.warning('请输入锁定说明')
+      }
       let params = {
-        uid: this.formMember.uid,
+        id: this.formMember.id, //组员的uid
+        uid: this.uid, // 操作用户的uid
         grade_id: this.formMember.grade_id,
         status: this.formMember.status,
         provinceid: this.formMember.provinceid,
@@ -203,107 +246,3 @@ export default {
   }
 }
 </script>
-<style lang="scss">
-.member-dialog {
-  box-shadow:0px 1px 43px 0px rgba(51,51,51,0.3);
-  border-radius:5px;
-  .el-dialog__body,.el-dialog__header {
-    padding: 0;
-  }
- .member-row {
-    width: 100%;
-    margin: 0 auto;
-    text-align: center;
-    color: #333333;
-    padding: 0 0 10px;
-    position: relative;
-    .cancel-icon {
-      position: absolute;
-      top: 5px;
-      right: 0;
-    }
-    .member-col1 {
-      background:#EBF4FB;
-      padding: 21px 0 20px;
-      .head-box {
-        padding: 10px 0 20px;
-      }
-      .head {  
-        width: 88px;
-        height: 88px;
-        border-radius: 100%;
-      }
-    }
-    .member-col2 {
-      line-height: 30px;
-      margin: 10px auto;
-      width: 65%;
-      p {
-        &:nth-of-type(1) {
-          width: 100px;
-          text-align: right;
-          color: #6A6A6A;
-        }
-        &:nth-of-type(2) {
-          flex: 1;
-          text-align: left;
-          margin-left: 30px;
-        }
-      }
-      
-    }
-    .member-col3 {
-      width: 100%;
-      border-top: 1px solid #eee;
-      padding-top: 10px;
-      .demo-form-inline {
-        width: 90%;
-        margin: 10px auto;
-        .el-form-item {
-          margin-bottom: 10px;
-        }
-        .el-input__inner{
-          width:300px!important;
-          height:38px;
-          border-radius: 0;
-        }
-        .el-textarea {
-          width:300px!important;
-          border-radius: 0;
-          height: 80px;
-        }
-        .el-form-item__content {
-          margin-left: 20px!important;
-        }
-        .el-select,.el-radio-group,.el-textarea{
-          margin-left: -30px;
-        }
-        .el-radio.is-bordered {
-          height: 38px;
-          width: 145px;
-          border-radius: 0;
-          line-height: 38px;
-          padding:0;
-          margin-right: 0;
-          &+.el-radio.is-bordered {
-            margin-left: 10px;
-          }
-        }
-        .el-radio__input {
-          float: right;
-          margin-top: 12px;
-          margin-right: 10px;
-        }
-        .member-status {
-          margin-top: 12px;
-          padding-left:14px;
-          img {
-            margin-right: 20px;
-          }
-        }
-      }
-    }
-  }
-}
- 
-</style>

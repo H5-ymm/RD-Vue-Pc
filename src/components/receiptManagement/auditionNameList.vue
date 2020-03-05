@@ -65,27 +65,32 @@
 
 <script>
 import { entryResumeList, auditEntryResume } from '../../api/receipt'
-import { moneyTypeList, rewardTypeList, payTypeList, weekList } from '../../base/base'
+import {
+  moneyTypeList,
+  rewardTypeList,
+  payTypeList,
+  weekList
+} from '../../base/base'
 import modal from '../common/modal'
 export default {
   components: {
     modal
   },
   filters: {
-    moneyType (val) {
+    moneyType(val) {
       let obj = moneyTypeList.find(item => {
         return val == item.value
       })
       return obj ? obj.label : '--'
     },
-    rewardType (val) {
+    rewardType(val) {
       let obj = rewardTypeList.find(item => {
         return val == item.value
       })
       return obj ? obj.label : '--'
-    },
+    }
   },
-  data () {
+  data() {
     return {
       moneyTypeList,
       rewardTypeList,
@@ -118,34 +123,34 @@ export default {
         content: '你确定要批量操作？',
         okText: '确定',
         closeText: '取消'
-      },
+      }
     }
   },
-  created () {
+  created() {
     this.formMember.jobId = this.$route.query.id
     this.getList(this.formMember)
   },
   methods: {
-    getList (params) {
+    getList(params) {
       entryResumeList(params).then(res => {
         const { data } = res
         this.tableData = data.data
         this.total = data.count
       })
     },
-    selectStatus (item, index) {
+    selectStatus(item, index) {
       this.activeIndex = index
       this.formMember.status = item.value
     },
-    handleSizeChange (val) {
+    handleSizeChange(val) {
       this.formMember.limit = val
       this.getList(this.formMember)
     },
-    handleCurrentChange (val) {
+    handleCurrentChange(val) {
       this.formMember.page = val
       this.getList(this.formMember)
     },
-    handleUser (status, uid) {
+    handleUser(status, uid) {
       if (!id) {
         return this.$message.warning('请选择成员')
       }
@@ -156,30 +161,37 @@ export default {
         this.handleResume()
       }
     },
-    handleOk () {
+    handleOk() {
       this.handleResume()
     },
-    handleResume () {
+    handleResume() {
       let params = {
         status: this.status,
         id: this.id,
         uid: localStorage.getItem('uid')
       }
       this.dialogTableVisible = false
-      auditEntryResume(params).then(res => {
-        this.$message.success('操作成功')
-        this.getList(this.formMember)
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+      auditEntryResume(params)
+        .then(res => {
+          if (res.data) {
+            this.$message.success('操作成功')
+            this.getList(this.formMember)
+          } else {
+            this.$message.error('操作失败')
+          }
+        })
+        .catch(error => {
+          this.$message.error(error.status.remind)
+        })
     },
-    handleSelectionChange (val) {
+    handleSelectionChange(val) {
+      this.multipleSelection = val
       let arr = val.map(item => {
         return item.id
       })
       this.id = arr.join(',')
     },
-    onSubmit () {
+    onSubmit() {
       this.getList(this.formMember)
     }
   }

@@ -78,20 +78,20 @@ export default {
     viewJob
   },
   filters: {
-    moneyType (val) {
+    moneyType(val) {
       let obj = moneyTypeList.find(item => {
         return val == item.value
       })
       return obj.label
     },
-    rewardType (val) {
+    rewardType(val) {
       let obj = rewardTypeList.find(item => {
         return val == item.value
       })
       return obj.label
-    },
+    }
   },
-  data () {
+  data() {
     return {
       moneyTypeList,
       rewardTypeList,
@@ -127,35 +127,41 @@ export default {
       jobId: ''
     }
   },
-  created () {
+  created() {
     let jobId = this.$route.query.id
     this.formMember.jobId = jobId
     this.getList(this.formMember)
   },
   methods: {
-    getList (params) {
-      entryUserResumeList(params).then(res => {
-        this.tableData = res.data.data
-        this.total = res.data.count
-      })
+    getList(params) {
+      entryUserResumeList(params)
+        .then(res => {
+          this.tableData = res.data.data
+          this.total = res.data.count
+        })
+        .catch(error => {
+          if (error) {
+            this.$message.warning(error.status.remind)
+          }
+        })
     },
-    selectStatus (item, index) {
+    selectStatus(item, index) {
       this.activeIndex = index
       this.formMember.status = item.value
     },
-    handleSizeChange (val) {
+    handleSizeChange(val) {
       this.formMember.limit = val
       this.getList(this.formMember)
     },
-    handleCurrentChange (val) {
+    handleCurrentChange(val) {
       this.formMember.page = val
       this.getList(this.formMember)
     },
-    viewJob (val) {
+    viewJob(val) {
       this.jobId = val.id
       this.dialogJobVisible = true
     },
-    handleUser (status, id) {
+    handleUser(status, id) {
       if (!id) {
         return this.$message.warning('请选择成员')
       }
@@ -169,30 +175,39 @@ export default {
       this.id = id
       this.handleUserResume()
     },
-    handleSelectionChange (val) {
+    handleSelectionChange(val) {
       let arr = val.map(item => {
         return item.id
       })
       this.id = arr.join(',')
     },
-    handleOk () {
+    handleOk() {
       this.handleUserResume()
     },
-    handleUserResume () {
-      this.dialogTableVisible = false
+    handleUserResume() {
       let params = {
         status: this.status,
         id: this.id,
         uid: localStorage.getItem('uid')
       }
-      updateEntryUser(params).then(res => {
-        this.$message.success('操作成功')
-        this.getList(this.formMember)
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+      updateEntryUser(params)
+        .then(res => {
+          if (res.data) {
+            this.dialogTableVisible = false
+            this.$message.success('操作成功')
+            this.getList(this.formMember)
+          } else {
+            this.$message.error('操作失败')
+          }
+        })
+        .catch(error => {
+          if (error) {
+            this.dialogTableVisible = false
+            this.$message.error(error.status.remind)
+          }
+        })
     },
-    onSubmit () {
+    onSubmit() {
       this.getList(this.formMember)
     }
   }

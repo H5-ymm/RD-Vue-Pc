@@ -2,13 +2,7 @@
 @import '@/assets/css/modal.scss';
 </style>
 <template>
-  <el-dialog
-    width="500px"
-    top="8vh"
-    :visible="dialogTableVisible"
-    class="member-dialog"
-    :show-close="false"
-  >
+  <el-dialog width="500px" top="8vh" :visible="dialogTableVisible" class="member-dialog" :show-close="false">
     <div class="member-row">
       <img src="../../assets/img/member/cancel.png" alt class="cancel-icon" @click="handleClose" />
       <section class="member-col1">
@@ -17,13 +11,7 @@
       <!-- <div class="job-detail-view"> -->
       <div class="staff-detail-row">
         <section class="resume-col3">
-          <el-form
-            :model="formMember"
-            ref="formMember"
-            class="demo-form-inline"
-            label-position="right"
-            label-width="80px"
-          >
+          <el-form :model="formMember" ref="formMember" class="demo-form-inline" label-position="right" label-width="80px">
             <section class="resume-card">
               <p class="resume-main-title x-flex-start-justify">
                 <img src="../../assets/img/icon7.png" />
@@ -89,29 +77,35 @@
 import { selectCompanyResumeInfo } from '@/api/staff'
 export default {
   props: ['dialogTableVisible', 'staffId'],
-  data () {
+  data() {
     return {
-      formMember: {},
+      formMember: {}
     }
   },
   watch: {
-    staffId (val) {
+    staffId(val) {
       if (val) {
         this.getInfo()
       }
     }
   },
   methods: {
-    getInfo () {
+    getInfo() {
       let params = {
         uid: localStorage.getItem('uid'),
         id: this.staffId
       }
-      selectCompanyResumeInfo(params).then(res => {
-        this.formMember = res.data
-      })
+      selectCompanyResumeInfo(params)
+        .then(res => {
+          this.formMember = res.data
+        })
+        .catch(error => {
+          if (error) {
+            this.$message.warning(error.status.remind)
+          }
+        })
     },
-    handleClose () {
+    handleClose() {
       this.$emit('handleClose')
     }
   }

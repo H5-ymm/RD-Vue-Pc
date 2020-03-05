@@ -1,4 +1,9 @@
-import { $post, uploadFile, postFormData, $get } from '../axios'
+import {
+	$post,
+	uploadFile,
+	postFormData,
+	$get
+} from '../axios'
 export const getResumeList2 = data => $post('/resume/teamUserResumeList', data) // 简历列
 export const addUserResume = data => $post('/resume/addUserResume', data)
 export const selectUserResumeInfo = data => $post('/resume/selectUserResumeInfo', data)
@@ -22,11 +27,11 @@ export const delResumeList = data => $post('/teamresume/delResumeRecommend', dat
 export const delResume = data => $post('/teamresume/delResume', data) //删除简历
 export const giveupResumeList = data => $post('/teamresume/giveupResumeRecommend', data)
 export const exportGiveUpResume = data => postFormData('/exportresume/exportGiveUpRecommendResume', data) // 导出放弃简历列表
-export const exportDelResume = data => postFormData('/exportresume/exportDelRecommendResume', data)// 导出删除简历列表
+export const exportDelResume = data => postFormData('/exportresume/exportDelRecommendResume', data) // 导出删除简历列表
 
-export const receiveResume = data => $post('/teamresume/receiveResume', data)// 领取
+export const receiveResume = data => $post('/teamresume/receiveResume', data) // 领取
 
-export const reductionDelResume = data => $post('/teamresume/reductionDelResume', data)// 还原
+export const reductionDelResume = data => $post('/teamresume/reductionDelResume', data) // 还原
 
 export const getMatchingJobList = data => $post('/teamtalent/getMatchingJobList', data) //简历对应的职位列表(团队接单)
 

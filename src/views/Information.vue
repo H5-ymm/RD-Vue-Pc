@@ -1,15 +1,15 @@
 <style lang="scss">
- @import '@/assets/css/orderTarking.scss';
- .orderTaking-main-content .orderTaking-detail {
-    height: 200px;
-    width: 100%;
-    background-size: contain;
-    &.info-detail {
-      background: url('../assets/img/bg1.png') no-repeat top center;
-    }
+@import '@/assets/css/orderTarking.scss';
+.orderTaking-main-content .orderTaking-detail {
+  height: 200px;
+  width: 100%;
+  background-size: contain;
+  &.info-detail {
+    background: url('../assets/img/bg1.png') no-repeat top center;
   }
+}
 .orderTaking-detail-content {
-   .information-content{
+  .information-content {
     margin: 20px 0;
     .panel-content {
       padding: 20px 28px 20px;
@@ -19,7 +19,7 @@
       padding-bottom: 20px;
     }
     .information-main-col1 {
-      border:none;
+      border: none;
       width: 814px;
       background: #fff;
     }
@@ -27,15 +27,15 @@
       background: #fff;
       width: 372px;
     }
-    .grid-information-card{
+    .grid-information-card {
       padding: 0;
       border-bottom: 1px solid #eee;
       .grid-information {
         line-height: 22px;
-        width: 70%;  
+        width: 70%;
       }
       .grid-information-img {
-        border-radius:5px;
+        border-radius: 5px;
       }
       .grid-information-content {
         padding-top: 30px;
@@ -44,12 +44,12 @@
       .grid-information-title {
         font-weight: bold;
         color: #333;
-          &:hover{
-            color: #1890FF;
-          }
-       }
+        &:hover {
+          color: #1890ff;
+        }
+      }
       .grid-information-btn {
-        width:60%;
+        width: 60%;
         float: right;
         .grid-information-time {
           color: #999999;
@@ -69,10 +69,10 @@
           }
         }
         .order-num {
-          width:25px;
-          height:25px;
-          background:rgba(238,238,238,1);
-          border-radius:50%;
+          width: 25px;
+          height: 25px;
+          background: rgba(238, 238, 238, 1);
+          border-radius: 50%;
           color: #333;
           line-height: 25px;
           text-align: center;
@@ -163,7 +163,7 @@ export default {
     HeaderView,
     AsideBox
   },
-  data () {
+  data() {
     return {
       total: 0,
       activeIndex: 3,
@@ -172,63 +172,76 @@ export default {
         limit: 5,
         page: 1
       },
-      list: [{
-        name: '杨萌萌',
-      }, {
-        name: '杨萌萌',
-      }, {
-        name: '杨萌萌',
-      }, {
-        name: '杨萌萌',
-      }],
+      list: [
+        {
+          name: '杨萌萌'
+        },
+        {
+          name: '杨萌萌'
+        },
+        {
+          name: '杨萌萌'
+        },
+        {
+          name: '杨萌萌'
+        }
+      ],
       isShow: false,
       hortInquiryList: [],
       ids: []
     }
   },
-  created () {
+  created() {
     this.getInfoList(this.params)
     this.getHortInquiryList()
   },
-  mounted () {
+  mounted() {
     document.scrollingElement.scrollTop = 0
     window.addEventListener('scroll', this.windowScroll)
   },
   methods: {
-    windowScroll () {
-      let scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
+    windowScroll() {
+      let scrollTop =
+        window.pageYOffset ||
+        document.documentElement.scrollTop ||
+        document.body.scrollTop
       if (scrollTop - document.documentElement.clientHeight + 500 >= 0) {
         this.isShow = true
-      }
-      else {
+      } else {
         this.isShow = false
       }
     },
-    getInfoList (params) {
-      inquiryList(params).then(res => {
-        console.log(res.data.data)
-        this.informationList = res.data.data
-        // console.log(this.informationList)
-        this.ids = this.informationList.map(item => {
-          return item.id
+    getInfoList(params) {
+      inquiryList(params)
+        .then(res => {
+          this.informationList = res.data.data
+          // console.log(this.informationList)
+          this.ids = this.informationList.map(item => {
+            return item.id
+          })
         })
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+        .catch(error => {
+          if (error) {
+            this.$message.warning(error.status.remind)
+          }
+        })
     },
-    getHortInquiryList () {
-      hortInquiryList().then(res => {
-        console.log(res.data)
-        this.hortInquiryList = res.data
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+    getHortInquiryList() {
+      hortInquiryList()
+        .then(res => {
+          this.hortInquiryList = res.data
+        })
+        .catch(error => {
+          if (error) {
+            this.$message.warning(error.status.remind)
+          }
+        })
     },
-    currentChange (page) {
+    currentChange(page) {
       this.params.page = page
     }
   },
-  destroyed () {
+  destroyed() {
     window.removeEventListener('scroll', this.windowScroll)
   }
 }

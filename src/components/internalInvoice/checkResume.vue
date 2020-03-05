@@ -1,22 +1,22 @@
 <style lang="scss">
-  @import '@/assets/css/resume.scss';
-  .internal-invoice {
-    .error {
-      color: #FE2A00;
-      font-size: 12px;
-      margin: 20px 0 -15px;
-      display: block;
-    }
-    .success-color {
-      color: #71D875;
-    }
-    .fail-color{
-      color: #FF0000;
-    }
-    .outline-color {
-      color: #999999;
-    }
+@import '@/assets/css/resume.scss';
+.internal-invoice {
+  .error {
+    color: #fe2a00;
+    font-size: 12px;
+    margin: 20px 0 -15px;
+    display: block;
   }
+  .success-color {
+    color: #71d875;
+  }
+  .fail-color {
+    color: #ff0000;
+  }
+  .outline-color {
+    color: #999999;
+  }
+}
 </style>
 <template>
   <div class="tables-box billingManagement receipt-manage internal-invoice">
@@ -71,7 +71,7 @@
           <el-table-column label="发单状态" align="center" width="180">
             <template slot-scope="props">
               <el-select v-model="props.row.jobStatus" :disabled="userPosition==1&&props.row.isactor!=1" value-key="label" class="width150" placeholder="请选择" @change="changeStatus($event,props.$index)">
-                <el-option :label="item.label" :value="item.value" v-show="index" v-for="(item,index) in props.row.receiptStatusList" :key="item.label"></el-option>
+                <el-option :label="item.label" :value="item.value" v-for="(item,index) in props.row.receiptStatusList" :key="item.label"></el-option>
               </el-select>
             </template>
           </el-table-column>
@@ -132,40 +132,50 @@
 </template>
 
 <script>
-import { putResumelist, addPutSelf, getJoblist, getPutresume } from '@/api/internalInvoice'
-import { moneyTypeList, rewardTypeList, payTypeList, weekList, recommendStatusList, positionStatusList } from '@/base/base'
+import {
+  putResumelist,
+  addPutSelf,
+  getJoblist,
+  getPutresume
+} from '@/api/internalInvoice'
+import {
+  moneyTypeList,
+  rewardTypeList,
+  recommendStatusList,
+  positionStatusList
+} from '@/base/base'
 import modal from '../common/modal'
 export default {
   components: {
     modal
   },
   filters: {
-    moneyType (val) {
+    moneyType(val) {
       let obj = moneyTypeList.find(item => {
         return val == item.value
       })
       return obj ? obj.label : '--'
     },
-    rewardType (val) {
+    rewardType(val) {
       let obj = rewardTypeList.find(item => {
         return val == item.value
       })
       return obj ? obj.label : '--'
     },
-    recommendStatus () {
+    recommendStatus() {
       let obj = recommendStatusList.find(item => {
         return val == item.value
       })
       return obj ? obj.label : '--'
     },
-    jobType (val) {
+    jobType(val) {
       let obj = positionStatusList.find(item => {
         return val == item.value
       })
       return obj ? obj.label : '-'
     }
   },
-  data () {
+  data() {
     return {
       moneyTypeList,
       rewardTypeList,
@@ -212,13 +222,18 @@ export default {
         { label: '面试结果', value: 2 },
         { label: '入职结果', value: 3 }
       ],
+      receiptStatusList1: [
+        { label: '审核简历', value: 1 },
+        { label: '面试结果', value: 2 },
+        { label: '入职结果', value: 3 }
+      ],
       timeList: [],
       activeIndex: -1,
-      statusName: '',
-      statusList: []
+      statusList: [],
+      tableList: []
     }
   },
-  created () {
+  created() {
     // 初始化查询标签数据
     // jobStatus 0 审核简历
     // 1 面试结果
@@ -226,94 +241,73 @@ export default {
     this.getList(this.formMember)
     console.log(this.tableList)
   },
-  computed: {
-    tableList () {
+  methods: {
+    getNewList(list) {
       let arr = []
       let obj = {}
-      this.tableData.forEach(item => {
-        obj = {
-          receiptStatusList: this.receiptStatusList,
+      list.forEach(item => {
+        // obj = {
+        //   receiptStatusList: this.receiptStatusList1,
+        //   jobStatus: 1
+        // }
+        let newObj = Object.assign(item, {
+          receiptStatusList: this.receiptStatusList1,
           jobStatus: 1
-        }
-        let newObj = Object.assign(item, { receiptStatusList: this.receiptStatusList, jobStatus: 1 })
+        })
         arr.push(newObj)
       })
       return arr
-    }
-  },
-  methods: {
-    getList (params) {
-      getJoblist(params).then(res => {
-        const { data } = res
-        this.tableData = data.data || []
-        this.total = data.count
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
     },
-    changeStatus (val, index) {
-      this.$set(this.tableList, 'jobStatus', val)
+    getList(params) {
+      getJoblist(params)
+        .then(res => {
+          const { data } = res
+          this.tableData = data.data || []
+          this.tableList = this.getNewList(this.tableData)
+          this.total = data.count
+        })
+        .catch(error => {
+          this.$message.error(error.status.remind)
+        })
+    },
+    changeStatus(val, index) {
+      let obj = this.tableList[index]
+      this.$set(obj, 'jobStatus', Number(val))
       this.activeIndex = index
-      console.log(this.receiptStatusList[index])
-      this.statusName = this.receiptStatusList[index].label
+      this.$set(this.tableList, index, obj)
     },
-    changeDate (val) {
+    changeDate(val) {
       this.formMember.beginTime = val ? val[0] : ''
       this.formMember.endTime = val ? val[1] : ''
     },
-    changeInput (val) {
+    changeInput(val) {
       this.formMember[this.type] = val
     },
-    selectStatus (key, item) {
+    selectStatus(key, item) {
       this.formMember[key] = item.value
     },
-    handleSizeChange (val) {
+    handleSizeChange(val) {
       this.formMember.limit = val
       this.getList(this.formMember)
     },
-    handleCurrentChange (val) {
+    handleCurrentChange(val) {
       this.formMember.page = val
       this.getList(this.formMember)
     },
-    handleRecommend (val) {
-      let params = {
-        jobId: val.jobId,
-        id: val.id,
-        uid: localStorage.getItem('uid')
-      }
-      recommendTeamUserJob(params).then(res => {
-        this.dialogTableVisible = true
-        this.getList(this.formMember)
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+    handleOk() {
+      this.$router.push('/teamApplication')
     },
-    handleApply (val) {
-      let params = {
-        jobId: val.jobId,
-        id: val.id,
-        uid: localStorage.getItem('uid'),
-        collectId: val.id
-      }
-      teamcollection(params).then(res => {
-        this.dialogTableVisible = true
-        this.getList(this.formMember)
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
-    },
-    handleOk () {
-      this.$router.push('teamApplication')
-    },
-    handleSearch () {
+    handleSearch() {
       this.getList(this.formMember)
     },
-    reset () {
+    reset() {
       this.formMember = {
         uid: localStorage.getItem('uid'),
         limit: 10,
-        page: 1,
+        page: 1
       }
+      this.timeList = []
+      this.getList(this.formMember)
     }
   }
 }

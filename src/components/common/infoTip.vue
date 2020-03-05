@@ -1,50 +1,7 @@
-<template>
-  <el-dialog title :visible.sync="centerDialogVisible" top="35vh" width="340px" center :show-close="false" :before-close="handleClose" class="dialog info-dialog">
-    <div class="dialog-centent">
-      <img :src="modalInfo.imgBg" class="dialog-img" alt />
-      <div class="dialog-row">
-        <p class="dialog-title">{{modalInfo.title}}</p>
-        <p class="dialog-subtitle">请先完善您的资料，才能进行下一步操作。</p>
-      </div>
-    </div>
-    <span slot="footer" class="dialog-footer">
-      <el-button type="primary" v-if="modalInfo.okText" @click="handleOk">{{modalInfo.okText}}</el-button>
-    </span>
-  </el-dialog>
-</template>
-<script>
-export default {
-  props: ['centerDialogVisible', 'modalInfo'],
-  data () {
-    return {
-
-    }
-  },
-  methods: {
-    handleClose () {
-      this.$emit('handleClose')
-    },
-    handleOk () {
-      let teamType = localStorage.getItem('teamType')
-      let teamId = localStorage.getItem('uid')
-      if (teamType == 1) {
-        this.$router.push(`/teamCompanyForm?teamId=${teamId}&type=${teamType}`)
-      }
-      else if (teamType == 2) {
-        this.$router.push(`/personalForm?teamId=${teamId}&type=${teamType}`)
-      }
-      else {
-        this.$router.push('/teamSetting')
-      }
-      this.$emit('handleClose')
-    }
-  },
-};
-</script>
 <style lang="scss">
 .dialog {
-  box-shadow:0px 6px 14px 1px rgba(134,133,133,0.3);
-  border-radius:5px;
+  box-shadow: 0px 6px 14px 1px rgba(134, 133, 133, 0.3);
+  border-radius: 5px;
   .el-dialog__headerbtn {
     z-index: 222;
   }
@@ -66,9 +23,9 @@ export default {
   }
   .dialog-title {
     font-size: 18px;
-    color:#333;
+    color: #333;
     font-weight: bold;
-    padding-top: 0
+    padding-top: 0;
   }
   .dialog-subtitle {
     color: #333333;
@@ -79,7 +36,7 @@ export default {
 }
 .info-dialog {
   .el-dialog__body {
-    padding:  0 25px
+    padding: 0 25px;
   }
 }
 .dialog-footer {
@@ -91,3 +48,43 @@ export default {
   margin: 0 15px;
 }
 </style>
+
+<template>
+  <el-dialog title :visible.sync="centerDialogVisible" top="35vh" width="340px" center :show-close="false" :before-close="handleClose" class="dialog info-dialog">
+    <div class="dialog-centent">
+      <img :src="modalInfo.imgBg" class="dialog-img" alt />
+      <div class="dialog-row">
+        <p class="dialog-title">{{modalInfo.title}}</p>
+        <p class="dialog-subtitle">请先完善您的资料，才能进行下一步操作。</p>
+      </div>
+    </div>
+    <span slot="footer" class="dialog-footer">
+      <el-button type="primary" v-if="modalInfo.okText" @click="handleOk">{{modalInfo.okText}}</el-button>
+    </span>
+  </el-dialog>
+</template>
+<script>
+export default {
+  props: ['centerDialogVisible', 'modalInfo'],
+  data() {
+    return {}
+  },
+  methods: {
+    handleClose() {
+      this.$emit('handleClose')
+    },
+    handleOk() {
+      let teamType = localStorage.getItem('teamType')
+      let teamId = localStorage.getItem('uid')
+      if (teamType == 1) {
+        this.$router.push(`/teamCompanyForm?teamId=${teamId}&type=${teamType}`)
+      } else if (teamType == 2) {
+        this.$router.push(`/personalForm?teamId=${teamId}&type=${teamType}`)
+      } else {
+        this.$router.push('/teamSetting')
+      }
+      this.$emit('handleClose')
+    }
+  }
+}
+</script>

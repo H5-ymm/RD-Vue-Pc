@@ -4,7 +4,13 @@
 <template>
   <div class="tables-box billingManagement">
     <div class="table-list">
-      <el-form :inline="true" label-width="100px" label-position="right" :model="formMember" class="demo-form-inline">
+      <el-form
+        :inline="true"
+        label-width="100px"
+        label-position="right"
+        :model="formMember"
+        class="demo-form-inline"
+      >
         <el-form-item label="姓名：">
           <el-input v-model="formMember.where" class="width300" placeholder="请输入职位名称关键字"></el-input>
           <el-button type="primary" @click="onSubmit" class="select-btn">查询</el-button>
@@ -19,23 +25,33 @@
           <el-button @click="handleUser(1,id)">已入职</el-button>
           <el-button @click="handleUser(2,id)">未入职</el-button>
         </div>
-        <el-table border :data="tableData" ref="multipleTable" @sort-change="sortChange" @selection-change="handleSelectionChange" style="width: 100%">
-          <el-table-column type="selection" align="center" width="50" v-if="viewType!=5"></el-table-column>
+        <el-table
+          border=""
+          :data="tableData"
+          ref="multipleTable"
+          @sort-change="sortChange"
+          @selection-change="handleSelectionChange"
+          style="width: 100%"
+        >
+          <el-table-column
+            type="selection"
+            align="center"
+            width="50"
+            v-if="viewType!=5&&viewType!=2"
+          ></el-table-column>
           <el-table-column label="姓名" align="center" width="150">
             <template slot-scope="props">
               <el-button type="text">{{props.row.name}}</el-button>
             </template>
           </el-table-column>
-          <el-table-column label="年龄" prop="age" align="center" width="150">
-          </el-table-column>
+          <el-table-column label="年龄" prop="age" align="center" width="150"></el-table-column>
           <el-table-column label="性别" align="center" width="150">
             <template slot-scope="props">
               <span>{{props.row.sex==1?'男':props.row.sex==2?'女':'男女不限'}}</span>
             </template>
           </el-table-column>
           <el-table-column label="学历" prop="education" align="center" width="150"></el-table-column>
-          <el-table-column label="住址" align="center" prop="citys" width="150">
-          </el-table-column>
+          <el-table-column label="住址" align="center" prop="citys" width="150"></el-table-column>
           <el-table-column label="推荐时间" prop="entry_num" sortable align="center" width="150">
             <template slot-scope="props">
               <span>{{props.row.addtime?$moment.unix(props.row.addtime).format('YYYY-MM-DD HH:mm'):'--'}}</span>
@@ -45,11 +61,19 @@
             <template slot-scope="props">
               <div v-if="viewType==2||viewType==4">
                 <span class="status" v-if="!props.row.entry_status">待审核</span>
-                <span class="status" v-else :class="`status${props.row.entry_status}`">{{props.row.entry_status==1?'通过':props.row.entry_status==2?'未通过':'未参加'}}</span>
+                <span
+                  class="status"
+                  v-else
+                  :class="`status${props.row.entry_status}`"
+                >{{props.row.entry_status==1?'通过':props.row.entry_status==2?'未通过':'未参加'}}</span>
               </div>
               <div v-if="viewType==3||viewType==6">
                 <span class="status" v-if="!props.row.interview_status">待审核</span>
-                <span class="status" :class="`status${props.row.interview_status}`" v-else>{{props.row.interview_status==1?'通过':props.row.interview_status==2?'未通过':'未参加'}}</span>
+                <span
+                  class="status"
+                  :class="`status${props.row.interview_status}`"
+                  v-else
+                >{{props.row.interview_status==1?'通过':props.row.interview_status==2?'未通过':'未参加'}}</span>
               </div>
             </template>
           </el-table-column>
@@ -67,7 +91,12 @@
               <span v-else>{{props.row.entry_status==1?'已入职':'未入职'}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="操作" align="center" min-width="150" v-if="viewType==3||viewType==6">
+          <el-table-column
+            label="操作"
+            align="center"
+            min-width="150"
+            v-if="viewType==3||viewType==6"
+          >
             <template slot-scope="props">
               <div v-if="props.row.interview_status==0">
                 <el-button type="text" @click="handleResume(1,props.row.id)" size="small">通过</el-button>
@@ -75,9 +104,13 @@
                 <el-button type="text" @click="handleResume(3,props.row.id)" size="small">未参加</el-button>
               </div>
               <div v-else>
-                <span v-if="!props.row.entry_status&&props.row.interview_status">{{props.row.interview_status==1?'通过':props.row.interview_status==2?'未通过':'未参加'}}</span>
+                <span
+                  v-if="!props.row.entry_status&&props.row.interview_status"
+                >{{props.row.interview_status==1?'通过':props.row.interview_status==2?'未通过':'未参加'}}</span>
               </div>
-              <span v-if="props.row.entry_status&&props.row.entry_status!=4">{{props.row.entry_status==1?'通过':props.row.entry_status==2?'未通过':'未参加'}}</span>
+              <span
+                v-if="props.row.entry_status&&props.row.entry_status!=4"
+              >{{props.row.entry_status==1?'通过':props.row.entry_status==2?'未通过':'未参加'}}</span>
               <span v-if="props.row.interview_status==4">放弃面试</span>
             </template>
           </el-table-column>
@@ -88,41 +121,64 @@
                 <el-button type="text" @click="handleResume(2,props.row.id)" size="small">未通过</el-button>
                 <el-button type="text" @click="handleResume(3,props.row.id)" size="small">未参加</el-button>
               </div>
-              <span v-if="!props.row.entry_status&&props.row.entry_status!=4">{{props.row.entry_status==1?'通过':props.row.entry_status==2?'未通过':'未参加'}}</span>
+              <span
+                v-if="!props.row.entry_status&&props.row.entry_status!=4"
+              >{{props.row.entry_status==1?'通过':props.row.entry_status==2?'未通过':'未参加'}}</span>
               <span v-if="props.row.entry_status==4">放弃面试</span>
             </template>
           </el-table-column>
         </el-table>
       </div>
-      <el-pagination class="team-pagination" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="formMember.page" :page-sizes="[10, 30, 50, 100]" :page-size="formMember.limit" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
+      <el-pagination
+        class="team-pagination"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="formMember.page"
+        :page-sizes="[10, 30, 50, 100]"
+        :page-size="formMember.limit"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total"
+      ></el-pagination>
     </div>
-    <confirmDialog :dialogTableVisible="visible" @submit="submitQuit" @handleClose="visible=false" :dialogObj="dialogObj"></confirmDialog>
+    <confirmDialog
+      :dialogTableVisible="visible"
+      @submit="submitQuit"
+      @handleClose="visible=false"
+      :dialogObj="dialogObj"
+    ></confirmDialog>
   </div>
 </template>
 
 <script>
-import { incumbencyUserResumeList, entryUserResumeList, entryResumeList, updateEntryUser, auditEntryResume, quitResumeRecommend } from '../../api/receipt'
-import { moneyTypeList, rewardTypeList, payTypeList } from '../../base/base'
+import {
+  incumbencyUserResumeList,
+  entryUserResumeList,
+  entryResumeList,
+  updateEntryUser,
+  auditEntryResume,
+  quitResumeRecommend
+} from '@/api/receipt'
+import { moneyTypeList, rewardTypeList, payTypeList } from '@/base/base'
 import confirmDialog from '../common/confirmDialog'
 export default {
   components: {
     confirmDialog
   },
   filters: {
-    moneyType (val) {
+    moneyType(val) {
       let obj = moneyTypeList.find(item => {
         return val == item.value
       })
       return obj ? obj.label : '--'
     },
-    rewardType (val) {
+    rewardType(val) {
       let obj = rewardTypeList.find(item => {
         return val == item.value
       })
       return obj ? obj.label : '--'
-    },
+    }
   },
-  data () {
+  data() {
     return {
       moneyTypeList,
       rewardTypeList,
@@ -158,94 +214,124 @@ export default {
       }
     }
   },
-  created () {
+  created() {
     // 初始化查询标签数据
     // viewType
-    // 4.面试结果
+    // 3.面试结果
     // 5.入职审核
     // 2.在职名单
     this.viewType = this.$route.query.view
+    this.$store.commit("setMenus", this.menusList);
     this.jobId = this.$route.query.id
     this.formMember.jobId = this.jobId
     this.getList(this.formMember)
   },
-  methods: {
-    getList (params) {
+  computed: {
+    menusList() {
+      let arr = this.$store.getters.breadcrumb
+      if (this.viewType == 2) {
+        arr[1] = '在职名单'
+      }
+      if (this.viewType == 3) {
+        arr[1] = '面试结果'
+      }
       if (this.viewType == 4) {
-        entryUserResumeList(params).then(res => {
-          this.getData(res)
-        }).catch(error => {
-          this.$message.error(error.status.remind)
-        })
+        arr[1] = '入职审核'
       }
-      else if (this.viewType == 3 || this.viewType == 6) {
-        entryResumeList(params).then(res => {
-          this.getData(res)
-        }).catch(error => {
-          this.$message.error(error.status.remind)
-        })
+      if (this.viewType == 6) {
+        arr[1] = '面试名单'
       }
-      else {
-        incumbencyUserResumeList(params).then(res => {
-          this.getData(res)
-        }).catch(error => {
-          this.$message.error(error.status.remind)
-        })
+      return arr
+    }
+  },
+  methods: {
+    getList(params) {
+      if (this.viewType == 4) {
+        entryUserResumeList(params)
+          .then(res => {
+            this.getData(res)
+          })
+          .catch(error => {
+            if (error) {
+              this.$message.warning(error.status.remind)
+            }
+          })
+      } else if (this.viewType == 3 || this.viewType == 6) {
+        entryResumeList(params)
+          .then(res => {
+            this.getData(res)
+          })
+          .catch(error => {
+            if (error) {
+              this.$message.warning(error.status.remind)
+            }
+          })
+      } else {
+        incumbencyUserResumeList(params)
+          .then(res => {
+            this.getData(res)
+          })
+          .catch(error => {
+            if (error) {
+              this.$message.warning(error.status.remind)
+            }
+          })
       }
     },
-    sortChange (column) {
+    sortChange(column) {
       if (column.order == 'ascending') {
         this.formMember[column.prop] = 'asc'
-      }
-      else {
+      } else {
         this.formMember[column.prop] = 'desc'
       }
       this.getList(this.formMember)
     },
-    handleSelectionChange (val) {
+    handleSelectionChange(val) {
       let arr = val.map(item => {
         return item.id
       })
       this.id = arr.join(',')
     },
-    handleUserQuit (val) {
+    handleUserQuit(val) {
       this.id = val.id
       this.resumeId = val.resume_id
       this.visible = true
     },
-    submitQuit (val) {
+    submitQuit(val) {
       let params = {
         uid: localStorage.getItem('uid'),
         id: this.id,
         resumeId: this.resumeId,
         content: val
       }
-      quitResumeRecommend(params).then(res => {
-        this.$message.success('操作成功')
-        this.visible = false
-        this.getList(this.formMember)
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+      quitResumeRecommend(params)
+        .then(res => {
+          this.$message.success('操作成功')
+          this.visible = false
+          this.getList(this.formMember)
+        })
+        .catch(error => {
+          this.$message.error(error.status.remind)
+        })
     },
-    getData (res) {
+    getData(res) {
       this.tableData = res.data.data
-      this.total = res.itemdata.count
+      this.total = res.data.count
     },
-    selectStatus (item, index) {
+    selectStatus(item, index) {
       this.activeIndex = index
       this.formMember.status = item.value
       this.getList(this.formMember)
     },
-    handleSizeChange (val) {
+    handleSizeChange(val) {
       this.formMember.limit = val
       this.getList(this.formMember)
     },
-    handleCurrentChange (val) {
+    handleCurrentChange(val) {
       this.formMember.page = val
       this.getList(this.formMember)
     },
-    handleUser (status, val) {
+    handleUser(status, val) {
       if (!val) {
         return this.$message.warning('请选择简历')
       }
@@ -255,18 +341,24 @@ export default {
         status: status
       }
       if (this.viewType != 3) {
-        updateEntryUser(params).then(res => {
-          this.$message.success('操作成功')
-          this.getList(this.formMember)
-        }).catch(error => {
-          this.$message.error(error.status.remind)
-        })
-      }
-      else {
-
+        updateEntryUser(params)
+          .then(res => {
+            if (res.data) {
+              this.$message.success('操作成功')
+              this.getList(this.formMember)
+            } else {
+              this.$message.error('操作失败')
+            }
+          })
+          .catch(error => {
+            if (error) {
+              this.$message.warning(error.status.remind)
+            }
+          })
+      } else {
       }
     },
-    handleResume (status, val) {
+    handleResume(status, val) {
       if (!val) {
         return this.$message.warning('请选择简历')
       }
@@ -275,20 +367,20 @@ export default {
         id: val,
         status: status
       }
-      auditEntryResume(params).then(res => {
-        this.$message.success('操作成功')
-        this.getList(this.formMember)
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+      auditEntryResume(params)
+        .then(res => {
+          if (res.data) {
+            this.$message.success('操作成功')
+            this.getList(this.formMember)
+          } else {
+            this.$message.error('操作失败')
+          }
+        })
+        .catch(error => {
+          this.$message.error(error.status.remind)
+        })
     },
-    submitMember (val) {
-      updateTeamUser(val).then(res => {
-        this.dialogTableVisible = false
-        this.getList(this.formMember)
-      })
-    },
-    onSubmit () {
+    onSubmit() {
       this.getList(this.formMember)
     }
   }

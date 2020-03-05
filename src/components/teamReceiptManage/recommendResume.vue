@@ -6,11 +6,11 @@
     font-size: 20px;
   }
 }
-.recomment-card  {
+.recomment-card {
   background: #fff;
   border-radius: 5px;
   height: 100px;
-  box-shadow:2px 5px 17px 0px rgba(51,51,51,0.2);
+  box-shadow: 2px 5px 17px 0px rgba(51, 51, 51, 0.2);
   padding: 0 60px;
   line-height: 30px;
   color: #999;
@@ -38,19 +38,19 @@
   .recomment-card-col3 {
     width: 50%;
     .progress {
-      width:100%;
+      width: 100%;
       height: 4px;
       border-radius: 2px;
       background: #eee;
       position: relative;
       margin-right: 10px;
       .progress-item {
-        background: #1890FF;
+        background: #1890ff;
         height: 4px;
         border-radius: 2px;
         position: absolute;
         top: 0;
-        left:0;  
+        left: 0;
       }
     }
   }
@@ -149,31 +149,41 @@
 </template>
 
 <script>
-// import { getTeamList, loginOutTeam, addTeamUser, updateTeamUser } from '../../api/team'
 import { gettalent, addPut, getapplyInfo } from '@/api/teamReceipt'
 import { addPutSelf } from '@/api/internalInvoice'
-import { addUserResume, getMatchingResume, getInternalInvoiceList, getMatchingJobList, getInternalMatchingList } from '@/api/resume'
-import { moneyTypeList, rewardTypeList, payTypeList, weekList } from '@/base/base'
+import {
+  addUserResume,
+  getMatchingResume,
+  getInternalInvoiceList,
+  getMatchingJobList,
+  getInternalMatchingList
+} from '@/api/resume'
+import {
+  moneyTypeList,
+  rewardTypeList,
+  payTypeList,
+  weekList
+} from '@/base/base'
 import jobMate from '../resumeManage/jobMate'
 export default {
   components: {
     jobMate
   },
   filters: {
-    moneyType (val) {
+    moneyType(val) {
       let obj = moneyTypeList.find(item => {
         return val == item.value
       })
       return obj ? obj.label : '--'
     },
-    rewardType (val) {
+    rewardType(val) {
       let obj = rewardTypeList.find(item => {
         return val == item.value
       })
       return obj ? obj.label : '--'
-    },
+    }
   },
-  data () {
+  data() {
     return {
       moneyTypeList,
       rewardTypeList,
@@ -206,13 +216,16 @@ export default {
       resume_id: ''
     }
   },
-  created () {
+  created() {
     // 初始化查询标签数据
     this.formMember.jobId = this.$route.query.jobId
     if (this.$route.query.index) {
       this.activeIndex = this.$route.query.index
-    }
-    else {
+      let arr = ['已发布职位', '推荐简历']
+      this.$store.commit('setMenus', arr)
+    } else {
+      let arr = ['输送人才', '推荐简历']
+      this.$store.commit('setMenus', arr)
       this.activeIndex = 0
     }
     if (this.$route.query.jobId) {
@@ -225,106 +238,119 @@ export default {
     this.byJobMatchingList(this.formMember)
   },
   methods: {
-    byJobMatchingList (params) {
+    byJobMatchingList(params) {
       if (this.activeIndex == 0) {
-        getMatchingResume(params).then(res => {
-          this.tableData = res.data.data
-          this.total = res.data.count
-        }).catch(error => {
-          this.$message.error(error.status.remind)
-        })
-      }
-      else {
-        getInternalInvoiceList(params).then(res => {
-          this.tableData = res.data.data
-          this.total = res.data.count
-        }).catch(error => {
-          this.$message.error(error.status.remind)
-        })
+        getMatchingResume(params)
+          .then(res => {
+            this.tableData = res.data.data
+            this.total = res.data.count
+          })
+          .catch(error => {
+            if (error) {
+              this.$message.warning(error.status.remind)
+            }
+          })
+      } else {
+        getInternalInvoiceList(params)
+          .then(res => {
+            this.tableData = res.data.data
+            this.total = res.data.count
+          })
+          .catch(error => {
+            if (error) {
+              this.$message.warning(error.status.remind)
+            }
+          })
       }
     },
-    getList (params) {
-      gettalent(params).then(res => {
-        const { data } = res
-        this.tableData = data.data
-        this.total = data.count
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+    getList(params) {
+      gettalent(params)
+        .then(res => {
+          const { data } = res
+          this.tableData = data.data
+          this.total = data.count
+        })
+        .catch(error => {
+          if (error) {
+            this.$message.warning(error.status.remind)
+          }
+        })
     },
-    getInfo () {
+    getInfo() {
       let params = {
         apply_id: this.apply_id,
         uid: localStorage.getItem('uid')
       }
-      getapplyInfo(params).then(res => {
-        this.resumeInfo = res.data
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+      getapplyInfo(params)
+        .then(res => {
+          this.resumeInfo = res.data
+        })
+        .catch(error => {
+          this.$message.error(error.status.remind)
+        })
     },
-    selectStatus (item, index) {
-      this.activeIndex = index
-      this.formMember.status = item.value
-    },
-    handleSizeChange (val) {
+    handleSizeChange(val) {
       this.formMember.limit = val
       this.getList(this.formMember)
     },
-    handleCurrentChange (val) {
+    handleCurrentChange(val) {
       this.formMember.page = val
       this.getList(this.formMember)
     },
-    handleJob (resume_id) {
+    handleJob(resume_id) {
       if (!resume_id) {
         return this.$message.success('请选择简历')
       }
       if (!this.activeIndex) {
-
         let param = {
           resume_id: resume_id,
           uid: localStorage.getItem('uid'),
           apply_id: this.apply_id
         }
-        addPut(param).then(res => {
-          if (res.data) {
-            this.$message.success('推荐成功')
-            this.byJobMatchingList(this.formMember)
-          }
-          else {
-            this.$message.error('推荐失败')
-          }
-        }).catch(error => {
-          this.$message.error(error.status.remind)
-        })
-      }
-      else {
+        addPut(param)
+          .then(res => {
+            if (res.data) {
+              this.$message.success('推荐成功')
+              this.byJobMatchingList(this.formMember)
+            } else {
+              this.$message.error('推荐失败')
+            }
+          })
+          .catch(error => {
+            if (error) {
+              this.$message.warning(error.status.remind)
+            }
+          })
+      } else {
         let param = {
           resume_id: resume_id,
           uid: localStorage.getItem('uid'),
           job_id: this.formMember.jobId
         }
-        addPutSelf(param).then(res => {
-          if (res.data) {
-            this.$message.success('推荐成功')
-            this.byJobMatchingList(this.formMember)
-          }
-          else {
-            this.$message.error('推荐失败')
-          }
-        }).catch(error => {
-          this.$message.error(error.status.remind)
-        })
+        addPutSelf(param)
+          .then(res => {
+            if (res.data) {
+              this.$message.success('推荐成功')
+              this.byJobMatchingList(this.formMember)
+            } else {
+              this.$message.error('推荐失败')
+            }
+          })
+          .catch(error => {
+            if (error) {
+              this.$message.warning(error.status.remind)
+            }
+          })
       }
     },
-    handleSelectionChange (val) {
+    handleSelectionChange(val) {
       this.multipleSelection = val
       var arr = val.map(item => {
         return item.resume_id
       })
       this.resume_id = arr.join(',')
     },
-    onSubmit () {
+    onSubmit() {
       this.byJobMatchingList(this.formMember)
     }
   }

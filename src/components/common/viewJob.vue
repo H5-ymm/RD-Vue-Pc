@@ -1,3 +1,118 @@
+<style lang="scss">
+.member-dialog {
+  box-shadow: 0px 1px 43px 0px rgba(51, 51, 51, 0.3);
+  border-radius: 5px;
+  .el-dialog__body,
+  .el-dialog__header {
+    padding: 0;
+  }
+  .member-col1 {
+    background: #ebf4fb;
+    padding: 21px 0 20px;
+  }
+  .member-row {
+    width: 100%;
+    margin: 0 auto;
+    text-align: center;
+    color: #333333;
+    padding: 0 0 10px;
+    position: relative;
+    .member-col1-box {
+      width: 82%;
+      margin: 0 auto;
+    }
+    &.job-info-box {
+      .member-col1-jobName {
+        color: #333;
+        font-size: 24px;
+        margin: 10px 0;
+        text-align: left;
+      }
+      .member-col1-text {
+        color: #6a6a6a;
+        font-size: 12px;
+      }
+      .member-col1-status {
+        background: #61bc74;
+        color: #fff;
+        font-size: 12px;
+        padding: 4px 14px;
+        border-radius: 11px;
+      }
+    }
+    .cancel-icon {
+      position: absolute;
+      top: 5px;
+      right: 0;
+    }
+    .member-col3 {
+      width: 82%;
+      border-top: 1px solid #eee;
+      padding-top: 10px;
+      margin: 0 auto;
+      .member-col3-box {
+        margin-bottom: 20px;
+        .team-info-card-row {
+          .team-info-card-item {
+            span {
+              width: 85px;
+            }
+          }
+        }
+        .member-col3-detail {
+          margin: 15px;
+          text-align: left;
+        }
+      }
+      .team-info-card-row {
+        width: 50%;
+        text-align: left;
+        margin-top: 10px;
+        .team-info-card-item {
+          line-height: 36px;
+          span {
+            display: inline-block;
+            width: 100px;
+            text-align: right;
+            margin-right: 30px;
+            font-size: 14px;
+            color: #6a6a6a;
+            &:nth-of-type(2) {
+              text-align: left;
+              color: #333;
+              width: auto;
+              margin-right: 0;
+            }
+          }
+        }
+      }
+      .member-col3-title {
+        color: #333;
+        font-weight: bold;
+        font-size: 18px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #eee;
+        padding-left: 15px;
+        text-align: left;
+      }
+    }
+  }
+  .dialog-footer {
+    margin-right: 0;
+    width: 92%;
+    margin: 0 auto;
+    .select-text {
+      font-size: 14px;
+      color: #6a6a6a;
+      .select-num {
+        color: #1890ff;
+      }
+    }
+  }
+}
+</style>
+
+
 <template>
   <el-dialog width="830px" title :visible.sync="dialogTableVisible" class="member-dialog" :show-close="false">
     <div class="member-row job-info-box">
@@ -17,7 +132,7 @@
       <section class="member-col3">
         <div class="member-col3-box">
           <p class="member-col3-title">接单详情</p>
-          <ul class="x-flex-between">
+          <ul class="x-flex-start-between">
             <li class="team-info-card-row">
               <div class="team-info-card-item">
                 <span>需求人数</span>
@@ -120,23 +235,25 @@
 import { invoiceInfo } from '@/api/orderTarking'
 export default {
   props: ['dialogTableVisible', 'id'],
-  data () {
+  data() {
     return {
       jobInfo: {}
     }
   },
-  created () {
-
-  },
+  created() {},
   computed: {
-    rewardMoney () {
+    rewardMoney() {
       if (this.id) {
-        return this.jobInfo.money_type == 1 ? '月' : this.jobInfo.money_type == 2 ? '日' : '时'
+        return this.jobInfo.money_type == 1
+          ? '月'
+          : this.jobInfo.money_type == 2
+            ? '日'
+            : '时'
       }
     }
   },
   watch: {
-    id (val) {
+    id(val) {
       if (val) {
         let params = {
           id: val,
@@ -149,122 +266,10 @@ export default {
     }
   },
   methods: {
-    handleClose () {
+    handleClose() {
       this.$emit('handleClose')
     }
   }
 }
 </script>
-
-<style lang="scss">
-.member-dialog {
-  box-shadow:0px 1px 43px 0px rgba(51,51,51,0.3);
-  border-radius:5px;
-  .el-dialog__body,.el-dialog__header {
-    padding: 0;
-  }
-  .member-col1 {
-    background:#EBF4FB;
-    padding: 21px 0 20px;
-  }
-  .member-row {
-    width: 100%;
-    margin: 0 auto;
-    text-align: center;
-    color: #333333;
-    padding: 0 0 10px;
-    position: relative;
-    .member-col1-box {
-      width: 82%;
-      margin: 0 auto;
-    }
-    &.job-info-box {
-      .member-col1-jobName {
-        color: #333;
-        font-size:24px;
-        margin: 10px 0;
-        text-align: left;
-      }
-      .member-col1-text{
-        color: #6A6A6A;
-        font-size: 12px;
-      }
-      .member-col1-status {
-        background: #61BC74;
-        color: #fff;
-        font-size: 12px;
-        padding: 4px 14px;
-        border-radius: 11px;
-      }
-    }
-    .cancel-icon {
-      position: absolute;
-      top: 5px;
-      right: 0;
-    }
-    .member-col3 {
-      width: 82%;
-      border-top: 1px solid #eee;
-      padding-top: 10px;
-      margin: 0 auto;
-      .member-col3-box {
-        margin-bottom: 20px;
-        .team-info-card-row {
-          .team-info-card-item {
-            span {
-              width: 85px;
-            }
-          }
-        }
-        .member-col3-detail {
-          margin: 15px;
-          text-align: left;
-        }
-      }
-      .team-info-card-row {
-        width: 50%;
-        text-align: left;
-        .team-info-card-item {
-          line-height: 36px;
-          span {
-            display: inline-block;
-            width: 100px;
-            text-align: right;
-            margin-right: 30px;
-            font-size: 14px;
-            color: #6A6A6A;
-            &:nth-of-type(2) {
-              text-align: left;
-              color: #333;
-              width: auto;
-              margin-right: 0;
-            }
-          }
-        }
-      }
-      .member-col3-title {
-        color: #333;
-        font-weight: bold;
-        font-size: 18px;
-        padding-bottom: 10px;
-        border-bottom: 1px solid #eee;
-        padding-left: 15px;
-        text-align: left;
-      }
-    }
-  }
-  .dialog-footer {
-    margin-right: 0;
-    width: 92%;
-    margin: 0 auto;
-    .select-text {
-      font-size:14px;
-      color: #6A6A6A;
-      .select-num {
-        color: #1890FF;
-      }
-    }
-  }
-}
-</style>
 

@@ -1,26 +1,26 @@
 <style lang="scss">
-  .team-center-view {
-    padding-bottom:50px;
-    .team-center-form {
-      padding-top: 20px;
-      .el-select {
-        margin-right: 10px;
-      }
-      .width300 {
-        width: 300px;
-      }
-      .width120 {
-        width: 120px;
-      }
-      .select-btn {
-        padding: 11px 20px;
-        margin-left: 20px;
-      }
+.team-center-view {
+  padding-bottom: 50px;
+  .team-center-form {
+    padding-top: 20px;
+    .el-select {
+      margin-right: 10px;
     }
-    .team-panel-section1 {
-      min-height: 306px;
+    .width300 {
+      width: 300px;
+    }
+    .width120 {
+      width: 120px;
+    }
+    .select-btn {
+      padding: 11px 20px;
+      margin-left: 20px;
     }
   }
+  .team-panel-section1 {
+    min-height: 306px;
+  }
+}
 </style>
 <template>
   <div class="team-center-view">
@@ -81,7 +81,14 @@ import logTable from './logTable'
 import receiptLogTable from './receiptLogTable'
 import orderQuery from './orderQuery'
 import allOrder from './allOrder'
-import { getrank, getCompare, getTeamLog, getnumLeader, getmemberList, getapplyLog } from '@/api/teamCenter'
+import {
+  getrank,
+  getCompare,
+  getTeamLog,
+  getnumLeader,
+  getmemberList,
+  getapplyLog
+} from '@/api/teamCenter'
 import { departmentRoleList } from '@/api/department'
 import infoTip from '../common/infoTip'
 export default {
@@ -147,12 +154,11 @@ export default {
       legendIndex: 1,
       limit: 10,
       teamCenterInfo: {},
-      percentList: [],
+      percentList: {},
       list: [],
       personList: [],
       tableData: [],
       tableTeamData: [],
-      timeout: null,
       userName: '',
       depId: '',
       userPosition: sessionStorage.getItem('userPosition'), // 1 总经理，2经理，3 成员
@@ -161,17 +167,14 @@ export default {
     }
   },
   created () {
-  },
-  mounted () {
     if (localStorage.getItem('teamType') == 0) {
       this.dialogVisible = true
       return false
-    }
-    else {
+    } else {
       if (localStorage.getItem('userType') == 2) {
+        this.getCompareInfo(this.paramsInfo)
         this.getData(this.paramsEchart)
         this.getList(this.params)
-        this.getCompareInfo(this.paramsInfo)
         this.getTeamList(this.paramsLog)
         this.getLogList(this.paramsLog)
         if (this.userPosition == 1) {
@@ -182,100 +185,84 @@ export default {
   },
   computed: {
     titleLog () {
-      return this.userPosition == 1 ? '团队' : this.userPosition == 2 ? '部门' : '个人'
+      return this.userPosition == 1
+        ? '团队'
+        : this.userPosition == 2
+          ? '部门'
+          : '个人'
     }
   },
   methods: {
     querySearchAsync (queryString, cb) {
+      if(!queryString) return
       let params = {
         uid: localStorage.getItem('uid'),
         depart_id: this.depId,
         name: queryString
       }
-      this.getPerson(params)
-      var restaurants = this.personList;
-      var results = queryString ? restaurants.filter(this.createStateFilter(queryString)) : restaurants;
-      clearTimeout(this.timeout);
-      this.timeout = setTimeout(() => {
-        cb(results);
-      }, 3000 * Math.random());
+      getmemberList(params)
+        .then(res => {
+          this.personList = res.data || []
+           cb( this.personList)
+        })
+        .catch(error => {
+          if (error) {
+            this.$message.error(error.status.remind)
+          }
+        })
     },
-    createStateFilter (queryString) {
-      return (restaurant) => {
-        return (restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
-      };
-    },
-    handleSelect (item) {
+    handleSelect (item) { 
+      this.userName = item.user_name
+      this.paramsInfo.search_uid =  item.uid
+      this.paramsEchart.search_uid = item.uid
     },
     changeDep (val) {
       this.depId = val
     },
-    getPerson (params) {
-      getmemberList(params).then(res => {
-        this.personList = res.data || []
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
-    },
     getKey (index) {
       let label = ''
-      if (index == 1) {
-        label = 'total'
-      }
-      else if (index == 2) {
-        label = 'put'
-      }
-      else if (index == 3) {
-        label = 'view'
-      }
-      else {
-        label = 'entry'
+      if (index) {
+        if (index == 1) {
+          label = 'total'
+        } else if (index == 2) {
+          label = 'put'
+        } else if (index == 3) {
+          label = 'view'
+        } else {
+          label = 'entry'
+        }
       }
       return label
     },
-    getData (params, last) {
+    getData (params, last, index) {
+      let obj = {}
       if (last) {
-        params.last = last
+        obj = Object.assign(params, { last: 1 })
+      } else {
+        obj = Object.assign(params, { last: '' })
       }
-      getnumLeader(params).then(res => {
-        this.allData = res.data
-        if (last) {
-          let key = this.getKey(this.activeIndex)
-          this.list = this.getArray(res.data[key])
-          console.log(this.list)
-          // this.eachartData = this.getNewList(res.data)
-        }
-        else {
-          // this.percentList = this.getArray(res.data[key])
-          this.eachartData = this.getNewList(res.data)
-        }
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+      getnumLeader(obj)
+        .then(res => {
+          this.allData = res.data
+          this.percentList = this.allData
+          let key = this.getKey(index)
+          if (last) {
+            this.list = this.getArray(res.data[key])
+            this.activeIndex = index
+          } else {
+            this.eachartData = this.getNewList(res.data)
+          }
+        })
+        .catch(error => {
+          if (error) {
+            this.$message.error(error.status.remind)
+          }
+        })
     },
     getArray (obj) {
       let arr = []
       for (let i in obj) {
         arr.push(obj[i])
-      }
-      console.log(arr)
-      return arr
-    },
-    getXarr (obj) {
-      let arr = []
-      for (let i in obj) {
-        if (i) {
-          arr.push(i)
-        }
-        else {
-          return
-        }
-      }
-      return arr
-    },
-    getNewArr (obj) {
-      for (let key in obj) {
-        arr[key] = this.getArray(val[obj[key]]).splice(0)
       }
       return arr
     },
@@ -294,44 +281,63 @@ export default {
     },
     getDep () {
       let uid = localStorage.getItem('uid')
-      departmentRoleList({ uid }).then(res => {
-        this.depList = res.data || []
-      }).catch(error => {
-        console.log(error)
-        this.$message.error(error.status.remind)
-      })
+      departmentRoleList({ uid })
+        .then(res => {
+          this.depList = res.data || []
+        })
+        .catch(error => {
+          if (error) {
+            this.$message.error(error.status.remind)
+          }
+        })
     },
     getCompareInfo (params) {
-      getCompare(params).then(res => {
-        this.teamCenterInfo = res.data
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+      getCompare(params)
+        .then(res => {
+          this.teamCenterInfo = res.data
+        })
+        .catch(error => {
+          if (error) {
+            this.$message.error(error.status.remind)
+          }
+        })
     },
     getLogList (params) {
-      getapplyLog(params).then(res => {
-        this.tableData = res.data.data || []
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+      getapplyLog(params)
+        .then(res => {
+          this.tableData = res.data.data || []
+        })
+        .catch(error => {
+          if (error) {
+            this.$message.error(error.status.remind)
+          }
+        })
     },
     getTeamList (params) {
-      getTeamLog(params).then(res => {
-        this.tableTeamData = res.data.data || []
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+      getTeamLog(params)
+        .then(res => {
+          this.tableTeamData = res.data.data || []
+        })
+        .catch(error => {
+          if (error) {
+            this.$message.error(error.status.remind)
+          }
+        })
     },
     select (index) {
-      this.activeIndex = index
-      this.getData(this.paramsEchart, 1)
+      this.getData(this.paramsEchart, 1, index)
+      this.getData(this.paramsEchart)
     },
     getList (params) {
-      getrank(params).then(res => {
-        this.orderData = res.data
-      }).catch(error => {
-        this.$message.error(error.status.remind)
-      })
+      getrank(params)
+        .then(res => {
+          this.orderData = res.data
+        })
+        .catch(error => {
+          if (error) {
+            this.$message.error(error.status.remind)
+          }
+        })
     },
     querySearch () {
       this.paramsInfo.depart_id = this.formMember.depart_id
@@ -350,7 +356,6 @@ export default {
       this.getData(this.paramsEchart)
       this.legendIndex = val.type
     }
-  },
-
+  }
 }
 </script>
