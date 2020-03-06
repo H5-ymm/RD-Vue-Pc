@@ -4,26 +4,13 @@
 <template>
   <div class="tables-box billingManagement">
     <div class="table-list">
-      <el-form
-        :inline="true"
-        label-width="100px"
-        label-position="right"
-        :model="formMember"
-        class="demo-form-inline form-item-wrap"
-      >
+      <el-form :inline="true" label-width="100px" label-position="right" :model="formMember" class="demo-form-inline form-item-wrap">
         <el-form-item label="姓名：">
           <el-input v-model="formMember.name" class="width300" placeholder="请输入职位名称关键字"></el-input>
           <el-button type="primary" @click="onSubmit" class="select-btn">查询</el-button>
         </el-form-item>
         <el-form-item label="状态筛选：" v-if="viewType!=7">
-          <el-button
-            :type="activeIndex==index ?'primary':''"
-            v-for="(item,index) in statusList"
-            :key="index"
-            plain
-            @click="selectStatus(item,index)"
-            class="select-status"
-          >{{item.label}}</el-button>
+          <el-button :type="activeIndex==index ?'primary':''" v-for="(item,index) in statusList" :key="index" plain @click="selectStatus(item,index)" class="select-status">{{item.label}}</el-button>
         </el-form-item>
       </el-form>
       <div class="member-table resume-table">
@@ -49,96 +36,35 @@
           <el-table-column label="状态" align="center" width="150">
             <template slot-scope="props">
               <div v-if="viewType==4||viewType==3">
-                <span
-                  class="status"
-                  :class="`status${props.row.status}`"
-                  v-if="!props.row.interview_status&&!props.row.entry_status"
-                >待审核</span>
-                <span
-                  class="status"
-                  :class="`status${props.row.interview_status}`"
-                  v-if="props.row.interview_status&&props.row.interview_status!=3&&!props.row.entry_status"
-                >{{props.row.interview_status==1?'通过':'未通过'}}</span>
+                <span class="status" :class="`status${props.row.status}`" v-if="!props.row.interview_status&&!props.row.entry_status">待审核</span>
+                <span class="status" :class="`status${props.row.interview_status}`" v-if="props.row.interview_status&&props.row.interview_status!=3&&!props.row.entry_status">{{props.row.interview_status==1?'通过':'未通过'}}</span>
                 <span class="status status2" v-if="props.row.interview_status==3">未参加</span>
               </div>
               <div v-if="viewType==2||viewType==1">
-                <span
-                  class="status"
-                  :class="`status${props.row.status}`"
-                  v-if="!props.row.status"
-                >待审核</span>
-                <span
-                  class="status"
-                  :class="`status${props.row.status}`"
-                  v-if="props.row.status"
-                >{{props.row.status==1?'已通过':'已拒绝'}}</span>
+                <span class="status" :class="`status${props.row.status}`" v-if="!props.row.status">待审核</span>
+                <span class="status" :class="`status${props.row.status}`" v-if="props.row.status">{{props.row.status==1?'已通过':'已拒绝'}}</span>
               </div>
               <div v-if="viewType==7">
-                <span
-                  class="status"
-                  :class="`status${props.row.status}`"
-                  v-if="!props.row.entry_status"
-                >待审核</span>
-                <span
-                  class="status"
-                  :class="`status${props.row.entry_status}`"
-                  v-if="props.row.entry_status"
-                >{{props.row.entry_status==1?'已入职':props.row.entry_status==2?'未入职':'未参加'}}</span>
+                <span class="status" :class="`status${props.row.status}`" v-if="!props.row.entry_status">待审核</span>
+                <span class="status" :class="`status${props.row.entry_status}`" v-if="props.row.entry_status">{{props.row.entry_status==1?'已入职':props.row.entry_status==2?'未入职':'未参加'}}</span>
               </div>
               <div v-if="viewType!=2&&viewType!=4&&viewType!=3&&viewType!=7&&viewType!=1">
-                <span
-                  class="status"
-                  :class="`status${props.row.entry_status}`"
-                  v-if="!props.row.entry_status"
-                >待审核</span>
-                <span
-                  class="status"
-                  :class="`status${props.row.entry_status}`"
-                  v-if="props.row.entry_status"
-                >{{props.row.entry_status==1?'通过':props.row.entry_status==2?'未通过':'未参加'}}</span>
+                <span class="status" :class="`status${props.row.entry_status}`" v-if="!props.row.entry_status">待审核</span>
+                <span class="status" :class="`status${props.row.entry_status}`" v-if="props.row.entry_status">{{props.row.entry_status==1?'通过':props.row.entry_status==2?'未通过':'未参加'}}</span>
               </div>
             </template>
           </el-table-column>
-          <el-table-column
-            label="操作"
-            align="center"
-            min-width="180"
-            v-if="viewType!=7&&viewType!=4"
-          >
+          <el-table-column label="操作" align="center" min-width="180" v-if="viewType!=7&&viewType!=4">
             <template slot-scope="scope">
               <div v-if="viewType!=3&&viewType!=7">
-                <el-button
-                  @click="handleResume(1,scope.row)"
-                  type="text"
-                  v-if="scope.row.status==0&&!scope.row.interview_status&&!scope.row.entry_status"
-                  size="small"
-                >放弃报名</el-button>
-                <el-button
-                  @click="handleResume(2,scope.row)"
-                  v-if="scope.row.status==1&&scope.row.interview_status==2"
-                  type="text"
-                  size="small"
-                >放弃面试</el-button>
-                <el-button
-                  @click="routerResume(scope.row)"
-                  v-if="scope.row.status==2||scope.row.interview_status>=3||scope.row.entry_status>=2"
-                  type="text"
-                  size="small"
-                >推荐岗位</el-button>
-                <el-button
-                  @click="handleResume(3,scope.row)"
-                  v-if="scope.row.interview_status==2&&!scope.row.entry_status"
-                  type="text"
-                  size="small"
-                >放弃入职</el-button>
+                <el-button @click="handleResume(1,scope.row)" type="text" v-if="scope.row.status==0&&!scope.row.interview_status" size="small">放弃报名</el-button>
+                <el-button @click="handleResume(2,scope.row)" v-if="scope.row.status==1&&!scope.row.interview_status" type="text" size="small">放弃面试</el-button>
+                <el-button @click="routerResume(scope.row)" v-if="scope.row.status==2||scope.row.interview_status>=3||scope.row.entry_status>=2" type="text" size="small">推荐岗位</el-button>
+                <el-button @click="handleResume(3,scope.row)" v-if="scope.row.interview_status==2&&!scope.row.entry_status" type="text" size="small">放弃入职</el-button>
               </div>
               <div v-if="viewType!=4&&viewType!=6&&viewType!=2&&viewType!=7&&viewType!=1">
-                <span
-                  v-if="scope.row.status==1&&scope.row.interview_status!=3&&!scope.row.entry_status"
-                >{{scope.row.interview_status==1?'通过':'未通过'}}</span>
-                <span
-                  v-if="scope.row.status==1&&scope.row.interview_status==3&&!scope.row.entry_status"
-                >未参加</span>
+                <span v-if="scope.row.status==1&&scope.row.interview_status!=3&&!scope.row.entry_status">{{scope.row.interview_status==1?'通过':'未通过'}}</span>
+                <span v-if="scope.row.status==1&&scope.row.interview_status==3&&!scope.row.entry_status">未参加</span>
               </div>
               <div v-if="viewType==1">
                 <span v-if="scope.row.status&&scope.row.status!=2">{{scope.row.status==1?'已通过':'已拒绝'}}</span>
@@ -147,16 +73,7 @@
           </el-table-column>
         </el-table>
       </div>
-      <el-pagination
-        class="team-pagination"
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :current-page="formMember.page"
-        :page-sizes="[10, 30, 50, 100]"
-        :page-size="formMember.limit"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="total"
-      ></el-pagination>
+      <el-pagination class="team-pagination" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="formMember.page" :page-sizes="[10, 30, 50, 100]" :page-size="formMember.limit" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
     </div>
     <!-- <confirmDialog :dialogTableVisible="visible" @submit="submit" @handleClose="handleClose" :dialogObj="dialogObj" :isShow="isShow"></confirmDialog> -->
   </div>
@@ -182,20 +99,20 @@ export default {
     confirmDialog
   },
   filters: {
-    moneyType(val) {
+    moneyType (val) {
       let obj = moneyTypeList.find(item => {
         return val == item.value
       })
       return obj ? obj.label : '--'
     },
-    rewardType(val) {
+    rewardType (val) {
       let obj = rewardTypeList.find(item => {
         return val == item.value
       })
       return obj ? obj.label : '--'
     }
   },
-  data() {
+  data () {
     return {
       moneyTypeList,
       rewardTypeList,
@@ -234,7 +151,7 @@ export default {
       viewType: ''
     }
   },
-  created() {
+  created () {
     this.jobId = this.$route.query.job_id
     this.formMember.job_id = this.jobId
     this.viewType = this.$route.query.view
@@ -254,7 +171,7 @@ export default {
     this.getList(this.formMember)
   },
   computed: {
-    menusList() {
+    menusList () {
       let arr = this.$store.getters.breadcrumb
       if (this.viewType == 1) {
         arr[1] = '推荐名单'
@@ -275,7 +192,7 @@ export default {
     }
   },
   methods: {
-    getList(params) {
+    getList (params) {
       getListPut(params)
         .then(res => {
           const { data } = res
@@ -288,18 +205,18 @@ export default {
           }
         })
     },
-    routerResume(val) {
+    routerResume (val) {
       let arr = JSON.parse(sessionStorage.getItem('menus'))
       arr[1] = '推荐岗位'
       sessionStorage.setItem('menus', JSON.stringify(arr))
       this.$router.push('/recommendJob?id=' + val.id)
     },
-    selectStatus(item, index) {
+    selectStatus (item, index) {
       this.activeIndex = index
       this.formMember.type = item.value
       this.getList(this.formMember)
     },
-    handleAppay() {
+    handleAppay () {
       let params = {
         uid: localStorage.getItem('uid'),
         job_id: this.jobId
@@ -329,15 +246,15 @@ export default {
           }
         })
     },
-    handleSizeChange(val) {
+    handleSizeChange (val) {
       this.formMember.limit = val
       this.getList(this.formMember)
     },
-    handleCurrentChange(val) {
+    handleCurrentChange (val) {
       this.formMember.page = val
       this.getList(this.formMember)
     },
-    submit(index, val) {
+    submit (index, val) {
       if (index == 1) {
         this.dialogObj.title = '放弃报名'
         this.isShow = true
@@ -351,7 +268,7 @@ export default {
       this.visible = true
       this.resumeId = val.id
     },
-    handleResume(status, val) {
+    handleResume (status, val) {
       let params = {
         uid: localStorage.getItem('uid'),
         ids: val.id
@@ -364,7 +281,7 @@ export default {
         this.handleResumeApi2(params)
       }
     },
-    handleResumeApi1(params) {
+    handleResumeApi1 (params) {
       giveupView(params)
         .then(res => {
           if (res.data) {
@@ -380,7 +297,7 @@ export default {
           }
         })
     },
-    handleResumeApi2(params) {
+    handleResumeApi2 (params) {
       giveupEntry(params)
         .then(res => {
           if (res.data) {
@@ -396,7 +313,7 @@ export default {
           }
         })
     },
-    handleResumeApi(params) {
+    handleResumeApi (params) {
       delPut(params)
         .then(res => {
           if (res.data) {
@@ -411,7 +328,7 @@ export default {
           }
         })
     },
-    onSubmit(val) {
+    onSubmit (val) {
       this.getList(this.formMember)
     }
   }

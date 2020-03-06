@@ -66,6 +66,7 @@
               <!-- <span class="status" v-if="props.row.entry_status&&props.row.entry_status<3" :class="`status${props.row.entry_status}`">{{props.row.entry_status==1?'面试开始':props.row.entry_status==2?'面试结束':''}}</span> -->
               <!-- <span class="status" v-if="props.row.status==1" :class="`status${props.row.status}`">面试开始</span> -->
               <span class="status status4" v-else>面试结束</span>
+              <!--<span class="status status4" v-else>{{props.row.interview_status==1?'面试开始':'面试结束'}}</span> -->
             </template>
           </el-table-column>
           <el-table-column label="岗位城市" prop="entry_num" align="center" width="120">
@@ -133,20 +134,20 @@ export default {
     customerService
   },
   filters: {
-    moneyType(val) {
+    moneyType (val) {
       let obj = moneyTypeList.find(item => {
         return val == item.value
       })
       return obj.label
     },
-    rewardType(val) {
+    rewardType (val) {
       let obj = rewardTypeList.find(item => {
         return val == item.value
       })
       return obj.label
     }
   },
-  data() {
+  data () {
     return {
       moneyTypeList,
       rewardTypeList,
@@ -172,7 +173,7 @@ export default {
       timeList: []
     }
   },
-  created() {
+  created () {
     // 初始化查询标签数据
     this.getList(this.formMember)
     let params = 'job_array'
@@ -184,7 +185,7 @@ export default {
   //   }
   // },
   methods: {
-    getData(filed) {
+    getData (filed) {
       getConstant({ filed })
         .then(res => {
           this.jobList = res.data.job_array
@@ -195,7 +196,7 @@ export default {
           }
         })
     },
-    getList(params) {
+    getList (params) {
       applyList(params)
         .then(res => {
           this.tableData = res.data.data
@@ -207,7 +208,7 @@ export default {
           }
         })
     },
-    sortChange(column) {
+    sortChange (column) {
       if (column.order == 'ascending') {
         this.formMember[column.prop] = 'asc'
       } else {
@@ -215,26 +216,26 @@ export default {
       }
       this.getList(this.formMember)
     },
-    changeDate(val) {
+    changeDate (val) {
       this.formMember.beginTime = val ? val[0] : ''
       this.formMember.endTime = val ? val[1] : ''
     },
-    handleSizeChange(val) {
+    handleSizeChange (val) {
       this.formMember.limit = val
       this.getList(this.formMember)
     },
-    handleCurrentChange(val) {
+    handleCurrentChange (val) {
       this.formMember.page = val
       this.getList(this.formMember)
     },
-    handleEdit(val) {
+    handleEdit (val) {
       this.dialogJobVisible = true
       this.jobId = val.job_id
     },
-    onSubmit() {
+    onSubmit () {
       this.getList(this.formMember)
     },
-    reset() {
+    reset () {
       this.formMember = {
         uid: localStorage.getItem('uid'),
         limit: 10,
