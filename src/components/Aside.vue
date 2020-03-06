@@ -175,7 +175,7 @@ export default {
               url: '/applyResume?view=1'
             },
             {
-              title: '面试结果',
+              title: '面试简历',
               url: '/applyResume?view=3'
             },
             {
