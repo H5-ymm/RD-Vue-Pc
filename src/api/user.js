@@ -20,3 +20,4 @@ export const editPayPassword = data => $post('/userinfo/editPayPassword', data) 
 export const sendPayPassword = data => $post('/userinfo/sendPayPassword', data) // 发送重置支付密码短息验证
 
 export const companyBinkInfo = data => $post('/company/companyBinkInfo', data)
+export const userSwitchRole = data => $post('/userinfo/userSwitchRole', data)

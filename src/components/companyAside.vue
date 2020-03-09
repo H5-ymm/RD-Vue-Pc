@@ -75,50 +75,19 @@
       <el-col :span="24">
         <div class="names company-names">人事达</div>
         <div class="company-info">
-          <img
-            :src="baseInfo.logo_url"
-            alt=""
-            class="company-logo"
-            v-if="baseInfo&&baseInfo.logo_url"
-          >
+          <img :src="baseInfo.logo_url" alt="" class="company-logo" v-if="baseInfo&&baseInfo.logo_url">
           <img src="../assets/img/headIcon2.png" alt="" class="company-logo" v-else>
           <p class="company-name" v-if="baseInfo">{{baseInfo.com_name}}</p>
         </div>
-        <el-menu
-          class="el-menu-vertical-demo"
-          background-color="#262626"
-          active-text-color="#1890FF"
-          text-color="#fff"
-          @open="handleOpen"
-          :unique-opened="true"
-          @select="selectMenus"
-          router
-          :default-active="routerli"
-        >
+        <el-menu class="el-menu-vertical-demo" background-color="#262626" active-text-color="#1890FF" text-color="#fff" @open="handleOpen" :unique-opened="true" @select="selectMenus" router :default-active="routerli">
           <el-submenu :index="item.title" class="acts" v-for="(item,index) in menus" :key="index">
             <template slot="title">
               <!-- <i class="el-icon-collection"></i> -->
-              <img
-                :src="require(`../assets/img/companyIcon/icon${index+1}.png`)"
-                alt=""
-                v-if="title!=item.title"
-                class="aside-icon"
-              >
-              <img
-                :src="require(`../assets/img/companyIcon/icon${index+1}_active.png`)"
-                v-if="title==item.title"
-                alt=""
-                class="aside-icon"
-              >
+              <img :src="require(`../assets/img/companyIcon/icon${index+1}.png`)" alt="" v-if="title!=item.title" class="aside-icon">
+              <img :src="require(`../assets/img/companyIcon/icon${index+1}_active.png`)" v-if="title==item.title" alt="" class="aside-icon">
               <span>{{item.title}}</span>
             </template>
-            <el-menu-item
-              :index="val.url"
-              :class="{'is-active':url==val.url}"
-              v-for="(val,ind) in item.submenu"
-              :key="ind"
-              :route="val.url"
-            >{{val.title}}</el-menu-item>
+            <el-menu-item :index="val.url" :class="{'is-active':url==val.url}" v-for="(val,ind) in item.submenu" :key="ind" :route="val.url">{{val.title}}</el-menu-item>
           </el-submenu>
         </el-menu>
       </el-col>
@@ -130,7 +99,7 @@ import { mapGetters } from "vuex";
 export default {
   name: 'companyAside',
   props: {},
-  data() {
+  data () {
     return {
       menus: [
         {
@@ -229,7 +198,7 @@ export default {
     }
   },
   computed: {
-    routerli() {
+    routerli () {
       // 对应路由
       // let pathStr = this.$route.path.split('/')
       console.log(this.$route)
@@ -252,18 +221,18 @@ export default {
     })
   },
   methods: {
-    handleOpen(key, keyPath) {
+    handleOpen (key, keyPath) {
       this.title = key
       this.$store.commit('setMenus', keyPath)
     },
-    selectMenus(key, keyPath) {
+    selectMenus (key, keyPath) {
       this.url = key
       let arr = this.getMenusTitle(key, this.menus)
       sessionStorage.setItem('menusUrl', this.url)
       this.$store.commit('setMenus', arr)
       sessionStorage.setItem('menus', JSON.stringify(arr))
     },
-    getMenusTitle(url, arr) {
+    getMenusTitle (url, arr) {
       let title = ''
       let list = []
       arr.forEach(item => {
@@ -278,7 +247,7 @@ export default {
     }
   },
   watch: {
-    $route(to, from) {
+    $route (to, from) {
       if (to.path == '/interviewPersonnel' && from.path == '/talentResume') {
         this.selectMenus(to.fullPath, this.menus)
       }

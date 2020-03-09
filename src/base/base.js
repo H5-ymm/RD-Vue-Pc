@@ -101,8 +101,9 @@ export const requirePersonList = [
 
 export const paymentTaxType = [
   { label: '不限', value: 0 },
-  { label: '缴纳', value: 2 },
-  { label: '不缴纳', value: 3 }
+  { label: '缴纳', value: 1 },
+  { label: '不缴纳', value: 2 },
+  { label: '试用期过后', value: 3 }
 ]
 
 export const commentSort = [

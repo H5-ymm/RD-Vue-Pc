@@ -49,41 +49,15 @@
     <el-row class="tac">
       <el-col :span="24">
         <div class="names">人事达</div>
-        <el-menu
-          class="el-menu-vertical-demo"
-          background-color="#000"
-          active-text-color="#1890FF"
-          text-color="#fff"
-          @open="handleOpen"
-          :unique-opened="true"
-          @select="selectMenus"
-          router
-          :default-active="routerli"
-        >
+        <el-menu class="el-menu-vertical-demo" background-color="#000" active-text-color="#1890FF" text-color="#fff" @open="handleOpen" :unique-opened="true" @select="selectMenus" router :default-active="routerli">
           <el-submenu :index="item.title" class="acts" v-for="(item,index) in menus" :key="index">
             <template slot="title">
-              <img
-                :src="require(`../assets/img/teamIcon/icon${index}.png`)"
-                alt=""
-                class="aside-icon"
-                v-if="userPosition==1"
-              >
-              <img
-                :src="index<4?require(`../assets/img/teamIcon/icon${index}.png`):
-                require(`../assets/img/teamIcon/icon${index+1}.png`)"
-                alt=""
-                class="aside-icon"
-                v-else
-              >
+              <img :src="require(`../assets/img/teamIcon/icon${index}.png`)" alt="" class="aside-icon" v-if="userPosition==1">
+              <img :src="index<4?require(`../assets/img/teamIcon/icon${index}.png`):
+                require(`../assets/img/teamIcon/icon${index+1}.png`)" alt="" class="aside-icon" v-else>
               <span>{{item.title}}</span>
             </template>
-            <el-menu-item
-              :index="val.url"
-              :class="{'is-active':url==val.url}"
-              v-for="(val,ind) in item.submenu"
-              :key="ind"
-              :route="val.url"
-            >{{val.title}}</el-menu-item>
+            <el-menu-item :index="val.url" :class="{'is-active':url==val.url}" v-for="(val,ind) in item.submenu" :key="ind" :route="val.url">{{val.title}}</el-menu-item>
           </el-submenu>
         </el-menu>
       </el-col>
@@ -96,7 +70,7 @@ import { mapGetters } from "vuex";
 export default {
   name: 'Aside',
   props: ['userPosition'],
-  data() {
+  data () {
     return {
       menus: [
         {
@@ -351,7 +325,7 @@ export default {
       userP: 0
     }
   },
-  created() {
+  created () {
     this.userP = this.userPosition
     let teamType = localStorage.getItem('teamType')
     let teamId = localStorage.getItem('uid')
@@ -367,6 +341,9 @@ export default {
       this.menus.forEach((item, index) => {
         if (item.title == '接单管理') {
           this.menus[index].submenu = [...this.receiptRoot]
+        }
+        if (item.title == '我的收藏') {
+          this.menus[index].submenu.push(this.collect)
         }
         if (item.title == '内部发单') {
           let obj = this.menus[index]
@@ -407,7 +384,7 @@ export default {
     }
   },
   watch: {
-    userPosition(val) {
+    userPosition (val) {
       this.userP = val
       let teamType = localStorage.getItem('teamType')
       let teamId = localStorage.getItem('uid')
@@ -423,6 +400,9 @@ export default {
         this.menus.forEach((item, index) => {
           if (item.title == '接单管理') {
             this.menus[index].submenu = [...this.receiptRoot]
+          }
+          if (item.title == '我的收藏') {
+            this.menus[index].submenu.push(this.collect)
           }
           if (item.title == '内部发单') {
             this.menus[index].submenu = [...this.internalInvoiceRoot]
@@ -456,7 +436,7 @@ export default {
         })
       }
     },
-    $route(to, from) {
+    $route (to, from) {
       if (to.path == '/commonTableList' && from.path == '/teamEntryList') {
         this.selectMenus(from.path, this.menus)
       }
@@ -478,11 +458,11 @@ export default {
     }
   },
   methods: {
-    handleOpen(key, keyPath) {
+    handleOpen (key, keyPath) {
       this.$store.commit('setMenus', keyPath)
       sessionStorage.setItem('menus', JSON.stringify(keyPath))
     },
-    selectMenus(key, keyPath) {
+    selectMenus (key, keyPath) {
       this.url = key || ''
       let newUrl = ''
       let list = this.url.split('?')
@@ -501,7 +481,7 @@ export default {
       this.$store.commit('setMenus', arr)
       sessionStorage.setItem('menus', JSON.stringify(arr))
     },
-    getMenusUrl(title, arr) {
+    getMenusUrl (title, arr) {
       let url = ''
       let list = []
       arr.forEach(item => {
@@ -514,7 +494,7 @@ export default {
       })
       return url
     },
-    getMenusTitle(url, arr) {
+    getMenusTitle (url, arr) {
       let title = ''
       let list = []
       arr.forEach(item => {
@@ -533,7 +513,7 @@ export default {
       uid: 'getUserUid',
       teamSys: 'getTeam'
     }),
-    routerli() {
+    routerli () {
       let path
       let falg = true
       let key = this.$route.fullPath.split('?')

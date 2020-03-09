@@ -5,37 +5,19 @@
 <template>
   <div class="teamMessage">
     <div class="teamMessage-form-row">
-      <el-form
-        :model="companyForm"
-        :rules="rules"
-        ref="companyForm"
-        label-width="140px"
-        label-position="right"
-        class="teamMessage-form"
-      >
+      <el-form :model="companyForm" :rules="rules" ref="companyForm" label-width="140px" label-position="right" class="teamMessage-form">
         <el-form-item :label="`企业名称`" prop="companyName">
           <el-input v-model="companyForm.companyName" class="width408" :placeholder="`请输入企业名称`"></el-input>
         </el-form-item>
         <el-form-item :label="`企业logo`" required>
-          <el-upload
-            class="avatar-uploader"
-            action="customize"
-            ref="upload"
-            :show-file-list="false"
-            :http-request="upload"
-          >
+          <el-upload class="avatar-uploader" action="customize" ref="upload" :show-file-list="false" :http-request="upload">
             <img v-if="imageUrl" :src="imageUrl" class="avatar">
             <i v-else class="el-icon-circle-plus avatar-uploader-icon"></i>
             <p>上传logo</p>
           </el-upload>
         </el-form-item>
         <el-form-item label="营业执照" required>
-          <el-upload
-            class="uploader-card avatar-uploader"
-            action="customize"
-            :show-file-list="false"
-            :http-request="uploadLicense"
-          >
+          <el-upload class="uploader-card avatar-uploader" action="customize" :show-file-list="false" :http-request="uploadLicense">
             <img v-if="license_img" :src="license_img" class="avatar">
             <i v-else class="el-icon-circle-plus avatar-uploader-icon"></i>
             <p>上传营业执照</p>
@@ -45,61 +27,28 @@
           <el-input v-model="companyForm.business_licence" class="width408" placeholder="请输入营业执照号"></el-input>
         </el-form-item>
         <el-form-item label="统一社会信用代码">
-          <el-input
-            v-model="companyForm.unified_social_credit_code"
-            class="width408"
-            placeholder="请输入统一社会信用代码"
-          ></el-input>
+          <el-input v-model="companyForm.unified_social_credit_code" class="width408" placeholder="请输入统一社会信用代码"></el-input>
         </el-form-item>
         <el-form-item label="从事行业">
-          <el-select
-            v-model="companyForm.com_sort"
-            value-key="label"
-            class="width408"
-            placeholder="请选择企业从事行业"
-          >
-            <el-option
-              :label="item.label"
-              :value="item.value"
-              v-for="(item,key) in jobList"
-              :key="key"
-            ></el-option>
+          <el-select v-model="companyForm.com_sort" value-key="label" class="width408" placeholder="请选择企业从事行业">
+            <el-option :label="item.label" :value="item.value" v-for="(item,key) in jobList" :key="key"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="企业性质" required>
-          <el-select
-            v-model="companyForm.com_type"
-            class="width408"
-            value-key="label"
-            placeholder="请选择企业性质"
-          >
-            <el-option
-              :label="item.label"
-              :value="item.value"
-              v-for="(item,index) in comTypeList"
-              :key="index"
-            ></el-option>
+          <el-select v-model="companyForm.com_type" class="width408" value-key="label" placeholder="请选择企业性质">
+            <el-option :label="item.label" :value="item.value" v-for="(item,index) in comTypeList" :key="index"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="企业规模" required>
           <el-select v-model="companyForm.com_scale" class="width408" placeholder="请选择企业规模">
-            <el-option
-              :label="item"
-              :value="index"
-              v-for="(item,index) in comScaleList"
-              :key="index"
-            ></el-option>
+            <el-option :label="item" :value="index" v-for="(item,index) in comScaleList" :key="index"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="公司地址" required>
           <div class="width408">
             <districtSelet @change="change" :address="address"></districtSelet>
           </div>
-          <el-input
-            v-model="companyForm.address"
-            class="width408 team-address"
-            placeholder="请填写详细地址"
-          ></el-input>
+          <el-input v-model="companyForm.address" class="width408 team-address" placeholder="请填写详细地址"></el-input>
         </el-form-item>
         <el-form-item label="公司座机">
           <div class="x-flex-start-justify width408 company-tel">
@@ -116,13 +65,7 @@
           <el-input v-model="companyForm.link_phone" class="width408" placeholder="请输入联系电话"></el-input>
         </el-form-item>
         <el-form-item label="企业简介" required>
-          <el-input
-            type="textarea"
-            class="width408"
-            :autosize="{minRows: 5}"
-            v-model="companyForm.content"
-            placeholder="请输入企业介绍"
-          ></el-input>
+          <el-input type="textarea" class="width408" :autosize="{minRows: 5}" v-model="companyForm.content" placeholder="请输入企业介绍"></el-input>
         </el-form-item>
         <el-form-item class="teamMessage-btn">
           <el-button type="primary" @click="submitForm('companyForm')">保存</el-button>
@@ -145,7 +88,7 @@ export default {
   components: {
     districtSelet
   },
-  data() {
+  data () {
     return {
       companyForm: {
         uid: localStorage.getItem("uid"),
@@ -153,7 +96,10 @@ export default {
         id: "",
         provinceid: "",
         cityid: "",
-        three_cityid: ""
+        three_cityid: "",
+        com_sort: '',
+        com_type: '',
+        com_scale: ''
       },
       imageUrl: "",
       license_img: "",
@@ -162,10 +108,7 @@ export default {
       rules: {
         companyName: [
           { required: true, message: "请输入企业名称", trigger: "blur" }
-        ],
-        // com_sort: [
-        //   { required: true, message: "请选择从事行业", trigger: "change" }
-        // ]
+        ]
       },
       comScaleList: [],
       comTypeList: [],
@@ -176,17 +119,17 @@ export default {
       uid: localStorage.getItem("uid")
     };
   },
-  created() {
+  created () {
     let params = "com_type,com_scale,job_array";
     this.getList(params);
     this.getCompanyInfo(this.uid);
   },
   methods: {
-    getCompanyInfo(uid) {
+    getCompanyInfo (uid) {
       getCompanyDetail({ uid }).then(res => {
         let companyForm = res.data;
         this.companyForm.companyName = res.data.com_name;
-        this.companyForm = Object.assign(this.companyForm,companyForm)
+        this.companyForm = Object.assign(this.companyForm, companyForm)
         if (this.companyForm.link_tel) {
           let link_tel = this.companyForm.link_tel.split("-");
           this.landlineStart = link_tel[0];
@@ -203,7 +146,7 @@ export default {
         }
       });
     },
-    getList(filed) {
+    getList (filed) {
       getConstant({ filed }).then(res => {
         const { com_scale, com_type, job_array } = res.data;
         this.comScaleList = com_scale;
@@ -211,7 +154,7 @@ export default {
         this.jobList = this.getArray(job_array);
       });
     },
-    getArray(obj) {
+    getArray (obj) {
       let arr = [];
       for (let key in obj) {
         arr.push({
@@ -221,7 +164,7 @@ export default {
       }
       return arr;
     },
-    upload(params) {
+    upload (params) {
       const _file = params.file;
       const isLt2M = _file.size / 1024 / 1024 < 2;
       if (!isLt2M) {
@@ -232,7 +175,7 @@ export default {
         this.imageUrl = getImgUrl(res.data.url);
       });
     },
-    uploadLicense(params) {
+    uploadLicense (params) {
       const _file = params.file;
       const isLt2M = _file.size / 1024 / 1024 < 2;
       if (!isLt2M) {
@@ -243,12 +186,12 @@ export default {
         this.license_img = getImgUrl(res.data.url);
       });
     },
-    change(val) {
+    change (val) {
       this.companyForm.provinceid = val[0];
       this.companyForm.cityid = val[1];
       this.companyForm.three_cityid = val[2];
     },
-    submitForm(companyForm) {
+    submitForm (companyForm) {
       if (this.landlineStart && this.landlineEnd) {
         this.companyForm.link_tel = this.landlineStart + "-" + this.landlineEnd;
       }
@@ -260,7 +203,7 @@ export default {
         }
       });
     },
-    createCompanyInfo() {
+    createCompanyInfo () {
       this.companyForm.license_url = this.license_img;
       this.companyForm.logo_url = this.imageUrl;
       this.$store
@@ -281,7 +224,7 @@ export default {
           this.$message.error(error.status.remind);
         });
     },
-    resetForm(companyForm) {
+    resetForm (companyForm) {
       this.getCompanyInfo(this.uid)
     }
   }

@@ -11,23 +11,13 @@
 
             <el-link :underline="false" href="home" v-if="type==1">首页</el-link>
             <div class="x-flex-start-justify" v-if="type==2||type==3">
-              <img
-                :src="getImgUrl(baseInfo.log)"
-                alt=""
-                class="team-logo"
-                v-if="baseInfo&&baseInfo.log"
-              >
+              <img :src="getImgUrl(baseInfo.log)" alt="" class="team-logo" v-if="baseInfo&&baseInfo.log">
               <img src="../assets/img/headIcon.png" alt="" class="team-logo" v-else>
               <span>{{baseInfo&&baseInfo.team_name}}</span>
             </div>
             <div class="x-flex-center" v-if="type==2||type==3">
               <el-link :underline="false" href="home" class="home-link">首页</el-link>
-              <img
-                :src="getImgUrl(userInfo.head_img)"
-                alt=""
-                class="team-logo user-logo"
-                v-if="userInfo&&userInfo.head_img"
-              >
+              <img :src="getImgUrl(userInfo.head_img)" alt="" class="team-logo user-logo" v-if="userInfo&&userInfo.head_img">
               <img src="../assets/img/headIcon.png" alt="" class="team-logo user-logo" v-else>
               <el-dropdown @command="handleCommand">
                 <span class="el-dropdown-link">
@@ -38,6 +28,7 @@
                 </span>
                 <el-dropdown-menu slot="dropdown">
                   <el-dropdown-item command="/accountSettings">账户信息</el-dropdown-item>
+                  <el-dropdown-item command="">切换企业</el-dropdown-item>
                   <el-dropdown-item command="/login">退出登录</el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
@@ -55,6 +46,7 @@
                 </span>
                 <el-dropdown-menu slot="dropdown">
                   <el-dropdown-item command="/companyForm">账户信息</el-dropdown-item>
+                  <el-dropdown-item command="">切换团队</el-dropdown-item>
                   <el-dropdown-item command="/login">退出登录</el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
@@ -63,12 +55,7 @@
           <breadcrumb :breadcrumbs="breadcrumb"></breadcrumb>
         </el-header>
         <el-main class="team-main" :class="{'comany-main-page': type==1}">
-          <!-- <transition name="el-fade-in"> -->
           <router-view class="team-box" v-if="$route.meta.requiresAuth"></router-view>
-          <!-- <keep-alive>
-              <router-view class="team-box"></router-view>
-          </keep-alive>-->
-          <!-- </transition> -->
         </el-main>
       </el-container>
     </el-container>
@@ -81,17 +68,17 @@ import companyAside from "@/components/companyAside";
 import Breadcrumb from "@/components/breadcrumb/Breadcrumb";
 import { getImgUrl } from "@/util/util";
 import { logout } from "@/api/login";
+import { userSwitchRole } from '@/api/user'
 import { mapGetters } from "vuex";
 export default {
   name: "team",
   inject: ["reload"],
-  data() {
+  data () {
     return {
       breadcrumb: [],
       aside: "",
       height: "",
       departName: "",
-      // userPosition: "",
       transitionName: "slide-left" //默认动画
     };
   },
@@ -110,7 +97,7 @@ export default {
       teamSys: 'getTeam'
     })
   },
-  created() {
+  created () {
     // type 1 企业
     if (this.type == 1) {
       this.aside = "companyAside";
@@ -122,7 +109,7 @@ export default {
     }
   },
   watch: {
-    $route(to, form) {
+    $route (to, form) {
       if (this.type == 1) {
         this.aside = "companyAside";
         this.height = "88px";
@@ -135,8 +122,32 @@ export default {
   },
   methods: {
     getImgUrl,
-    handleCommand(val) {
-      if (val == "/login") {
+    handleCommand (val) {
+      let text = this.type == 2 ? '切换企业' : '切换团队'
+      let type = this.type == 2 ? 2 : 1
+      if (!val) {
+        this.$confirm(`确定${text}账号吗?`, '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          let params = {
+            uid: this.uid || localStorage.getItem('uid'),
+            type: type
+          }
+          userSwitchRole(params).then(res => {
+            if (res.data) {
+              this.$message.success("切换成功，请登录账户");
+              this.$router.replace('/login');
+            }
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消'
+          });
+        });
+      } else if (val == "/login") {
         this.$store.dispatch("logoutUser").then(res => {
           this.reload();
           this.$message.success("退出登录成功");
