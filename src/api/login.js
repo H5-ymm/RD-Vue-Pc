@@ -14,3 +14,5 @@ export const getCitysList = data => $post('/index/getCitysList', data)
 export const getAreasList = data => $post('/index/getAreasList', data)
 
 export const logout = data => $post('/login/logout', data)
+
+export const forgetPassword = data => $post('/userinfo/forgetPassword', data)
