@@ -19,7 +19,7 @@
             <div class="x-flex-around register-btn">
               <el-button type="text">忘记密码</el-button>
             </div>
-            <el-form-item prop="name" label="手机号">
+            <el-form-item label="手机号" prop="mobile">
               <span class="error errorInfo el-icon-warning" v-if="isShowError">账号或者密码错误，如遇到问题联系客服，021-51991869</span>
               <el-input placeholder="请输入11位手机号" v-model="formTab.mobile">
                 <template slot="prepend">
@@ -54,15 +54,15 @@
   </el-container>
 </template>
 <script>
-import { goLogin, getCode, userRegister } from '../api/login'
-import { sendVerification, editUserPassword } from '../api/user'
+import { goLogin, getCode, forgetPassword } from '../api/login'
+import { sendVerification } from '../api/user'
 import Dialog from '../components/Dialog'
 export default {
   components: {
     Dialog
   },
-  data() {
-    let validatereg = function(rule, value, callback) {
+  data () {
+    let validatereg = function (rule, value, callback) {
       //验证用户名是否合法
       let reg = /^1[3456789]\d{9}$/
       if (!reg.test(value)) {
@@ -71,7 +71,7 @@ export default {
         callback()
       }
     }
-    let validatePassReg = function(rule, value, callback) {
+    let validatePassReg = function (rule, value, callback) {
       //验证密码是否合法
       let reg = /^[a-zA-Z][a-zA-Z0-9]{6,30}$/
       if (reg.test(value) == true) {
@@ -118,7 +118,7 @@ export default {
     }
   },
   methods: {
-    sendCode() {
+    sendCode () {
       if (!this.formTab.mobile) {
         return this.$message.warning('手机号不能为空')
       }
@@ -132,7 +132,7 @@ export default {
           return this.$message.error(error.status.remind)
         })
     },
-    countDown() {
+    countDown () {
       if (!this.canClick) return
       this.canClick = false
       this.content = this.totalTime + 's后重发'
@@ -147,14 +147,14 @@ export default {
         }
       }, 1000)
     },
-    switchLogin(index) {
+    switchLogin (index) {
       this.loginWay = index
       this.formTab.type = index
       this.formTab.name = ''
       this.formTab.passwords = ''
       this.formTab.code = ''
     },
-    remind(val) {
+    remind (val) {
       if (val) {
         let params = {
           name: this.formTab.name,
@@ -165,17 +165,15 @@ export default {
         localStorage.removeItem('remindUserInfo')
       }
     },
-    onSubmit() {
+    onSubmit () {
       if (this.loginWay == 2) {
         this.formTab.token = this.token
       }
       this.$refs['TabForm'].validate(valid => {
         if (valid) {
-          editUserPassword(this.formTab)
+          forgetPassword(this.formTab)
             .then(res => {
-              if (res.data) {
-                this.$router.push('/login')
-              }
+              this.$router.push('/login')
             })
             .catch(error => {
               if (error.status.code == 3010) {
