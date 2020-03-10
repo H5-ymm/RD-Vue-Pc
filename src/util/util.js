@@ -47,7 +47,7 @@ export const getImg = file => {
 }
 
 export const getImgUrl = url => {
-  return 'https://a.rsd123.com/' + url
+  return 'http://tiantianxsg.com:39888/' + url
 }
 export const checkEmail = email => {
   let reg = /^[a-zA-Z0-9]+([-_.][a-zA-Z0-9]+)*@[a-zA-Z0-9]+([-_.][a-zA-Z0-9]+)*\.[a-z]{2,}$/

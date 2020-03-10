@@ -2,13 +2,12 @@ const path = require('path')
 const webpack = require('webpack')
 require('babel-polyfill')
 
-function resolve(dir) {
+function resolve (dir) {
   return path.join(__dirname, dir)
 }
 module.exports = {
   publicPath: './',
   // 输出文件目录
-  outputDir: 'dist',
   // eslint-loader 是否在保存的时候检查
   lintOnSave: true,
   assetsDir: 'assets',
@@ -19,7 +18,7 @@ module.exports = {
     https: false, //是否配置https
     hotOnly: false //是否热更新
   },
-  chainWebpack: () => {},
+  chainWebpack: () => { },
   productionSourceMap: false,
   // css相关配置
   css: {

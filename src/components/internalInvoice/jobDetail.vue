@@ -297,28 +297,28 @@ import { getJobinfo } from '@/api/internalInvoice'
 import { positionStatusList } from '@/base/base'
 export default {
   filters: {
-    positionStatus(val) {
+    positionStatus (val) {
       let obj = positionStatusList.find(item => {
         return val == item.value
       })
       return obj ? obj.label : '--'
     }
   },
-  data() {
+  data () {
     return {
       formMember: {},
       id: '',
       positionStatusList
     }
   },
-  created() {
+  created () {
     let arr = ['已发布职位', '职位详情']
     this.$store.commit('setMenus', arr)
     this.id = this.$route.query.id
     this.getInfo(this.id)
   },
   computed: {
-    jobStatus() {
+    jobStatus () {
       return (
         !this.formMember.address &&
         !this.formMember.working_hours &&
@@ -326,7 +326,7 @@ export default {
         !this.formMember.job_description
       )
     },
-    otherInfoStatus() {
+    otherInfoStatus () {
       return (
         !this.formMember.sex &&
         !this.formMember.age_min &&
@@ -335,20 +335,20 @@ export default {
         !this.formMember.com_introduction
       )
     },
-    rewardType() {
+    rewardType () {
       let text
       if (this.formMember.reward_type == 1) {
         text = '月'
       }
-      if (this.formMember.reward_type == 1) {
+      if (this.formMember.reward_type == 2) {
         text = '日'
       }
-      if (this.formMember.reward_type == 1) {
+      if (this.formMember.reward_type == 3) {
         text = '时'
       }
       return text
     },
-    rewaryMoneType() {
+    rewaryMoneType () {
       let text
       if (this.formMember.reward_money_type == 1) {
         text = '天'
@@ -363,7 +363,7 @@ export default {
     }
   },
   methods: {
-    getInfo(id) {
+    getInfo (id) {
       getJobinfo({ id })
         .then(res => {
           this.formMember = res.data
