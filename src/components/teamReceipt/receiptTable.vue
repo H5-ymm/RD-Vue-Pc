@@ -279,6 +279,9 @@ export default {
       getTeamManage(params)
         .then(res => {
           this.personalList = this.getArray1(res.data)
+          if (!this.personalList.length) {
+            return this.$message.warning('该团队没有可分配经理人员，请添加部门设置经理之后，再进行分配哦！')
+          }
           this.dialogTableVisible = true
         })
         .catch(error => {

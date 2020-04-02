@@ -58,7 +58,7 @@
           </el-table-column>
           <el-table-column label="状态" align="center" width="100">
             <template slot-scope="props">
-              <span class="status" :class="`status${props.row.entry_status}`">{{props.row.entry_status|status}}</span>
+              <span class="status" :class="`status${props.row.entry_status}`">{{!props.row.entry_status?'等待入职':props.row.entry_status==1?'入职开始':'入职结束'}}</span>
             </template>
           </el-table-column>
           <el-table-column label="岗位城市" prop="citys" align="center" width="150"></el-table-column>
@@ -80,13 +80,11 @@
           <el-table-column label="联系人" prop="link_name" align="center" width="100"></el-table-column>
           <el-table-column label="操作" align="center" min-width="160">
             <template slot-scope="scope">
-              <el-button @click="handleUser(1,scope.row)" type="text" size="small" v-if="scope.row.entry_status==1">入职结束</el-button>
-              <el-button v-if="scope.row.entry_status==2||scope.row.entry_status==3" @click="$router.push({path:'/commonTable',query:{id:scope.row.id,view:4}})" type="text" size="small">
-                入职审核
-                <!-- <span class="resume-number">(+150)</span> -->
+              <el-button @click="$router.push({path:'/commonTable',query:{id:scope.row.id,view:4}})" type="text" size="small" v-if="scope.row.entry_status==1">查看入职</el-button>
+              <el-button @click="$router.push({path:'/commonTable',query:{id:scope.row.id,view:4}})" type="text" v-if="scope.row.entry_status<=1" size="small">面试结果</el-button>
+              <el-button v-if="scope.row.entry_status>1" @click="$router.push({path:'/commonTable',query:{id:scope.row.id,view:7}})" type="text" size="small">
+                入职名单
               </el-button>
-              <el-button @click="$router.push({path:'/commonTable',query:{id:scope.row.id,view:6}})" type="text" v-if="scope.row.entry_status==1" size="small">面试结果</el-button>
-              <el-button @click="$router.push({path:'/commonTable',query:{id:scope.row.id,view:2}})" type="text" size="small" v-if="scope.row.entry_status==4">在职名单</el-button>
             </template>
           </el-table-column>
         </el-table>

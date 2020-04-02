@@ -5,7 +5,7 @@
 <template>
   <el-container>
     <el-header class="header x-flex-around home" height="50px" id="header">
-      <headerView :activeIndex="0"></headerView>
+      <headerView :activeIndex="0" @selectCity="dialogVisible=true"></headerView>
     </el-header>
     <el-main class="home-main-content">
       <div class="home-main-box">
@@ -148,6 +148,7 @@
       @handleOk="handleOk"
     ></Dialog>
     <FooterView></FooterView>
+     <ModalCity :dialogVisible="dialogVisible" @getCityCode="getCityCode" @handleClose="dialogVisible=false"></ModalCity>
     <AsideBox :isShow="isShow"></AsideBox>
   </el-container>
 </template>
@@ -158,6 +159,7 @@ import searchInput from '@/components/searchInput'
 import AsideBox from '@/components/AsideBox'
 import Dialog from '@/components/Dialog'
 import FooterView from '@/components/FooterView'
+import ModalCity from '@/components/ModalCity'
 import { inquiryList } from '@/api/information'
 import { homeList, advertisementList } from '@/api/home'
 import { addApply } from '@/api/orderTarking'
@@ -169,13 +171,15 @@ export default {
     searchInput,
     AsideBox,
     Dialog,
-    HeaderView
+    HeaderView,
+    ModalCity
   },
   data() {
     return {
       activeIndex: 0,
       keywords: '',
       isShow: false,
+      dialogVisible:false,
       centerDialogVisible: false,
       textShow: true,
       modalInfo: {
@@ -262,6 +266,11 @@ export default {
           this.$message.error(error.status.remind)
         })
     },
+    getCityCode(value) {
+      this.dialogVisible = false
+      this.params.three_cityid = value[0]
+      this.getList(this.params)
+    },
     handleOk() {
       this.centerDialogVisible = false
       this.$router.push('teamApplication')
@@ -287,7 +296,9 @@ export default {
           this.informationList = res.data.data
         })
         .catch(error => {
-          this.$message.error(error.status.remind)
+          if (error&& error.status) {
+            this.$message.error(error.status.remind)
+          }
         })
     },
     getList(params) {
@@ -296,7 +307,9 @@ export default {
           this.list = res.data.data.data
         })
         .catch(error => {
-          this.$message.error(error.status.remind)
+          if (error&& error.status) {
+            this.$message.error(error.status.remind)
+          }
         })
     },
     handleApply(val) {

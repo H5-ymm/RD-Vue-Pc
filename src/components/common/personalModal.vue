@@ -41,12 +41,14 @@
       padding: 21px 0 20px;
     }
     .member-col3 {
-      width: 82%;
-      border-top: 1px solid #eee;
-      padding-top: 10px;
-      margin: 0 auto;
-      .check-box {
-        text-align: left;
+      &.personal-col3 {
+        width: 82%;
+        border-top: 1px solid #eee;
+        padding-top: 10px;
+        margin: 0 auto;
+        .check-box {
+          text-align: left;
+        }
       }
     }
   }
@@ -76,7 +78,7 @@
       <section class="member-col1">
         <p>{{title}}</p>
       </section>
-      <section class="member-col3">
+      <section class="member-col3 personal-col3">
         <div class="x-flex-between">
           <el-input type="text" class="width210" v-model="name"></el-input>
           <el-button type="primary" @click="query">查询</el-button>

@@ -29,3 +29,5 @@ export const editEntryTime = data => $post('/company/editEntryTime', data)  //�
 
 export const quitResumeRecommend = data => $post('/company/quitResumeRecommend', data)  //人员离职
 export const selectInterviewEntryInfo = data => $post('/company/selectInterviewEntryInfo', data)  //人员离职
+export const setVideoInterviewTime = data => $post('/company/setVideoInterviewTime', data)
+export const noticeRecord = data => $post('/videointerview/videoInterviewNoticeRecord', data)

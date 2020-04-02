@@ -1,5 +1,8 @@
 <style lang="scss">
 @import '@/assets/css/resume';
+.tip-icon {
+  color: #1890FF;
+}
 </style>
 <template>
   <div class="tables-box billingManagement receipt-manage">
@@ -27,13 +30,25 @@
         </el-form-item>
       </el-form>
       <div class="member-table">
-        <div class="table-query">
-          <el-button @click="handlResume(1,id)">通过</el-button>
-          <el-button @click="handlResume(2,id)">未通过</el-button>
-          <span class="select-text">已选择
-            <el-button type="text">{{multipleSelection.length}}&nbsp;</el-button>项
-          </span>
-          <el-button type="text" @click="multipleSelection=[]">清空</el-button>
+        <div class="table-query x-flex-between">
+           <div>
+             <el-button @click="handlResume(1,{id: id,resume_id:resume_id})">通过</el-button>
+            <el-button @click="handlResume(2,{id: id,resume_id:resume_id})">未通过</el-button>
+            <span class="select-text">已选择
+              <el-button type="text">{{multipleSelection.length}}&nbsp;</el-button>项
+            </span>
+            <el-button type="text" @click="multipleSelection=[]">清空</el-button>
+           </div>
+           <div class="x-flex-between">
+              <el-button  v-if="resumeViewType==2" @click="viewNotice">通知记录</el-button>
+              <el-button  v-if="resumeViewType==1&&tableData&&tableData.length&&viewType==3" @click="updateNotice(1)">{{viewTime?'修改面试通知':''}}</el-button>
+              <el-button  v-if="resumeViewType==1&&tableData&&tableData.length&&viewType==4" @click="updateNotice(2)">{{viewTime?'修改入职通知':''}}</el-button>
+              <el-button type="primary" class="select-btn" @click="switchView(resumeViewType)">{{resumeViewType==2?'切换正常面试':'切换视频面试'}}</el-button>
+              <el-tooltip placement="top" v-if="resumeViewType==2">
+                <div slot="content">当前页面通过简历均为视频面试，<br/>如果线下面试点击切换正常面试即可</div>
+                <i class="el-icon-info tip-icon"></i>
+              </el-tooltip>
+           </div>
         </div>
         <el-table
           border=""
@@ -57,7 +72,7 @@
           </el-table-column>
           <el-table-column label="学历" prop="education" align="center" width="110"></el-table-column>
           <el-table-column label="住址" prop="citys" align="center" width="110"></el-table-column>
-          <el-table-column label="推荐时间" prop="desc" sortable="custom" align="center" width="180">
+          <el-table-column label="推荐时间" prop="desc" sortable="custom" align="center" min-width="180">
             <template slot-scope="props">
               <span
                 type="text"
@@ -80,11 +95,11 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column :label="label" align="center" min-width="150">
+          <el-table-column :label="label" align="center" min-width="150" v-if="resumeViewType.view_type !=2">
             <template slot-scope="scope">
               <div v-if="viewType==4">
                 <el-button
-                  @click="handlResume(1,scope.row.id)"
+                  @click="handlResume(1,scope.row)"
                   type="text"
                   size="small"
                   v-if="!scope.row.interview_status"
@@ -94,7 +109,7 @@
                   v-if="scope.row.interview_status==2"
                 >{{scope.row.scope.row.interview_status|status}}</span>
                 <el-button
-                  @click="handlResume(2,scope.row.id)"
+                  @click="handlResume(2,scope.row)"
                   type="text"
                   size="small"
                   v-if="!scope.row.interview_status"
@@ -102,7 +117,7 @@
               </div>
               <div v-else>
                 <el-button
-                  @click="handlResume(1,scope.row.id)"
+                  @click="handlResume(1,scope.row)"
                   type="text"
                   size="small"
                   v-if="!scope.row.status"
@@ -110,10 +125,50 @@
                 <span v-if="scope.row.status==1">通过</span>
                 <span v-if="scope.row.status==2">{{scope.row.status|status}}</span>
                 <el-button
-                  @click="handlResume(2,scope.row.id)"
+                  @click="handlResume(2,scope.row)"
                   type="text"
                   size="small"
                   v-if="!scope.row.status"
+                >未通过</el-button>
+              </div>
+            </template>
+          </el-table-column>
+            <el-table-column :label="label" align="center" min-width="150" v-if="resumeViewType.view_type == 2">
+            <template slot-scope="scope">
+              <div v-if="viewType==4">
+                <el-button
+                  @click="handlResume(1,scope.row)"
+                  type="text"
+                  size="small"
+                  v-if="scope.row.interview_status==5"
+                >通过</el-button>
+                <span v-if="scope.row.interview_status==1">通过</span>
+                <span
+                  v-if="scope.row.interview_status==2"
+                >{{scope.row.scope.row.interview_status|status}}</span>
+                <el-button
+                  @click="handlResume(2,scope.row)"
+                  type="text"
+                  size="small"
+                  v-if="scope.row.interview_status==5"
+                >未通过</el-button>
+              </div>
+              <div v-else>
+                <el-button
+                  @click="handlResume(1,scope.row)"
+                  type="text"
+                  size="small"
+                  v-if="scope.row.interview_status==5"
+                >通过</el-button>
+                <span v-if="scope.row.interview_status==1">通过</span>
+                <span
+                  v-if="scope.row.interview_status==2"
+                >{{scope.row.scope.row.interview_status|status}}</span>
+                <el-button
+                  @click="handlResume(2,scope.row)"
+                  type="text"
+                  size="small"
+                  v-if="scope.row.interview_status==5"
                 >未通过</el-button>
               </div>
             </template>
@@ -137,6 +192,17 @@
       :modalObj="modalObj"
       @handleClose="dialogTableVisible=false,id=''"
     ></modal>
+    <viewTypeModal
+      :dialogTableVisible="dialogViewVisible"
+      @setVideoTime="setVideoTime"
+      @handleClose="dialogViewVisible=false"
+    ></viewTypeModal>
+     <noticeRecord
+      :id="jobId"
+      :dialogTableVisible="dialogVisible"
+      @handleClose="dialogVisible=false,id=''"
+    ></noticeRecord>
+     <noticeModal :dialogTableVisible="visible" @submitForm="submitForm"  @handleClose="visible=false" :id="jobId" :noticeType="noticeType"></noticeModal>
   </div>
 </template>
 
@@ -151,7 +217,10 @@ import {
   auditResumeList,
   auditResumeRecommend,
   entryResumeList,
-  auditEntryResume
+  auditEntryResume,
+  setVideoInterviewTime,
+  editInterviewTime,
+  editEntryTime
 } from '../../api/receipt'
 import {
   moneyTypeList,
@@ -159,9 +228,15 @@ import {
   checkStatusList1
 } from '../../base/base'
 import modal from '../common/modal'
+import viewTypeModal from '../common/viewTypeModal'
+import noticeRecord from './noticeRecord'
+import noticeModal from './noticeModal'
 export default {
   components: {
-    modal
+    modal,
+    viewTypeModal,
+    noticeRecord,
+    noticeModal
   },
   filters: {
     moneyType(val) {
@@ -190,13 +265,16 @@ export default {
       rewardTypeList,
       dialogTableVisible: false,
       visible: false,
+      dialogViewVisible: false,
+      dialogVisible: false,
       tableData: [],
       currentPage: 1,
       userType: 1,
       formMember: {
         uid: localStorage.getItem('uid'),
         limit: 10,
-        page: 1
+        page: 1,
+        type:1
       },
       total: 0,
       userId: '',
@@ -211,7 +289,8 @@ export default {
       statusList1: [
         { label: '待审核', value: 0 },
         { label: '已通过', value: 1 },
-        { label: '未通过', value: 2 }
+        { label: '未通过', value: 2 },
+        { label: '待定', value: 5 }
       ],
       activeIndex: 0,
       viewType: 1,
@@ -222,17 +301,26 @@ export default {
         okText: '确定',
         closeText: '取消'
       },
-      status: ''
+      status: '',
+      resumeViewType: 1,
+      resume_id: '',
+      viewTime: '',
+      noticeType: ''
     }
   },
   computed: {
     label() {
       return this.viewType == 3 ? '审核简历' : '审核面试'
+    },
+    urlApi() {
+      return this.resumeViewType == 1 ? '' : ''
     }
   },
   created() {
     // 初始化查询标签数据
     this.viewType = this.$route.query.view
+    this.resumeViewType = localStorage.getItem('rendaViewType') || 1
+    this.formMember.type = this.resumeViewType 
     if (this.viewType == 3) {
       let arr = ['人才简历', '审核列表']
       this.$store.commit("setMenus", arr);
@@ -243,13 +331,69 @@ export default {
       let arr = ['人才简历', '审核结果']
       this.$store.commit("setMenus", arr);
       this.formMember.jobId = this.$route.query.id
-      this.jobId = this.$route.query.id
     }
     if (this.$route.query.id) {
+      this.jobId = this.$route.query.id
       this.getList(this.formMember)
     }
+    this.viewTime = sessionStorage.getItem('viewTime')
+    console.log(this.viewTime)
   },
   methods: {
+    updateNotice(index) {
+      this.noticeType = index == 1 ? '面试':'入职'
+      this.visible = true
+    },
+    // 面试时间
+    submitForm(val) {
+      let params = Object.assign(val, {
+        job_id: this.jobId,
+        uid: this.formMember.uid
+      })
+      if (this.viewType==3) {
+        editInterviewTime(params)
+        .then(res => {
+          if (res.data) {
+            this.getList(this.formMember)
+            this.visible = false
+            this.noticeType = ''
+          } else {
+            this.$message.error('设置失败')
+          }
+        })
+        .catch(error => {
+          if (error) {
+            this.$message.warning(error.status.remind)
+          }
+        })
+      } else {
+        editEntryTime(params)
+        .then(res => {
+          if (res.data) {
+            this.getList(this.formMember)
+            this.visible = false
+            this.noticeType = ''
+          } else {
+            this.$message.error('设置失败')
+          }
+        })
+        .catch(error => {
+          if (error) {
+            this.$message.warning(error.status.remind)
+          }
+        })
+      }
+    },
+    viewNotice() {
+      this.dialogVisible = true
+    },
+    switchView(index) {
+      this.tableData = []
+      this.resumeViewType = index == 1 ? 2 : 1
+      this.formMember.type = this.resumeViewType
+      this.getList(this.formMember)
+      localStorage.setItem('rendaViewType', index)
+    },
     getList(params) {
       if (this.viewType == 3) {
         auditResumeList(params)
@@ -302,28 +446,51 @@ export default {
       this.formMember.page = val
       this.getList(this.formMember)
     },
-    handlResume(status, id) {
-      if (!id) {
+    handlResume(status, row) {
+      if (!row.id) {
         return this.$message.warning('请选择简历')
       }
-      if (id && this.multipleSelection.length) {
-        this.dialogTableVisible = true
-        this.status = status
-        this.id = id
-        return false
-      }
       this.status = status
-      this.id = id
-      this.checkResume()
+      this.id = row.id
+      this.resume_id = row.resume_id
+      if (row.id && this.multipleSelection.length) {
+        if ( this.multipleSelection.length>8&&this.resumeViewType==2) {
+          return this.$message.warning('视频面试简历最多8份')
+        }
+        if (this.resumeViewType==1) {
+          this.dialogTableVisible = true
+          return false
+        } else {
+          this.dialogViewVisible= true
+        }
+      }
+      if (this.resumeViewType==1) {
+        this.checkResume()
+      } else {
+        this.dialogViewVisible= true
+      }
     },
     handleOk() {
       this.checkResume()
+    },
+    setVideoTime(data) {
+      console.log(data)
+      let params = Object.assign(data, {resume_list: this.resume_id, job_id: this.jobId} )
+      setVideoInterviewTime(params).then(res => {
+        if(res.data) {
+          this.dialogViewVisible = false
+          this.checkResume()
+        } else {
+          this.$message.error('操作失败')
+        }
+      })
     },
     checkResume() {
       let params = {
         uid: localStorage.getItem('uid'),
         id: this.id,
-        status: this.status
+        status: this.status,
+        type: this.resumeViewType
       }
       if (this.viewType == 3) {
         auditResumeRecommend(params)
@@ -355,7 +522,11 @@ export default {
       let arr = val.map(item => {
         return item.id
       })
+      let arr1 = val.map(item => {
+        return item.resume_id
+      })
       this.id = arr.join(',')
+      this.resume_id = arr1.join(',')
     },
     onSubmit() {
       this.getList(this.formMember)

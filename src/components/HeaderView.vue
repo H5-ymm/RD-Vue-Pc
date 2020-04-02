@@ -2,7 +2,7 @@
   <div class="orderTaking-header">
     <div class="x-flex-between">
       <span class="header-left">人事达</span>
-      <span class="home-purple-left" v-if="!activeIndex">
+      <span class="home-purple-left" v-if="!activeIndex" @click="selectCity">
         <i class="el-icon-location-outline"></i>
         <a class="welcome">全国站</a>
       </span>
@@ -136,6 +136,9 @@ export default {
     },
     switchNav(item, index) {
       this.$router.push(item.url)
+    },
+    selectCity() {
+      this.$emit('selectCity')
     }
   }
 }

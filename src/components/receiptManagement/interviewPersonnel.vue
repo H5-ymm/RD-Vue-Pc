@@ -73,9 +73,7 @@
           </el-table-column>
           <el-table-column label="发单状态" align="center" width="110">
             <template slot-scope="props">
-              <span class="status" v-if="!props.row.entry_status&&props.row.entry_time" :class="`status${props.row.interview_status}`">面试结束</span>
-              <span class="status" v-if="!props.row.entry_status&&!props.row.entry_time" :class="`status${props.row.interview_status}`">{{props.row.interview_status|statusType}}</span>
-              <span class="status" v-if="props.row.entry_status&&props.row.invoice_status==2" :class="`status${props.row.entry_status}`">{{props.row.entry_status==1?'入职开始':'入职结束'}}</span>
+              <span class="status" :class="`status${props.row.interview_status-1}`">{{props.row.interview_status==4?'面试结束':'面试开始'}}</span>
             </template>
           </el-table-column>
           <el-table-column label="岗位城市" prop="citys" align="center" width="150"></el-table-column>
@@ -101,15 +99,10 @@
           </el-table-column>
           <el-table-column label="操作" align="center" min-width="195px">
             <template slot-scope="props">
-              <el-button @click="$router.push({path:'/entryList',query:{id:props.row.id}})" type="text" size="small" v-if="(props.row.interview_status>=2&&props.row.entry_time&&props.row.entry_status)||(props.row.entry_status&&props.row.interview_status==3)">查看入职</el-button>
-              <el-button @click="handleOver(props.row)" type="text" v-if="props.row.interview_status==1&&!props.row.entry_status" size="small">面试结束</el-button>
-              <el-button @click="$router.push({path:'/checkResume',query:{id:props.row.id,view:4}})" v-if="props.row.interview_status==1&&!props.row.entry_status" type="text" size="small">审核结果</el-button>
-              <el-button @click="viewEntrytList(props.row)" v-if="props.row.interview_status>=2&&!props.row.entry_status" type="text" size="small">面试名单</el-button>
-              <el-button @click="setEntryTime(props.row)" type="text" size="small" v-if="props.row.interview_status==2||props.row.interview_status==3">通知入职</el-button>
-              <el-button @click="$router.push({path:'/commonTable',query:{id:props.row.id,view:3}})" v-if="(!props.row.entry_time&&props.row.entry_status) || props.row.entry_status" type="text" size="small">
-                面试结果
-                <!-- <span class="resume-number">(+150)</span> -->
-              </el-button>
+              <el-button @click="setEntryTime(props.row)" v-if="props.row.interview_status!=4" type="text" size="small">查看面试</el-button>
+              <el-button @click="setEntryTime(props.row)" v-if="props.row.interview_status!=4" type="text" size="small">审核结果</el-button>
+              <el-button @click="viewEntrytList(props.row)" v-if="props.row.interview_status==4" type="text" size="small">面试名单</el-button>
+              <!-- <el-button @click="setEntryTime(props.row)" type="text" size="small" v-if="props.row.interview_status==4">通知入职</el-button> -->
             </template>
           </el-table-column>
         </el-table>
@@ -142,19 +135,19 @@ export default {
       let obj = moneyTypeList.find(item => {
         return val == item.value
       })
-      return obj.label
+      return obj?obj.label:'-'
     },
     rewardType(val) {
       let obj = rewardTypeList.find(item => {
         return val == item.value
       })
-      return obj.label
+      return obj?obj.label:'-'
     },
     statusType(val) {
       let obj = entryStatusList3.find(item => {
         return val == item.value
       })
-      return obj.label
+      return obj?obj.label:'-'
     }
   },
   data() {
@@ -273,8 +266,9 @@ export default {
       if (!val.entry_time) {
         this.dialogTableVisible = true
       } else {
-        this.dialogTableVisible = true
-        this.entry_time = val.entry_time
+        // this.dialogTableVisible = true
+        // this.entry_time = val.entry_time
+        this.$router.push({path:'/checkResume',query:{id:val.id,view:4}})
       }
     },
     sortChange(column) {
