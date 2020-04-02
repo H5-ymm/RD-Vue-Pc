@@ -133,6 +133,7 @@ export default {
       }
       getAreasList({ code }).then(res => {
         let arr = res.data
+        this.list = []
         this.options.forEach(item => {
           if (item.code == value[0]) {
             this.list.push(item.name)

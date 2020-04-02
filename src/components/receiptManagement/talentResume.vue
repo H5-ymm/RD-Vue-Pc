@@ -72,9 +72,8 @@
           </el-table-column>
           <el-table-column label="发单状态" align="center" width="150">
             <template slot-scope="props">
-              <span class="status" v-if="props.row.invoice_status==0" :class="`status${props.row.invoice_status}`">收集中</span>
-              <span class="status" v-if="props.row.invoice_status&&!props.row.interview_status" :class="`status${props.row.invoice_status}`">{{props.row.invoice_status==1?'审核中':'面试开始'}}</span>
-              <span class="status" v-if="props.row.invoice_status=2&&props.row.interview_status&&!props.row.entry_status" :class="`status${props.row.interview_status}`">{{props.row.invoice_status?'面试开始':'面试结束'}}</span>
+              <span class="status status3" v-if="props.row.invoice_status==0">收集中</span>
+              <span class="status" v-if="props.row.invoice_status" :class="`status${props.row.invoice_status-1}`">{{props.row.invoice_status==1?'审核中':'审核结束'}}</span>
             </template>
           </el-table-column>
           <el-table-column label="接单时间" sortable="custom" prop="jddesc" align="center" width="150">
@@ -87,9 +86,9 @@
               <span>{{props.row.reward_money}}元/{{props.row.reward_type==1?'月':props.row.reward_type==2?'日': props.row.reward_type==3?'时':'一次性'}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="面试时间" sortable="custom" prop="jddesc" align="center" width="150">
+          <el-table-column label="面试时间" sortable="custom" prop="msdesc" align="center" width="150">
             <template slot-scope="props">
-              <span>{{props.row.view_time?$moment.unix(props.row.view_time).format('YYYY-MM-DD HH:mm'):'--'}}</span>
+              <span >{{props.row.view_time?$moment.unix(props.row.view_time).format('YYYY-MM-DD HH:mm'):'--'}}</span>
             </template>
           </el-table-column>
           <el-table-column label="联系人" prop="link_name" align="center" width="150"></el-table-column>
@@ -97,7 +96,7 @@
             <template slot-scope="props">
               <div v-if="props.row.interview_status==0&&props.row.invoice_status<=1">
                 <el-button @click="checkResume(props.row)" v-if="!props.row.interview_status" type="text" size="small">审核简历</el-button>
-                <el-button @click="handleNote(props.row)" v-if="!props.row.view_time||props.row.invoice_status<=1&&props.row.view_time" type="text" size="small">面试通知</el-button>
+                <el-button @click="checkResume(props.row)" v-if="!props.row.view_time||props.row.invoice_status<=1&&props.row.view_time" type="text" size="small">面试通知</el-button>
               </div>
               <div v-if="props.row.interview_status>=1">
                 <el-button @click="$router.push({path:'/interviewPersonnel',query:{id:props.row.id,view:2}})" v-if="props.row.invoice_status=2" type="text" size="small">查看面试</el-button>
@@ -110,7 +109,7 @@
       <el-pagination class="team-pagination" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="formMember.page" :page-sizes="[10, 30, 50, 100]" :page-size="formMember.limit" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
     </div>
     <viewJob :dialogTableVisible="dialogJobVisible" :id="jobId" @handleClose="dialogJobVisible=false,jobId=''"></viewJob>
-    <noticeModal :dialogTableVisible="dialogTableVisible" :isEdit="view_time" :id="jobId" noticeType="面试" @submitForm="submitForm"></noticeModal>
+    <noticeModal :dialogTableVisible="dialogTableVisible" @handleClose="dialogTableVisible=false,jobId=''" :isEdit="view_time" @submitFormVideo="checkResume({id: jobId,view_time:view_time})" :id="jobId" noticeType="面试" @submitForm="submitForm"></noticeModal>
     <modal :dialogTableVisible="visible" @handleOk="handleOk" isShow="true" :modalObj="modalObj" @handleClose="visible=false,jobId=''"></modal>
   </div>
 </template>
@@ -132,24 +131,18 @@ import modal from '../common/modal'
 import viewJob from '../common/viewJob'
 export default {
   name: 'talentResume',
-  components: {
-    noticeModal,
-    modal,
-    viewJob
-  },
   filters: {
     moneyType(val) {
       let obj = moneyTypeList.find(item => {
         return val == item.value
       })
       return obj ? obj.label : '--'
-    },
-    rewardType(val) {
-      let obj = rewardTypeList.find(item => {
-        return val == item.value
-      })
-      return obj ? obj.label : '--'
     }
+  },
+  components: {
+    noticeModal,
+    modal,
+    viewJob
   },
   data() {
     return {
@@ -185,7 +178,7 @@ export default {
   },
   created() {
     // 初始化查询标签数据
-    this.getList(this.formMember)
+    this.getList()
     let params = 'job_array'
     this.getData(params)
   },
@@ -201,11 +194,12 @@ export default {
           }
         })
     },
-    getList(params) {
-      companyResumeList(params)
+    getList() {
+      companyResumeList(this.formMember)
         .then(res => {
-          this.tableData = res.data.data
-          this.total = res.data.count
+          const { data } = res
+          this.total = data.count
+          this.tableData = data.data
         })
         .catch(error => {
           if (error && error.status) {
@@ -214,9 +208,7 @@ export default {
         })
     },
     checkResume(val) {
-      if (!val.recommendResume) {
-        return this.$message.warning('推荐简历为空，不能审核')
-      }
+      console.log(!val.view_time)
       if (!val.view_time) {
         this.handleNote(val)
       } else {
@@ -224,6 +216,7 @@ export default {
           path: '/checkResume',
           query: { id: val.id, view: 3 }
         })
+        sessionStorage.setItem('viewTime',val.view_time)
       }
     },
     viewJob(val) {
@@ -240,12 +233,13 @@ export default {
       this.formMember.entry_endtime = val ? val[1] : ''
     },
     sortChange(column) {
+      console.log(column.prop)
       if (column.order == 'ascending') {
         this.formMember[column.prop] = 'asc'
       } else {
         this.formMember[column.prop] = 'desc'
       }
-      this.getList(this.formMember)
+      this.getList()
     },
     exportResume() {
       if (!this.jobId) {
@@ -264,11 +258,11 @@ export default {
     },
     handleSizeChange(val) {
       this.formMember.limit = val
-      this.getList(this.formMember)
+      this.getList()
     },
     handleCurrentChange(val) {
       this.formMember.page = val
-      this.getList(this.formMember)
+      this.getList()
     },
     handleSelectionChange(val) {
       this.multipleSelection = val
@@ -278,16 +272,17 @@ export default {
       this.jobId = arr.join(',')
     },
     onSubmit() {
-      this.getList(this.formMember)
+      this.getList()
     },
     reset() {
       this.formMember = {
         uid: localStorage.getItem('uid'),
         limit: 10,
-        page: 1
+        page: 1,
+        status:''
       }
       this.timeList = []
-      this.getList(this.formMember)
+      this.getList()
     },
     // 面试时间
     submitForm(val) {
@@ -298,7 +293,7 @@ export default {
       editInterviewTime(params)
         .then(res => {
           if (res.data) {
-            this.getList(this.formMember)
+            this.getList()
             this.dialogTableVisible = false
           } else {
             this.$message.error('设置时间失败')

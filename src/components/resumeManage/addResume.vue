@@ -335,8 +335,8 @@ export default {
       this.getList(this.formMember)
     },
     handleEdit(val) {
-      this.dialogTableVisible = true
       this.resumeId = val.id
+      this.dialogTableVisible = true
     },
     abandoned(val) {
       this.visible = true

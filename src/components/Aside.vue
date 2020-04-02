@@ -527,6 +527,7 @@ export default {
         }
         path = !falg ? this.$route.path : this.$route.fullPath
       }
+      console.log(path)
       return path
     }
   }

@@ -205,7 +205,13 @@ export default {
       let path
       let falg = true
       if (this.$route.name == 'checkResume') {
-        path = '/talentResume'
+        if (this.$route.query.view ==3) {
+          path = '/talentResume'
+        } else if (this.$route.query.view ==4) {
+          path = '/interviewPersonnel'
+        } else {
+          path = '/entryList'
+        }   
       }
       else {
         let key = this.$route.fullPath.split('?')

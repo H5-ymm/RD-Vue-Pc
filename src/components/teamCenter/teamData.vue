@@ -236,10 +236,15 @@ export default {
     },
     getData (params, last, index) {
       let obj = {}
+      // if (last) {
+      //   obj = Object.assign(params, { last: 1 })
+      // } else {
+      //   obj = Object.assign(params, { last: '' })
+      // }
       if (last) {
-        obj = Object.assign(params, { last: 1 })
-      } else {
         obj = Object.assign(params, { last: '' })
+      } else {
+        obj = Object.assign(params, { last: 1 })
       }
       getnumLeader(obj)
         .then(res => {

@@ -17,7 +17,7 @@
         </el-form-item>
       </el-form>
       <div class="member-table">
-        <div class="table-query" v-if="viewType!=5&&viewType!=4&&viewType!=3&&viewType!=2">
+        <div class="table-query" v-if="viewType!=5&&viewType!=4&&viewType!=3&&viewType!=2&&viewType!=7">
           <el-button @click="handleResume(1,id)">通过</el-button>
           <el-button @click="handleResume(2,id)">未通过</el-button>
         </div>
@@ -59,7 +59,7 @@
           </el-table-column>
           <el-table-column label="状态" align="center" min-width="150">
             <template slot-scope="props">
-              <div v-if="viewType==2||viewType==4">
+              <div v-if="viewType==2||viewType==4||viewType==7">
                 <span class="status" v-if="!props.row.entry_status">待审核</span>
                 <span
                   class="status"
@@ -246,7 +246,7 @@ export default {
   },
   methods: {
     getList(params) {
-      if (this.viewType == 4) {
+      if (this.viewType == 4 || this.viewType == 7) {
         entryUserResumeList(params)
           .then(res => {
             this.getData(res)
