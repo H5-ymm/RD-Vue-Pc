@@ -268,7 +268,7 @@ export default {
       } else {
         // this.dialogTableVisible = true
         // this.entry_time = val.entry_time
-        this.$router.push({path:'/checkResume',query:{id:val.id,view:4}})
+        this.$router.push({path:'/checkResume',query:{id:val.id,view:4,status:val.interview_status}})
       }
     },
     sortChange(column) {

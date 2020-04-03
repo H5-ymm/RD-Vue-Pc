@@ -92,11 +92,11 @@ export const rewardTypeList1 = [
 ]
 export const requirePersonList = [
   { label: '不限', value: 0 },
-  { label: '2-20人', value: 1 },
-  { label: '20-50人', value: 2 },
-  { label: '50-100人', value: 3 },
-  { label: '100-200', value: 4 },
-  { label: '200人以上', value: 5 }
+  { label: '2-20人', value: '2-20' },
+  { label: '20-50人', value: '20-50' },
+  { label: '50-100人', value: '50-100' },
+  { label: '100-200人', value: '100-200' },
+  { label: '200人以上', value: '20-9999' }
 ]
 
 export const paymentTaxType = [

@@ -18,7 +18,7 @@
           <el-input v-model="formMember.where" class="width300" placeholder="请输入职位名称关键字"></el-input>
           <el-button type="primary" @click="onSubmit" class="select-btn">查询</el-button>
         </el-form-item>
-        <el-form-item label="状态筛选：" v-if="viewType!=3">
+        <el-form-item label="状态筛选：">
           <el-button
             :type="activeIndex==index ?'primary':''"
             v-for="(item,index) in statusList"
@@ -30,8 +30,8 @@
         </el-form-item>
       </el-form>
       <div class="member-table">
-        <div class="table-query x-flex-between">
-           <div>
+        <div class="table-query" :class="(checkStatus!=4&&viewType>3) || (checkStatus==2&&viewType==3)?' x-flex-between':' x-flex-end'">
+           <div v-if="(checkStatus!=4&&viewType>3) || (checkStatus==2&&viewType==3)">
              <el-button @click="handlResume(1,{id: id,resume_id:resume_id})">通过</el-button>
             <el-button @click="handlResume(2,{id: id,resume_id:resume_id})">未通过</el-button>
             <span class="select-text">已选择
@@ -41,8 +41,8 @@
            </div>
            <div class="x-flex-between">
               <el-button  v-if="resumeViewType==2" @click="viewNotice">通知记录</el-button>
-              <el-button  v-if="resumeViewType==1&&tableData&&tableData.length&&viewType==3" @click="updateNotice(1)">{{viewTime?'修改面试通知':''}}</el-button>
-              <el-button  v-if="resumeViewType==1&&tableData&&tableData.length&&viewType==4" @click="updateNotice(2)">{{viewTime?'修改入职通知':''}}</el-button>
+              <el-button  v-if="resumeViewType==1&&tableData&&tableData.length&&viewType==3&&viewTime" @click="updateNotice(1)">{{viewTime?'修改面试通知':''}}</el-button>
+              <el-button  v-if="resumeViewType==1&&tableData&&tableData.length&&viewType==4&&viewTime" @click="updateNotice(2)">{{viewTime?'修改入职通知':''}}</el-button>
               <el-button type="primary" class="select-btn" @click="switchView(resumeViewType)">{{resumeViewType==2?'切换正常面试':'切换视频面试'}}</el-button>
               <el-tooltip placement="top" v-if="resumeViewType==2">
                 <div slot="content">当前页面通过简历均为视频面试，<br/>如果线下面试点击切换正常面试即可</div>
@@ -122,8 +122,7 @@
                   size="small"
                   v-if="!scope.row.status"
                 >通过</el-button>
-                <span v-if="scope.row.status==1">通过</span>
-                <span v-if="scope.row.status==2">{{scope.row.status|status}}</span>
+                <span v-if="scope.row.status">{{scope.row.status==1?'通过':scope.row.status==2?'未通过':'已放弃'}}</span>
                 <el-button
                   @click="handlResume(2,scope.row)"
                   type="text"
@@ -160,10 +159,7 @@
                   size="small"
                   v-if="scope.row.interview_status==5"
                 >通过</el-button>
-                <span v-if="scope.row.interview_status==1">通过</span>
-                <span
-                  v-if="scope.row.interview_status==2"
-                >{{scope.row.scope.row.interview_status|status}}</span>
+                <span v-if="scope.row.interview_status">{{scope.row.interview_status==1?'通过':scope.row.interview_status==2?'未通过':'未参加'}}</span>
                 <el-button
                   @click="handlResume(2,scope.row)"
                   type="text"
@@ -290,6 +286,7 @@ export default {
         { label: '待审核', value: 0 },
         { label: '已通过', value: 1 },
         { label: '未通过', value: 2 },
+        { label: '已放弃', value: 3},
         { label: '待定', value: 5 }
       ],
       activeIndex: 0,
@@ -305,7 +302,8 @@ export default {
       resumeViewType: 1,
       resume_id: '',
       viewTime: '',
-      noticeType: ''
+      noticeType: '',
+      checkStatus: ''
     }
   },
   computed: {
@@ -320,7 +318,7 @@ export default {
     // 初始化查询标签数据
     this.viewType = this.$route.query.view
     this.resumeViewType = localStorage.getItem('rendaViewType') || 1
-    this.formMember.type = this.resumeViewType 
+    this.formMember.type = this.resumeViewType
     if (this.viewType == 3) {
       let arr = ['人才简历', '审核列表']
       this.$store.commit("setMenus", arr);
@@ -336,8 +334,8 @@ export default {
       this.jobId = this.$route.query.id
       this.getList(this.formMember)
     }
+    this.checkStatus = this.$route.query.status
     this.viewTime = sessionStorage.getItem('viewTime')
-    console.log(this.viewTime)
   },
   methods: {
     updateNotice(index) {

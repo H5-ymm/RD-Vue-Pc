@@ -55,6 +55,10 @@ export default {
       }
     },
     getCityCode (item) {
+      if (item.name == '全国') {
+        this.$emit('getCityCode', item)
+        return
+      }
       this.codeList.push(item.value)
       let arr = [...new Set(this.codeList)]
       this.getAreaList(item.value)

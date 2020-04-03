@@ -232,6 +232,9 @@
 .orderTaking-main-history {
   padding:5px 0;
   border-bottom: 1px solid #eee;
+  &:nth-last-of-type(1) {
+    border-bottom: none;
+  }
 }
 .pagination {
   text-align: center;

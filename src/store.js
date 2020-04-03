@@ -210,12 +210,12 @@ export default new Vuex.Store({
           uid
         }).then(res => {
           let Info = res.data || null;
-          // let userInfo = {
-          //   user_name: res.data.com_name,
-          //   mobile: res.data.link_phone,
-          //   head_img: res.data.logo_url
-          // };
           sessionStorage.setItem("baseInfo", JSON.stringify(res.data));
+          if (!res.data.logo_url&&!res.data.license_url&&!res.data.link_tel&&!res.data.content) {
+            localStorage.setItem('rendacompanyInfo',false)
+          } else {
+            localStorage.setItem('rendacompanyInfo',true)
+          }
           commit('getBaseInfo', Info)
           resolve(res)
         }).catch(error => {

@@ -97,6 +97,7 @@
                 <div class="clearfix-bottom x-flex-between">
                   <span>{{item.com_name}}</span>
                   <el-button
+                    v-if="userType==2"
                     type="primary"
                     @click="handleApply(item)"
                     size="medium"
@@ -216,13 +217,14 @@ export default {
         page: 1
       },
       imgList: [],
-      userName: localStorage.getItem('userName')
+      userName: localStorage.getItem('userName'),
+      userType: localStorage.getItem('userType')
     }
   },
   computed: {
     ommandList() {
       let arr = []
-      if (localStorage.getItem('userType') == 2) {
+      if (this.userType == 2) {
         arr = [
           { name: '团队中心', url: 'teamData' },
           { name: '接单管理', url: 'teamApplication' },
@@ -266,9 +268,9 @@ export default {
           this.$message.error(error.status.remind)
         })
     },
-    getCityCode(value) {
+    getCityCode(data) {
       this.dialogVisible = false
-      this.params.three_cityid = value[0]
+      this.params.city = data.value
       this.getList(this.params)
     },
     handleOk() {
@@ -293,7 +295,7 @@ export default {
     getInfoList(params) {
       inquiryList(params)
         .then(res => {
-          this.informationList = res.data.data
+          this.informationList = res.data.data || []
         })
         .catch(error => {
           if (error&& error.status) {
@@ -304,7 +306,11 @@ export default {
     getList(params) {
       homeList(params)
         .then(res => {
-          this.list = res.data.data.data
+          if (res.data.data) {
+            this.list = res.data.data.data || []
+          } else {
+            this.list = []
+          }
         })
         .catch(error => {
           if (error&& error.status) {
@@ -345,7 +351,7 @@ export default {
       this.getList(params)
     },
     getmoneyType(type) {
-      return type === 1 ? '日' : type === 2 ? '月' : '时'
+      return type === 1 ? '月' : type === 2 ? '日' : '时'
     },
     getRewardType(type) {
       let text = ''

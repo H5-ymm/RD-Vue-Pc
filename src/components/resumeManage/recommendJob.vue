@@ -128,7 +128,6 @@ import {
   getMatchingJobList,
   getInternalMatchingList
 } from '@/api/resume'
-teamReceipt
 import { addPut } from '@/api/teamReceipt'
 import { addPutSelf } from '@/api/internalInvoice'
 import { moneyTypeList1, rewardTypeList1 } from '@/base/base'

@@ -75,13 +75,17 @@ export default {
     },
     handleOk() {
       let teamType = localStorage.getItem('teamType')
-      let teamId = localStorage.getItem('uid')
-      if (teamType == 1) {
-        this.$router.push(`/teamCompanyForm?teamId=${teamId}&type=${teamType}`)
-      } else if (teamType == 2) {
-        this.$router.push(`/personalForm?teamId=${teamId}&type=${teamType}`)
+      let teamId = localStorage.getItem('uid')  
+      if(localStorage.getItem('userType==2')) {
+        if (teamType == 1) {
+          this.$router.push(`/teamCompanyForm?teamId=${teamId}&type=${teamType}`)
+        } else if (teamType == 2) {
+          this.$router.push(`/personalForm?teamId=${teamId}&type=${teamType}`)
+        } else {
+          this.$router.push('/teamSetting')
+        }
       } else {
-        this.$router.push('/teamSetting')
+        this.$router.push(`/companyForm`)
       }
       this.$emit('handleClose')
     }

@@ -94,13 +94,9 @@
           <el-table-column label="联系人" prop="link_name" align="center" width="150"></el-table-column>
           <el-table-column label="操作" align="center" width="150">
             <template slot-scope="props">
-              <div v-if="props.row.interview_status==0&&props.row.invoice_status<=1">
-                <el-button @click="checkResume(props.row)" v-if="!props.row.interview_status" type="text" size="small">审核简历</el-button>
-                <el-button @click="checkResume(props.row)" v-if="!props.row.view_time||props.row.invoice_status<=1&&props.row.view_time" type="text" size="small">面试通知</el-button>
-              </div>
-              <div v-if="props.row.interview_status>=1">
-                <el-button @click="$router.push({path:'/interviewPersonnel',query:{id:props.row.id,view:2}})" v-if="props.row.invoice_status=2" type="text" size="small">查看面试</el-button>
-                <el-button @click="$router.push({path:'/checkResume',query:{id:props.row.id,view:3}})" type="text" size="small">审核结果</el-button>
+              <div>
+                <el-button @click="checkResume(props.row)" type="text" size="small">审核简历</el-button>
+                <el-button @click="checkResume(props.row)" type="text" size="small">面试通知</el-button>
               </div>
             </template>
           </el-table-column>
@@ -214,7 +210,7 @@ export default {
       } else {
         this.$router.push({
           path: '/checkResume',
-          query: { id: val.id, view: 3 }
+          query: { id: val.id, view: 3, status: val.invoice_status }
         })
         sessionStorage.setItem('viewTime',val.view_time)
       }

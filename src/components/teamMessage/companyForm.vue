@@ -36,7 +36,7 @@
         </el-form-item>
         <el-form-item label="企业性质" required>
           <el-select v-model="companyForm.com_type" class="width408" value-key="label" placeholder="请选择企业性质">
-            <el-option :label="item.label" :value="item.value" v-for="(item,index) in comTypeList" :key="index"></el-option>
+            <el-option :label="item.label" :value="(item.value + 1)" v-for="(item,index) in comTypeList" :key="index"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="企业规模" required>
@@ -69,7 +69,7 @@
         </el-form-item>
         <el-form-item class="teamMessage-btn">
           <el-button type="primary" @click="submitForm('companyForm')">保存</el-button>
-          <el-button @click="resetForm('companyForm')">取消</el-button>
+          <el-button @click="resetForm()">取消</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -99,7 +99,14 @@ export default {
         three_cityid: "",
         com_sort: '',
         com_type: '',
-        com_scale: ''
+        com_scale: '',
+        unified_social_credit_code: '',
+        business_licence: '',
+        content: '',
+        link_man: '',
+        link_phone: '',
+        age: '',
+        address: ''
       },
       imageUrl: "",
       license_img: "",
@@ -115,7 +122,6 @@ export default {
       jobList: [],
       userType: localStorage.getItem("userType"),
       address: [],
-      compnayInfo: {},
       uid: localStorage.getItem("uid")
     };
   },
@@ -224,9 +230,17 @@ export default {
           this.$message.error(error.status.remind);
         });
     },
-    resetForm (companyForm) {
+    resetForm () {
+      this.address = []
       this.getCompanyInfo(this.uid)
     }
+  },
+  beforeRouteLeave(to, from , next) {
+    if (!localStorage.getItem('rendacompanyInfo')) {
+      this.$store.commit('setMenus', ['账户资料'])
+      return this.$message.warning('请完善信息')
+    }
+    next()
   }
 };
 </script>

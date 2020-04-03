@@ -129,6 +129,7 @@
         </el-form-item>
       </el-form>
     </div>
+    <infoTip :centerDialogVisible="dialogVisible" :modalInfo="modalInfo" @handleClose="dialogVisible=false"></infoTip>
   </div>
 </template>
 
@@ -140,10 +141,12 @@ import districtSelet from './districtSelet'
 import { createInvoice } from '@/api/company'
 import salaryAndRebate from './orderTaking/salaryAndRebate'
 import { updateInvoice, getInvoice } from '@/api/orderTarking'
+import infoTip from './common/infoTip'
 export default {
   components: {
     districtSelet,
-    salaryAndRebate
+    salaryAndRebate,
+    infoTip
   },
   data() {
     let validatereg = function(rule, value, callback) {
@@ -198,10 +201,22 @@ export default {
       jobContent: '',
       id: '',
       address: [],
-      from: null
+      from: null,
+      dialogVisible: false,
+      modalInfo: {
+        title: '您的信息未完善！',
+        okText: '前去完善',
+        closeText: '',
+        imgBg: require('../assets/img/info.png')
+      },
     }
   },
   created() {
+    if (!localStorage.getItem('rendacompanyInfo')) {
+      this.dialogVisible = true
+    } else {
+      this.dialogVisible = false
+    }
     let params = 'edu_type,money_array,job_array'
     this.getList(params)
     if (this.$route.query.id) {

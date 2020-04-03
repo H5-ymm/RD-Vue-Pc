@@ -6,7 +6,7 @@
       </template>
     </el-table-column>
     <el-table-column label="操作人" prop="actor" align="center"></el-table-column>
-    <el-table-column label="所属部门" prop="content" align="center"></el-table-column>
+    <el-table-column label="操作内容" prop="content" align="center"></el-table-column>
     <el-table-column label="组员/简历/职位" prop="name" align="center"></el-table-column>
   </el-table>
 </template>

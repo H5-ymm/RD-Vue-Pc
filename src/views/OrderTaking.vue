@@ -35,7 +35,7 @@
               <el-select v-model="params.reward_type" @change="querySelect($event,'reward_type')" placeholder="返利方式">
                 <el-option v-for="(item,index) in rewardList" :key="index" :label="item.label" :value="item.value"></el-option>
               </el-select>
-              <el-select v-model="params.require_number" @change="querySelect($event,'require_number')" placeholder="需求人数">
+              <el-select v-model="params.required_number" @change="querySelect($event,'required_number')" placeholder="需求人数">
                 <el-option v-for="(item,index) in requirePersonList" :key="index" :label="item.label" :value="item.value"></el-option>
               </el-select>
               <el-select v-model="params.is_five_risks" @change="querySelect($event,'is_five_risks')" placeholder="缴纳五金">
@@ -71,8 +71,9 @@
                       </li>
                     </ul>
                     <ul class="orderTaking-main-item">
-                      <li class="require-number">{{getmoneyType(item.money_type)}}薪: {{item.money}}元</li>
-                      <li>返利：{{item.reward_money_type}}/人/{{getmoneyType(item.money_type)}}</li>
+                      <li class="require-number" v-if="item.money_type==1">{{getmoneyType(item.money_type)}}薪: {{item.money_min}}~{{item.money_max}}元</li>
+                      <li class="require-number" v-else>{{getmoneyType(item.money_type)}}薪: {{item.money}}元</li>
+                      <li>返利：{{item.reward_money}}/人/{{getmoneyType(item.money_type)}}</li>
                       <li v-if="item.reward_money_type==3">持续时间：{{item.reward_money_type==1?'长期返利':'持续返利'}}</li>
                       <li v-if="item.reward_money_type!=3&&item.reward_continuous">持续时间：{{item.reward_continuous}}{{getmoneyType(item.money_type)}}</li>
                     </ul>
@@ -98,7 +99,7 @@
                       <li class="text-line" v-if="!item.address">地点:无</li>
                     </ul>
                   </div>
-                  <div>
+                  <div v-if="userType==2">
                     <el-button type="primary" plain @click="handleApply(item)">立即接单</el-button>
                   </div>
                 </div>
@@ -118,8 +119,9 @@
                     <span class="require-number">{{item.required_number}}人</span>
                   </li>
                   <li class="x-flex-between">
-                    <span class="require-number">{{getmoneyType(item.money_type)}}薪:</span>
-                    <span>{{item.money}}/人/{{getmoneyType(item.money_type)}}</span>
+                    <span class="require-number" v-if="item.money_type==1">{{getmoneyType(item.money_type)}}薪:{{item.money_min}}~{{item.money_max}}/人</span>
+                    <span class="require-number" v-else>{{getmoneyType(item.money_type)}}薪:{{item.money}}/人</span>
+                    <span>返利：{{item.reward_money}}/人/{{getmoneyType(item.money_type)}}</span>
                   </li>
                   <el-tooltip class="item" effect="dark" :content="item.com_name" placement="top-start">
                     <li class="bg-purple">{{item.com_name}}</li>
@@ -174,7 +176,8 @@ export default {
       params: {
         limit: 10,
         page: 1,
-        cityid: ''
+        cityid: '',
+        uid: localStorage.getItem('uid')
       },
       list: [],
       cityList,
@@ -192,7 +195,8 @@ export default {
         okText: '查看申请',
         closeText: '关闭',
         imgBg: require('../assets/img/success.png')
-      }
+      },
+      userType: localStorage.getItem('userType')
     }
   },
   created () {
@@ -316,8 +320,8 @@ export default {
       let params = Object.assign(val, this.params)
       this.getData(params)
     },
-    getmoneyType (type) {
-      return type === 1 ? '日' : type === 2 ? '月' : '时'
+    getmoneyType(type) {
+      return type === 1 ? '月' : type === 2 ? '日' : '时'
     },
     getRewardType (type) {
       let text = ''
