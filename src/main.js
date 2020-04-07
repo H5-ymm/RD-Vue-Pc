@@ -15,7 +15,6 @@ Vue.prototype.$moment = moment
 Vue.prototype.$axios = axios
 Vue.config.productionTip = false
 // Vue.prototype.$store = store
-
 // 注册element-ui
 Vue.use(ElementUI);
 new Vue({

@@ -23,7 +23,7 @@
         </el-form-item>
         <el-form-item label="意向地区：" v-if="viewType!=3">
           <div class="width300">
-            <districtSelet @change="change" :placeholder="'请选择意向地区'" :disabled="true"></districtSelet>
+            <districtSelet @change="change" :placeholder="'请选择意向地区'"  :address="address" :disabled="true"></districtSelet>
           </div>
         </el-form-item>
         <el-form-item label="跟进人：">
@@ -220,7 +220,8 @@ export default {
       viewType: 1,
       status: 0,
       id: '',
-      moneyArray: {}
+      moneyArray: {},
+      address: []
     }
   },
   mounted() {
@@ -416,6 +417,8 @@ export default {
         limit: 10,
         page: 1
       }
+      this.timeList = []
+      this.address = []
       this.getList(this.formMember)
     }
   }

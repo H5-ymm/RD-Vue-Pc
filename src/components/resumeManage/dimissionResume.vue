@@ -20,7 +20,7 @@
         </el-form-item>
         <el-form-item label="意向地区：">
           <div class="width300">
-            <districtSelet @change="change" :placeholder="'请选择意向地区'" :disabled="true"></districtSelet>
+            <districtSelet @change="change" :placeholder="'请选择意向地区'" :address="address" :disabled="true"></districtSelet>
           </div>
         </el-form-item>
         <el-form-item label="跟进人：">
@@ -146,7 +146,8 @@ export default {
       total: 0,
       resumeId: '',
       timeList: [],
-      moneyArray: {}
+      moneyArray: {},
+      address: []
     }
   },
   created() {
@@ -243,6 +244,7 @@ export default {
         page: 1
       }
       this.timeList = []
+      this.address = []
       this.getList(this.formMember)
     }
   }

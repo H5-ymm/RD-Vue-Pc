@@ -17,7 +17,7 @@
             </div>
             <div class="x-flex-center" v-if="type==2||type==3">
               <el-link :underline="false" href="home" class="home-link">首页</el-link>
-              <img :src="getImgUrl(userInfo.head_img)" alt="" class="team-logo user-logo" v-if="userInfo&&userInfo.head_img">
+              <img :src="userInfo.head_img" alt="" class="team-logo user-logo" v-if="userInfo&&userInfo.head_img">
               <img src="../assets/img/headIcon.png" alt="" class="team-logo user-logo" v-else>
               <el-dropdown @command="handleCommand">
                 <span class="el-dropdown-link">

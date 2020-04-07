@@ -66,7 +66,7 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
-    .help {
+    &.help {
       background: #1890ff;
     }
   }

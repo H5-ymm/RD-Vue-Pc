@@ -21,7 +21,7 @@
         </el-form-item>
         <el-form-item label="意向地区：">
           <div class="width300">
-            <districtSelet @change="change" :placeholder="'请选择意向地区'" :disabled="true"></districtSelet>
+            <districtSelet @change="change" :placeholder="'请选择意向地区'" :address="address" :disabled="true"></districtSelet>
           </div>
         </el-form-item>
         <el-form-item label="跟进人：">
@@ -175,7 +175,8 @@ export default {
       isShow: true,
       reason: '',
       viewType: 1,
-      moneyArray: {}
+      moneyArray: {},
+      address: []
     }
   },
   mounted() {
@@ -357,6 +358,7 @@ export default {
         page: 1
       }
       this.timeList = []
+      this.address = []
       this.getList(this.formMember)
     }
   }

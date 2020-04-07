@@ -33,7 +33,7 @@
             </template>
           </el-table-column>
           <el-table-column label="推荐时间" prop="addtime" sortable align="center" width="170"></el-table-column>
-          <el-table-column label="状态" align="center" width="150">
+          <el-table-column label="状态" align="center" min-width="150">
             <template slot-scope="props">
               <div v-if="viewType==4||viewType==3">
                 <span class="status" :class="`status${props.row.status}`" v-if="!props.row.interview_status&&!props.row.entry_status">待审核</span>
@@ -66,8 +66,8 @@
                 <span v-if="scope.row.status==1&&scope.row.interview_status!=3&&!scope.row.entry_status">{{scope.row.interview_status==1?'通过':'未通过'}}</span>
                 <span v-if="scope.row.status==1&&scope.row.interview_status==3&&!scope.row.entry_status">未参加</span>
               </div>
-              <div v-if="viewType==1">
-                <span v-if="scope.row.status&&scope.row.status!=2">{{scope.row.status==1?'已通过':'已拒绝'}}</span>
+              <div v-if="viewType==1||viewType==6">
+                <span v-if="scope.row.status">{{scope.row.status==1?'已通过':'已拒绝'}}</span>
               </div>
             </template>
           </el-table-column>

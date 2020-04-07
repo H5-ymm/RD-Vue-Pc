@@ -1,8 +1,8 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-// import {
-//   getImgUrl
-// } from "@/util/util";
+import {
+  getImgUrl
+} from "@/util/util";
 // import {
 //   teamRouters
 // } from './router/team'
@@ -146,8 +146,17 @@ export default new Vuex.Store({
         getUserInfo({
           uid
         }).then(res => {
-          sessionStorage.setItem('userInfo', JSON.stringify(res.data))
-          commit('getUserInfo', res.data)
+          console.log(res.data)
+          let userinfo = res.data
+          if (userinfo.head_img) {
+            if (userinfo.head_img.indexOf('https')!=-1) {
+              userinfo.head_img =  res.data.head_img
+            } else {
+              userinfo.head_img =  getImgUrl(res.data.head_img)
+            }
+          }
+          sessionStorage.setItem('userInfo', JSON.stringify(userinfo))
+          commit('getUserInfo', userinfo)
           resolve(res)
         }).catch(error => {
           reject(error)

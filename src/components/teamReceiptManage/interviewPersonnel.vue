@@ -62,10 +62,10 @@
           </el-table-column>
           <el-table-column label="状态" align="center" width="150">
             <template slot-scope="props">
-              <span class="status" :class="`status${props.row.invoice_status}`" v-if="!props.row.interview_status&&!props.row.entry_status">{{props.row.invoice_status==0?'收集中':props.row.invoice_status==1?'审核中':props.row.invoice_status==2?'面试开始':'审核简历'}}</span>
+              <span class="status" :class="`status${props.row.invoice_status}`">{{props.row.invoice_status==0?'收集中':props.row.invoice_status==1?'审核中':'审核简历'}}</span>
               <!-- <span class="status" v-if="props.row.entry_status&&props.row.entry_status<3" :class="`status${props.row.entry_status}`">{{props.row.entry_status==1?'面试开始':props.row.entry_status==2?'面试结束':''}}</span> -->
               <!-- <span class="status" v-if="props.row.status==1" :class="`status${props.row.status}`">面试开始</span> -->
-              <span class="status status4" v-else>面试结束</span>
+              <!-- <span class="status status4" v-else>面试结束</span> -->
               <!--<span class="status status4" v-else>{{props.row.interview_status==1?'面试开始':'面试结束'}}</span> -->
             </template>
           </el-table-column>

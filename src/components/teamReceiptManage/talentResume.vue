@@ -59,8 +59,8 @@
           </el-table-column>
           <el-table-column label="状态" align="center" width="150">
             <template slot-scope="props">
-              <span class="status" :class="`status${props.row.interview_status}`" v-if="!props.row.entry_status&&props.row.interview_status!=4">{{props.row.interview_status==1?"面试开始":props.row.interview_status==2?'面试审核简历':'面试结束'}}</span>
-              <span class="status" :class="`status${props.row.entry_status}`" v-if="props.row.interview_status==4">{{props.row.entry_status==1?"入职开始":'入职结束'}}</span>
+              <span class="status" :class="`status${props.row.interview_status}`">{{props.row.interview_status==4?"面试结束":props.row.interview_status==2?'面试审核简历':'面试开始'}}</span>
+              <!-- <span class="status" :class="`status${props.row.entry_status}`" v-if="props.row.interview_status==4">{{props.row.entry_status==1?"入职开始":'入职结束'}}</span> -->
             </template>
           </el-table-column>
           <el-table-column label="岗位城市" align="center" width="150">

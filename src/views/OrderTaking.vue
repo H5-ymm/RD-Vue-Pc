@@ -330,7 +330,7 @@ export default {
       } else if (type == 2) {
         text = '日返'
       } else if (type == 3) {
-        text = '周返'
+        text = '时返'
       } else {
         text = '一次性返利'
       }
