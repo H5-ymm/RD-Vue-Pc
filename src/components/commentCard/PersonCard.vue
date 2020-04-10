@@ -11,7 +11,7 @@
           <span>置顶</span>
         </span>
         <div class="view-card-col1">
-          <img :src="getImgUrl(item.head_img)" v-if="item.head_img">
+          <img :src="item.head_img" v-if="item.head_img">
           <img src="../../assets/img/headIcon.png" v-else>
         </div>
         <div class="view-card-col2">

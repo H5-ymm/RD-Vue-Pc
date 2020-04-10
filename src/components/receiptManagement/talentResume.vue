@@ -92,7 +92,7 @@
             </template>
           </el-table-column>
           <el-table-column label="联系人" prop="link_name" align="center" width="150"></el-table-column>
-          <el-table-column label="操作" align="center" width="150">
+          <el-table-column label="操作" align="center" width="160" fixed="right">
             <template slot-scope="props">
               <div>
                 <el-button @click="checkResume(props.row)" type="text" size="small">审核简历</el-button>
@@ -204,7 +204,6 @@ export default {
         })
     },
     checkResume(val) {
-      console.log(!val.view_time)
       if (!val.view_time) {
         this.handleNote(val)
       } else {

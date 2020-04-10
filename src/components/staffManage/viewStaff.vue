@@ -8,7 +8,6 @@
       <section class="member-col1">
         <p>查看员工</p>
       </section>
-      <!-- <div class="job-detail-view"> -->
       <div class="staff-detail-row">
         <section class="resume-col3">
           <el-form :model="formMember" ref="formMember" class="demo-form-inline" label-position="right" label-width="80px">
@@ -66,10 +65,6 @@
           </el-form>
         </section>
       </div>
-      <!-- <div slot="footer" class="resume-footer-btn">
-        <el-button @click="handleClose">关闭</el-button>
-        <el-button type="primary" @click="submitForm">{{staffId?'确定修改':'确定添加'}}</el-button>
-      </div>-->
     </div>
   </el-dialog>
 </template>

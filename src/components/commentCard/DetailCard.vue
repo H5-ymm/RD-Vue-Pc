@@ -110,6 +110,7 @@ import { commentSort } from '@/base/base'
 import ReplyCard from './ReplyCard'
 import commentInput from './commentInput'
 import Editor from './Editor'
+import { getImgUrl } from '@/util/util'
 import {
   getReply,
   delReplyfirst,
@@ -183,7 +184,6 @@ export default {
         this.storeComment = JSON.parse(JSON.stringify(val))
         this.comTitle = val.title
         this.contentunescape = this.getContent(val.content)
-        console.log(this.contentunescape)
         this.sortType = val.type
         this.params.discuss_id = val.id
         if (this.type == 2) {
@@ -204,9 +204,18 @@ export default {
     // 获取文章评论列表
     getCommentList(params) {
       getReply(params).then(res => {
-        const { data } = res.data
+        let data = res.data.data || []
         this.$nextTick(() => {
-          this.commentList = data
+          this.commentList =  data.map(item=>{
+            if (item.head_img) {
+              if (item.head_img.indexOf('http') == -1) {
+                item.head_img = getImgUrl(item.head_img)
+              } else {
+                item.head_img = item.head_img
+              }
+            }
+            return item
+          })
         })
       })
     },

@@ -12,7 +12,7 @@
           <el-input v-model="formMember.team_name" class="width300" placeholder="请输入团队名称关键字"></el-input>
         </el-form-item>
         <el-form-item label="返利模式：">
-          <el-select v-model="formMember.money_type" class="width300" placeholder="请选择返利模式">
+          <el-select v-model="formMember.reward_type" class="width300" placeholder="请选择返利模式">
             <el-option :label="item.label" :value="item.value" v-for="(item,index) in rewardTypeList" :key="index"></el-option>
           </el-select>
         </el-form-item>
@@ -63,7 +63,7 @@
               <span class="status" :class="`status${props.row.status}`">{{props.row.status|status}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="操作" align="center" min-width="150">
+          <el-table-column label="操作" align="center" min-width="150" fixed="right">
             <template slot-scope="scope">
               <el-button @click="viewJob(scope.row)" type="text" size="small" v-if="scope.row.status!=3">查看职位</el-button>
               <el-button @click="handleCancle(scope.row)" type="text" size="small" v-if="scope.row.status==0">取消申请</el-button>

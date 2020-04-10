@@ -43,14 +43,14 @@
             <el-option :label="item.label" :value="item.value" v-for="(item,index) in advertisesList" :key="index"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="发单状态：">
+        <!-- <el-form-item label="发单状态：">
           <el-select v-model="formMember.is_up" class="width300" placeholder="请选择">
             <el-option :label="item.label" :value="item.value" v-for="(item,index) in receiptStatusList" :key="index"></el-option>
           </el-select>
-        </el-form-item>
-        <el-form-item label="创建时间：">
-          <el-date-picker class="width300" v-model="timeList" type="daterange" range-separator="-" start-placeholder="开始日期区间" end-placeholder="结束日期"></el-date-picker>
-        </el-form-item>
+        </el-form-item> -->
+        <!-- <el-form-item label="创建时间：">
+          <el-date-picker class="width300" @change="changeDate" value-format="timestamp" v-model="timeList" type="daterange" range-separator="-" start-placeholder="开始日期区间" end-placeholder="结束日期"></el-date-picker>
+        </el-form-item> -->
         <el-form-item>
           <el-button type="primary" @click="handleSearch" class="select-btn">查询</el-button>
           <el-button type="primary" @click="reset" class="select-btn">重置</el-button>
@@ -118,7 +118,7 @@
               <span>{{props.row.ctime?$moment(props.row.ctime).format('YYYY-MM-DD HH:mm'):''}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="操作" align="center" min-width="150">
+          <el-table-column label="操作" align="center" min-width="150" fixed="right">
             <template slot-scope="scope">
               <el-button @click="$router.push({path:'/resumeList',query:{jobId:scope.row.id,jobStatus:scope.row.jobStatus}})" type="text" size="small">简历列表</el-button>
             </template>
@@ -239,17 +239,12 @@ export default {
     // 1 面试结果
     // 2 入职结果
     this.getList(this.formMember)
-    console.log(this.tableList)
   },
   methods: {
     getNewList(list) {
       let arr = []
       let obj = {}
       list.forEach(item => {
-        // obj = {
-        //   receiptStatusList: this.receiptStatusList1,
-        //   jobStatus: 1
-        // }
         let newObj = Object.assign(item, {
           receiptStatusList: this.receiptStatusList1,
           jobStatus: 1
@@ -276,9 +271,11 @@ export default {
       this.activeIndex = index
       this.$set(this.tableList, index, obj)
     },
-    changeDate(val) {
-      this.formMember.beginTime = val ? val[0] : ''
-      this.formMember.endTime = val ? val[1] : ''
+    changeDate (val) {
+      let starttime = val&&val[0]? val[0] + '' : ''
+      let endtime =  val&&val[1]?  val[1] + '' : ''
+      this.formMember.starttime = starttime? starttime.substring(0, 10): ''
+      this.formMember.endtime = endtime? endtime.substring(0, 10): ''
     },
     changeInput(val) {
       this.formMember[this.type] = val

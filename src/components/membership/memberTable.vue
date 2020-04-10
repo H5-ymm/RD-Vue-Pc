@@ -60,7 +60,7 @@
             >{{props.row.status==1?"正常":'锁定'}}</span>
           </template>
         </el-table-column>
-        <el-table-column label="操作" align="center" width="150">
+        <el-table-column label="操作" align="center" width="150" fixed="right">
           <template slot-scope="scope">
             <div v-if="userPosition!=3">
               <el-button @click="handleEdit(scope.row.id)" type="text" size="small">编辑</el-button>

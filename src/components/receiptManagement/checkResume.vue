@@ -277,10 +277,10 @@ export default {
       multipleSelection: [],
       form: {},
       statusList: [
-        { label: '全部', value: 0 },
-        { label: '待审核', value: 1 },
-        { label: '已通过', value: 2 },
-        { label: '未通过', value: 3 }
+        { label: '全部', value: '' },
+        { label: '待审核', value: 0 },
+        { label: '已通过', value: 1 },
+        { label: '未通过', value: 2 }
       ],
       statusList1: [
         { label: '待审核', value: 0 },

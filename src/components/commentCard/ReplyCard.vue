@@ -2,7 +2,7 @@
   <div>
     <div class="edit-card-item x-flex-start" v-for="(item,index) in commentList" :key="index">
       <div class="edit-card-comment-col1">
-        <img :src="getImgUrl(item.head_img)" alt="" class="head-img" v-if="item.head_img">
+        <img :src="item.head_img" alt="" class="head-img" v-if="item.head_img">
         <span v-if="!item.head_img" class="head-img">{{item.username}}</span>
       </div>
       <div class="edit-card-comment-col2">
@@ -57,7 +57,6 @@
 </template>
 <script>
 import commentInput from './commentInput'
-import { getImgUrl } from '@/util/util'
 export default {
   props: ['commentList', 'username', 'commType'],
   name: 'reply',
@@ -83,7 +82,6 @@ export default {
     }
   },
   methods: {
-    getImgUrl,
     getContent(val) {
       return val ? unescape(val) : ''
     },

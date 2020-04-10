@@ -75,7 +75,7 @@
               <span class="text-line">{{props.row.provindeName}}{{props.row.cityName}}{{props.row.address}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="操作" align="center" min-width="190">
+          <el-table-column label="操作" align="center" min-width="190" fixed="right">
             <template slot-scope="scope">
               <div v-if="viewType==1">
                 <el-button @click="handleUser(0,scope.row.id)" type="text" size="small">编辑</el-button>

@@ -295,9 +295,10 @@ export default {
       }
     },
     changeDate(val) {
-      this.formMember.beginTime = val ? val[0] : ''
-      this.formMember.endTime = val ? val[1] : ''
-      // this.getList(this.formMember)
+      let starttime = val? val[0] + '' : ''
+      let endtime =  val?  val[1] + '' : ''
+      this.formMember.begintime = starttime? starttime.substring(0, 10): ''
+      this.formMember.endtime = endtime? endtime.substring(0, 10): ''
     },
     routerResume(val) {
       let arr = JSON.parse(sessionStorage.getItem('menus'))

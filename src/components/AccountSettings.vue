@@ -185,7 +185,11 @@ export default {
               this.personalForm[key] = form[key]
             }
             if (this.personalForm.head_img) {
-              this.imageUrl = getImgUrl(this.personalForm.head_img)
+              if(this.personalForm.head_img.indexOf('http')==-1) {
+                this.imageUrl = getImgUrl(this.personalForm.head_img)
+              } else {
+                this.imageUrl = this.personalForm.head_img
+              }
             }
             if (form.provinceid) {
               this.place =

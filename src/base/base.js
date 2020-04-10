@@ -96,7 +96,7 @@ export const requirePersonList = [
   { label: '20-50人', value: '20-50' },
   { label: '50-100人', value: '50-100' },
   { label: '100-200人', value: '100-200' },
-  { label: '200人以上', value: '20-9999' }
+  { label: '200人以上', value: '200-9999' }
 ]
 
 export const paymentTaxType = [
@@ -155,7 +155,6 @@ export const applyStatusList = [
   { label: '已同意', value: 1 },
   { label: '已拒绝', value: 2 },
   { label: '取消申请', value: 3 },
-  { label: '其他团队已接', value: 4 },
   { label: '上架中', value: 5 },
   { label: '已下架', value: 6 }
 ]
@@ -184,12 +183,10 @@ export const checkStatusList = [
 export const userResumeStatusList = [
   { label: '全部', value: -1 },
   { label: '收集中', value: 0 },
-  { label: '审核中', value: 1 },
-  { label: '面试开始', value: 2 },
-  { label: '面试结束', value: 3 }
+  { label: '审核中', value: 1 }
 ]
 export const userResumeStatusList1 = [
-  { label: '审核中', value: 0 },
+  { label: '待审核', value: 0 },
   { label: '审核中', value: 1 },
   { label: '审核完毕', value: 2 },
 ]
@@ -234,9 +231,7 @@ export const applyStatusList1 = [
 export const entryStatusList2 = [
   { label: '面试开始', value: 1 },
   { label: '面试结束', value: 2 },
-  { label: '审核面试简历', value: 3 },
-  { label: '入职开始', value: 4 },
-  { label: '入职结束', value: 5 }
+  { label: '审核面试简历', value: 3 }
 ]
 export const checkStatusList1 = [
   { label: '待反馈', value: 0 },

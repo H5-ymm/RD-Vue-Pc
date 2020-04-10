@@ -47,7 +47,7 @@
             <el-option
               :label="item.label"
               :value="item.value"
-              v-for="(item,index) in entryStatusList"
+              v-for="(item,index) in statusList"
               :key="index"
             ></el-option>
           </el-select>
@@ -56,6 +56,7 @@
           <el-date-picker
             class="width300"
             v-model="timeList"
+            value-format="timestamp"
             @change="changeDate"
             type="daterange"
             range-separator="-"
@@ -92,14 +93,9 @@
             <template slot-scope="props">
               <span
                 class="status"
-                v-if="!props.row.entry_status"
+                v-if="props.row.entry_status!=4"
                 :class="`status${props.row.entry_status}`"
-              >入职开始</span>
-              <span
-                class="status"
-                v-if="props.row.entry_status&&props.row.entry_status!=4"
-                :class="`status${props.row.entry_status}`"
-              >{{props.row.entry_status==1?"入职开始":props.row.entry_status==2?'入职结束':'审核入职'}}</span>
+              >{{props.row.entry_status==3?"入职审核中":props.row.entry_status==1?'入职开始':'等待入职'}}</span>
               <span class="status status4" v-if="props.row.entry_status==4">审核结束</span>
             </template>
           </el-table-column>
@@ -126,7 +122,7 @@
               >{{props.row.entry_time?$moment.unix(props.row.entry_time).format('YYYY-MM-DD HH:mm'):'--'}}</el-button>
             </template>
           </el-table-column>
-          <el-table-column label="操作" align="center" min-width="160">
+          <el-table-column label="操作" align="center" min-width="160" fixed="right">
             <template slot-scope="scope">
               <el-button
                 @click="$router.push('/commonTableList?view=6&job_id='+scope.row.job_id)"
@@ -180,7 +176,7 @@
 
 <script>
 import { applyList, getOffermsg } from '@/api/teamReceipt'
-import { moneyTypeList, rewardTypeList, entryStatusList } from '@/base/base'
+import { moneyTypeList, rewardTypeList } from '@/base/base'
 import { getConstant } from '@/api/dictionary'
 import viewJob from '../common/viewJob'
 import customerService from '../common/customerService'
@@ -209,7 +205,6 @@ export default {
     return {
       moneyTypeList,
       rewardTypeList,
-      entryStatusList,
       dialogTableVisible: false,
       dialogJobVisible: false,
       visible: false,
@@ -222,10 +217,11 @@ export default {
       },
       total: 0,
       statusList: [
-        { label: '全部', value: 0 },
-        { label: '等待入职', value: 1 },
-        { label: '等待入职名单', value: 2 },
-        { label: '完成入职名单', value: 3 }
+        { label: '全部', value: '' },
+        { label: '等待入职', value: 0 },
+        { label: '入职开始', value: 1 },
+        { label: '入职审核中', value: 3 },
+        { label: '审核结束', value: 4 }
       ],
       jobList: {},
       timeList: [],
@@ -278,8 +274,10 @@ export default {
         })
     },
     changeDate(val) {
-      this.formMember.timemin = val ? val[0] : ''
-      this.formMember.timemax = val ? val[1] : ''
+      let starttime = val[0]? val[0] + '' : ''
+      let endtime =  val[1]?  val[1] + '' : ''
+      this.formMember.beginTime = starttime? starttime.substring(0, 10): ''
+      this.formMember.endTime = endtime? endtime.substring(0, 10): ''
     },
     handleSizeChange(val) {
       this.formMember.limit = val

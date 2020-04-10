@@ -1,10 +1,18 @@
 
 <style lang="scss">
 @import '@/assets/css/resume';
+.internal-invoice {
+  .table-list {
+    padding-top: 10px;
+    .member-table {
+      padding-left: 10px;
+    }
+  }
+}
 </style>
 <template>
-  <div class="tables-box billingManagement">
-    <div class="table-list add-resum">
+  <div class="tables-box billingManagement internal-invoice">
+    <div class="table-list">
       <el-form
         :inline="true"
         label-width="100px"
@@ -43,12 +51,6 @@
             end-placeholder="结束日期"
           ></el-date-picker>
         </el-form-item>
-        <!-- <el-form-item :label="label+':'" v-if="viewType!=3">
-          <el-select v-model="formMember.status" class="width300" placeholder="请选择报名状态">
-            <el-option :label="item.label" :value="item.value" v-for="(item,index) in followStatusList" :key="index"></el-option>
-          </el-select>
-        </el-form-item>-->
-
         <el-form-item>
           <el-button type="primary" @click="onSubmit" class="select-btn">查询</el-button>
           <el-button type="primary" @click="onReset" class="select-btn">重置</el-button>
@@ -132,7 +134,7 @@
           </el-table-column>
           <el-table-column label="录入人" prop="input_username" align="center" width="100"></el-table-column>
           <el-table-column label="跟进人" prop="track_name" align="center" width="100"></el-table-column>
-          <el-table-column label="操作" align="center" min-width="200">
+          <el-table-column label="操作" align="center" min-width="200" fixed="right">
             <template slot-scope="scope">
               <el-button
                 @click="abandoned (4,scope.row)"
@@ -174,7 +176,6 @@
         :total="total"
       ></el-pagination>
     </div>
-    <!-- <viewResume :dialogTableVisible="dialogTableVisible" :resumeId="resumeId" @handleClose="dialogTableVisible=false" @submitForm="submitForm" :resumeInfo="resumeInfo"></viewResume> -->
     <confirmDialog
       :dialogTableVisible="visible"
       @submit="submit"
@@ -189,7 +190,6 @@
       @handleClose="followUpRecordVisible=false"
       :trackList="trackList"
     ></followUpRecord>
-    <!-- <leadResumeModal :dialogTableVisible="leadResumeVisible" @handleClose="leadResumeVisible=false"></leadResumeModal> -->
   </div>
 </template>
 <script>
@@ -207,9 +207,7 @@ import {
   checkStatusList1,
   entryStatusList4
 } from '@/base/base'
-// import viewResume from './viewResume'
 import followUpRecord from '../resumeManage/followUpRecord'
-// import leadResumeModal from './leadResumeModal'
 import { editRecommendResumeStatus } from '@/api/resume'
 import confirmDialog from '../common/confirmDialog'
 import districtSelet from '../districtSelet'
@@ -300,9 +298,12 @@ export default {
     }
   },
   created() {
-    let arr = ['已发布职位', '已推荐简历']
-    this.$store.commit('setMenus', arr)
+    
     this.formMember.job_id = this.$route.query.id
+    if (this.$route.query.id) {
+      let arr = ['已发布职位', '已推荐简历']
+      this.$store.commit('setMenus', arr)
+    }
     this.getList(this.formMember)
   },
   computed: {

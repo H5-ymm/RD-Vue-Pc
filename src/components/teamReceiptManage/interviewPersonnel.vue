@@ -33,7 +33,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="接单时间：">
-          <el-date-picker class="width300" @change="changeDate" v-model="timeList" type="daterange" range-separator="-" start-placeholder="开始日期区间" end-placeholder="结束日期"></el-date-picker>
+          <el-date-picker class="width300" value-format="timestamp" @change="changeDate" v-model="timeList" type="daterange" range-separator="-" start-placeholder="开始日期区间" end-placeholder="结束日期"></el-date-picker>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="onSubmit" class="select-btn">查询</el-button>
@@ -62,7 +62,7 @@
           </el-table-column>
           <el-table-column label="状态" align="center" width="150">
             <template slot-scope="props">
-              <span class="status" :class="`status${props.row.invoice_status}`">{{props.row.invoice_status==0?'收集中':props.row.invoice_status==1?'审核中':'审核简历'}}</span>
+              <span class="status" :class="`status${props.row.invoice_status}`">{{props.row.invoice_status==0?'收集中':props.row.invoice_status==1?'审核中':'审核结束'}}</span>
               <!-- <span class="status" v-if="props.row.entry_status&&props.row.entry_status<3" :class="`status${props.row.entry_status}`">{{props.row.entry_status==1?'面试开始':props.row.entry_status==2?'面试结束':''}}</span> -->
               <!-- <span class="status" v-if="props.row.status==1" :class="`status${props.row.status}`">面试开始</span> -->
               <!-- <span class="status status4" v-else>面试结束</span> -->
@@ -89,7 +89,7 @@
               <span>{{props.row.view_time!=0?$moment(props.row.view_time).format('YYYY-MM-DD HH:mm'):'--'}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="操作" align="center" min-width="180">
+          <el-table-column label="操作" align="center" min-width="180" fixed="right">
             <template slot-scope="scope">
               <div v-if="!scope.row.interview_status&&!scope.row.entry_status">
                 <el-button v-if="scope.row.interview_status>=3||!scope.row.interview_status" @click="$router.push('/recommendResume?id='+ scope.row.id + '&jobId='+scope.row.job_id)" type="text" size="small">推荐简历</el-button>
@@ -116,15 +116,15 @@
   </div>
 </template>
 <script>
-import { applyList, gettalent } from '../../api/teamReceipt'
+import { applyList, gettalent } from '@/api/teamReceipt'
 import {
   moneyTypeList,
   rewardTypeList,
   payTypeList,
   weekList
-} from '../../base/base'
+} from '@/base/base'
 import receiptModal from './receiptModal'
-import { getConstant } from '../../api/dictionary'
+import { getConstant } from '@/api/dictionary'
 import viewJob from '../common/viewJob'
 import customerService from '../common/customerService'
 export default {
@@ -163,11 +163,10 @@ export default {
       total: 0,
       jobId: '',
       statusList: [
-        { label: '全部', value: 0 },
-        { label: '收集中', value: 1 },
-        { label: '审核简历', value: 2 },
-        { label: '面试开始', value: 3 },
-        { label: '面试结束', value: 4 }
+        { label: '全部', value: '' },
+        { label: '收集中', value: 0 },
+        { label: '审核中', value: 1 },
+        { label: '审核结束', value: 2 }
       ],
       jobList: {},
       timeList: []
@@ -179,11 +178,6 @@ export default {
     let params = 'job_array'
     this.getData(params)
   },
-  // watch: {
-  //   $route (to, from) {
-  //     this.getList(this.formMember)
-  //   }
-  // },
   methods: {
     getData (filed) {
       getConstant({ filed })
@@ -217,8 +211,10 @@ export default {
       this.getList(this.formMember)
     },
     changeDate (val) {
-      this.formMember.beginTime = val ? val[0] : ''
-      this.formMember.endTime = val ? val[1] : ''
+      let starttime = val? val[0] + '' : ''
+      let endtime =  val?  val[1] + '' : ''
+      this.formMember.timemin = starttime? starttime.substring(0, 10): ''
+      this.formMember.timemax = endtime? endtime.substring(0, 10): ''
     },
     handleSizeChange (val) {
       this.formMember.limit = val

@@ -32,7 +32,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="面试时间：">
-          <el-date-picker class="width300" @change="changeDate" v-model="timeList" type="daterange" range-separator="-" start-placeholder="开始日期区间" end-placeholder="结束日期"></el-date-picker>
+          <el-date-picker class="width300"  value-format="timestamp" @change="changeDate" v-model="timeList" type="daterange" range-separator="-" start-placeholder="开始日期区间" end-placeholder="结束日期"></el-date-picker>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="onSubmit" class="select-btn">查询</el-button>
@@ -59,8 +59,8 @@
           </el-table-column>
           <el-table-column label="状态" align="center" width="150">
             <template slot-scope="props">
-              <span class="status" :class="`status${props.row.interview_status}`">{{props.row.interview_status==4?"面试结束":props.row.interview_status==2?'面试审核简历':'面试开始'}}</span>
-              <!-- <span class="status" :class="`status${props.row.entry_status}`" v-if="props.row.interview_status==4">{{props.row.entry_status==1?"入职开始":'入职结束'}}</span> -->
+              <span class="status" :class="`status${props.row.interview_status}`" v-if="!props.row.interview_status">等待面试</span>
+              <span class="status" :class="`status${props.row.interview_status}`" v-else>{{props.row.interview_status==4?"审核结束":props.row.interview_status==3?'审核中':'面试开始'}}</span>
             </template>
           </el-table-column>
           <el-table-column label="岗位城市" align="center" width="150">
@@ -78,10 +78,8 @@
               <el-button type="text" @click="viewTime(props.row)">{{props.row.view_time?props.row.view_time:'--'}}</el-button>
             </template>
           </el-table-column>
-          <!-- <el-table-column label="联系人" prop="entry_num" align="center" width="150"></el-table-column> -->
-          <el-table-column label="操作" align="center" width="180">
+          <el-table-column label="操作" align="center" width="180" fixed="right">
             <template slot-scope="props">
-              <!-- <el-button @click="" type="text" size="small" v-if="props.row.interview_status==1&&(props.row.entry_status==0||props.row.entry_status==1)">入职名单</el-button> -->
               <el-button @click="$router.push('/teamEntryList?id='+ props.row.id+ '&jobId='+props.row.job_id)" type="text" size="small" v-if="props.row.interview_status==4&&props.row.entry_status>=1">入职名单</el-button>
               <el-button @click="$router.push('/commonTableList?id='+ props.row.id+ '&job_id='+props.row.job_id+'&view=4')" v-if="!props.row.entry_status&&props.row.interview_status<=3" type="text" size="small">面试名单</el-button>
               <el-button @click="dialogTableVisible=true" type="text" size="small" v-if="props.row.interview_status!=1">联系客服</el-button>
@@ -152,13 +150,11 @@ export default {
       multipleSelection: [],
       form: {},
       statusList: [
-        { label: '全部', value: 0 },
-        { label: '待审核', value: 1 },
-        { label: '已同意', value: 2 },
-        { label: '已拒绝', value: 3 },
-        { label: '已下架', value: -1 },
-        { label: '已取消申请', value: -1 },
-        { label: '其他团队已接', value: -1 }
+        { label: '全部', value: '' },
+        { label: '等待面试', value: 0 },
+        { label: '面试开始', value: 1 },
+        { label: '审核中', value: 3 },
+        { label: '审核结束', value: 4 }
       ],
       activeIndex: 0,
       jobList: {},
@@ -200,8 +196,10 @@ export default {
         })
     },
     changeDate(val) {
-      this.formMember.beginTime = val ? val[0] : ''
-      this.formMember.endTime = val ? val[1] : ''
+      let starttime = val[0]? val[0] + '' : ''
+      let endtime =  val[1]?  val[1] + '' : ''
+      this.formMember.beginTime = starttime? starttime.substring(0, 10): ''
+      this.formMember.endTime = endtime? endtime.substring(0, 10): ''
     },
     selectStatus(item, index) {
       this.activeIndex = index

@@ -208,22 +208,12 @@
     </div>
     <div slot="footer" class="resume-footer-btn">
       <el-button type="primary" @click="handleClose">关闭</el-button>
-      <!-- <el-button @click="handleClose">编辑</el-button> -->
     </div>
   </el-dialog>
 </template>
 <script>
-// 部门经理只能编辑状态
-// 成员只能查看
-// 总经理可以编辑部门 职称 状态
-import { getConstant } from '../../api/dictionary'
-import districtSelet from '../districtSelet'
 import { selectUserResumeInfo } from '@/api/resume'
-import { moneyTypeList } from '@/base/base'
 export default {
-  components: {
-    districtSelet
-  },
   props: ['dialogTableVisible', 'resumeId', 'resumeInfo'],
   data() {
     return {
@@ -241,20 +231,10 @@ export default {
         uid: localStorage.getItem('uid'),
         remark: ''
       },
-      edu_type: [],
-      jobList: [],
-      ageList: [],
-      moneyTypeList,
-      moneyArray: {},
       entryTime: []
     }
   },
   created() {
-    let params = 'edu_type,money_array'
-    for (let i = 16; i < 46; i++) {
-      this.ageList.push(i)
-    }
-    this.getList(params)
   },
   watch: {
     resumeId(val, oldVal) {
@@ -275,35 +255,8 @@ export default {
         this.entryTime[1] = res.data.entry_endtime
       })
     },
-    getList(filed) {
-      getConstant({ filed }).then(res => {
-        this.edu_type = res.data.edu_type
-        this.moneyArray = res.data.money_array
-      })
-    },
-    changeDate(val) {
-      this.formMember.entry_begintime = val[0]
-      this.formMember.entry_endtime = val[1]
-    },
-    change(val) {
-      this.formMember.provinceid = val[0]
-      this.formMember.cityid = val[1]
-    },
-    changeExpect(val) {
-      this.formMember.expect_provindeid = val[0]
-      this.formMember.expect_cityid = val[1]
-    },
     handleClose() {
       this.$emit('handleClose')
-    },
-    submitForm() {
-      this.$refs['formMember'].validate(valid => {
-        if (valid) {
-          this.$emit('submitForm', this.formMember)
-        } else {
-          return false
-        }
-      })
     }
   }
 }

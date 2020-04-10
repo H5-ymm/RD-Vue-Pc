@@ -153,8 +153,9 @@
             </li>
             <li class="team-info-card-row">
               <div class="team-info-card-item">
-                <span>月薪</span>
-                <span>{{jobInfo.money}}</span>
+                <span>{{jobInfo.money_type==1?'月薪':jobInfo.money_type==2?'日薪':'时薪'}}</span>
+                <span v-if="jobInfo.money_type==1">{{jobInfo.money_min}} ~ {{jobInfo.money_max}}</span>
+                <span v-else>{{jobInfo.money}}</span>
               </div>
               <div class="team-info-card-item">
                 <span>缴纳五险</span>
@@ -177,7 +178,7 @@
             <li class="team-info-card-row">
               <div class="team-info-card-item">
                 <span>返利方式</span>
-                <span>{{jobInfo.reward_type==1?'月返':jobInfo.reward_type==2?'日返':'时返'}}</span>
+                <span>{{getRewardType(jobInfo.reward_type)}}</span>
               </div>
               <div class="team-info-card-item" v-if="jobInfo.reward_type==1">
                 <span>结算时间</span>
@@ -268,6 +269,19 @@ export default {
   methods: {
     handleClose() {
       this.$emit('handleClose')
+    },
+    getRewardType (type) {
+      let text = ''
+      if (type == 1) {
+        text = '月返'
+      } else if (type == 2) {
+        text = '日返'
+      } else if (type == 3) {
+        text = '时返'
+      } else {
+        text = '一次性返利'
+      }
+      return text
     }
   }
 }

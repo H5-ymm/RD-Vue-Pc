@@ -78,7 +78,7 @@
             </template>
           </el-table-column>
           <el-table-column label="联系人" prop="link_name" align="center" width="100"></el-table-column>
-          <el-table-column label="操作" align="center" min-width="160">
+          <el-table-column label="操作" align="center" min-width="160" fixed="right">
             <template slot-scope="scope">
               <el-button @click="$router.push({path:'/commonTable',query:{id:scope.row.id,view:4}})" type="text" size="small" v-if="scope.row.entry_status==1">查看入职</el-button>
               <el-button @click="$router.push({path:'/commonTable',query:{id:scope.row.id,view:4}})" type="text" v-if="scope.row.entry_status<=1" size="small">面试结果</el-button>

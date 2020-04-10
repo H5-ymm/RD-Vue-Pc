@@ -31,8 +31,8 @@
             <el-option :label="item" :value="key" v-for="(item,key) in moneyArray" :key="key"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="跟进时间：">
-          <el-date-picker class="width300" v-model="timeList" type="daterange" format="yyyy-MM-dd" value-format="yyyy-MM-dd" @change="changeDate" range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期"></el-date-picker>
+        <el-form-item label="添加时间：">
+          <el-date-picker class="width300" v-model="timeList" type="daterange" format="yyyy-MM-dd" value-format="timestamp" @change="changeDate" range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期"></el-date-picker>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="onSubmit" class="select-btn">查询</el-button>
@@ -79,7 +79,7 @@
           </el-table-column>
           <el-table-column label="录入人" prop="input_username" align="center" width="100"></el-table-column>
           <el-table-column label="跟进人" prop="track_name" align="center" width="100"></el-table-column>
-          <el-table-column label="操作" align="center" min-width="200">
+          <el-table-column label="操作" align="center" min-width="200" fixed="right">
             <template slot-scope="scope">
               <el-button @click="viewResume(scope.row)" type="text" size="small">查看简历</el-button>
             </template>
@@ -180,8 +180,10 @@ export default {
         })
     },
     changeDate(val) {
-      this.formMember.beginTime = val ? val[0] : ''
-      this.formMember.endTime = val ? val[1] : ''
+      let starttime = val? val[0] + '' : ''
+      let endtime =  val?  val[1] + '' : ''
+      this.formMember.begintime = starttime? starttime.substring(0, 10): ''
+      this.formMember.endtime = endtime? endtime.substring(0, 10): ''
     },
     exportResume() {
       let uid = localStorage.getItem('uid')

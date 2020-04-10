@@ -58,7 +58,7 @@
               <span class="status" :class="`status${props.row.job_status}`">{{props.row.job_status==1?"招聘中":'已下架'}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="操作" align="center" min-width="150">
+          <el-table-column label="操作" align="center" min-width="150" fixed="right">
             <template slot-scope="scope">
               <el-button @click="handleApply(scope.row)" v-if="scope.row.status==0&&scope.row.job_status==1" type="text" size="small">申请接单</el-button>
               <el-button @click="handleRefuse(scope.row)" type="text" size="small" v-if="scope.row.status==0&&scope.row.job_status==1">拒绝推荐</el-button>

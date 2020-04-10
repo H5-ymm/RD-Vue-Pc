@@ -209,7 +209,7 @@
               <div>{{props.row.ctime?props.row.ctime:'--'}}</div>
             </template>
           </el-table-column>
-          <el-table-column label="操作" align="center" min-width="150">
+          <el-table-column label="操作" align="center" min-width="150" fixed="right">
             <template slot-scope="scope">
               <el-button
                 @click="$router.push('jobDetail?id='+scope.row.id)"

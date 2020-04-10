@@ -43,7 +43,7 @@
             v-model="timeList"
             type="daterange"
             format="yyyy-MM-dd"
-            value-format="yyyy-MM-dd"
+            value-format="timestamp"
             @change="changeDate"
             range-separator="-"
             start-placeholder="开始日期区间"
@@ -110,7 +110,7 @@
           </el-table-column>
           <el-table-column label="录入人" prop="input_username" align="center" width="100"></el-table-column>
           <el-table-column label="跟进人" prop="track_name" align="center" width="100"></el-table-column>
-          <el-table-column label="操作" align="center" min-width="200">
+          <el-table-column label="操作" align="center" min-width="200" fixed="right">
             <template slot-scope="scope">
               <el-button @click="handleEdit(scope.row)" type="text" size="small">编辑简历</el-button>
               <el-button
@@ -306,8 +306,10 @@ export default {
       this.getList(this.formMember)
     },
     changeDate(val) {
-      this.formMember.beginTime = val ? val[0] : ''
-      this.formMember.endTime = val ? val[1] : ''
+      let starttime = val? val[0] + '' : ''
+      let endtime =  val?  val[1] + '' : ''
+      this.formMember.beginTime = starttime? starttime.substring(0, 10): ''
+      this.formMember.endTime = endtime? endtime.substring(0, 10): ''
     },
     routerResume(val) {
       let arr = JSON.parse(sessionStorage.getItem('menus'))

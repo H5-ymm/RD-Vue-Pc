@@ -20,7 +20,7 @@
             <div class="x-flex-between" v-if="type==2">
               <p v-if="userInfo&&userInfo.user_name">{{userInfo.user_name?userInfo.user_name:userInfo.mobile}}</p>
               <p v-else>{{userName}}</p>
-              <img :src="getImgUrl(userInfo.head_img)" alt="" v-if="userInfo&&userInfo.head_img" class="head-icon">
+              <img :src="userInfo.head_img" alt="" v-if="userInfo&&userInfo.head_img" class="head-icon">
               <img src="../assets/img/headIcon.png" v-else class="head-icon">
             </div>
             <div class="x-flex-between" v-if="type==1">

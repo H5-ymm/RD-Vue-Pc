@@ -97,7 +97,7 @@
               <span>{{props.row.link_name?props.row.link_name:'--'}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="操作" align="center" min-width="195px">
+          <el-table-column label="操作" align="center" min-width="160px" fixed="right">
             <template slot-scope="props">
               <el-button @click="setEntryTime(props.row)" v-if="props.row.interview_status!=4" type="text" size="small">查看面试</el-button>
               <el-button @click="setEntryTime(props.row)" v-if="props.row.interview_status!=4" type="text" size="small">审核结果</el-button>

@@ -177,13 +177,13 @@
                   value-key="grade_name"
                   v-if="activeIndex==props.$index&&isEdit"
                   :placeholder="props.row.grade_name"
-                  @change="selectDepName"
+                  @change="selectDepGrade"
                   class="width100 table-edit"
                 >
                   <el-option
                     :label="item.grade_name"
                     :value="item.id"
-                    v-for="(item,index) in jobList"
+                    v-for="item in jobList"
                     :key="item.grade_name"
                   ></el-option>
                 </el-select>
@@ -194,11 +194,12 @@
               <template slot-scope="scope">
                 <el-button
                   @click="handleEdit(scope.row,scope.$index)"
-                  v-if="!isEdit&&uid!=scope.row.uid&&activeIndex!=scope.$index"
+                  v-if="!isEdit&&uid!=scope.row.uid&&activeIndex!=scope.$index&&scope.row.grade_num==3"
                   type="text"
                   size="small"
                 >调整人员</el-button>
-                <span v-if="uid==scope.row.uid">团长</span>
+                <span v-if="uid==scope.row.uid">总经理</span>
+                <span v-if="scope.row.grade_num==2">经理</span>
                 <div v-if="isEdit&&activeIndex==scope.$index">
                   <el-button @click="handleSubmit" type="text" size="small">确认</el-button>
                   <el-button @click="handleCloseEdit" type="text" size="small">取消</el-button>
@@ -276,15 +277,15 @@ export default {
       })
     },
     selectDep(val) {
-      // this.jobListAll = this.getArr(this.depList, val)
       this.getList(this.formMember)
     },
     selectDepName(val) {
       this.jobList = this.getArr(this.depList, val)
       console.log(this.jobList)
     },
-    selectDepGrade(index) {
+    selectDepGrade(val) {
       // this.activeIndex = index
+      console.log(val)
     },
     getArr(arr, id) {
       let newArr = []
@@ -327,7 +328,7 @@ export default {
       let params = {
         userId: this.depInfo.uid,
         gradeId: this.grade_id,
-        uid: this.depInfo.id
+        uid: localStorage.getItem('uid')
       }
       editTeamUserRole(params).then(res => {
         if (res.data) {

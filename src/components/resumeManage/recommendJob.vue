@@ -144,7 +144,6 @@ export default {
       return obj ? obj.label : '--'
     },
     rewardType(val) {
-      console.log(val)
       let obj = rewardTypeList1.find(item => {
         return val == item.value
       })

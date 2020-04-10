@@ -65,7 +65,7 @@
               <span class="status" :class="`active-status${props.row.t_status}`">{{props.row.t_status|recommendStatus}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="操作" align="center" min-width="150">
+          <el-table-column label="操作" align="center" min-width="150" fixed="right">
             <template slot-scope="scope">
               <div v-if="scope.row.job_status==1">
                 <el-button @click="handleRecommend(scope.row)" v-if="scope.row.t_status==0&&userPosition!=1" type="text" size="small">推荐接单</el-button>

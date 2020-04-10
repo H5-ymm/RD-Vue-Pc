@@ -182,7 +182,6 @@
           </el-table-column>
           <el-table-column label="已领取人" align="center" width="180" v-if="viewType==1">
             <template slot-scope="scope">
-              <!-- v-if="scope.row.uid==uid||userPosition==3" -->
               <div class="text-line" @click="handleRecepit(2,scope.row)">
                 <el-button type="text" size="small">{{scope.row.tolist}}</el-button>
               </div>

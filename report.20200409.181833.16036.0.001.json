@@ -1,0 +1,696 @@
+
+{
+  "header": {
+    "reportVersion": 1,
+    "event": "Allocation failed - JavaScript heap out of memory",
+    "trigger": "FatalError",
+    "filename": "report.20200409.181833.16036.0.001.json",
+    "dumpEventTime": "2020-04-09T18:18:33Z",
+    "dumpEventTimeStamp": "1586427513904",
+    "processId": 16036,
+    "cwd": "D:\\杨萌萌\\仁达文件\\RD-Vue-Pc",
+    "commandLine": [
+      "D:\\杨萌萌\\node.exe",
+      "D:\\杨萌萌\\仁达文件\\RD-Vue-Pc\\node_modules\\_thread-loader@2.1.3@thread-loader\\dist\\worker.js",
+      "20"
+    ],
+    "nodejsVersion": "v12.16.1",
+    "wordSize": 64,
+    "arch": "x64",
+    "platform": "win32",
+    "componentVersions": {
+      "node": "12.16.1",
+      "v8": "7.8.279.23-node.31",
+      "uv": "1.34.0",
+      "zlib": "1.2.11",
+      "brotli": "1.0.7",
+      "ares": "1.15.0",
+      "modules": "72",
+      "nghttp2": "1.40.0",
+      "napi": "5",
+      "llhttp": "2.0.4",
+      "http_parser": "2.9.3",
+      "openssl": "1.1.1d",
+      "cldr": "35.1",
+      "icu": "64.2",
+      "tz": "2019c",
+      "unicode": "12.1"
+    },
+    "release": {
+      "name": "node",
+      "lts": "Erbium",
+      "headersUrl": "https://nodejs.org/download/release/v12.16.1/node-v12.16.1-headers.tar.gz",
+      "sourceUrl": "https://nodejs.org/download/release/v12.16.1/node-v12.16.1.tar.gz",
+      "libUrl": "https://nodejs.org/download/release/v12.16.1/win-x64/node.lib"
+    },
+    "osName": "Windows_NT",
+    "osRelease": "10.0.17763",
+    "osVersion": "Windows 10 Pro",
+    "osMachine": "x86_64",
+    "cpus": [
+      {
+        "model": "Intel(R) Core(TM) i5-9400F CPU @ 2.90GHz",
+        "speed": 2904,
+        "user": 5769187,
+        "nice": 0,
+        "sys": 7996578,
+        "idle": 137345328,
+        "irq": 1022218
+      },
+      {
+        "model": "Intel(R) Core(TM) i5-9400F CPU @ 2.90GHz",
+        "speed": 2904,
+        "user": 6794421,
+        "nice": 0,
+        "sys": 8274125,
+        "idle": 136042546,
+        "irq": 40031
+      },
+      {
+        "model": "Intel(R) Core(TM) i5-9400F CPU @ 2.90GHz",
+        "speed": 2904,
+        "user": 6679625,
+        "nice": 0,
+        "sys": 9653734,
+        "idle": 134777734,
+        "irq": 30812
+      },
+      {
+        "model": "Intel(R) Core(TM) i5-9400F CPU @ 2.90GHz",
+        "speed": 2904,
+        "user": 6770203,
+        "nice": 0,
+        "sys": 8916531,
+        "idle": 135424109,
+        "irq": 30093
+      },
+      {
+        "model": "Intel(R) Core(TM) i5-9400F CPU @ 2.90GHz",
+        "speed": 2904,
+        "user": 6766343,
+        "nice": 0,
+        "sys": 8841203,
+        "idle": 135503296,
+        "irq": 26046
+      },
+      {
+        "model": "Intel(R) Core(TM) i5-9400F CPU @ 2.90GHz",
+        "speed": 2904,
+        "user": 7756390,
+        "nice": 0,
+        "sys": 10998562,
+        "idle": 132355906,
+        "irq": 26015
+      }
+    ],
+    "networkInterfaces": [
+      {
+        "name": "以太网",
+        "internal": false,
+        "mac": "b4:2e:99:69:54:f6",
+        "address": "fe80::58b4:a93:cdb1:5bf7",
+        "netmask": "ffff:ffff:ffff:ffff::",
+        "family": "IPv6",
+        "scopeid": 15
+      },
+      {
+        "name": "以太网",
+        "internal": false,
+        "mac": "b4:2e:99:69:54:f6",
+        "address": "192.168.1.61",
+        "netmask": "255.255.255.0",
+        "family": "IPv4"
+      },
+      {
+        "name": "Loopback Pseudo-Interface 1",
+        "internal": true,
+        "mac": "00:00:00:00:00:00",
+        "address": "::1",
+        "netmask": "ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff",
+        "family": "IPv6",
+        "scopeid": 0
+      },
+      {
+        "name": "Loopback Pseudo-Interface 1",
+        "internal": true,
+        "mac": "00:00:00:00:00:00",
+        "address": "127.0.0.1",
+        "netmask": "255.0.0.0",
+        "family": "IPv4"
+      }
+    ],
+    "host": "DESKTOP-K63MGO0"
+  },
+  "javascriptStack": {
+    "message": "No stack.",
+    "stack": [
+      "Unavailable."
+    ]
+  },
+  "nativeStack": [
+    {
+      "pc": "0x00007ff7284519f9",
+      "symbol": ""
+    },
+    {
+      "pc": "0x00007ff728455e1c",
+      "symbol": ""
+    },
+    {
+      "pc": "0x00007ff728454dd8",
+      "symbol": ""
+    },
+    {
+      "pc": "0x00007ff7285534cb",
+      "symbol": ""
+    },
+    {
+      "pc": "0x00007ff728d69f4e",
+      "symbol": ""
+    },
+    {
+      "pc": "0x00007ff728d52021",
+      "symbol": ""
+    },
+    {
+      "pc": "0x00007ff728c1e57c",
+      "symbol": ""
+    },
+    {
+      "pc": "0x00007ff728c26521",
+      "symbol": ""
+    },
+    {
+      "pc": "0x00007ff728c1bb13",
+      "symbol": ""
+    },
+    {
+      "pc": "0x00007ff728c1a184",
+      "symbol": ""
+    },
+    {
+      "pc": "0x00007ff728c3b36d",
+      "symbol": ""
+    },
+    {
+      "pc": "0x00007ff7289a0c51",
+      "symbol": ""
+    },
+    {
+      "pc": "0x00007ff7291b4ddd",
+      "symbol": ""
+    },
+    {
+      "pc": "0x00007ff7291615e7",
+      "symbol": ""
+    },
+    {
+      "pc": "0x00007ff729139d8c",
+      "symbol": ""
+    },
+    {
+      "pc": "0x00007ff729139d8c",
+      "symbol": ""
+    },
+    {
+      "pc": "0x00007ff729139d8c",
+      "symbol": ""
+    },
+    {
+      "pc": "0x00007ff729139d8c",
+      "symbol": ""
+    },
+    {
+      "pc": "0x00007ff729139d8c",
+      "symbol": ""
+    },
+    {
+      "pc": "0x00007ff729139d8c",
+      "symbol": ""
+    },
+    {
+      "pc": "0x00007ff7291372c1",
+      "symbol": ""
+    },
+    {
+      "pc": "0x00007ff729136eac",
+      "symbol": ""
+    },
+    {
+      "pc": "0x00007ff728c77c33",
+      "symbol": ""
+    },
+    {
+      "pc": "0x00007ff728c775b6",
+      "symbol": ""
+    },
+    {
+      "pc": "0x00007ff728d4862d",
+      "symbol": ""
+    },
+    {
+      "pc": "0x00007ff72857a73e",
+      "symbol": ""
+    },
+    {
+      "pc": "0x00007ff72857a977",
+      "symbol": ""
+    },
+    {
+      "pc": "0x00007ff7285798ba",
+      "symbol": ""
+    },
+    {
+      "pc": "0x00007ff72851ac92",
+      "symbol": ""
+    },
+    {
+      "pc": "0x00007ff72857a3d3",
+      "symbol": ""
+    },
+    {
+      "pc": "0x00007ff7284267ac",
+      "symbol": ""
+    },
+    {
+      "pc": "0x00007ff72926be08",
+      "symbol": ""
+    },
+    {
+      "pc": "0x00007ff8772d7974",
+      "symbol": ""
+    },
+    {
+      "pc": "0x00007ff879bca261",
+      "symbol": ""
+    }
+  ],
+  "javascriptHeap": {
+    "totalMemory": 3203072,
+    "totalCommittedMemory": 3203072,
+    "usedMemory": 2425448,
+    "availableMemory": 2195662288,
+    "memoryLimit": 2197815296,
+    "heapSpaces": {
+      "read_only_space": {
+        "memorySize": 262144,
+        "committedMemory": 262144,
+        "capacity": 32808,
+        "used": 32808,
+        "available": 0
+      },
+      "new_space": {
+        "memorySize": 1048576,
+        "committedMemory": 1048576,
+        "capacity": 1047456,
+        "used": 1047440,
+        "available": 16
+      },
+      "old_space": {
+        "memorySize": 1196032,
+        "committedMemory": 1196032,
+        "capacity": 957040,
+        "used": 954448,
+        "available": 2592
+      },
+      "code_space": {
+        "memorySize": 430080,
+        "committedMemory": 430080,
+        "capacity": 153152,
+        "used": 153152,
+        "available": 0
+      },
+      "map_space": {
+        "memorySize": 266240,
+        "committedMemory": 266240,
+        "capacity": 237600,
+        "used": 237600,
+        "available": 0
+      },
+      "large_object_space": {
+        "memorySize": 0,
+        "committedMemory": 0,
+        "capacity": 0,
+        "used": 0,
+        "available": 0
+      },
+      "code_large_object_space": {
+        "memorySize": 0,
+        "committedMemory": 0,
+        "capacity": 0,
+        "used": 0,
+        "available": 0
+      },
+      "new_large_object_space": {
+        "memorySize": 0,
+        "committedMemory": 0,
+        "capacity": 1047456,
+        "used": 0,
+        "available": 1047456
+      }
+    }
+  },
+  "resourceUsage": {
+    "userCpuSeconds": 0.031,
+    "kernelCpuSeconds": 0.062,
+    "cpuConsumptionPercent": 9.3,
+    "maxRss": 21864448,
+    "pageFaults": {
+      "IORequired": 5517,
+      "IONotRequired": 0
+    },
+    "fsActivity": {
+      "reads": 0,
+      "writes": 97
+    }
+  },
+  "libuv": [
+  ],
+  "environmentVariables": {
+    "ACLOCAL_PATH": "D:\\杨萌萌\\Git\\mingw64\\share\\aclocal;D:\\杨萌萌\\Git\\usr\\share\\aclocal",
+    "ALLUSERSPROFILE": "C:\\ProgramData",
+    "APPDATA": "C:\\Users\\ASUS\\AppData\\Roaming",
+    "BABEL_ENV": "production",
+    "COMMONPROGRAMFILES": "C:\\Program Files\\Common Files",
+    "CommonProgramFiles(x86)": "C:\\Program Files (x86)\\Common Files",
+    "CommonProgramW6432": "C:\\Program Files\\Common Files",
+    "COMPUTERNAME": "DESKTOP-K63MGO0",
+    "COMSPEC": "C:\\Windows\\system32\\cmd.exe",
+    "CONFIG_SITE": "D:/杨萌萌/Git/mingw64/etc/config.site",
+    "DISPLAY": "needs-to-be-defined",
+    "dp0": "D:\\杨萌萌\\仁达文件\\RD-Vue-Pc\\node_modules\\.bin\\",
+    "DriverData": "C:\\Windows\\System32\\Drivers\\DriverData",
+    "EXEPATH": "D:\\杨萌萌\\Git",
+    "FPS_BROWSER_APP_PROFILE_STRING": "Internet Explorer",
+    "FPS_BROWSER_USER_PROFILE_STRING": "Default",
+    "HOME": "C:\\Users\\ASUS",
+    "HOMEDRIVE": "C:",
+    "HOMEPATH": "\\Users\\ASUS",
+    "HOSTNAME": "DESKTOP-K63MGO0",
+    "INFOPATH": "D:\\杨萌萌\\Git\\usr\\local\\info;D:\\杨萌萌\\Git\\usr\\share\\info;D:\\杨萌萌\\Git\\usr\\info;D:\\杨萌萌\\Git\\share\\info",
+    "INIT_CWD": "D:\\杨萌萌\\仁达文件\\RD-Vue-Pc",
+    "IOJS_ORG_MIRROR": "https://npm.taobao.org/mirrors/iojs",
+    "LANG": "zh_CN.UTF-8",
+    "LOCALAPPDATA": "C:\\Users\\ASUS\\AppData\\Local",
+    "LOGONSERVER": "\\\\DESKTOP-K63MGO0",
+    "MANPATH": "D:\\杨萌萌\\Git\\mingw64\\local\\man;D:\\杨萌萌\\Git\\mingw64\\share\\man;D:\\杨萌萌\\Git\\usr\\local\\man;D:\\杨萌萌\\Git\\usr\\share\\man;D:\\杨萌萌\\Git\\usr\\man;D:\\杨萌萌\\Git\\share\\man",
+    "MINGW_CHOST": "x86_64-w64-mingw32",
+    "MINGW_PACKAGE_PREFIX": "mingw-w64-x86_64",
+    "MINGW_PREFIX": "D:/杨萌萌/Git/mingw64",
+    "MSYSTEM": "MINGW64",
+    "MSYSTEM_CARCH": "x86_64",
+    "MSYSTEM_CHOST": "x86_64-w64-mingw32",
+    "MSYSTEM_PREFIX": "D:/杨萌萌/Git/mingw64",
+    "NODE": "D:\\杨萌萌\\node.exe",
+    "NODEJS_ORG_MIRROR": "https://npm.taobao.org/mirrors/node",
+    "NODE_ENV": "production",
+    "NODIST_IOJS_MIRROR": "https://npm.taobao.org/mirrors/iojs",
+    "NODIST_NODE_MIRROR": "https://npm.taobao.org/mirrors/node",
+    "npm_config_access": "",
+    "npm_config_allow_same_version": "",
+    "npm_config_also": "",
+    "npm_config_always_auth": "",
+    "npm_config_argv": "{\"remain\":[],\"cooked\":[\"run\",\"build\"],\"original\":[\"run\",\"build\"]}",
+    "npm_config_audit": "true",
+    "npm_config_audit_level": "low",
+    "npm_config_auth_type": "legacy",
+    "npm_config_before": "",
+    "npm_config_bin_links": "true",
+    "npm_config_browser": "",
+    "npm_config_ca": "",
+    "npm_config_cache": "C:\\Users\\ASUS\\AppData\\Roaming\\npm-cache",
+    "npm_config_cache_lock_retries": "10",
+    "npm_config_cache_lock_stale": "60000",
+    "npm_config_cache_lock_wait": "10000",
+    "npm_config_cache_max": "Infinity",
+    "npm_config_cache_min": "10",
+    "npm_config_cafile": "",
+    "npm_config_cert": "",
+    "npm_config_chromedriver_cdnurl": "https://npm.taobao.org/mirrors/chromedriver",
+    "npm_config_cidr": "",
+    "npm_config_color": "true",
+    "npm_config_commit_hooks": "true",
+    "npm_config_couchbase_binary_host_mirror": "https://npm.taobao.org/mirrors/couchbase/v{version}",
+    "npm_config_debug_binary_host_mirror": "https://npm.taobao.org/mirrors/node-inspector",
+    "npm_config_depth": "Infinity",
+    "npm_config_description": "true",
+    "npm_config_dev": "",
+    "npm_config_disturl": "https://npm.taobao.org/dist",
+    "npm_config_dry_run": "",
+    "npm_config_editor": "notepad.exe",
+    "npm_config_electron_mirror": "https://npm.taobao.org/mirrors/electron/",
+    "npm_config_engine_strict": "",
+    "npm_config_fetch_retries": "2",
+    "npm_config_fetch_retry_factor": "10",
+    "npm_config_fetch_retry_maxtimeout": "60000",
+    "npm_config_fetch_retry_mintimeout": "10000",
+    "npm_config_flow_bin_binary_host_mirror": "https://npm.taobao.org/mirrors/flow/v",
+    "npm_config_force": "",
+    "npm_config_format_package_lock": "true",
+    "npm_config_fse_binary_host_mirror": "https://npm.taobao.org/mirrors/fsevents",
+    "npm_config_fund": "true",
+    "npm_config_fuse_bindings_binary_host_mirror": "https://npm.taobao.org/mirrors/fuse-bindings/v{version}",
+    "npm_config_git": "git",
+    "npm_config_git4win_mirror": "https://npm.taobao.org/mirrors/git-for-windows",
+    "npm_config_git_tag_version": "true",
+    "npm_config_global": "",
+    "npm_config_globalconfig": "C:\\Users\\ASUS\\AppData\\Roaming\\npm\\etc\\npmrc",
+    "npm_config_globalignorefile": "C:\\Users\\ASUS\\AppData\\Roaming\\npm\\etc\\npmignore",
+    "npm_config_global_style": "",
+    "npm_config_gl_binary_host_mirror": "https://npm.taobao.org/mirrors/gl/v{version}",
+    "npm_config_group": "",
+    "npm_config_grpc_node_binary_host_mirror": "https://npm.taobao.org/mirrors",
+    "npm_config_hackrf_binary_host_mirror": "https://npm.taobao.org/mirrors/hackrf/v{version}",
+    "npm_config_ham_it_up": "",
+    "npm_config_heading": "npm",
+    "npm_config_https_proxy": "",
+    "npm_config_if_present": "",
+    "npm_config_ignore_prepublish": "",
+    "npm_config_ignore_scripts": "",
+    "npm_config_init_author_email": "",
+    "npm_config_init_author_name": "",
+    "npm_config_init_author_url": "",
+    "npm_config_init_license": "ISC",
+    "npm_config_init_module": "C:\\Users\\ASUS\\.npm-init.js",
+    "npm_config_init_version": "1.0.0",
+    "npm_config_json": "",
+    "npm_config_key": "",
+    "npm_config_legacy_bundling": "",
+    "npm_config_leveldown_binary_host_mirror": "https://npm.taobao.org/mirrors/leveldown/v{version}",
+    "npm_config_leveldown_hyper_binary_host_mirror": "https://npm.taobao.org/mirrors/leveldown-hyper/v{version}",
+    "npm_config_link": "",
+    "npm_config_local_address": "",
+    "npm_config_loglevel": "notice",
+    "npm_config_logs_max": "10",
+    "npm_config_long": "",
+    "npm_config_maxsockets": "50",
+    "npm_config_message": "%s",
+    "npm_config_metrics_registry": "https://registry.npm.taobao.org/",
+    "npm_config_mknod_binary_host_mirror": "https://npm.taobao.org/mirrors/mknod/v{version}",
+    "npm_config_nodegit_binary_host_mirror": "https://npm.taobao.org/mirrors/nodegit/v{version}/",
+    "npm_config_node_gyp": "D:\\杨萌萌\\node_modules\\npm\\node_modules\\node-gyp\\bin\\node-gyp.js",
+    "npm_config_node_options": "",
+    "npm_config_node_sqlite3_binary_host_mirror": "https://npm.taobao.org/mirrors",
+    "npm_config_node_tk5_binary_host_mirror": "https://npm.taobao.org/mirrors/node-tk5/v{version}",
+    "npm_config_node_version": "12.16.1",
+    "npm_config_noproxy": "",
+    "npm_config_offline": "",
+    "npm_config_onload_script": "",
+    "npm_config_only": "",
+    "npm_config_operadriver_cdnurl": "https://npm.taobao.org/mirrors/operadriver",
+    "npm_config_optional": "true",
+    "npm_config_otp": "",
+    "npm_config_package_lock": "true",
+    "npm_config_package_lock_only": "",
+    "npm_config_parseable": "",
+    "npm_config_phantomjs_cdnurl": "https://npm.taobao.org/mirrors/phantomjs",
+    "npm_config_prefer_offline": "",
+    "npm_config_prefer_online": "",
+    "npm_config_prefix": "C:\\Users\\ASUS\\AppData\\Roaming\\npm",
+    "npm_config_preid": "",
+    "npm_config_production": "",
+    "npm_config_profiler_binary_host_mirror": "https://npm.taobao.org/mirrors/node-inspector/",
+    "npm_config_progress": "true",
+    "npm_config_proxy": "",
+    "npm_config_puppeteer_download_host": "https://npm.taobao.org/mirrors",
+    "npm_config_python_mirror": "https://npm.taobao.org/mirrors/python",
+    "npm_config_rabin_binary_host_mirror": "https://npm.taobao.org/mirrors/rabin/v{version}",
+    "npm_config_read_only": "",
+    "npm_config_rebuild_bundle": "true",
+    "npm_config_registry": "https://registry.npm.taobao.org/",
+    "npm_config_rollback": "true",
+    "npm_config_sass_binary_site": "https://npm.taobao.org/mirrors/node-sass",
+    "npm_config_save": "true",
+    "npm_config_save_bundle": "",
+    "npm_config_save_dev": "",
+    "npm_config_save_exact": "",
+    "npm_config_save_optional": "",
+    "npm_config_save_prefix": "^",
+    "npm_config_save_prod": "",
+    "npm_config_scope": "",
+    "npm_config_scripts_prepend_node_path": "warn-only",
+    "npm_config_script_shell": "",
+    "npm_config_searchexclude": "",
+    "npm_config_searchlimit": "20",
+    "npm_config_searchopts": "",
+    "npm_config_searchstaleness": "900",
+    "npm_config_send_metrics": "",
+    "npm_config_shell": "C:\\Windows\\system32\\cmd.exe",
+    "npm_config_shrinkwrap": "true",
+    "npm_config_sign_git_commit": "",
+    "npm_config_sign_git_tag": "",
+    "npm_config_sodium_prebuilt_binary_host_mirror": "https://npm.taobao.org/mirrors/sodium-prebuilt/v{version}",
+    "npm_config_sqlite3_binary_site": "https://npm.taobao.org/mirrors/sqlite3",
+    "npm_config_sso_poll_frequency": "500",
+    "npm_config_sso_type": "oauth",
+    "npm_config_strict_ssl": "true",
+    "npm_config_tag": "latest",
+    "npm_config_tag_version_prefix": "v",
+    "npm_config_timing": "",
+    "npm_config_tmp": "C:\\Users\\ASUS\\AppData\\Local\\Temp",
+    "npm_config_umask": "0000",
+    "npm_config_unicode": "",
+    "npm_config_unsafe_perm": "true",
+    "npm_config_update_notifier": "true",
+    "npm_config_usage": "",
+    "npm_config_user": "",
+    "npm_config_userconfig": "C:\\Users\\ASUS\\.npmrc",
+    "npm_config_user_agent": "npm/6.13.4 node/v12.16.1 win32 x64",
+    "npm_config_utf_8_validate_binary_host_mirror": "https://npm.taobao.org/mirrors/utf-8-validate/v{version}",
+    "npm_config_utp_native_binary_host_mirror": "https://npm.taobao.org/mirrors/utp-native/v{version}",
+    "npm_config_version": "",
+    "npm_config_versions": "",
+    "npm_config_viewer": "browser",
+    "npm_config_zmq_prebuilt_binary_host_mirror": "https://npm.taobao.org/mirrors/zmq-prebuilt/v{version}",
+    "npm_execpath": "D:\\杨萌萌\\node_modules\\npm\\bin\\npm-cli.js",
+    "npm_lifecycle_event": "build",
+    "npm_lifecycle_script": "vue-cli-service build",
+    "npm_node_execpath": "D:\\杨萌萌\\node.exe",
+    "npm_package_browserslist_0": "> 1%",
+    "npm_package_browserslist_1": "last 2 versions",
+    "npm_package_dependencies_axios": "^0.18.0",
+    "npm_package_dependencies_babel_polyfill": "^6.26.0",
+    "npm_package_dependencies_core_js": "^2.6.5",
+    "npm_package_dependencies_default_passive_events": "^1.0.10",
+    "npm_package_dependencies_echarts": "^4.6.0",
+    "npm_package_dependencies_element_ui": "^2.8.2",
+    "npm_package_dependencies_moment": "^2.24.0",
+    "npm_package_dependencies_quill_image_drop_module": "^1.0.3",
+    "npm_package_dependencies_quill_image_resize_module": "^3.0.0",
+    "npm_package_dependencies_vue": "^2.6.10",
+    "npm_package_dependencies_vuex": "^3.0.1",
+    "npm_package_dependencies_vue_router": "^3.0.3",
+    "npm_package_dependencies_v_emoji_picker": "^1.2.7",
+    "npm_package_dependencies_wangeditor": "^3.1.1",
+    "npm_package_description": "```\r yarn install\r ```",
+    "npm_package_devDependencies_node_sass": "^4.13.0",
+    "npm_package_devDependencies_sass_loader": "^8.0.0",
+    "npm_package_devDependencies_stylus": "^0.54.5",
+    "npm_package_devDependencies_stylus_loader": "^3.0.2",
+    "npm_package_devDependencies_vue_template_compiler": "^2.5.21",
+    "npm_package_devDependencies__vue_cli_plugin_babel": "^3.7.0",
+    "npm_package_devDependencies__vue_cli_service": "^3.7.0",
+    "npm_package_gitHead": "568adf505d03c0c6c6a2d66aa13dea3052dd9d29",
+    "npm_package_name": "nuxt-admin",
+    "npm_package_private": "true",
+    "npm_package_readmeFilename": "README.md",
+    "npm_package_scripts_build": "vue-cli-service build",
+    "npm_package_scripts_serve": "vue-cli-service serve",
+    "npm_package_version": "0.1.0",
+    "NUMBER_OF_PROCESSORS": "6",
+    "NVMW_IOJS_ORG_MIRROR": "https://npm.taobao.org/mirrors/iojs",
+    "NVMW_NODEJS_ORG_MIRROR": "https://npm.taobao.org/mirrors/node",
+    "NVMW_NPM_MIRROR": "https://npm.taobao.org/mirrors/npm",
+    "NVM_IOJS_ORG_MIRROR": "https://npm.taobao.org/mirrors/iojs",
+    "NVM_NODEJS_ORG_MIRROR": "https://npm.taobao.org/mirrors/node",
+    "OneDrive": "C:\\Users\\ASUS\\OneDrive",
+    "ORIGINAL_PATH": "D:\\杨萌萌\\Git\\mingw64\\bin;D:\\杨萌萌\\Git\\usr\\bin;C:\\Users\\ASUS\\bin;C:\\Windows\\system32;C:\\Windows;C:\\Windows\\System32\\Wbem;C:\\Windows\\System32\\WindowsPowerShell\\v1.0;C:\\Windows\\System32\\OpenSSH;D:\\杨萌萌;D:\\杨萌萌\\Git\\cmd;D:\\杨萌萌\\bin;C:\\Users\\ASUS\\AppData\\Local\\Microsoft\\WindowsApps;D:\\新建文件夹\\Microsoft VS Code\\bin;C:\\Users\\ASUS\\AppData\\Roaming\\npm",
+    "ORIGINAL_TEMP": "C:/Users/ASUS/AppData/Local/Temp",
+    "ORIGINAL_TMP": "C:/Users/ASUS/AppData/Local/Temp",
+    "OS": "Windows_NT",
+    "Path": "D:\\杨萌萌\\node_modules\\npm\\node_modules\\npm-lifecycle\\node-gyp-bin;D:\\杨萌萌\\仁达文件\\RD-Vue-Pc\\node_modules\\.bin;C:\\Users\\ASUS\\bin;D:\\杨萌萌\\Git\\mingw64\\bin;D:\\杨萌萌\\Git\\usr\\local\\bin;D:\\杨萌萌\\Git\\usr\\bin;D:\\杨萌萌\\Git\\usr\\bin;D:\\杨萌萌\\Git\\mingw64\\bin;D:\\杨萌萌\\Git\\usr\\bin;C:\\Users\\ASUS\\bin;C:\\Windows\\system32;C:\\Windows;C:\\Windows\\System32\\Wbem;C:\\Windows\\System32\\WindowsPowerShell\\v1.0;C:\\Windows\\System32\\OpenSSH;D:\\杨萌萌;D:\\杨萌萌\\Git\\cmd;D:\\杨萌萌\\bin;C:\\Users\\ASUS\\AppData\\Local\\Microsoft\\WindowsApps;D:\\新建文件夹\\Microsoft VS Code\\bin;C:\\Users\\ASUS\\AppData\\Roaming\\npm;D:\\杨萌萌\\Git\\usr\\bin\\vendor_perl;D:\\杨萌萌\\Git\\usr\\bin\\core_perl",
+    "PATH": "D:\\杨萌萌\\node_modules\\npm\\node_modules\\npm-lifecycle\\node-gyp-bin;D:\\杨萌萌\\仁达文件\\RD-Vue-Pc\\node_modules\\.bin;C:\\Users\\ASUS\\bin;D:\\杨萌萌\\Git\\mingw64\\bin;D:\\杨萌萌\\Git\\usr\\local\\bin;D:\\杨萌萌\\Git\\usr\\bin;D:\\杨萌萌\\Git\\usr\\bin;D:\\杨萌萌\\Git\\mingw64\\bin;D:\\杨萌萌\\Git\\usr\\bin;C:\\Users\\ASUS\\bin;C:\\Windows\\system32;C:\\Windows;C:\\Windows\\System32\\Wbem;C:\\Windows\\System32\\WindowsPowerShell\\v1.0;C:\\Windows\\System32\\OpenSSH;D:\\杨萌萌;D:\\杨萌萌\\Git\\cmd;D:\\杨萌萌\\bin;C:\\Users\\ASUS\\AppData\\Local\\Microsoft\\WindowsApps;D:\\新建文件夹\\Microsoft VS Code\\bin;C:\\Users\\ASUS\\AppData\\Roaming\\npm;D:\\杨萌萌\\Git\\usr\\bin\\vendor_perl;D:\\杨萌萌\\Git\\usr\\bin\\core_perl",
+    "PATHEXT": ".COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JSE;.WSF;.WSH;.MSC",
+    "PKG_CONFIG_PATH": "D:\\杨萌萌\\Git\\mingw64\\lib\\pkgconfig;D:\\杨萌萌\\Git\\mingw64\\share\\pkgconfig",
+    "PLINK_PROTOCOL": "ssh",
+    "PROCESSOR_ARCHITECTURE": "AMD64",
+    "PROCESSOR_IDENTIFIER": "Intel64 Family 6 Model 158 Stepping 10, GenuineIntel",
+    "PROCESSOR_LEVEL": "6",
+    "PROCESSOR_REVISION": "9e0a",
+    "ProgramData": "C:\\ProgramData",
+    "PROGRAMFILES": "C:\\Program Files",
+    "ProgramFiles(x86)": "C:\\Program Files (x86)",
+    "ProgramW6432": "C:\\Program Files",
+    "PROMPT": "$P$G",
+    "PSModulePath": "C:\\Program Files\\WindowsPowerShell\\Modules;C:\\Windows\\system32\\WindowsPowerShell\\v1.0\\Modules",
+    "PUBLIC": "C:\\Users\\Public",
+    "PWD": "D:/杨萌萌/仁达文件/RD-Vue-Pc",
+    "SESSIONNAME": "Console",
+    "SHELL": "D:\\杨萌萌\\Git\\usr\\bin\\bash.exe",
+    "SHLVL": "2",
+    "SSH_ASKPASS": "D:/杨萌萌/Git/mingw64/libexec/git-core/git-gui--askpass",
+    "SYSTEMDRIVE": "C:",
+    "SYSTEMROOT": "C:\\Windows",
+    "TEMP": "C:\\Users\\ASUS\\AppData\\Local\\Temp",
+    "TERM": "xterm",
+    "TMP": "C:\\Users\\ASUS\\AppData\\Local\\Temp",
+    "TMPDIR": "C:\\Users\\ASUS\\AppData\\Local\\Temp",
+    "USERDOMAIN": "DESKTOP-K63MGO0",
+    "USERDOMAIN_ROAMINGPROFILE": "DESKTOP-K63MGO0",
+    "USERNAME": "ASUS",
+    "USERPROFILE": "C:\\Users\\ASUS",
+    "VUE_API_URL": "https://a.rsd123.com",
+    "VUE_APP_URL": "https://a.rsd123.com",
+    "VUE_CLI_BUILD_TARGET": "app",
+    "VUE_CLI_ENTRY_FILES": "[\"D:\\\\杨萌萌\\\\仁达文件\\\\RD-Vue-Pc\\\\src\\\\main.js\"]",
+    "WINDIR": "C:\\Windows",
+    "_": "D:/杨萌萌/node.exe",
+    "_prog": "node"
+  },
+  "sharedObjects": [
+    "D:\\杨萌萌\\node.exe",
+    "C:\\Windows\\SYSTEM32\\ntdll.dll",
+    "C:\\Windows\\System32\\KERNEL32.DLL",
+    "C:\\Windows\\System32\\KERNELBASE.dll",
+    "C:\\Windows\\System32\\WS2_32.dll",
+    "C:\\Windows\\System32\\RPCRT4.dll",
+    "C:\\Windows\\System32\\PSAPI.DLL",
+    "C:\\Windows\\System32\\ADVAPI32.dll",
+    "C:\\Windows\\System32\\msvcrt.dll",
+    "C:\\Windows\\System32\\sechost.dll",
+    "C:\\Windows\\System32\\USER32.dll",
+    "C:\\Windows\\System32\\win32u.dll",
+    "C:\\Windows\\System32\\GDI32.dll",
+    "C:\\Windows\\System32\\gdi32full.dll",
+    "C:\\Windows\\System32\\msvcp_win.dll",
+    "C:\\Windows\\System32\\ucrtbase.dll",
+    "C:\\Windows\\System32\\CRYPT32.dll",
+    "C:\\Windows\\System32\\MSASN1.dll",
+    "C:\\Windows\\System32\\bcrypt.dll",
+    "C:\\Windows\\SYSTEM32\\dbghelp.dll",
+    "C:\\Windows\\SYSTEM32\\IPHLPAPI.DLL",
+    "C:\\Windows\\SYSTEM32\\USERENV.dll",
+    "C:\\Windows\\System32\\profapi.dll",
+    "C:\\Windows\\SYSTEM32\\WINMM.dll",
+    "C:\\Windows\\SYSTEM32\\WINMMBASE.dll",
+    "C:\\Windows\\System32\\cfgmgr32.dll",
+    "C:\\Windows\\System32\\IMM32.DLL",
+    "C:\\Windows\\System32\\powrprof.dll",
+    "C:\\Windows\\SYSTEM32\\CRYPTBASE.DLL",
+    "C:\\Windows\\System32\\bcryptPrimitives.dll",
+    "C:\\Windows\\system32\\uxtheme.dll",
+    "C:\\Windows\\System32\\combase.dll",
+    "C:\\Windows\\system32\\mswsock.dll",
+    "C:\\Windows\\System32\\kernel.appcore.dll",
+    "C:\\Windows\\System32\\NSI.dll",
+    "C:\\Windows\\SYSTEM32\\dhcpcsvc6.DLL",
+    "C:\\Windows\\SYSTEM32\\dhcpcsvc.DLL",
+    "C:\\Windows\\SYSTEM32\\DNSAPI.dll",
+    "C:\\Windows\\system32\\napinsp.dll",
+    "C:\\Windows\\system32\\pnrpnsp.dll",
+    "C:\\Windows\\System32\\winrnr.dll",
+    "C:\\Windows\\system32\\NLAapi.dll",
+    "C:\\Windows\\system32\\wshbth.dll",
+    "C:\\Program Files\\Bonjour\\mdnsNSP.dll"
+  ]
+}

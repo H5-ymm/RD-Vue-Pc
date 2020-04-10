@@ -23,10 +23,6 @@
     }
   }
 }
-.tables-box {
-  // overflow: hidden;
-  // margin-bottom: 60px;
-}
 </style>
 
 <template>

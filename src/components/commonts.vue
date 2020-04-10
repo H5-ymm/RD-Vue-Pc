@@ -92,7 +92,6 @@
 
 <template>
   <div class="team-view commonts-box">
-    <!-- <breadcrumb :breadcrumbs="breadcrumb"></breadcrumb> -->
     <div class="team-box x-flex-start">
       <div class="team-box-left">
         <div class="x-flex-start-justify">
@@ -115,11 +114,11 @@
           </el-dropdown>
         </div>
         <!-- 列表 -->
-        <div v-show="list.length!=0" class="team-box-left-box" ref="commont">
-          <person-card :list="list" :total="total" @selectComment="selectComment"></person-card>
+        <div v-show="newList.length!=0" class="team-box-left-box" ref="commont">
+          <person-card :list="newList" :total="total" @selectComment="selectComment"></person-card>
           <section class="view-card-row-more x-flex-center" v-show="isLoad" @click="loadMore">加载更多</section>
         </div>
-        <div class="no-data" v-if="list.length==0">
+        <div class="no-data" v-if="newList.length==0">
           <img src="../assets/img/nodata.png" class="nodata-bg" alt="">
           <p class="no-data-title">暂无数据</p>
           <el-button type="primary" class="add-data" @click="handleCommand(0)">立即新增</el-button>
@@ -149,6 +148,7 @@
 import PersonCard from './commentCard/PersonCard'
 import DetailCard from './commentCard/DetailCard'
 import infoTip from './common/infoTip'
+import { getImgUrl } from '@/util/util'
 import {
   getDiscussList,
   getDiscussInfo,
@@ -201,7 +201,23 @@ export default {
     dom.style.height = heigth + 'px'
     dom1.style.height = heigth1 + 'px'
   },
+  computed:{
+    newList() {
+      return this.list.map(item=>{
+        if (item.head_img) {
+          console.log(item.head_img.indexOf('http'))
+          if (item.head_img.indexOf('http') == -1) {
+            item.head_img = this.getImgUrl(item.head_img)
+          } else {
+            item.head_img = item.head_img
+          }
+        }
+        return item
+      })
+    }
+  },
   methods: {
+    getImgUrl,
     getList() {
       getDiscussList(this.params)
         .then(res => {
