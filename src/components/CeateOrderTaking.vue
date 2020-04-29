@@ -21,6 +21,7 @@
     position: relative;
     padding-bottom: 30px;
     margin-bottom: 30px;
+    overflow: auto;
     .el-input__inner {
       border: none !important;
     }
@@ -58,11 +59,11 @@
           <span class="error el-icon-warning">发单：只有团队可以接单，岗位需求人数由团队统一提供，个人无法接取。</span>
         </el-form-item>
         <el-form-item label="职位类别" required>
-          <el-select v-model="orderTakingForm.job_type" @change="selectJob" class="width408" placeholder="请选择职位类别">
-            <el-option :label="item" :value="key" v-for="(item,key) in jobList" :key="key"></el-option>
+          <el-select v-model="orderTakingForm.job_type" value-key="label" @change="selectJob" class="width408" placeholder="请选择职位类别">
+            <el-option :label="item.label" :value="item.value"  v-for="(item,index) in jobList" :key="index"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="需求人数" required>
+        <el-form-item label="需求人数" prop="required_number">
           <el-input type="number" v-model="orderTakingForm.required_number" class="width408" @input="numberChange(arguments[0])" :min="2" placeholder="请输入需求人数"></el-input>
         </el-form-item>
         <el-form-item label="工作地址" required>
@@ -105,7 +106,7 @@
           </el-select>
         </el-form-item>
         <!-- 薪资和返利模式 -->
-        <salaryAndRebate :moneyList="moneyList" :from="from" @submit="submitSalary"></salaryAndRebate>
+        <salaryAndRebate :from="from" @submit="submitSalary"></salaryAndRebate>
         <!-- 薪资和返利模式 -->
         <el-form-item label="职位描述" required>
           <span class="error el-icon-warning error-job" v-if="len<30">职位描述，最低输入30个字。</span>
@@ -114,10 +115,10 @@
             <span class="content-len">{{len}}/1000字</span>
           </div>
         </el-form-item>
-        <el-form-item label="联系人" required prop="link_name">
+        <el-form-item label="联系人" prop="link_name">
           <el-input v-model="orderTakingForm.link_name" class="width408" placeholder="请输入联系人姓名"></el-input>
         </el-form-item>
-        <el-form-item label="联系电话" required prop="tel">
+        <el-form-item label="联系电话" prop="tel">
           <el-input v-model="orderTakingForm.tel" class="width408" placeholder="请输入联系电话"></el-input>
         </el-form-item>
         <el-form-item label="邮箱">
@@ -178,8 +179,8 @@ export default {
         team_name: [
           { required: true, message: '请输入团队名称', trigger: 'blur' }
         ],
-        industry: [
-          { required: true, message: '请选择从事行业', trigger: 'blur' }
+        required_number: [
+          { required: true, message: '请输入需求人数', trigger: 'blur' }
         ],
         link_name: [
           { required: true, message: '请选择联系人', trigger: 'blur' }
@@ -189,8 +190,7 @@ export default {
           { validator: validatereg, trigger: 'blur' }
         ]
       },
-      moneyList: [],
-      jobList: {},
+      jobList: [],
       eduList: [],
       jobName: '',
       content: '工作内容：</br> 职位要求：</br> 工作时间：',
@@ -261,10 +261,19 @@ export default {
     getList(filed) {
       getConstant({ filed }).then(res => {
         const { edu_type, money_array, job_array } = res.data
-        this.jobList = job_array
+        this.jobList = this.getArray(job_array)
         this.eduList = edu_type
-        this.moneyList = money_array
       })
+    },
+    getArray (obj) {
+      let arr = [];
+      for (let key in obj) {
+        arr.push({
+          label: obj[key],
+          value: Number(key) + 1
+        });
+      }
+      return arr;
     },
     selectJob(val) {
       for (let key in this.jobList) {

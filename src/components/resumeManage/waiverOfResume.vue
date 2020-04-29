@@ -45,7 +45,7 @@
           <el-button @click="exportResume" type="primary">导出简历</el-button>
         </div>
         <el-table border :data="tableData" ref="multipleTable" style="width: 100%" @sort-change="sortChange">
-          <el-table-column label="序号" align="center" prop="id" width="50"></el-table-column>
+          <el-table-column label="序号" align="center" type="index" width="50"></el-table-column>
           <el-table-column label="姓名" align="center" width="100">
             <template slot-scope="props">
               <el-button class="text-line" type="text" @click="viewResume(props.row)">{{props.row.name}}</el-button>

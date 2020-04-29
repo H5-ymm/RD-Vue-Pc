@@ -18,7 +18,7 @@
           <el-input v-model="formMember.team_name" class="width300" placeholder="请输入团队名称关键字"></el-input>
         </el-form-item>
         <el-form-item label="团队负责人：">
-          <el-input v-model="formMember.name" class="width300" placeholder="请输入团队负责人姓名"></el-input>
+          <el-input v-model="formMember.team_user" class="width300" placeholder="请输入团队负责人姓名"></el-input>
         </el-form-item>
         <el-form-item label="团队性质：">
           <el-select v-model="formMember.team_type" class="width300" placeholder="请选择">
@@ -299,7 +299,7 @@ export default {
       this.getList(this.formMember)
     },
     reset() {
-      formMember = {
+      this.formMember = {
         uid: localStorage.getItem('uid'),
         limit: 10,
         page: 1

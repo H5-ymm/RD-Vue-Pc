@@ -9,11 +9,6 @@
         <el-form-item label="职位名称：">
           <el-input v-model="formMember.job_name" class="width300" placeholder="请输入职位名称关键字"></el-input>
         </el-form-item>
-        <el-form-item label="职位类别：">
-          <el-select v-model="formMember.job_type" class="width300" placeholder="选择相应的职位类别">
-            <el-option :label="item" :value="key" v-for="(item,key) in jobList" :key="key"></el-option>
-          </el-select>
-        </el-form-item>
         <el-form-item label="企业名称：">
           <el-input v-model="formMember.com_name" class="width300" placeholder="请输入团队名称关键字"></el-input>
         </el-form-item>
@@ -63,10 +58,6 @@
           <el-table-column label="状态" align="center" width="150">
             <template slot-scope="props">
               <span class="status" :class="`status${props.row.invoice_status}`">{{props.row.invoice_status==0?'收集中':props.row.invoice_status==1?'审核中':'审核结束'}}</span>
-              <!-- <span class="status" v-if="props.row.entry_status&&props.row.entry_status<3" :class="`status${props.row.entry_status}`">{{props.row.entry_status==1?'面试开始':props.row.entry_status==2?'面试结束':''}}</span> -->
-              <!-- <span class="status" v-if="props.row.status==1" :class="`status${props.row.status}`">面试开始</span> -->
-              <!-- <span class="status status4" v-else>面试结束</span> -->
-              <!--<span class="status status4" v-else>{{props.row.interview_status==1?'面试开始':'面试结束'}}</span> -->
             </template>
           </el-table-column>
           <el-table-column label="岗位城市" prop="entry_num" align="center" width="120">
@@ -168,28 +159,14 @@ export default {
         { label: '审核中', value: 1 },
         { label: '审核结束', value: 2 }
       ],
-      jobList: {},
       timeList: []
     }
   },
   created () {
     // 初始化查询标签数据
     this.getList(this.formMember)
-    let params = 'job_array'
-    this.getData(params)
   },
   methods: {
-    getData (filed) {
-      getConstant({ filed })
-        .then(res => {
-          this.jobList = res.data.job_array
-        })
-        .catch(error => {
-          if (error) {
-            this.$message.warning(error.status.remind)
-          }
-        })
-    },
     getList (params) {
       applyList(params)
         .then(res => {

@@ -8,11 +8,6 @@
         <el-form-item label="职位名称：">
           <el-input v-model="formMember.job_name" class="width300" placeholder="请输入职位名称关键字"></el-input>
         </el-form-item>
-        <el-form-item label="职位类别：">
-          <el-select v-model="formMember.job_type" class="width300" placeholder="选择相应的职位类别">
-            <el-option :label="item" :value="key" v-for="(item,key) in jobList" :key="key"></el-option>
-          </el-select>
-        </el-form-item>
         <el-form-item label="团队名称：">
           <el-input v-model="formMember.team_name" class="width300" placeholder="请输入团队名称关键字"></el-input>
         </el-form-item>
@@ -31,8 +26,8 @@
             <el-option :label="item.label" :value="item.value" v-for="(item,index) in statusList" :key="index"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="接单时间：">
-          <el-date-picker class="width300" @change="changeDate" v-model="timeList" type="daterange" range-separator="-" start-placeholder="开始日期区间" end-placeholder="结束日期"></el-date-picker>
+        <el-form-item label="入职时间：">
+          <el-date-picker class="width300" value-format="timestamp" @change="changeDate" v-model="timeList" type="daterange" range-separator="-" start-placeholder="开始日期区间" end-placeholder="结束日期"></el-date-picker>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="onSubmit" class="select-btn">查询</el-button>
@@ -58,7 +53,7 @@
           </el-table-column>
           <el-table-column label="状态" align="center" width="100">
             <template slot-scope="props">
-              <span class="status" :class="`status${props.row.entry_status}`">{{!props.row.entry_status?'等待入职':props.row.entry_status==1?'入职开始':'入职结束'}}</span>
+              <span class="status" :class="`status${props.row.entry_status}`">{{props.row.entry_status==4?'入职结束':'入职开始'}}</span>
             </template>
           </el-table-column>
           <el-table-column label="岗位城市" prop="citys" align="center" width="150"></el-table-column>
@@ -144,7 +139,6 @@ export default {
         { label: '入职结束', value: 2 }
       ],
       activeIndex: 0,
-      jobList: {},
       modalObj: {
         content: '你确定要提前结束入职吗？',
         okText: '确定',
@@ -162,22 +156,9 @@ export default {
       this.jobId = this.$route.query.id
       this.formMember.jobId = this.$route.query.id
     }
-    let params = 'job_array'
     this.getList(this.formMember)
-    this.getData(params)
   },
   methods: {
-    getData(filed) {
-      getConstant({ filed })
-        .then(res => {
-          this.jobList = res.data.job_array
-        })
-        .catch(error => {
-          if (error) {
-            this.$message.warning(error.status.remind)
-          }
-        })
-    },
     getList(params) {
       entryInvoiceList(params)
         .then(res => {
@@ -194,9 +175,11 @@ export default {
       this.activeIndex = index
       this.formMember.status = item.value
     },
-    changeDate(val) {
-      this.formMember.begintime = val[0]
-      this.formMember.endTime = val ? val[1] : ''
+     changeDate(val) {
+      let starttime = val? val[0] + '' : ''
+      let endtime =  val?  val[1] + '' : ''
+      this.formMember.begintime = starttime? starttime.substring(0, 10): ''
+      this.formMember.endtime = endtime? endtime.substring(0, 10): ''
     },
     handleSizeChange(val) {
       this.formMember.limit = val

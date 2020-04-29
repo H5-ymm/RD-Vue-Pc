@@ -278,7 +278,7 @@ export default {
           .then(res => {
             if (res.data) {
               this.dialogTableVisible = true
-              this.$message.success('推荐成功')
+              this.$message.success(res.data || '推荐成功')
               this.getList(this.formMember)
             } else {
               this.$message.error('推荐失败')

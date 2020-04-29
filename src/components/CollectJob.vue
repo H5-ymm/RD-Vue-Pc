@@ -16,6 +16,7 @@
           </el-select>
           <el-input v-model="formMember.keyword" class="width300" placeholder="请输入你要搜索的关键字"></el-input>
           <el-button type="primary" @click="handleSearch" class="select-btn">查询</el-button>
+          <el-button type="primary" @click="resetQuery" class="select-btn">重置</el-button>
         </el-form-item>
         <el-form-item label="返利模式：">
           <el-button :type="formMember.reward_type==item.value ?'primary':''" v-for="(item,index) in rewardTypeList" :key="index" plain @click="selectStatus('reward_type',item)" class="select-status">{{item.label}}</el-button>
@@ -178,6 +179,17 @@ export default {
             this.$message.error(error.status.remind)
           }
         })
+    },
+    resetQuery() {
+      this.formMember = {
+        uid: localStorage.getItem('uid'),
+        limit: 10,
+        page: 1,
+        jobStatus: 0,
+        moneyType: 0,
+        reward_type: 0
+      }
+      this.getList(this.formMember)
     },
     viewJob(val) {
       this.id = val.job_id

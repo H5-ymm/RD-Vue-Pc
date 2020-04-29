@@ -8,11 +8,6 @@
         <el-form-item label="职位名称：">
           <el-input v-model="formMember.job_name" class="width300" placeholder="请输入职位名称关键字"></el-input>
         </el-form-item>
-        <el-form-item label="职位类别：">
-          <el-select v-model="formMember.job_type" class="width300" placeholder="选择相应的职位类别">
-            <el-option :label="item" :value="key" v-for="(item,key) in jobList" :key="key"></el-option>
-          </el-select>
-        </el-form-item>
         <el-form-item label="团队名称：">
           <el-input v-model="formMember.team_name" class="width300" placeholder="请输入团队名称关键字"></el-input>
         </el-form-item>
@@ -31,8 +26,8 @@
             <el-option :label="item.label" :value="item.value" v-for="(item,index) in userResumeStatusList" :key="index"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="面试时间：">
-          <el-date-picker class="width300" v-model="timeList" @change="changeDate" type="daterange" range-separator="-" start-placeholder="开始日期区间" end-placeholder="结束日期"></el-date-picker>
+        <el-form-item label="接单时间：">
+          <el-date-picker class="width300" value-format="timestamp" v-model="timeList" @change="changeDate" type="daterange" range-separator="-" start-placeholder="开始日期区间" end-placeholder="结束日期"></el-date-picker>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="onSubmit" class="select-btn">查询</el-button>
@@ -152,12 +147,10 @@ export default {
       formMember: {
         uid: localStorage.getItem('uid'),
         limit: 10,
-        page: 1,
-        status: ''
+        page: 1
       },
       total: 0,
       multipleSelection: [],
-      jobList: {},
       jobId: '',
       modalObj: {
         content: '你确定要批量操作？',
@@ -175,21 +168,8 @@ export default {
   created() {
     // 初始化查询标签数据
     this.getList()
-    let params = 'job_array'
-    this.getData(params)
   },
   methods: {
-    getData(filed) {
-      getConstant({ filed })
-        .then(res => {
-          this.jobList = res.data.job_array
-        })
-        .catch(error => {
-          if (error && error.status) {
-            this.$message.warning(error.status.remind)
-          }
-        })
-    },
     getList() {
       companyResumeList(this.formMember)
         .then(res => {
@@ -224,11 +204,12 @@ export default {
       this.dialogTableVisible = true
     },
     changeDate(val) {
-      this.formMember.entry_begintime = val ? val[0] : ''
-      this.formMember.entry_endtime = val ? val[1] : ''
+      let starttime = val? val[0] + '' : ''
+      let endtime =  val?  val[1] + '' : ''
+      this.formMember.begintime = starttime? starttime.substring(0, 10): ''
+      this.formMember.endtime = endtime? endtime.substring(0, 10): ''
     },
     sortChange(column) {
-      console.log(column.prop)
       if (column.order == 'ascending') {
         this.formMember[column.prop] = 'asc'
       } else {
@@ -273,8 +254,7 @@ export default {
       this.formMember = {
         uid: localStorage.getItem('uid'),
         limit: 10,
-        page: 1,
-        status:''
+        page: 1
       }
       this.timeList = []
       this.getList()

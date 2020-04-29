@@ -310,7 +310,7 @@ export default {
         addPut(param)
           .then(res => {
             if (res.data) {
-              this.$message.success('推荐成功')
+              this.$message.success(res.data || '推荐成功')
               this.byJobMatchingList(this.formMember)
             } else {
               this.$message.error('推荐失败')

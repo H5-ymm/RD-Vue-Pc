@@ -201,7 +201,6 @@ export default {
     routerli () {
       // 对应路由
       // let pathStr = this.$route.path.split('/')
-      console.log(this.$route)
       let path
       let falg = true
       if (this.$route.name == 'checkResume') {

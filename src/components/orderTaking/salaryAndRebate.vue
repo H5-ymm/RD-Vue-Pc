@@ -8,8 +8,8 @@
         <el-select v-model="orderTakingForm.money_type" class="width160" placeholder="请选择">
           <el-option :label="item.label" :value="item.value" v-show="index" v-for="(item,index) in moneyTypeList" :key="item.label"></el-option>
         </el-select>
-        <el-select v-model="orderTakingForm.money" v-if="orderTakingForm.money_type==1" class="width160" placeholder="请选择">
-          <el-option :label="item" :value="key" v-for="(item,key) in moneyList" :key="key"></el-option>
+        <el-select v-model="orderTakingForm.money" value-key="label" v-if="orderTakingForm.money_type==1" class="width160" placeholder="请选择">
+          <el-option :label="item" :value="(index+1)" v-for="(item,index) in moneyList" :key="index"></el-option>
         </el-select>
         <el-input placeholder="请输入薪资" v-if="orderTakingForm.money_type&&orderTakingForm.money_type!=1" class="width160 money_type text-input" v-model="orderTakingForm.money">
           <template slot="append">
@@ -132,9 +132,10 @@
   </div>
 </template>
 <script>
-import { moneyTypeList, rewardTypeList, payTypeList, weekList } from '../../base/base'
+import { moneyTypeList, rewardTypeList, payTypeList, weekList } from '@/base/base'
+import { getConstant } from '@/api/dictionary'
 export default {
-  props: ['moneyList', 'from'],
+  props: ['from'],
   data() {
     return {
       orderTakingForm: {
@@ -154,7 +155,8 @@ export default {
       payTypeList,
       weekList,
       reward_money_type: '',
-      rewardTipShow: false
+      rewardTipShow: false,
+      moneyList: []
     }
   },
   computed: {
@@ -167,6 +169,10 @@ export default {
     moneyType() {
       return this.orderTakingForm.reward_money_type == 1 ? '日' : this.orderTakingForm.reward_money_type == 2 ? '周' : '月'
     }
+  },
+  created() {
+    let params = 'money_array'
+    this.getList(params)
   },
   watch: {
     orderTakingForm: {
@@ -206,12 +212,36 @@ export default {
     from(val) {
       if (val) {
         for (let key in val) {
-          this.orderTakingForm[key] = val[key]
+          this.orderTakingForm[key] = val[key] 
+        }
+        if (val.moeny_type==1) {
+          this.orderTakingForm.money =  this.orderTakingForm.money - 1
+        }
+        if (val.reward_type == 1) {
+          if (val.reward_money_type == 2) {
+            let duration_time = val.duration_time ? val.duration_time : 1
+            this.reward_money_type = `持续返利` + duration_time + `月`
+          } else {
+            this.reward_money_type = 1
+            this.orderTakingForm.duration_time = ''
+          }
         }
       }
     }
   },
   methods: {
+    getList(filed) {
+      getConstant({ filed }).then(res => {
+        this.moneyList = this.getArray(res.data.money_array)
+      })
+    },
+    getArray (obj) {
+      let arr = [];
+      for (let key in obj) {
+        arr.push(obj[key])
+      }
+      return arr
+    },
     changeReward(val) {
       if (val == 1) {
         this.orderTakingForm.settlement_type = 1

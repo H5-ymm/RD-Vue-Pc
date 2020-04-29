@@ -8,11 +8,6 @@
         <el-form-item label="职位名称：">
           <el-input v-model="formMember.job_name" class="width300" placeholder="请输入职位名称关键字"></el-input>
         </el-form-item>
-        <el-form-item label="职位类别：">
-          <el-select v-model="formMember.job_type" class="width300" placeholder="选择相应的职位类别">
-            <el-option :label="item" :value="key" v-for="(item,key) in jobList" :key="key"></el-option>
-          </el-select>
-        </el-form-item>
         <el-form-item label="团队名称：">
           <el-input v-model="formMember.team_name" class="width300" placeholder="请输入团队名称关键字"></el-input>
         </el-form-item>
@@ -22,7 +17,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="返利模式：">
-          <el-select v-model="formMember.money_type" class="width300" placeholder="请选择返利模式">
+          <el-select v-model="formMember.reward_type" class="width300" placeholder="请选择返利模式">
             <el-option :label="item.label" :value="item.value" v-for="(item,index) in rewardTypeList" :key="index"></el-option>
           </el-select>
         </el-form-item>
@@ -32,11 +27,11 @@
           </el-select>
         </el-form-item>
         <el-form-item label="面试时间：">
-          <el-date-picker class="width300" v-model="timeList" type="daterange" range-separator="-" start-placeholder="开始日期区间" end-placeholder="结束日期"></el-date-picker>
+          <el-date-picker class="width300" value-format="timestamp" v-model="timeList" @change="changeDate" type="daterange" range-separator="-" start-placeholder="开始日期区间" end-placeholder="结束日期"></el-date-picker>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="onSubmit" class="select-btn">查询</el-button>
-          <el-button type="primary" @click="onSubmit" class="select-btn">重置</el-button>
+          <el-button type="primary" @click="reset" class="select-btn">重置</el-button>
         </el-form-item>
       </el-form>
       <div class="member-table resume-table">
@@ -175,12 +170,9 @@ export default {
       statusList: [
         { label: '全部', value: 0 },
         { label: '面试开始', value: 1 },
-        { label: '面试结束', value: 2 },
-        { label: '入职开始', value: 3 },
-        { label: '入职结束', value: 4 }
+        { label: '面试结束', value: 2 }
       ],
       activeIndex: 0,
-      jobList: {},
       timeList: [],
       modalObj: {
         content: '你确定要批量操作？',
@@ -198,22 +190,8 @@ export default {
       this.formMember.jobId = this.$route.query.id
     }
     this.getList(this.formMember)
-    let params = 'job_array'
-    this.getData(params)
   },
   methods: {
-    getData(filed) {
-      getConstant({ filed })
-        .then(res => {
-          const { job_array } = res.data
-          this.jobList = job_array
-        })
-        .catch(error => {
-          if (error) {
-            this.$message.warning(error.status.remind)
-          }
-        })
-    },
     getList(params) {
       invoiceInterviewList(params)
         .then(res => {
@@ -226,6 +204,12 @@ export default {
             this.$message.warning(error.status.remind)
           }
         })
+    },
+    changeDate(val) {
+      let starttime = val? val[0] + '' : ''
+      let endtime =  val?  val[1] + '' : ''
+      this.formMember.begintime = starttime? starttime.substring(0, 10): ''
+      this.formMember.endtime = endtime? endtime.substring(0, 10): ''
     },
     handleSelectionChange(val) {
       this.multipleSelection = val
@@ -325,6 +309,16 @@ export default {
         })
     },
     onSubmit() {
+      this.getList(this.formMember)
+    },
+    reset() {
+      this.formMember = {
+        uid: localStorage.getItem('uid'),
+        limit: 10,
+        page: 1,
+        msdesc: 'asc'
+      }
+      this.timeList = []
       this.getList(this.formMember)
     }
   }

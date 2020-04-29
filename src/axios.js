@@ -8,12 +8,10 @@ const $axios = axios.create({
   baseURL: process.env.VUE_API_URL,
   timeout: 4000
 });
-// const baseURL = process.env.VUE_API_URL + '/index.php'
-// const baseExportURL = process.env.VUE_API_URL + '/uploads/test/'
-// const baseURL = 'https://a.rsd123.com/index.php'
-// const baseExportURL = 'https://a.rsd123.com/uploads/test/'
-const baseURL = 'http://tiantianxsg.com:39888/index.php'
-const baseExportURL = 'http://tiantianxsg.com:39888/uploads/test/'
+const baseURL = 'https://a.rsd123.com/index.php'
+const baseExportURL = 'https://a.rsd123.com/uploads/test/'
+// const baseURL = 'http://tiantianxsg.com:39888/index.php'
+// const baseExportURL = 'http://tiantianxsg.com:39888/uploads/test/'
 
 //请求拦截
 $axios.interceptors.request.use(

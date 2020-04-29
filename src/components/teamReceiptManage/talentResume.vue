@@ -8,11 +8,6 @@
         <el-form-item label="职位名称：">
           <el-input v-model="formMember.job_name" class="width300" placeholder="请输入职位名称关键字"></el-input>
         </el-form-item>
-        <el-form-item label="职位类别：">
-          <el-select v-model="formMember.job_type" class="width300" placeholder="选择相应的职位类别">
-            <el-option :label="item" :value="key" v-for="(item,key) in jobList" :key="key"></el-option>
-          </el-select>
-        </el-form-item>
         <el-form-item label="企业名称：">
           <el-input v-model="formMember.team_name" class="width300" placeholder="请输入企业名称关键字"></el-input>
         </el-form-item>
@@ -157,7 +152,6 @@ export default {
         { label: '审核结束', value: 4 }
       ],
       activeIndex: 0,
-      jobList: {},
       timeList: [],
       apply_id: '',
       viewTimeInfo: {},
@@ -168,21 +162,8 @@ export default {
   created() {
     // 初始化查询标签数据
     this.getList(this.formMember)
-    let params = 'job_array'
-    this.getData(params)
   },
   methods: {
-    getData(filed) {
-      getConstant({ filed })
-        .then(res => {
-          this.jobList = res.data.job_array
-        })
-        .catch(error => {
-          if (error) {
-            this.$message.warning(error.status.remind)
-          }
-        })
-    },
     getList(params) {
       applyList(params)
         .then(res => {
@@ -196,8 +177,8 @@ export default {
         })
     },
     changeDate(val) {
-      let starttime = val[0]? val[0] + '' : ''
-      let endtime =  val[1]?  val[1] + '' : ''
+      let starttime = val? val[0] + '' : ''
+      let endtime =  val?  val[1] + '' : ''
       this.formMember.beginTime = starttime? starttime.substring(0, 10): ''
       this.formMember.endTime = endtime? endtime.substring(0, 10): ''
     },

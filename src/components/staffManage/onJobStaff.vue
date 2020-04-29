@@ -13,7 +13,7 @@
         </el-form-item>
         <el-form-item label="学历：">
           <el-select v-model="formMember.edu" class="width300" placeholder="请选择学历">
-            <el-option :label="item" :value="item" v-for="item in edu_type" :key="item"></el-option>
+            <el-option :label="item" :value="index" v-for="(item, index) in edu_type" :key="item"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="性别：">
@@ -22,7 +22,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="入职时间：">
-          <el-date-picker class="width300" @change="changeDate" v-model="timeList" type="daterange" range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期"></el-date-picker>
+          <el-date-picker class="width300"  value-format="timestamp" @change="changeDate" v-model="timeList" type="daterange" range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期"></el-date-picker>
         </el-form-item>
         <el-form-item label="手机号码：">
           <el-input v-model="formMember.mobile" class="width300" placeholder="请输入手机号码"></el-input>
@@ -164,6 +164,12 @@ export default {
     $route(to, from) {
       if (to.query.view) {
         this.viewType = to.query.view
+        this.formMember = {
+          uid: localStorage.getItem('uid'),
+          limit: 10,
+          page: 1
+        }
+        this.timeList = []
         this.getList(this.formMember)
         this.staffId = ''
       }
@@ -207,8 +213,10 @@ export default {
       }
     },
     changeDate(val) {
-      this.formMember.beginTime = val ? val[0] : ''
-      this.formMember.endTime = val ? val[1] : ''
+      let starttime = val? val[0] + '' : ''
+      let endtime =  val?  val[1] + '' : ''
+      this.formMember.beginTime = starttime? starttime.substring(0, 10): ''
+      this.formMember.endTime = endtime? endtime.substring(0, 10): ''
     },
     handleSelectionChange(val) {
       this.multipleSelection = val

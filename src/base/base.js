@@ -181,9 +181,10 @@ export const checkStatusList = [
 ]
 
 export const userResumeStatusList = [
-  { label: '全部', value: -1 },
+  { label: '全部', value: '' },
   { label: '收集中', value: 0 },
-  { label: '审核中', value: 1 }
+  { label: '审核中', value: 1 },
+  { label: '审核结束', value: 2 }
 ]
 export const userResumeStatusList1 = [
   { label: '待审核', value: 0 },

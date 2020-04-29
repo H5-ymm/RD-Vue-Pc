@@ -8,8 +8,8 @@
         <el-form-item label="职位名称：">
           <el-input v-model="formMember.job_name" class="width300" placeholder="请输入职位名称关键字"></el-input>
         </el-form-item>
-        <el-form-item label="团队名称：">
-          <el-input v-model="formMember.team_name" class="width300" placeholder="请输入团队名称关键字"></el-input>
+        <el-form-item label="企业名称：">
+          <el-input v-model="formMember.com_name" class="width300" placeholder="请输入团队名称关键字"></el-input>
         </el-form-item>
         <el-form-item label="返利模式：">
           <el-select v-model="formMember.reward_type" class="width300" placeholder="请选择返利模式">
