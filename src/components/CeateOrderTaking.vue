@@ -176,8 +176,8 @@ export default {
       landlineStart: '',
       landlineEnd: '',
       rules: {
-        team_name: [
-          { required: true, message: '请输入团队名称', trigger: 'blur' }
+        name: [
+          { required: true, message: '请输入职位名称', trigger: 'blur' }
         ],
         required_number: [
           { required: true, message: '请输入需求人数', trigger: 'blur' }
@@ -354,7 +354,19 @@ export default {
       ) {
         return this.$message.warning('最大年龄不能大于最小年龄')
       }
-
+      if (this.orderTakingForm.money=='') {
+        return this.$message.warning('请设置员工薪资')
+      }
+      if (this.orderTakingForm.money=='') {
+        return this.$message.warning('请设置员工薪资')
+      }
+      if (this.orderTakingForm.reward_money_type=='' && this.orderTakingForm.reward_money =='') {
+        return this.$message.warning('请设置返利模式')
+      }
+       if (this.orderTakingForm.reward_money_type==''&& this.orderTakingForm.reward_type!= 4 ) {
+        return this.$message.warning('请设置结算类型')
+      }
+      console.log(this.orderTakingForm)
       if (!this.orderTakingForm.job_content) {
         return this.$message.warning('请输入职位描述')
       }

@@ -160,9 +160,6 @@
       &:nth-of-type(2){
         text-align: right;
       }
-      //  &:nth-of-type(3){
-      //   margin-left: 10px;
-      // }
     }
   }
   .el-tag {
@@ -176,6 +173,7 @@
   .job-name {
     font-size:16px;
     color: #1890FF;
+    width: 120px;
   }
   .company-name {
     font-size:14px;
@@ -220,13 +218,15 @@
 }
 .orderTaking-login {
   height: 375px;
-  // margin-top: 20px;
 }
 .orderTaking-main-history {
   padding:5px 0;
   border-bottom: 1px solid #eee;
   &:nth-last-of-type(1) {
     border-bottom: none;
+  }
+  .company-name1, .company-name {
+    width: 150px;
   }
 }
 .pagination {

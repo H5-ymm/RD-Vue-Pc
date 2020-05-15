@@ -154,7 +154,7 @@ export default {
       dialogObj: {
         title: '删除',
         subTitle: '删除简历理由',
-        okText: '关闭',
+        okText: '确定',
         placeholder: '请输入删除简历理由'
       },
       modalObj: {

@@ -57,7 +57,7 @@
                 <div class="orderTaking-main-section x-flex-between">
                   <div class="orderTaking-main-row orderTaking-main-row1">
                     <ul class="orderTaking-main-item">
-                      <li class="job-name" @click="$router.push({path:'orderTakingDetail',query:{id:item.id,uid:item.uid}})">
+                      <li class="job-name text-line" @click="$router.push({path:'orderTakingDetail',query:{id:item.id,uid:item.uid}})">
                         <el-tooltip class="item" effect="dark" :content="item.name" placement="top-start">
                           <span class="company-name text-line">{{item.name}}</span>
                         </el-tooltip>
@@ -269,7 +269,6 @@ export default {
           params1[key] = ''
         }
       }
-      console.log(params1)
       getList(params1).then(res => {
         if (res.data.data) {
           this.list = res.data.data.data
@@ -348,7 +347,8 @@ export default {
     clearQuery () {
       this.params = {
         limit: 20,
-        page: 1
+        page: 1,
+        uid: localStorage.getItem('uid')
       }
       this.getData(this.params)
     }

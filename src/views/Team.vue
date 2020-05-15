@@ -11,7 +11,7 @@
 
             <el-link :underline="false" href="home" v-if="type==1">首页</el-link>
             <div class="x-flex-start-justify" v-if="type==2||type==3">
-              <img :src="getImgUrl(baseInfo.log)" alt="" class="team-logo" v-if="baseInfo&&baseInfo.log">
+              <img :src="baseInfo.logo_url" alt="" class="team-logo" v-if="baseInfo&&baseInfo.logo_url">
               <img src="../assets/img/headIcon.png" alt="" class="team-logo" v-else>
               <span>{{baseInfo&&baseInfo.team_name}}</span>
             </div>

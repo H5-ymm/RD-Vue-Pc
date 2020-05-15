@@ -120,7 +120,7 @@
                 </el-form-item>
                 <el-form-item label="学历">
                   <el-select v-model="formMember.education" placeholder="请选择学历">
-                    <el-option :label="item" :value="key" v-for="(item,key) in edu_type" :key="key"></el-option>
+                    <el-option :label="item" :value="index" v-for="(item,index) in edu_type" :key="index"></el-option>
                   </el-select>
                 </el-form-item>
                 <el-form-item label="详细地址">
@@ -158,7 +158,7 @@
                 </el-form-item>
                 <el-form-item label="薪资模式">
                   <el-select v-model="formMember.salary_type" value-key="label" placeholder="请选择薪资模式">
-                    <el-option :label="item.label" :value="item.value" v-for="(item,index) in moneyTypeList1" :key="item.label"></el-option>
+                    <el-option :label="item.label" :value="item.value" v-for="item in moneyTypeList1" :key="item.label"></el-option>
                   </el-select>
                 </el-form-item>
                 <el-form-item label="预计入职时间">
@@ -348,6 +348,8 @@ export default {
           this.formMember.salary_type = res.data.salary_type
             ? res.data.salary_type
             : ''
+            console.log(this.formMember.education)
+          this.formMember.education = Number(this.formMember.education)
           this.formMember.money = res.data.money ? res.data.money : ''
           if (res.data.entry_begintime) {
             this.entryTime[0] = this.$moment

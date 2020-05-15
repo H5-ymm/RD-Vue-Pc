@@ -149,10 +149,10 @@ export default new Vuex.Store({
           console.log(res.data)
           let userinfo = res.data
           if (userinfo.head_img) {
-            if (userinfo.head_img.indexOf('https')!=-1) {
-              userinfo.head_img =  res.data.head_img
-            } else {
+            if (userinfo.head_img.indexOf('http')==-1) {
               userinfo.head_img =  getImgUrl(res.data.head_img)
+            } else {
+              userinfo.head_img =  res.data.head_img
             }
           }
           sessionStorage.setItem('userInfo', JSON.stringify(userinfo))
@@ -219,8 +219,15 @@ export default new Vuex.Store({
           uid
         }).then(res => {
           let Info = res.data || null;
-          sessionStorage.setItem("baseInfo", JSON.stringify(res.data));
-          if (!res.data.logo_url&&!res.data.license_url&&!res.data.link_tel&&!res.data.content) {
+          if (Info.head_img) {
+            if (Info.logo_url.indexOf('http')==-1) {
+              Info.logo_url =  getImgUrl(res.data.logo_url)
+            } else {
+              Info.logo_url =  res.data.logo_url
+            }
+          }
+          sessionStorage.setItem("baseInfo", JSON.stringify(Info));
+          if (!res.data.logo_url&&!res.data.license_url&&!res.data.link_phone&&!res.data.content) {
             localStorage.setItem('rendacompanyInfo',false)
           } else {
             localStorage.setItem('rendacompanyInfo',true)

@@ -204,7 +204,7 @@
                         <span>结算时间：</span>
                         <span>次月{{orderTakingDetail.settlement_time?orderTakingDetail.settlement_time:1}}号结算</span>
                       </p>
-                      <p class="team-info-card-item" v-else>
+                      <p class="team-info-card-item" v-if="orderTakingDetail.reward_type==2||orderTakingDetail.reward_type==3">
                         <span>结算时间：</span>
                         <span v-if="orderTakingDetail.reward_money_type==1">{{orderTakingDetail.settlement_type==1?'当':'次'}}{{orderTakingDetail.reward_money_type==1?'日':orderTakingDetail.reward_money_type==2?'周': '月'}}</span>
                         <span v-else>{{orderTakingDetail.settlement_type==1?'当':'次'}}{{orderTakingDetail.reward_money_type==1?'日':orderTakingDetail.reward_money_type==2?'周': '月'}}{{orderTakingDetail.settlement_time?orderTakingDetail.settlement_time:'第一天'}}</span>
@@ -215,7 +215,7 @@
                       </p>
                       <p class="team-info-card-item" v-if="orderTakingDetail.reward_type==4">
                         <span>需入职满：</span>
-                        <span v-if="orderTakingDetail.reward_needtime">{{orderTakingDetail.reward_needtime}}{{orderTakingDetail.reward_money_type==1?'天':orderTakingDetail.reward_money_type==2?'周': '月'}}</span>
+                        <span v-if="orderTakingDetail.reward_needtime">{{orderTakingDetail.reward_needtime}}天</span>
                         <span v-else>一天</span>
                       </p>
                     </div>
@@ -245,7 +245,7 @@
                     <div class="orderTaking-main-section x-flex-between">
                       <div class="orderTaking-main-row orderTaking-main-row1">
                         <ul class="orderTaking-main-item">
-                          <li class="job-name">
+                          <li class="job-name text-line">
                             <el-tooltip class="item" effect="dark" :content="item.name" placement="top-start">
                               <span class="company-name">{{item.name}}</span>
                             </el-tooltip>
@@ -329,7 +329,7 @@
                 <ul class="orderTaking-main-item orderTaking-main-history" v-for="(item,index) in comInvoiceList" :key="index">
                   <li class="x-flex-between">
                     <el-tooltip class="item" effect="dark" :content="item.name" placement="top-start">
-                      <span class="company-name1">{{item.name}}</span>
+                      <span class="company-name1 text-line">{{item.name}}</span>
                     </el-tooltip>
                     <span class="require-number">{{item.required_number}}人</span>
                   </li>
