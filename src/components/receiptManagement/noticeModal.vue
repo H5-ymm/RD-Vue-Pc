@@ -75,9 +75,7 @@ export default {
     }
   },
   created() {
-    this.formMember.date = this.$moment(new Date())
-      .add(1, 'days')
-      .format('YYYY-MM-DD HH:mm')
+    this.formMember.date = this.$moment(new Date()).format('YYYY-MM-DD HH:mm')
       if (this.id) {
         this.getTimeInfo(this.id)
       }
@@ -86,7 +84,6 @@ export default {
     isEdit(val) {
       if (val) {
         this.viewTime = val ? true : false
-        console.log(this.viewTime)
         if (this.viewTime) {
           this.getTimeInfo(val)
         }

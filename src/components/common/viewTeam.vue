@@ -108,38 +108,38 @@
             </div>
             <div class="team-info-card-item">
               <span>团队规模</span>
-              <span>{{teamInfo.number}}</span>
+              <span>{{teamInfo.number}}人</span>
             </div>
             <div class="team-info-card-item">
               <span>成功接单</span>
-              <span>{{teamInfo.completeInvoiceNum}}</span>
+              <span>{{teamInfo.applyNum}}单</span>
             </div>
             <div class="team-info-card-item">
               <span>已推荐简历</span>
-              <span>{{teamInfo.recommendNum}}</span>
+              <span>{{teamInfo.recommendNum}}份</span>
             </div>
 
             <div class="team-info-card-item x-flex-start">
               <span>团队地址</span>
-              <span>{{teamInfo.address}}</span>
+              <span>{{teamInfo.provinceName}}{{teamInfo.cityName}}{{teamInfo.address}}</span>
             </div>
           </li>
           <li class="team-info-card-row">
             <div class="team-info-card-item">
               <span>团队性质</span>
-              <span>{{teamInfo.type?'企业':'个人'}}</span>
+              <span>{{teamInfo.type==1?'企业':'个人'}}</span>
             </div>
             <div class="team-info-card-item">
               <span>注册日期</span>
-              <span>2019-12-01 10:35</span>
+              <span>{{time?$moment.unix(time).format('YYYY-MM-DD HH:mm'):'--'}}</span>
             </div>
             <div class="team-info-card-item">
               <span>完成接单</span>
-              <span>{{teamInfo.completeInvoiceNum}}</span>
+              <span>{{teamInfo.completeInvoiceNum}}单</span>
             </div>
             <div class="team-info-card-item">
               <span>已入职简历</span>
-              <span>{{teamInfo.applyNum}}份</span>
+              <span>{{teamInfo.entryNum}}份</span>
             </div>
             <div class="team-info-card-item">
               <span>从事行业</span>

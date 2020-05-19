@@ -242,7 +242,7 @@ export default {
             .then(res => {
               if (res.data) {
                 this.$message.success('修改成功')
-                this.$router.push('publishJobList?view=1')
+                this.$router.push('/publishJobList?view=1')
               } else {
                 this.$message.error('修改失败')
               }
@@ -255,7 +255,7 @@ export default {
             .then(res => {
               if (res.data) {
                 this.$message.success('发布成功')
-                this.$router.push('publishJobList?view=1')
+                this.$router.push('/publishJobList?view=1')
               } else {
                 this.$message.error('发布失败')
               }

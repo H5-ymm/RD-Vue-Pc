@@ -281,62 +281,42 @@ export default {
       this.ageList.push(i)
     }
     this.getList(params)
-    this.formMember = {
-      is_five_risks: 1,
-      is_fund: 1,
-      age: 18,
-      sex: 1,
-      name: '',
-      mobile: '',
-      education: '',
-      address: '',
-      provinceid: '',
-      cityid: '',
-      salary_type: 1,
-      uid: localStorage.getItem('uid')
-    }
+    this.clear()
   },
   watch: {
     resumeId (val) {
       if (val) {
         this.getInfo()
       } else {
-        this.formMember = {
-          is_five_risks: 1,
-          is_fund: 1,
-          age: 18,
-          sex: 1,
-          name: '',
-          mobile: '',
-          education: '',
-          address: '',
-          provinceid: '',
-          cityid: '',
-          salary_type: 1,
-          uid: localStorage.getItem('uid')
-        }
+        this.clear()
       }
     },
     dialogTableVisible (val) {
       if (!val) {
-        this.formMember = {
-          is_five_risks: 1,
-          is_fund: 1,
-          age: 18,
-          sex: 1,
-          name: '',
-          mobile: '',
-          education: '',
-          address: '',
-          provinceid: '',
-          cityid: '',
-          salary_type: 1,
-          uid: localStorage.getItem('uid')
-        }
+        this.clear()
       }
     }
   },
   methods: {
+    clear() {
+      this.formMember = {
+        is_five_risks: 1,
+        is_fund: 1,
+        age: 18,
+        sex: 1,
+        name: '',
+        mobile: '',
+        education: '',
+        address: '',
+        provinceid: '',
+        cityid: '',
+        salary_type: 1,
+        uid: localStorage.getItem('uid')
+      }
+      this.address = []
+      this.entryTime = []
+      this.addressExpect = []
+    },
     getInfo () {
       let params = {
         uid: localStorage.getItem('uid'),
@@ -348,7 +328,6 @@ export default {
           this.formMember.salary_type = res.data.salary_type
             ? res.data.salary_type
             : ''
-            console.log(this.formMember.education)
           this.formMember.education = Number(this.formMember.education)
           this.formMember.money = res.data.money ? res.data.money : ''
           if (res.data.entry_begintime) {

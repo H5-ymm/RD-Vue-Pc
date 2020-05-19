@@ -27,9 +27,6 @@
           <el-input v-model="formMember.name" class="width300" placeholder="请输入职位名称关键字"></el-input>
           <el-button type="primary" @click="onSubmit" class="select-btn">查询</el-button>
         </el-form-item>
-        <!-- <el-form-item label="状态筛选：">
-          <el-button :type="activeIndex==index ?'primary':''" v-for="(item,index) in statusList" :key="index" plain @click="selectStatus(item,index)" class="select-status">{{item.label}}</el-button>
-        </el-form-item>-->
       </el-form>
       <div class="member-table resume-table resume-table1">
         <div class="table-query">
@@ -57,7 +54,6 @@
               <span class="text-line width140">{{props.row.name||props.row.job_name}}</span>
             </template>
           </el-table-column>
-          <!-- <el-table-column label="返利模式" prop="offermoney_type" align="center" width="120"></el-table-column> -->
           <el-table-column label="返利模式" align="center" width="150">
             <template slot-scope="props">
               <span>{{props.row.reward_type | rewardType}}</span>

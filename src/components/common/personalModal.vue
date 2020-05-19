@@ -102,7 +102,7 @@
 <script>
 export default {
   props: {
-    dialogTableVisible: { type: Boolean, default: false },
+    dialogTableVisible: Boolean,
     title: { type: String, default: '分配跟进人' },
     personalList: { type: Array, default: [] },
   },

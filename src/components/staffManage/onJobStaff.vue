@@ -57,7 +57,11 @@
             </template>
           </el-table-column>
           <el-table-column label="联系电话" prop="mobile" align="center" width="120"></el-table-column>
-          <el-table-column label="岗位名称" prop="post" align="center" width="110"></el-table-column>
+          <el-table-column label="岗位名称" align="center" width="110">
+            <template slot-scope="props">
+              <span>{{props.row.post?props.row.post:props.row.jobName}}</span>
+            </template>
+          </el-table-column>
           <el-table-column label="入职时间" sortable="custom" align="center" width="110">
             <template slot-scope="props">
               <span>{{props.row.addtime? $moment.unix(props.row.addtime).format('YYYY-MM-DD'):'--'}}</span>

@@ -184,7 +184,7 @@ export default {
         })
     },
     checkResume(val) {
-      if (!val.view_time) {
+      if (!val.view_time&&!val.is_video) {
         this.handleNote(val)
       } else {
         this.$router.push({
