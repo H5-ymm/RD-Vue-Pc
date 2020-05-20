@@ -353,7 +353,7 @@ export default {
         }
       })
     }
-    if (this.userP == 2) {
+    else if (this.userP == 2) {
       this.menus.forEach((item, index) => {
         if (item.title == '团队设置') {
           this.menus.splice(index, 1)
@@ -366,7 +366,7 @@ export default {
         }
       })
     }
-    if (this.userP == 3) {
+    else {
       this.menus.forEach((item, index) => {
         if (item.title == '团队设置') {
           this.menus.splice(index, 1)
@@ -409,7 +409,7 @@ export default {
           }
         })
       }
-      if (val == 2) {
+      else if (val == 2) {
         this.menus.forEach((item, index) => {
           if (item.title == '团队设置') {
             this.menus.splice(index, 1)
@@ -422,7 +422,7 @@ export default {
           }
         })
       }
-      if (val == 3) {
+      else {
         this.menus.forEach((item, index) => {
           if (item.title == '团队设置') {
             this.menus.splice(index, 1)

@@ -75,8 +75,8 @@
           </el-table-column>
           <el-table-column label="操作" align="center" width="180" fixed="right">
             <template slot-scope="props">
-              <el-button @click="$router.push('/teamEntryList?id='+ props.row.id+ '&jobId='+props.row.job_id)" type="text" size="small" v-if="props.row.interview_status==4&&props.row.entry_status>=1">入职名单</el-button>
-              <el-button @click="$router.push('/commonTableList?id='+ props.row.id+ '&job_id='+props.row.job_id+'&view=4')" v-if="!props.row.entry_status&&props.row.interview_status<=3" type="text" size="small">面试名单</el-button>
+              <!-- <el-button @click="$router.push('/teamEntryList?id='+ props.row.id+ '&jobId='+props.row.job_id)" type="text" size="small" v-if="props.row.interview_status==4&&props.row.entry_status>=1">入职名单</el-button> -->
+              <el-button @click="$router.push('/commonTableList?id='+ props.row.id+ '&job_id='+props.row.job_id+'&view=1')" type="text" size="small">面试名单</el-button>
               <el-button @click="dialogTableVisible=true" type="text" size="small" v-if="props.row.interview_status!=1">联系客服</el-button>
             </template>
           </el-table-column>

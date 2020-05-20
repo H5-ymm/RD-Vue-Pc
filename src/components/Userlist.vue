@@ -274,16 +274,33 @@ export default {
     submitMember(val) {
       if (!this.isView) {
         this.modalType = 1
+        this.userId = val.id
+        this.modalForm = val
         if (val.status == 2) {
           if (val.id == this.uid) {
             this.modalObj.content = '你确定锁定当前账号吗？</br>锁定后将退出并无法登录!'
           }
           else {
             this.modalObj.content = '你确定锁定该组员账号吗？</br>锁定后该组员将无法登录!'
-          }
-          this.userId = val.id
-          this.modalForm = val
+          }      
           this.dialogModalVisible = true
+        } else {
+            updateTeamUser(this.modalForm)
+          .then(res => {
+            if (res.data) {
+              this.dialogTableVisible = false
+              this.dialogModalVisible = false
+              this.$message.success('保存成功')
+              this.getList(this.formMember)
+            } else {
+              this.$message.error('保存失败')
+            }
+          })
+          .catch(error => {
+            if (error) {
+              this.$message.error(error.status.remind)
+            }
+          })
         }
       }
     },

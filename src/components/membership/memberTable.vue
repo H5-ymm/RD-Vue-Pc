@@ -56,8 +56,8 @@
           <template slot-scope="props">
             <span
               class="status"
-              :class="{'active-status':props.row.status==1}"
-            >{{props.row.status==1?"正常":'锁定'}}</span>
+              :class="{'active-status':props.row.status==1||!props.row.status}"
+            >{{props.row.status==2?"锁定":'正常'}}</span>
           </template>
         </el-table-column>
         <el-table-column label="操作" align="center" width="150" fixed="right">
@@ -106,7 +106,9 @@ export default {
     },
     // 编辑
     handleEdit(val) {
+      console.log(val)
       if (!val) {
+        console.log(val)
         return this.$message.warning('请选择组员')
       }
       this.$emit('handleEdit', val)

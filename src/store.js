@@ -28,6 +28,9 @@ import {
 import {
   logout
 } from '@/api/login'
+import {
+  Message
+} from 'element-ui';
 Vue.use(Vuex)
 
 export default new Vuex.Store({
@@ -272,6 +275,8 @@ export default new Vuex.Store({
             commit('setMenus', ['发单招聘'])
             dispatch("getCompanymData", res.data.uid)
             router.push('/createOrderTaking')
+          } else if (registerType == 3) {
+            return Message.warning('个人账户无法登录，请登录人事达小程序体验!');
           } else {
             dispatch("getUserAllInfo", res.data.uid)
             dispatch("getTeamData", res.data.uid)
@@ -287,6 +292,7 @@ export default new Vuex.Store({
           }
           resolve(res)
         }).catch(error => {
+          console.log(error)
           reject(error)
         })
       })
