@@ -122,7 +122,8 @@
           <div>
             <P class="member-col1-jobName">{{jobInfo.name}}</P>
             <p class="member-col1-text">
-              <span class="member-col1-status">{{jobInfo.job_status==1?'招聘中':'已下架'}}</span>
+              <span class="member-col1-status" v-if="jobInfo.status==2">{{jobInfo.job_status==1?'招聘中':'已下架'}}</span>
+              <span class="member-col1-status" v-else>{{jobInfo.status==1?'审核中':'未通过'}}</span>
               <span> {{jobInfo.job_type}}</span>
             </p>
           </div>
@@ -144,7 +145,7 @@
               </div>
               <div class="team-info-card-item">
                 <span>性别</span>
-                <span>{{jobInfo.sex==1?'男':'女'}}</span>
+                <span>{{jobInfo.sex==1?'男':jobInfo.sex==2?'女':'男女不限'}}</span>
               </div>
               <div class="team-info-card-item x-flex-start">
                 <span>工作地址</span>

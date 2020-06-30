@@ -356,10 +356,13 @@ export default {
       this.getList(this.params)
     },
     selectQuery (val) {
+      console.log(val)
       this.paramsEchart = Object.assign(this.paramsEchart, val)
       this.paramsEchart = Object.assign(this.paramsEchart, 0)
       this.getData(this.paramsEchart)
       this.legendIndex = val.type
+      this.paramsInfo.type = val.type
+      this.getCompareInfo(this.paramsInfo)
     }
   }
 }

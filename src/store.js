@@ -230,11 +230,6 @@ export default new Vuex.Store({
             }
           }
           sessionStorage.setItem("baseInfo", JSON.stringify(Info));
-          if (!res.data.logo_url&&!res.data.license_url&&!res.data.link_phone&&!res.data.content) {
-            localStorage.setItem('rendacompanyInfo',false)
-          } else {
-            localStorage.setItem('rendacompanyInfo',true)
-          }
           commit('getBaseInfo', Info)
           resolve(res)
         }).catch(error => {

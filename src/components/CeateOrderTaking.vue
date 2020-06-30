@@ -212,10 +212,13 @@ export default {
     }
   },
   created() {
-    if (!localStorage.getItem('rendacompanyInfo')) {
-      this.dialogVisible = true
-    } else {
-      this.dialogVisible = false
+    if (sessionStorage.getItem('baseInfo')) {
+      let rendacompanyInfo = JSON.parse(sessionStorage.getItem('baseInfo'))
+      if (!rendacompanyInfo.logo_url&&!rendacompanyInfo.license_url&&!rendacompanyInfo.link_phone&&!rendacompanyInfo.content) {
+        this.dialogVisible = true
+      } else {
+        this.dialogVisible = false
+      }
     }
     let params = 'edu_type,money_array,job_array'
     this.getList(params)
